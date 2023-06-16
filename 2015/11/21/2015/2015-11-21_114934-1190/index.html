@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Meteor Iron.Router 环境下微信 jssdk 报错 config:invalid signature | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Meteor Iron.Router 环境下微信 jssdk 报错 config:invalid signature</h1>
+    </header>
+
+    <section>
+      <p>这几天做了微信分享功能的修改，通过微信 jssdk 可以修改微信右上角分享到朋友圈、分享给朋友、分享到QQ这些界面的 Title、Description和 Image，用来让分享更有质量。普通情况下如果你没有使用 jssdk 去配置你分享的 Title 等信息，微信会将分享出来的 Title 设置为你网页的 Title 内容，将 Description 设置为网站的 Url，而图片则取文章中第一幅图片，如果文章中没有图片，那么分享出去的图片就是空白的。</p>
+<span id="more"></span>
+<p>在 Meteor 环境下使用微信的 jssdk 让我遇到了一个非常头大的问题，在微信 wx.config 初始化函数中配置 signature 的时候，一直提示 <code>config:invalid signature</code>。如下所示： <a href="/images/2015/11/2.pic_hd.png"><img src="/images/2015/11/2.pic_hd-576x1024.png" alt="2.pic_hd"></a> 几番周折，网上的资料都说你前台的 Url 和传递到后台计算 signature 的 Url 不一样，而我反复检查代码写的的确没有任何问题，前台 <code>window.location.href</code> 取到的 Url 和传递到后台计算 signature 的 Url 一模一样，无奈在公司没有解决这个问题。 到家里点了饭准备继续攻坚时，无意打开了 Windows 下微信的客户端，在公共号那个提示 <code>config:invalid signature</code> 出错页面的位置，点了一下使 “使用默认浏览器打开” 的按钮： <a href="/images/2015/11/1.pic_.jpg"><img src="/images/2015/11/1.pic_.jpg" alt="1.pic"></a> 赫然发现，浏览器中的 Url 跟我实际分享页面的地址完全不一样。这是闹鬼了吗？本着以科学的角度解决问题的态度，我仔细想了想原因，最后确认，如果是根据某篇文章 ID 或某用户 ID 动态变换的 Url 中，这个问题就存在，而首页、about等固定 Url 的页面，是没有这种问题的。这个问题就出现在了 <code>Iron.Router</code> 所分配的路由上。</p>
+<h4 id="有问题的路由"><a href="#有问题的路由" class="headerlink" title="有问题的路由"></a>有问题的路由</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">this.route(&#x27;activityShow&#x27;, &#123;</span><br><span class="line">  template: &#x27;activityShow&#x27;,</span><br><span class="line">  path: &#x27;/activities/:_id&#x27;,</span><br><span class="line">  waitOn: function () &#123;</span><br><span class="line">    Meteor.subscribe(&#x27;images&#x27;);</span><br><span class="line">    return Meteor.subscribe(&#x27;activityComposite&#x27;, this.params._id);</span><br><span class="line">  &#125;,</span><br><span class="line">  data: function () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      enrollments: Enrollments.find(),</span><br><span class="line">      activity: Activities.findOne(this.params._id),</span><br><span class="line">      comments: Comment.collection.find(),</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="无问题的路由"><a href="#无问题的路由" class="headerlink" title="无问题的路由"></a>无问题的路由</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">this.route(&#x27;activitiesIndex&#x27;, &#123;</span><br><span class="line">  template: &#x27;activitiesIndex&#x27;,</span><br><span class="line">  path: &#x27;/activities&#x27;,</span><br><span class="line">  waitOn: function () &#123;</span><br><span class="line">    Meteor.subscribe(&#x27;images&#x27;);</span><br><span class="line">    Meteor.subscribe(&#x27;enrollments&#x27;, this.params._id);</span><br><span class="line">    return Meteor.subscribe(&#x27;activitiesComposite&#x27;);</span><br><span class="line">  &#125;,</span><br><span class="line">  data: function () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      activities: Activities.find(&#123;&#125;, &#123;sort: &#123;createdAt: -1&#125;&#125;),</span><br><span class="line">      enrollments: Enrollments.find(),</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>我们发现，会报错的页面的 Route，都是根据某些 ID 动态变换的，实际页面在加载过程中，layout 是不变的，只是更新了页面中的某个块，而对页面 Url 的修改是在微信客户端获取完当前 Url 之后再执行的操作，导致微信获取的 Url 还是页面跳转前的 Url（所以我们使用默认浏览器打开的时候它的 Url 与我们实际页面的不一样），这就造成我们实际传递给后台计算 signature 的 Url 和微信客户端自己获取的 Url 是不一样的（虽然我们看到 window.location.href 是正确的，但这是假象）。微信自己获取的 Url 是该页面的前一个页面的 Url，而如果我们在会报错的页面原地刷新，你会发现 wx.config 不再报错了，这是因为微信此时获取的 Url 和我们当前刷新页面的 Url 是一致的。 接下来就是解决这个问题了，我们该如何在程序中判断这种情况的出现呢？给大家分享一个包。包名叫 <code>Iron.Location</code>，GitHub 地址：<a target="_blank" rel="noopener" href="https://github.com/iron-meteor/iron-location%EF%BC%8C%E8%BF%99%E4%B8%AA%E5%8C%85%E4%B8%AD%E6%9C%89%E4%B8%80%E4%B8%AA%E5%B1%9E%E6%80%A7%E6%98%AF">https://github.com/iron-meteor/iron-location，这个包中有一个属性是</a> <code>host</code>，如果是上文中提到的根据文章 ID 或者用户 ID 动态变换的页面，首次进入时，该值为空，如果原地刷新，该值是一个正常的该页面的 Url。我们可以根据这个值来进行判断，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">var url = &quot;&quot;;</span><br><span class="line">var current = Iron.Location.get();</span><br><span class="line"></span><br><span class="line">if (current.host == &quot;&quot;) &#123;</span><br><span class="line">  // route 过来的地址，微信只能获取到 /activities 截止，后面的取不到了，我们设定为微信自己获取的地址</span><br><span class="line">  url = &quot;http://x-lab.maodou.io/activities&quot;;</span><br><span class="line">&#125; else &#123;</span><br><span class="line">  // 刷新页面或者新建文章后跳转的页面，微信获取的是完整地址</span><br><span class="line">  url = window.location.href;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 根据不同情况传递不同的地址获取 signature</span><br><span class="line">Meteor.call(&quot;signature&quot;, url, function(error, result) &#123;</span><br><span class="line">  // 执行 wx.config 初始化</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>通过以上方法，我们可以成功的判断是从某个页面跳转进来的，还是原地刷新等情况，根据不同情况给后台传递不同的 Url 来计算 signature，以初始化 wx.config。至此问题算是解决，但不算完美解决。因为对浏览器和 JavaScript 不是非常了解。我无法解释更多信息，只能给大家先提出解决办法。希望后面使用 Meteor 开发微信公共号的人可以避免这个问题。并从中找出更多可靠的解决方案。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-11-21T11:49:34.000Z" itemprop="datePublished">
+              2015-11-21
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

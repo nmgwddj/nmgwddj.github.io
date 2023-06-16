@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Stack 栈模型的顺序存储实现 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Stack 栈模型的顺序存储实现</h1>
+    </header>
+
+    <section>
+      <p>栈（Stack）也是数据存储的一种方式，我们可以将其理解为一种线性的表，只不过他是前去后继的关系，他只能在线性表的尾部插入和取出数据，这个尾部所指的就是栈的栈顶，而最先被存入的数据则是栈底。它具有后进先出、先进后出的特性。表示图如下：</p>
+<span id="more"></span>
+<p><a href="/images/2015/05/2015-05-28_222124.png"><img src="/images/2015/05/2015-05-28_222124.png" alt="2015-05-28_222124"></a></p>
+<h3 id="【代码实现】"><a href="#【代码实现】" class="headerlink" title="【代码实现】"></a>【代码实现】</h3><p>下面代码中，使用顺序线性表实现了一个栈模型，与上图非常类似。具体代码如下（需要用到<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/datastruct/258.html">线性表顺序存储</a>的相关头文件）：</p>
+<p>#ifndef _SEQSTACK_H_<br>#define _SEQSTACK_H_</p>
+<p>typedef void SeqStack;</p>
+<p>&#x2F;&#x2F;创建栈<br>SeqStack* SeqStack_Create(int capacity);</p>
+<p>&#x2F;&#x2F;销毁栈<br>void SeqStack_Destroy(SeqStack* stack);</p>
+<p>&#x2F;&#x2F;清空栈<br>void SeqStack_Clear(SeqStack* stack);</p>
+<p>&#x2F;&#x2F;进栈<br>int SeqStack_Push(SeqStack* stack, void* item);</p>
+<p>&#x2F;&#x2F;出栈<br>void* SeqStack_Pop(SeqStack* stack);</p>
+<p>&#x2F;&#x2F;获取栈顶元素<br>void* SeqStack_Top(SeqStack* stack);</p>
+<p>&#x2F;&#x2F;获取栈的大小<br>int SeqStack_Size(SeqStack* stack);</p>
+<p>#endif &#x2F;&#x2F;_SEQSTACK_H_</p>
+<p>#define _CRT_SECURE_NO_WARNINGS<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include “SeqStack.h”<br>#include “SeqList.h”</p>
+<p>&#x2F;&#x2F;创建栈<br>SeqStack* SeqStack_Create(int capacity)<br>{<br>&#x2F;&#x2F;相当于创建一个线性表<br>SeqList* list &#x3D; SeqList_Create(capacity);<br>return list;<br>}</p>
+<p>&#x2F;&#x2F;销毁栈<br>void SeqStack_Destroy(SeqStack* stack)<br>{<br>&#x2F;&#x2F;相当于销毁一个线性表<br>SeqList_Destroy(stack);<br>}</p>
+<p>&#x2F;&#x2F;清空栈<br>void SeqStack_Clear(SeqStack* stack)<br>{<br>&#x2F;&#x2F;相当于清空一个线性表<br>SeqList_Clear(stack);<br>}</p>
+<p>&#x2F;&#x2F;进栈<br>int SeqStack_Push(SeqStack* stack, void* item)<br>{<br>&#x2F;&#x2F;在线性表尾部插入元素<br>int ret &#x3D; SeqList_Insert(stack, (SeqListNode*)item, SeqStack_Size(stack));<br>return ret;<br>}</p>
+<p>&#x2F;&#x2F;出栈<br>void* SeqStack_Pop(SeqStack* stack)<br>{<br>&#x2F;&#x2F;在线性表尾部删除元素<br>SeqListNode* pDel &#x3D; SeqList_Delete(stack, SeqStack_Size(stack) - 1);<br>return (void*)pDel;<br>}</p>
+<p>&#x2F;&#x2F;获取栈顶元素<br>void* SeqStack_Top(SeqStack* stack)<br>{<br>&#x2F;&#x2F;获取线性表尾部元素<br>SeqListNode* pNode &#x3D; SeqList_Get(stack, SeqStack_Size(stack) - 1);<br>return pNode;<br>}</p>
+<p>&#x2F;&#x2F;获取栈的大小<br>int SeqStack_Size(SeqStack* stack)<br>{<br>&#x2F;&#x2F;相当于获取线性表的长度<br>int len &#x3D; SeqList_Length(stack);<br>return len;<br>}</p>
+<p>#define _CRT_SECURE_NO_WARNINGS<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include “SeqStack.h”</p>
+<p>int main()<br>{<br>int i;<br>int array[10] &#x3D; { 0 };<br>SeqStack* stack &#x3D; NULL;<br>&#x2F;&#x2F;创建栈<br>stack &#x3D; SeqStack_Create(25);<br>if (stack &#x3D;&#x3D; NULL)<br>{<br>return -1;<br>}<br>&#x2F;&#x2F;初始化数组<br>for (i &#x3D; 0; i &lt; sizeof(array) &#x2F; sizeof(int); i++)<br>{<br>array[i] &#x3D; i;<br>&#x2F;&#x2F;压栈<br>SeqStack_Push(stack, (void*)&amp;array[i]);<br>}</p>
+<p>&#x2F;&#x2F;打印栈的大小<br>printf(“stack size &#x3D; %d\n”, SeqStack_Size(stack));<br>&#x2F;&#x2F;打印栈顶元素<br>printf(“stack top element &#x3D; %d\n”, *(int *)SeqStack_Top(stack));</p>
+<p>&#x2F;&#x2F;所有元素出栈<br>while (SeqStack_Size(stack) &gt; 0)<br>{<br>&#x2F;&#x2F;打印栈顶元素, 并出栈<br>printf(“—–stack top element &#x3D; %d\n”, *(int *)SeqStack_Pop(stack));<br>}<br>&#x2F;&#x2F;销毁栈<br>SeqStack_Destroy(stack);</p>
+<p>printf(“Good good study, day day up!!!\n”);<br>system(“pause”);<br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-28T22:29:43.000Z" itemprop="datePublished">
+              2015-05-28
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

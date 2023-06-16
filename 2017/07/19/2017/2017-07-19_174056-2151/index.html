@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>使用 Fontawesome 的 React 组件 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>使用 Fontawesome 的 React 组件</h1>
+    </header>
+
+    <section>
+      <p>Fontawesome 是一套图表字体库框架，我们经常在项目中用到它的各式各样的图标，本文介绍的是如何使用其 React 组件形式的包应用到项目中。</p>
+<span id="more"></span>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>使用 npm 命令来安装 react-fontawesome 包。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install react-fontawesome --save</span><br></pre></td></tr></table></figure>
+
+<h2 id="导入-css"><a href="#导入-css" class="headerlink" title="导入 css"></a>导入 css</h2><p>在项目的 head 标签中的导入 fontawesome 的 css 样式表。以下我给出的是一个 CDN 的地址，你可以自己找其他地址。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;link href=&quot;https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css&quot; rel=&quot;stylesheet&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>在某个组件中，你只需要先导入 react-fontawesome 包。然后直接把它的组件写上去就可以了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import FontAwesome from &#x27;react-fontawesome&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>比如我们要显示一个向上的箭头图标，就像下面一样在 render 函数中调用即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;FontAwesome</span><br><span class="line">  name=&#x27;angle-double-up&#x27;</span><br><span class="line">  style=&#123;&#123; fontSize: &quot;17px&quot; &#125;&#125;</span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>
+
+<p>name 属性就是你要用的 icon 的名字，一般官网给出的 icon 名字都带有 <code>fa-</code> 前缀，你去掉就可以了。stype 就是你给图标设置的样式。这个就用不多说了。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-07-19T17:40:56.000Z" itemprop="datePublished">
+              2017-07-19
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

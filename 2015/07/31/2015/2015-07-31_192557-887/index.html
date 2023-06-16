@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>mfc 创建模态对话框与非模态对话框 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>mfc 创建模态对话框与非模态对话框</h1>
+    </header>
+
+    <section>
+      <p>所谓模态对话框就是该对话框被创建后，其父窗口不能响应任何消息，无法操作，只有在关闭了新创建出来的窗口后才能继续操作其后面的父窗口。而非模态对话框则不会有这种情况，非模态对话框创建完成后不影响父窗口的操作，两个窗口可以同时响应消息。</p>
+<span id="more"></span>
+<hr>
+<h3 id="创建模态对话框"><a href="#创建模态对话框" class="headerlink" title="创建模态对话框"></a>创建模态对话框</h3><p>想创建一个模态对话框一共分三步。 1、在资源视图中创建一个对话框资源 <a href="/images/2015/07/2015-07-31_190223.bmp"><img src="/images/2015/07/2015-07-31_190223.bmp" alt="2015-07-31_190223"></a> 2、给该对话框资源创建一个类，继承于 CDialog 类，命名为 CMyDialog <a href="/images/2015/07/2015-07-31_191418.bmp"><img src="/images/2015/07/2015-07-31_191418.bmp" alt="2015-07-31_191418"></a> 3、在想创建该对话框的地方添加如下代码  </p>
+<p>&#x2F;&#x2F; 模态对话框<br>CMyDialog dialog;<br>dialog.DoModal();</p>
+<p>这样一个模态对话框就创建好了，在这个对话框中，你还可以添加其他控件，对每个控件做消息响应，这些消息响应函数会写在你创建的 CMyDialog 类中的。</p>
+<h3 id="创建非模态对话框"><a href="#创建非模态对话框" class="headerlink" title="创建非模态对话框"></a>创建非模态对话框</h3><p>创建非模态对话框相对简单，我们可以不需要自己派生一个 CDialog 的子类再调用子类的 DoModal（这个函数是模态对话框使用的），如果我们已经在资源视图创建好了对话框资源，那么直接使用如下代码就可以创建一个非模态的对话框。</p>
+<p>&#x2F;&#x2F; 非模态<br>CDialog* dialog &#x3D; new CDialog;&#x2F;&#x2F; new 一个对话框对象<br>dialog-&gt;Create(IDD_MYDIALOG, this);&#x2F;&#x2F; 初始化对话框和我们的对话框资源绑定<br>dialog-&gt;ShowWindow(SW_SHOWNORMAL);&#x2F;&#x2F; 显示对话框</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-31T19:25:57.000Z" itemprop="datePublished">
+              2015-07-31
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/MFC/">MFC</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

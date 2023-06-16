@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>C 与 C++变量声明的一些差异 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>C 与 C++变量声明的一些差异</h1>
+    </header>
+
+    <section>
+      <p>C语言与C++变量声明时有一些差异，比如枚举、结构、联合等数据结构在C语言声明新的变量，都需要带对应的关键字，如 struct stu name，而C++则简化了变量的声明。可以直接使用数据类型的名字直接定义变量，如stu name。具体可看下面的例子。</p>
+<span id="more"></span>
+<p>&#x2F;&#x2F; C语言<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;</p>
+<p>enum Season{ SPR, SUM, AUT, WIN };<br>struct Stu { int data; char* name; };</p>
+<p>int main(int argc, char* argv[])<br>{<br>enum Season ss;<br>struct Stu stu;</p>
+<p>system(“pause”);<br>return 0;<br>}</p>
+<p>&#x2F;&#x2F; C++<br>#include <iostream></p>
+<p>using namespace std;</p>
+<p>enum Season{ SPR, SUM, AUT, WIN };<br>struct Stu { int data; char* name; };</p>
+<p>int main(int argc, char* argv[])<br>{<br>Season ss;<br>Stu stu;<br>getchar();<br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-07T22:44:26.000Z" itemprop="datePublished">
+              2015-05-07
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

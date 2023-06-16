@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>解决 VS2017 使用 Windows 桌面向导创建的项目编译时触发 warning C4819 警告 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>解决 VS2017 使用 Windows 桌面向导创建的项目编译时触发 warning C4819 警告</h1>
+    </header>
+
+    <section>
+      <p>昨天升级了一下 VS2017 到最新版本，发现创建项目的向导有了很大的变化，以前创建 <code>Win32项目</code> 的菜单不见了，取而代之的是 <code>Windows桌面应用程序</code> 和 <code>Windows桌面向导</code>。如下图所示： <a href="/images/2017/08/2017-08-28_092258.png"><img src="/images/2017/08/2017-08-28_092258.png"></a></p>
+<span id="more"></span>
+<p>如果你选择使用 <code>Windows桌面应用程序</code> 那么 VS 会很快的不需要你选择任何选项的情况下帮你创建好一个原来所谓的 Win32项目。而如果你希望在创建项目时选择是否使用 ATL 或者 MFC 库时，你需要使用 <code>Windows桌面向导</code>。可这个 <code>Windows桌面向导</code> 并不省心，使用该向导创建的项目全新编译时会触发一个 warning C4819 警告。具体内容是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失</span><br></pre></td></tr></table></figure>
+
+<p>明白人一眼就看出来了，编码不对，当然解决办法就是转换文件的编码即可。我习惯使用 notepad++ 来转换编码，方便快捷且不容易出错。用 notepad++ 打开提示编码错误的文件，然后选择菜单中的 <code>编码-&gt;以 UTF-8 格式编码</code> 即可。修改完成后别忘记保存文件。 <a href="/images/2017/08/2017-08-28_092652.png"><img src="/images/2017/08/2017-08-28_092652.png"></a> 全部提示警告的文件修改编码完毕后，再编译项目就不会提示上面的警告了。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-08-28T09:28:09.000Z" itemprop="datePublished">
+              2017-08-28
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

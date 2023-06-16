@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>JavaScript 三种声明数组的方式 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>JavaScript 三种声明数组的方式</h1>
+    </header>
+
+    <section>
+      <p>开始恶补 JavaScript 的基础知识，数组篇。</p>
+<p>&#x2F;&#x2F; 第一种<br>var color &#x3D; [“red”, “black”, “gold”, “pink”];<br>console.log(color);<br>&#x2F;&#x2F; 第二种<br>var animal &#x3D; new Array(“dog”, “pic”, “cat”);<br>console.log(animal);<br>&#x2F;&#x2F; 第三种<br>var city &#x3D; Array();<br>city[0] &#x3D; “北京”;<br>city[1] &#x3D; “上海”;<br>city[2] &#x3D; “杭州”;<br>city[“henan”] &#x3D; “郑州”; &#x2F;&#x2F; 给 city 对象声明一个成员属性 henan，并非数组元素<br>console.log(city);<br>console.log(city[1]);<br>console.log(city.henan);<br>console.log(city[“河南”]);</p>
+<p>注意最后的 city[“henan”] &#x3D; “郑州”，并不是给数组添加一个元素，而是给 city 这个数组对象添加了一个成员属性。在计算数组长度的时候，它不被算在内。 <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-04-%E4%B8%8B%E5%8D%8819.32.42-%E4%B8%8B%E5%8D%88.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-04-%E4%B8%8B%E5%8D%8819.32.42-%E4%B8%8B%E5%8D%88-1024x384.png" alt="屏幕快照 2015-11-04 下午19.32.42 下午"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-11-04T19:27:43.000Z" itemprop="datePublished">
+              2015-11-04
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

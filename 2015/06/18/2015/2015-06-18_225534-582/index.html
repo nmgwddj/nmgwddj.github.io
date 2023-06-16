@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt 中数据结构 map 使用 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt 中数据结构 map 使用</h1>
+    </header>
+
+    <section>
+      <p>Qt 中的 map 与 stl、boost 中稍有差别，这些差别只能让你更加方便的去操作数据，下面代码演示了对 map 的增、删、改、查具体操作：</p>
+<span id="more"></span>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;QList&gt;</span><br><span class="line">#include &lt;QString&gt;</span><br><span class="line">#include &lt;QDebug&gt;</span><br><span class="line">#include &lt;QMap&gt;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    QMap&lt;QString, int&gt; map;</span><br><span class="line"></span><br><span class="line">    // 增加数据</span><br><span class="line">    map.insert(&quot;小明&quot;, 4);</span><br><span class="line">    map[&quot;小王&quot;] = 3;</span><br><span class="line">    map.insert(&quot;小明&quot;, 8);    // 会修改原值</span><br><span class="line">    qDebug() &lt;&lt; map[&quot;小明&quot;];</span><br><span class="line"></span><br><span class="line">#if 0</span><br><span class="line">    // 删除数据</span><br><span class="line">    map.remove(&quot;小名&quot;);</span><br><span class="line">    map.clear();</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">    // 遍历</span><br><span class="line">    QList&lt;QString&gt; keyList = map.keys();</span><br><span class="line">    for(QList&lt;QString&gt;::iterator it = keyList.begin();</span><br><span class="line">        it != keyList.end();</span><br><span class="line">        it++)</span><br><span class="line">    &#123;</span><br><span class="line">        qDebug() &lt;&lt; *it &lt;&lt; &quot;age is :&quot; &lt;&lt; map[*it] &lt;&lt; &quot;for list&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    for(QMap&lt;QString, int&gt;::iterator it = map.begin();</span><br><span class="line">        it != map.end();</span><br><span class="line">        it++)</span><br><span class="line">    &#123;</span><br><span class="line">        qDebug() &lt;&lt; it.key() &lt;&lt; &quot;age is :&quot; &lt;&lt; it.value() &lt;&lt; &quot;for iterator&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 访问</span><br><span class="line">    qDebug() &lt;&lt; map.value(&quot;小明&quot;);</span><br><span class="line">    // 如果key不存在，那么这种方式会自动增加并返回一个默认值 0</span><br><span class="line">    int i = map[&quot;小汤&quot;];</span><br><span class="line">    qDebug() &lt;&lt; i;</span><br><span class="line"></span><br><span class="line">    // 查找</span><br><span class="line">    if(map.find(&quot;小明&quot;) == map.end())</span><br><span class="line">    &#123;</span><br><span class="line">        qDebug() &lt;&lt; &quot;not found..&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        qDebug() &lt;&lt; &quot;found..&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-18T22:55:34.000Z" itemprop="datePublished">
+              2015-06-18
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/STL/">STL</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

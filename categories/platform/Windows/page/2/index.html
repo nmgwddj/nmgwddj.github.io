@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ Windows }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2017/03/25/2017/2017-03-25_201554-2084/">Windows 下处理文件路径相关的 API 介绍</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2017-03-25T20:15:54.000Z" itemprop="datePublished">
+    2017-03-25
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>处理文件路径信息是经常要用到的字符串处理的手段，应用场景非常的多，不论是 Linux 还是 Windows，在我没接触这一系列函数之前，都是使用一系列字符串处理函数来自己写。而在 Windows 环境下，系统给我们提供了一系列处理路径相关的 API，我们在需要使用的时候直接调用即可，不但可以避免自己使用字符串处理函数处理时可能造成的各种问题，还可以加快我们编程的速度。当然如果你还没有使用字符串处理函数自己处理过路径等信息，我强烈建议你先自己尝试学习一下。轮子可不重复制造，但你必须要清楚轮子的制作工艺，否则在出现故障时就不知道如何处理了。</p>
+        
+          <div class="more-link">
+            <a href="/2017/03/25/2017/2017-03-25_201554-2084/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2017/01/01/2017/2017-01-01_231237-1968/">创建离线的 Visual Studio 2017 RC ISO 安装包</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2017-01-01T23:12:37.000Z" itemprop="datePublished">
+    2017-01-01
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>从 <a target="_blank" rel="noopener" href="http://www.visualstudio.com/">www.visualstudio.com</a> 下载的 VS2017RC 安装包只有离线版本的，搜索了一下网络上的资料，在微软的官网上找到了解决方案。地址：<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/visualstudio/install/create-an-offline-installation-of-visual-studio">https://docs.microsoft.com/en-us/visualstudio/install/create-an-offline-installation-of-visual-studio</a></p>
+        
+          <div class="more-link">
+            <a href="/2017/01/01/2017/2017-01-01_231237-1968/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/12/23/2016/2016-12-23_113743-1961/">微软 Credential Providers 详解二《关键函数》</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-12-23T11:37:43.000Z" itemprop="datePublished">
+    2016-12-23
+  </time>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>上一篇中我们介绍了凭据的加载和代码中函数的调用顺序，接下来我们就要了解一下一些关键函数在代码中起到什么作用了。了解清楚这些以后我们才能定制出我们自己需要功能。</p>
+        
+          <div class="more-link">
+            <a href="/2016/12/23/2016/2016-12-23_113743-1961/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/12/18/2016/2016-12-18_191620-1945/">微软 Credential Providers 详解一《调用原理》</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-12-18T19:16:20.000Z" itemprop="datePublished">
+    2016-12-18
+  </time>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在 XP 时代，微软提供了 GINA 的接口来让我们对系统登录界面进行定制，在 Win7 以上系统中，微软提供了另外一种接口，就是 Credential Providers， Credential Providers 译为凭据提供者&#x2F;商。所谓凭据就是提供了一种身份认证的方式，原有的 Windows 身份认证方式就是开机的时候需要你输入密码。而通过微软提供这套接口你可以实现丰富的身份认证方式，比如指纹、USB-Key等任意修改 Windows 系统登录时的界面。比较有名的有些一些应该了解过的产品就是 ThinkPad 的指纹解锁功能，通过验证指纹来解锁计算机，当你了解了实现机制以后，硬件条件允许的情况下，你也可以做一套自己的身份认证系统。</p>
+        
+          <div class="more-link">
+            <a href="/2016/12/18/2016/2016-12-18_191620-1945/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/12/02/2016/2016-12-02_163602-1917/">Win10 14393.33 SDK / WDK 离线安装包</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-12-02T16:36:02.000Z" itemprop="datePublished">
+    2016-12-02
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在国内下载这些资源速度非常的慢，没办法我自己挂了个 VPN，下载了一份离线的安装包，有需要的从百度网盘下载运行里面的 setup 程序就可以了。</p>
+        
+          <div class="more-link">
+            <a href="/2016/12/02/2016/2016-12-02_163602-1917/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/11/02/2016/2016-11-02_105533-1913/">VC 实现将程序从任务栏解锁或锁定到任务栏</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-11-02T10:55:33.000Z" itemprop="datePublished">
+    2016-11-02
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>以前写过一些脚本调用 Shell Object 实现的解锁和锁定程序到任务栏的功能，这几天刚好用到，却不想用脚本实现，由于没有了解过 VC 如何操作 Shell，所以就在 github 上搜索了一下，找到了示例代码，自己修改了一下以后备用。代码有使用方法和注释。</p>
+        
+          <div class="more-link">
+            <a href="/2016/11/02/2016/2016-11-02_105533-1913/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/10/08/2016/2016-10-08_103553-1856/">遍历 Windows 系统账户信息</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-10-08T10:35:53.000Z" itemprop="datePublished">
+    2016-10-08
+  </time>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>最近在重构一个项目的时候需要用到遍历系统账户信息和每个账户的 SID 信息用来对比数据，所以就涉及到如何获取 Windows 的账户信息，以及每个账户所关联的 SID。学习了一些前辈的代码后自己总结了一下记录在博客里，方便以后使用。</p>
+        
+          <div class="more-link">
+            <a href="/2016/10/08/2016/2016-10-08_103553-1856/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/09/11/2016/2016-09-11_183010-1841/">WinDBG 使用多个路径下的符号表</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-09-11T18:30:10.000Z" itemprop="datePublished">
+    2016-09-11
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Debug/">Debug</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在开发调试问题的过程中，我们经常使用 WinDBG 来调试崩溃、卡死或蓝屏的 Dump 文件，调试时我们需要将微软的符号表路径导入到 WinDBG 中，也需要将自己程序的符号表文件导入到 WinDBG 中，这样看 Dump 才一清二楚。导入多个符号表的方法就是在每个符号表路径后增加一个分号 <code>;</code> 然后紧接着下一个符号表路径。</p>
+        
+          <div class="more-link">
+            <a href="/2016/09/11/2016/2016-09-11_183010-1841/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/09/11/2016/2016-09-11_181941-1837/">BindView 可查看网络过滤驱动的工具</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-09-11T18:19:41.000Z" itemprop="datePublished">
+    2016-09-11
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Drivers/">Drivers</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>BindView 是微软提供的一个可以查看网络过滤驱动的小工具，并且是有源码可以学习改造的，该工具的源码地址在微软的 github 帐号下就可以找到：<a target="_blank" rel="noopener" href="https://github.com/Microsoft/Windows-driver-samples/tree/master/network/config/bindview">https://github.com/Microsoft/Windows-driver-samples/tree/master/network/config/bindview</a>，编译运行后可以看到如下效果：</p>
+        
+          <div class="more-link">
+            <a href="/2016/09/11/2016/2016-09-11_181941-1837/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/09/11/2016/2016-09-11_180655-1832/">自定义凭据开启 Windows10 锁屏界面</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-09-11T18:06:55.000Z" itemprop="datePublished">
+    2016-09-11
+  </time>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>微软提供给我们可以自定义凭据的功能，我们可以通过微软提供的接口对登录界面做一系列的定制。但最近在开发过程中遇到了一些问题。在 Win10 系统中，我们无法接收到 <code>CPUS_UNLOCK_WORKSTATION</code> 锁屏的消息，无论在用户登录后点击锁屏还是重新启动电脑后用户登录界面，我们都无法收到该消息。而 Win7 是可以收到这个消息的，所以我们就要考虑在对 Win7 和 Win10 做不同的处理。然而最近搜索一片文章发现，Win10 一样是可以开启锁屏界面的。</p>
+        
+          <div class="more-link">
+            <a href="/2016/09/11/2016/2016-09-11_180655-1832/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/categories/platform/Windows/">« prev</a><a class="page-number" href="/categories/platform/Windows/">1</a><span class="page-number current">2</span><a class="page-number" href="/categories/platform/Windows/page/3/">3</a><a class="page-number" href="/categories/platform/Windows/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/categories/platform/Windows/page/6/">6</a><a class="extend next" rel="next" href="/categories/platform/Windows/page/3/">next »</a>
+    </nav>
+  </section>
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

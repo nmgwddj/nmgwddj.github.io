@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>逆置字符串 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>逆置字符串</h1>
+    </header>
+
+    <section>
+      <p>逆置字符串是将字符串所有字符前后颠倒，有比较常见的两种思路，第一种是生成两个分别指向头和尾的指针，遍历字符串交换头尾指针，然后对头尾指针向字符串中间移动，最终得出交换结果。另外一种思路则是后续递归的方式。以字符串结束\0为递归终止条件，再调用自身函数后打印每一个字符即可逆置显示一个字符串。</p>
+<span id="more"></span>
+<p>void reverse(char *pStr)<br>{<br>&#x2F;&#x2F; 递归的终止条件，到字符串结尾\0跳出<br>if (*pStr &#x3D;&#x3D; ‘\0’) return;<br>&#x2F;&#x2F; 递归，对pStr指针向后移动一位<br>reverse(pStr + 1);<br>&#x2F;&#x2F; 打印当前指向的字符<br>putchar(*pStr);<br>}<br> <br>int main(int argc, char *argv[])<br>{<br>reverse(“my name is dengjia”);<br>system(“pause”);<br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-06T23:04:18.000Z" itemprop="datePublished">
+              2015-05-06
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

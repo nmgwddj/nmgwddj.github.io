@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt 网格布局 QGridLayout | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt 网格布局 QGridLayout</h1>
+    </header>
+
+    <section>
+      <p>见其名知其意，QGridLayout 是一个网格形式的布局，他可以让控件或嵌套 layout 以网格形式在窗口中排布，我们只需在创建控件的时候指定其在网格中的位置即可。</p>
+<span id="more"></span>
+<h3 id="【一个最简单的-QGridLayout-布局】"><a href="#【一个最简单的-QGridLayout-布局】" class="headerlink" title="【一个最简单的 QGridLayout 布局】"></a>【一个最简单的 QGridLayout 布局】</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;cwidget.h&quot;</span><br><span class="line">#include &lt;QGridLayout&gt;</span><br><span class="line">#include &lt;QPushButton&gt;</span><br><span class="line"></span><br><span class="line">CWidget::CWidget(QWidget *parent) : QWidget(parent)</span><br><span class="line">&#123;</span><br><span class="line">    QGridLayout* grid = new QGridLayout(this);</span><br><span class="line"></span><br><span class="line">    grid-&gt;addWidget(new QPushButton(&quot;button 0,0&quot;), 0, 0);</span><br><span class="line">    grid-&gt;addWidget(new QPushButton(&quot;button 0,1&quot;), 0, 1);</span><br><span class="line">    grid-&gt;addWidget(new QPushButton(&quot;button 1,0&quot;), 1, 0);</span><br><span class="line">    grid-&gt;addWidget(new QPushButton(&quot;button 1,1&quot;), 1, 1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如下图，QGridLayout 是将一个窗口以网格形式进行了布局，第一行第一列就是 0，0、第一行第二列就是 0，1、第二行第一列就是 1，0、第二行第二列就是 1，1。 <a href="/images/2015/06/2015-06-17_114502.png"><img src="/images/2015/06/2015-06-17_114502.png" alt="2015-06-17_114502"></a> 如果你希望四个按钮一直在窗口的左上角，同样我们可以通过弹簧来实现，但 QGridLayout 的弹簧与 QHBoxLayout 及 QVBoxLayout 有些不同。它是设定整一行和整一列的弹簧，而不是设定某个格子的弹簧。如下图表示： <a href="/images/2015/06/2015-06-17_114924.png"><img src="/images/2015/06/2015-06-17_114924.png" alt="2015-06-17_114924"></a> 实现的代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 在第 2 列增加一个弹簧，比例为 1</span><br><span class="line">grid-&gt;setColumnStretch(2, 1);</span><br><span class="line">// 在第 2 行增加一个弹簧，比例为 1</span><br><span class="line">grid-&gt;setRowStretch(2, 1);</span><br></pre></td></tr></table></figure>
+
+<p>如果你希望窗口中所有的控件都在中间，那么就需要在0行设置一个弹簧，0列设置一个弹簧，把控件放在1行和2行、1列和2列中，最后在3列和3行再设置弹簧，这样就把控件都挤在中间了，如下图表示： <a href="/images/2015/06/2015-06-17_115638.png"><img src="/images/2015/06/2015-06-17_115638.png" alt="2015-06-17_115638"></a> 实现代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;cwidget.h&quot;</span><br><span class="line">#include &lt;QGridLayout&gt;</span><br><span class="line">#include &lt;QPushButton&gt;</span><br><span class="line"></span><br><span class="line">CWidget::CWidget(QWidget *parent) : QWidget(parent)</span><br><span class="line">&#123;</span><br><span class="line">    QGridLayout* grid = new QGridLayout(this);</span><br><span class="line"></span><br><span class="line">    grid-&gt;addWidget(new QPushButton(&quot;button 1,1&quot;), 1, 1);</span><br><span class="line">    grid-&gt;addWidget(new QPushButton(&quot;button 1,2&quot;), 1, 2);</span><br><span class="line">    grid-&gt;addWidget(new QPushButton(&quot;button 2,1&quot;), 2, 1);</span><br><span class="line">    grid-&gt;addWidget(new QPushButton(&quot;button 2,2&quot;), 2, 2);</span><br><span class="line"></span><br><span class="line">    // 在第 0 列增加一个弹簧，比例为 1</span><br><span class="line">    grid-&gt;setColumnStretch(0, 1);</span><br><span class="line">    // 在第 0 行增加一个弹簧，比例为 1</span><br><span class="line">    grid-&gt;setRowStretch(0, 1);</span><br><span class="line"></span><br><span class="line">    // 在第 3 列增加一个弹簧，比例为 1</span><br><span class="line">    grid-&gt;setColumnStretch(3, 1);</span><br><span class="line">    // 在第 3 行增加一个弹簧，比例为 1</span><br><span class="line">    grid-&gt;setRowStretch(3, 1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面是一种实现思路，还有另外一种思路就是 QGridLayout 嵌套 QGridLayout，外部的 QGridLayout 只负责设置四边的弹簧，然后留出中间的位置嵌套一个带有控件的 QGridLayout。实现代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;cwidget.h&quot;</span><br><span class="line">#include &lt;QGridLayout&gt;</span><br><span class="line">#include &lt;QPushButton&gt;</span><br><span class="line"></span><br><span class="line">CWidget::CWidget(QWidget *parent) : QWidget(parent)</span><br><span class="line">&#123;</span><br><span class="line">    // 原 layout 不指定父窗口</span><br><span class="line">    QGridLayout* grid = new QGridLayout;</span><br><span class="line"></span><br><span class="line">    grid-&gt;addWidget(new QPushButton(&quot;button 0,0&quot;), 0, 0);</span><br><span class="line">    grid-&gt;addWidget(new QPushButton(&quot;button 0,1&quot;), 0, 1);</span><br><span class="line">    grid-&gt;addWidget(new QPushButton(&quot;button 1,0&quot;), 1, 0);</span><br><span class="line">    grid-&gt;addWidget(new QPushButton(&quot;button 1,1&quot;), 1, 1);</span><br><span class="line"></span><br><span class="line">    // 再创建一个 Layout</span><br><span class="line">    QGridLayout* mainLayout = new QGridLayout(this);</span><br><span class="line">    // 添加0行和2行的弹簧</span><br><span class="line">    mainLayout-&gt;setRowStretch(0, 1);</span><br><span class="line">    mainLayout-&gt;setRowStretch(2, 1);</span><br><span class="line"></span><br><span class="line">    //中间是 1行， 1列 的位置，嵌入上面的 layout</span><br><span class="line">    mainLayout-&gt;addLayout(grid, 1, 1);</span><br><span class="line"></span><br><span class="line">    // 添加0列和2列的弹簧</span><br><span class="line">    mainLayout-&gt;setColumnStretch(0, 1);</span><br><span class="line">    mainLayout-&gt;setColumnStretch(2, 1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果图如下： <a href="/images/2015/06/2015-06-17_120740.png"><img src="/images/2015/06/2015-06-17_120740.png" alt="2015-06-17_120740"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-17T12:06:40.000Z" itemprop="datePublished">
+              2015-06-17
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

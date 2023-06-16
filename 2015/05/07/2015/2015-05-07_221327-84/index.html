@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>求字符串中出现频次最高的字符 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>求字符串中出现频次最高的字符</h1>
+    </header>
+
+    <section>
+      <p>题目给出的函数原型如下： char getMostCharFromString(const char *str); 具体要求为，若有多个相同的字符备选,返回其中最早出现的字符，比如字符串”wwwwwwdddaaabbbdddcccc”，w和d都出现过6次，但只返回第一个最早出现的w。</p>
+<span id="more"></span>
+<p>#define _CRT_SECURE_NO_WARNINGS<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;</p>
+<p>char getMostCharFromString(const char* str);</p>
+<p>int main(int argc, char* argv[])<br>{<br>char *pBuf &#x3D; “wwwwwwdddaaabbbdddcccc”;<br>printf(“出现最多的字符：%c\n”, getMostCharFromString(pBuf));<br>system(“pause”);<br>return 0;<br>}</p>
+<p>char getMostCharFromString(const char* str)<br>{<br>&#x2F;&#x2F; 计算字符总数<br>int nCount &#x3D; 0;<br>const char* strBak &#x3D; str;<br>while (*strBak++) nCount++;</p>
+<p>&#x2F;&#x2F; 临时记录出现最多那个字符的总数<br>int flagCount &#x3D; 0;<br>&#x2F;&#x2F; 用于在循环中记录每一个出现的次数，用来和flagCount对比<br>int flagTmp &#x3D; 0;<br>&#x2F;&#x2F; 用来记录出现最多那个字符的下标<br>int flag &#x3D; 0;</p>
+<p>&#x2F;&#x2F; 两套循环，分别把每个字符从头遍历到尾<br>for (int i &#x3D; 0; i &lt; nCount - 1; i++)<br>{<br>for (int j &#x3D; 0; j &lt; nCount - 1; j++)<br>{<br>&#x2F;&#x2F; 如果出现相同字符，那么对把flagTmp++<br>if (str[i] &#x3D;&#x3D; str[j])<br>flagTmp++;<br>}<br>&#x2F;&#x2F; 内循环结束后，判断flagTmp是否大于flagCount<br>if (flagTmp &gt; flagCount)<br>{<br>&#x2F;&#x2F; 如果大于，则记录下标<br>flag &#x3D; i;<br>&#x2F;&#x2F; 并把最大值赋给flagCount<br>flagCount &#x3D; flagTmp;<br>}<br>&#x2F;&#x2F; flagTmp置为0，以便下次循环<br>flagTmp &#x3D; 0;<br>}<br>&#x2F;&#x2F; 返回最终的结果<br>return str[flag];<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-07T22:13:27.000Z" itemprop="datePublished">
+              2015-05-07
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

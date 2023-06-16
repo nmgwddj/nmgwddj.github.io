@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>大页面申请及使用 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>大页面申请及使用</h1>
+    </header>
+
+    <section>
+      <p>大页面的的应用场景及注意事项如下（出自北风网 VC++ 系列视频教程，请到官网下载尊重版权）：</p>
+<ul>
+<li>大页面的内存是不能换页的，只能常驻于RAM中，不会存在页面文件中 (即大页面不会换页,物理内存紧张时慎用)</li>
+<li>大页面的内存算作进程的私有页面,不会统计在进程工作集中</li>
+<li>因为大页面尺寸远大于小页面尺寸,分配一个大页面必须要有连续的足够大块的物理内存,这可能导致系统进行耗时的内存碎片整理工作</li>
+<li>大页面始终是可读写的,并且是充分利用了高速缓存(TLB)</li>
+<li>大页面的分配不受作业对象对进程工作集大小的限制</li>
+<li>在Intel安腾架构上的WOW64系统不支持32位应用大页面,除非重编译应用为64位的<span id="more"></span></li>
+</ul>
+<h2 id="参考代码"><a href="#参考代码" class="headerlink" title="参考代码"></a>参考代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;tchar.h&gt;</span><br><span class="line">#include &lt;windows.h&gt;</span><br><span class="line">#include &lt;time.h&gt;</span><br><span class="line"></span><br><span class="line">void Privilege(TCHAR* pszPrivilege, BOOL bEnable)</span><br><span class="line">&#123;</span><br><span class="line">    HANDLE              hToken = NULL;</span><br><span class="line">    TOKEN_PRIVILEGES    tp = &#123;&#125;;</span><br><span class="line">    OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES  TOKEN_QUERY, &amp;hToken);</span><br><span class="line">    LookupPrivilegeValue(NULL, pszPrivilege, &amp;tp.Privileges[0].Luid);</span><br><span class="line">    tp.PrivilegeCount = 1;</span><br><span class="line">    tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;</span><br><span class="line">    AdjustTokenPrivileges(hToken, FALSE, &amp;tp, 0, (PTOKEN_PRIVILEGES)NULL, 0);</span><br><span class="line">    CloseHandle(hToken);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    // 设置随机数种子</span><br><span class="line">    srand((unsigned int)time(NULL));</span><br><span class="line">    // 提权</span><br><span class="line">    Privilege(TEXT(&quot;SeLockMemoryPrivilege&quot;), TRUE);</span><br><span class="line">    // 获取大页面大小</span><br><span class="line">    SIZE_T szLargePage = GetLargePageMinimum();</span><br><span class="line">    // 保留空间 64 * szLargePage</span><br><span class="line">    PVOID pBuffer = VirtualAlloc(0, 64 * szLargePage, MEM_RESERVE, PAGE_READWRITE);</span><br><span class="line">    // 使用 MEM_LARGE_PAGES 标志提交内存</span><br><span class="line">    VirtualAlloc(pBuffer, 2 * szLargePage, MEM_COMMIT  MEM_LARGE_PAGES, PAGE_READWRITE);</span><br><span class="line">    // 测试内存数据</span><br><span class="line">    double* pdbArray = (double*)pBuffer;</span><br><span class="line">    for (int i = 0; i &lt; (int)(2 * szLargePage / sizeof(double)); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        pdbArray[i] = 1.0f * rand();</span><br><span class="line">    &#125;</span><br><span class="line">    // 释放内存</span><br><span class="line">    VirtualFree(pBuffer, 0, MEM_RELEASE);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-04-04T22:47:09.000Z" itemprop="datePublished">
+              2016-04-04
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

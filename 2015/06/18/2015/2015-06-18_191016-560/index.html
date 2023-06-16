@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt 公共功能 style sheet | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt 公共功能 style sheet</h1>
+    </header>
+
+    <section>
+      <p>在 Qt 中的每一种控件都有属于自己的不同的方法来获取或设置某些属性，除了每个控件自身有的这些方法以外，Qt 还提供了一些公共有的功能，那就是 style sheet，我们可以在继承了 QWidget 类的构造函数中，调用 this-&gt;setStyleSheet() 来设置一些属性，随后所有属于这个 Widget 窗口中的控件都会使用这个样式。同样，你可以让这个样式面积更大，那就是在 main 函数中，让 QApplication 的对象调用 setStyleSheet() 函数，这样，整个程序的样式都会跟随这个样式的设定而变化。</p>
+<span id="more"></span>
+<p>【设置单独一个控件的样式】 在我们继承了 QWidget 类的构造函数中，我们自己实例化一个控件，然后对这个控件样式进行修改。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;cwidget.h&quot;</span><br><span class="line">#include &lt;QPushButton&gt;</span><br><span class="line"></span><br><span class="line">CWidget::CWidget(QWidget *parent) : QWidget(parent)</span><br><span class="line">&#123;</span><br><span class="line">    QPushButton* button = new QPushButton(&quot;Hello&quot;, this);</span><br><span class="line">    button-&gt;setGeometry(10, 10, 150, 80);</span><br><span class="line">    button-&gt;setStyleSheet(&quot;color:#FFF;background:#222;font-size:30px;&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="/images/2015/06/2015-06-18_190204.png"><img src="/images/2015/06/2015-06-18_190204.png" alt="2015-06-18_190204"></a> 【给 Widget 窗口设定样式】</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;cwidget.h&quot;</span><br><span class="line">#include &lt;QPushButton&gt;</span><br><span class="line"></span><br><span class="line">CWidget::CWidget(QWidget *parent) : QWidget(parent)</span><br><span class="line">&#123;</span><br><span class="line">    // 让 widget 整个窗口都应用如下样式</span><br><span class="line">    this-&gt;setStyleSheet(&quot;color:#FFF;background:#222;font-size:30px;&quot;);</span><br><span class="line"></span><br><span class="line">    // 两个button会随着窗口的样式变化而变化</span><br><span class="line">    QPushButton* button = new QPushButton(&quot;Hello&quot;, this);</span><br><span class="line">    button-&gt;setGeometry(10, 10, 150, 80);</span><br><span class="line">    QPushButton* button1 = new QPushButton(&quot;Hi&quot;, this);</span><br><span class="line">    button1-&gt;setGeometry(170, 10, 150, 80);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="/images/2015/06/2015-06-18_190432.png"><img src="/images/2015/06/2015-06-18_190432.png" alt="2015-06-18_190432"></a> 【让整个应用程序都使用某样式】 我们也可以在 main 函数中，让整个应用程序都应用某中样式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;QApplication&gt;</span><br><span class="line">#include &quot;cwidget.h&quot;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    QApplication app(argc, argv);</span><br><span class="line"></span><br><span class="line">    qApp-&gt;setStyleSheet(/*style sheet*/);</span><br><span class="line">    CWidget w;</span><br><span class="line">    w.show();</span><br><span class="line"></span><br><span class="line">    return app.exec();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样整个应用程序中都会应用你在全局设置中设置的样式。但要注意，这个样式是存在覆盖问题的，就像变量一样，本地覆盖全局等特性都需要我们自己慢慢去了解。Qt的帮助文档中也有详细的介绍。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-18T19:10:16.000Z" itemprop="datePublished">
+              2015-06-18
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

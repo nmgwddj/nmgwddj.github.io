@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ES6 学习笔记之 map 的多种遍历方法 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>ES6 学习笔记之 map 的多种遍历方法</h1>
+    </header>
+
+    <section>
+      <p>Map 是 ES6 中新增的一种数据结构，与 Set 一起添加，其实功能都差不多。我就只列举了 Map 的遍历方式，一通百通，其自身内部带有的的方法看书中介绍即可，并不复杂，比起 C++ 的 STL 好理解多了。</p>
+<span id="more"></span>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">var map = new Map([</span><br><span class="line">  [&#x27;age&#x27;, 19],</span><br><span class="line">  [&#x27;height&#x27;, 180]</span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line">for (let key of map.keys()) &#123;</span><br><span class="line">  console.log(key);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">for (let value of map.values()) &#123;</span><br><span class="line">  console.log(value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">for (let item of map.entries()) &#123;</span><br><span class="line">  console.log(`$&#123; item[0] &#125;: $&#123; item[1] &#125;`);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">for (let [key, value] of map.entries()) &#123;</span><br><span class="line">  console.log(`$&#123; key &#125;: $&#123; value &#125;`);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">for (let [key, value] of map) &#123;</span><br><span class="line">  console.log(`$&#123; key &#125;: $&#123; value &#125;`);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">map.forEach((key, value, map) =&gt; &#123;</span><br><span class="line">  console.log(`$&#123; key &#125;: $&#123; value &#125;`);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">// forEach 绑定 this</span><br><span class="line">var reporter = &#123;</span><br><span class="line">  report(key, value) &#123;</span><br><span class="line">    console.log(`$&#123; key &#125;: $&#123; value &#125; by reporter object.`);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">map.forEach(function (key, value) &#123;</span><br><span class="line">  // 使用箭头函数会导致这个 this 是 undefined</span><br><span class="line">  this.report(key, value);</span><br><span class="line">&#125;, reporter)</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-02-24T21:06:39.000Z" itemprop="datePublished">
+              2017-02-24
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/ES6/">ES6</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

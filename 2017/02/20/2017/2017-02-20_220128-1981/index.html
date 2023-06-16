@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ES6 学习笔记之变量的解构赋值 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>ES6 学习笔记之变量的解构赋值</h1>
+    </header>
+
+    <section>
+      <p>ES6 中增加了几种对变量初始化的方式，从改进来看，个人觉得可以大大的增加编码的效率。带相对语法可能就晦涩一些了。但总归熟能生巧，多用就不会那么容易犯错了。</p>
+<span id="more"></span>
+<h2 id="变量的解构赋值"><a href="#变量的解构赋值" class="headerlink" title="变量的解构赋值"></a>变量的解构赋值</h2><p>ES5 中给多个变量赋值写法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let a = 1;</span><br><span class="line">let b = 2;</span><br><span class="line">let c = 3;</span><br></pre></td></tr></table></figure>
+
+<p>而 ES6 中则一句话搞定：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let [a, b, c] = [1, 2, 3];</span><br></pre></td></tr></table></figure>
+
+<p>摘抄书中的一句话“ES6 允许按照一定模式，从数组和对象中提取值，对变量进行赋值，这被称为解构（Destructuring）。”，更多对于变量的解构赋值请参考书中的详细介绍，我个人觉得平时可能用不到那么变态的用法。</p>
+<h2 id="解构赋值默认值"><a href="#解构赋值默认值" class="headerlink" title="解构赋值默认值"></a>解构赋值默认值</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let [foo = true] = [];</span><br><span class="line">foo // true</span><br><span class="line"></span><br><span class="line">let [x, y = &#x27;b&#x27;] = [&#x27;a&#x27;]; // x=&#x27;a&#x27;, y=&#x27;b&#x27;</span><br><span class="line">let [x, y = &#x27;b&#x27;] = [&#x27;a&#x27;, undefined]; // x=&#x27;a&#x27;, y=&#x27;b&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>通过上面的代码可以看出，如果赋值时不指定具体内容，那么会使用我们准备好的默认值，这与其他一些语言中的函数默认参数差不多。更多细节请参考书中介绍。</p>
+<h2 id="对象的解构赋值"><a href="#对象的解构赋值" class="headerlink" title="对象的解构赋值"></a>对象的解构赋值</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">let &#123; bar, foo &#125; = &#123; foo: &quot;aaa&quot;, bar: &quot;bbb&quot; &#125;;</span><br><span class="line">foo // &quot;aaa&quot;</span><br><span class="line">bar // &quot;bbb&quot;</span><br><span class="line"></span><br><span class="line">let &#123; baz &#125; = &#123; foo: &quot;aaa&quot;, bar: &quot;bbb&quot; &#125;;</span><br><span class="line">baz // undefined</span><br></pre></td></tr></table></figure>
+
+<p>对象的解构赋值相对严格一些，它不是按顺序解析的，而是按成员名称匹配解析的。其他字符串、布尔、函数参数都具有解构赋值的特性。且均无明显差异。书中介绍了一些解构赋值的常用应用场景，比如下面这个案例，通过解构赋值就很方便的遍历了 map 中的内容。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var map = new Map();</span><br><span class="line">map.set(&#x27;first&#x27;, &#x27;Hello&#x27;);</span><br><span class="line">map.set(&#x27;second&#x27;, &#x27;World&#x27;);</span><br><span class="line"></span><br><span class="line">for (let [key, value] of map) &#123;</span><br><span class="line">  console.log(key + &#x27; is &#x27; + value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-02-20T22:01:28.000Z" itemprop="datePublished">
+              2017-02-20
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/ES6/">ES6</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

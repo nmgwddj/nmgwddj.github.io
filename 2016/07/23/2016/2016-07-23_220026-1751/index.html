@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>CString 与 DWORD IP 互相转换 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>CString 与 DWORD IP 互相转换</h1>
+    </header>
+
+    <section>
+      <p>写网络程序的时候经常会用到 CString 和 DWORD 两种 IP 格式的转换，DWORD 是四个字节无符号类型，每一个字节来表示 IP 地址的点分的一位，理解了这个结构还要清楚网络字节序和本机字节序的概念，他们在内存中的表示方法刚好相反。如果你尚不清楚还请在本站搜索一下相关的关键字。下面示例程序演示了 CString 和 DWORD IP 地址的互相转换。</p>
+<span id="more"></span>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// CString 的 IP 转 DWORD</span><br><span class="line">CString csIPAddress = _T(&quot;192.168.0.1&quot;);</span><br><span class="line">DWORD   dwIPAddress = 0;</span><br><span class="line"></span><br><span class="line">// 要用到 inet_addr 函数，该函数不是安全函数</span><br><span class="line">// 需要 #define _WINSOCK_DEPRECATED_NO_WARNINGS 来禁止警告</span><br><span class="line">dwIPAddress = inet_addr((LPCSTR)_bstr_t(csIPAddress));</span><br><span class="line"></span><br><span class="line">// 显示转换后的 IP</span><br><span class="line">CString csConverIP;</span><br><span class="line">csConverIP.Format(_T(&quot;Dec = %ld, Hex = %08X&quot;), dwIPAddress, dwIPAddress);</span><br><span class="line"></span><br><span class="line">MessageBox(NULL, csConverIP, NULL, NULL);</span><br><span class="line"></span><br><span class="line">// 本地字节序转网络字节序</span><br><span class="line">DWORD dwNetIPAddress = htonl(dwIPAddress);</span><br><span class="line"></span><br><span class="line">// 格式化 CString 格式输出</span><br><span class="line">csConverIP.Format(_T(&quot;%d.%d.%d.%d&quot;),</span><br><span class="line">    (dwNetIPAddress &gt;&gt; 24) &amp; 0xff,</span><br><span class="line">    (dwNetIPAddress &gt;&gt; 16) &amp; 0xff,</span><br><span class="line">    (dwNetIPAddress &gt;&gt; 8) &amp; 0xff,</span><br><span class="line">    dwNetIPAddress &amp; 0xff);</span><br><span class="line"></span><br><span class="line">MessageBox(NULL, csConverIP, NULL, NULL);</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-07-23T22:00:26.000Z" itemprop="datePublished">
+              2016-07-23
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E4%BD%8D%E6%93%8D%E4%BD%9C/">位操作</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BD%91%E7%BB%9C/">网络</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

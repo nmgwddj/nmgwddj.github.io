@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>iomanip 流输入输出格式控制 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>iomanip 流输入输出格式控制</h1>
+    </header>
+
+    <section>
+      <p>在 C 中，我们使用 printf 输出内容时，可以使用多种格式控制方法，比如 %x %d %f %p 等等，但在 C++ 的io流输入输出的类中，我们找不到这些方法也不知道如何实现这些功能了。本文就介绍一些 C++ 中，io流输入输出格式控制的函数。</p>
+<span id="more"></span>
+<p>#include <iostream><br>#include <iomanip><br> <br>using namespace std;<br> <br>int main(int argc, char* argv[])<br>{<br>&#x2F;&#x2F; 位宽度10 setw<br>cout &lt;&lt; setw(10) &lt;&lt; 1234 &lt;&lt; endl;<br> <br>&#x2F;&#x2F; 位宽度10，左对齐 setiosflags<br>cout &lt;&lt; setw(10) &lt;&lt; setiosflags(ios::left) &lt;&lt; 1234 &lt;&lt; endl;<br> <br>&#x2F;&#x2F; 位宽度10，左对齐，填充为* setfill<br>cout &lt;&lt; setw(10) &lt;&lt; setiosflags(ios::left) &lt;&lt; setfill(‘*‘) &lt;&lt; 1234 &lt;&lt; endl;<br> <br>&#x2F;&#x2F; 强制输出小数点和尾 showpoint<br>double b &#x3D; 1.23;<br>cout &lt;&lt; setiosflags(ios::showpoint) &lt;&lt; b &lt;&lt; endl;<br> <br>&#x2F;&#x2F; 强制显示符号 showpos<br>&#x2F;&#x2F; 类似于 cout.operator&lt;&lt;(setiosflags(ios::showpos))<br>&#x2F;&#x2F; setiosflags(ios::showpos) 只是一个参数<br>cout &lt;&lt; -1 &lt;&lt; endl;<br>cout &lt;&lt; setiosflags(ios::showpos) &lt;&lt; 1 &lt;&lt; endl;<br>cout &lt;&lt; resetiosflags(ios::showpos);<br> <br>&#x2F;&#x2F; 强制不以科学计数发输出<br>double c &#x3D; 1234567123.5;<br>cout &lt;&lt; c &lt;&lt; endl;<br>cout &lt;&lt; setiosflags(ios::fixed) &lt;&lt; c &lt;&lt; endl;<br> <br>&#x2F;&#x2F; 设置精度<br>double d &#x3D; 123.456789;<br>cout &lt;&lt; setprecision(0) &lt;&lt; d &lt;&lt; endl;<br>cout &lt;&lt; setprecision(2) &lt;&lt; d &lt;&lt; endl;<br>cout &lt;&lt; setprecision(4) &lt;&lt; d &lt;&lt; endl;<br>cout &lt;&lt; setprecision(6) &lt;&lt; d &lt;&lt; endl;<br>cout &lt;&lt; setprecision(8) &lt;&lt; d &lt;&lt; endl;<br>cout &lt;&lt; setprecision(10) &lt;&lt; d &lt;&lt; endl;<br> <br>&#x2F;&#x2F; 输出十六进制时控制字母的大小写<br>int e &#x3D; 1234;<br>cout &lt;&lt; hex &lt;&lt; setiosflags(ios::uppercase) &lt;&lt; e &lt;&lt; endl;<br>cout &lt;&lt; hex &lt;&lt; resetiosflags(ios::uppercase) &lt;&lt; e &lt;&lt; endl;<br> <br>&#x2F;&#x2F; 输出十六进制的0x 8进制的0<br>cout &lt;&lt; hex &lt;&lt; setiosflags(ios::showbase) &lt;&lt; e &lt;&lt; endl;<br>cout &lt;&lt; oct &lt;&lt; setiosflags(ios::showbase) &lt;&lt; e &lt;&lt; endl;<br> <br>return 0;</p>
+<p>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-25T16:06:42.000Z" itemprop="datePublished">
+              2015-05-25
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

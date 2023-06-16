@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Windows 内核驱动字符串操作 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Windows 内核驱动字符串操作</h1>
+    </header>
+
+    <section>
+      <p>在 Windows 内核开发中，字符串并非像 C 中使用的是一个 <code>\0</code> 结尾的字符数组，取而代之的是一个结构体，该结构体储存了指向字符的指针和字符的长度。因为没有了 <code>\0</code>，很多 C 语言库函数也无法使用了，但不用担心，Windows 提供了很多操作这种字符串的函数。见如下示例：</p>
+<span id="more"></span>
+<h2 id="初始化、拷贝、拼接字符串"><a href="#初始化、拷贝、拼接字符串" class="headerlink" title="初始化、拷贝、拼接字符串"></a>初始化、拷贝、拼接字符串</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">NTSTATUS DriverEntry(PDRIVER_OBJECT driver, PUNICODE_STRING reg_path)</span><br><span class="line">&#123;</span><br><span class="line">      // 使用字符串常量初始化字符串</span><br><span class="line">      UNICODE_STRING src;</span><br><span class="line">      RtlInitUnicodeString(&amp;src, L &quot;Hello My First Driver..\r\n&quot;);</span><br><span class="line"></span><br><span class="line">      // 用一个缓冲区初始化字符串</span><br><span class="line">      UNICODE_STRING dst;</span><br><span class="line">      WCHAR dst_buf[256];</span><br><span class="line">      RtlInitEmptyUnicodeString(&amp;dst, dst_buf, 256 * sizeof( WCHAR));</span><br><span class="line"></span><br><span class="line">      // Copy 字符串</span><br><span class="line">      RtlCopyUnicodeString(&amp;dst, &amp;src);</span><br><span class="line">      DbgPrint(&quot;src = %wZ\r\ndst = %wZ\r\n&quot;, &amp;src, &amp;dst);</span><br><span class="line"></span><br><span class="line">      // Append 字符串</span><br><span class="line">      RtlAppendUnicodeToString(&amp;dst, L &quot;Yes I&#x27;m Fine...\r\n&quot;);</span><br><span class="line">      DbgPrint(&quot;Append String dst = %wZ\r\n&quot;, &amp;dst);</span><br><span class="line"></span><br><span class="line">      driver-&gt;DriverUnload = DriverUnload;</span><br><span class="line">      return STATUS_SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现类-C-语言函数-sprintf"><a href="#实现类-C-语言函数-sprintf" class="headerlink" title="实现类 C 语言函数 sprintf"></a>实现类 C 语言函数 sprintf</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">NTSTATUS DriverEntry(PDRIVER_OBJECT driver, PUNICODE_STRING reg_path)</span><br><span class="line">&#123;</span><br><span class="line">      WCHAR dst_buf[512] = &#123; 0 &#125;;</span><br><span class="line">      UNICODE_STRING dst;</span><br><span class="line">      NTSTATUS status;</span><br><span class="line">      UNICODE_STRING file_path =</span><br><span class="line">             RTL_CONSTANT_STRING(L &quot;\\??\\c:\\winddk\\7600.16385.1\\inc\\cifs.h&quot; );</span><br><span class="line">      USHORT file_size = 1024;</span><br><span class="line"></span><br><span class="line">      RtlInitEmptyUnicodeString(&amp;dst, dst_buf, 512 * sizeof( WCHAR));</span><br><span class="line"></span><br><span class="line">      // 实现类 sprintf 的功能</span><br><span class="line">      status = RtlStringCbPrintfW(</span><br><span class="line">            dst. Buffer,</span><br><span class="line">            512 * sizeof( WCHAR),</span><br><span class="line">            L &quot;file path = %wZ file size = %d \r\n&quot;,</span><br><span class="line">            &amp;file_path, file_size);</span><br><span class="line">      dst.Length = wcslen(dst.Buffer) * sizeof(WCHAR);</span><br><span class="line"></span><br><span class="line">      DbgPrint(&quot;dst = %wZ\r\n&quot;, &amp;dst);</span><br><span class="line"></span><br><span class="line">      driver-&gt;DriverUnload = DriverUnload;</span><br><span class="line">      return STATUS_SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="动态分配内存储存字符串"><a href="#动态分配内存储存字符串" class="headerlink" title="动态分配内存储存字符串"></a>动态分配内存储存字符串</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">NTSTATUS DriverEntry(PDRIVER_OBJECT driver, PUNICODE_STRING reg_path)</span><br><span class="line">&#123;</span><br><span class="line">      NTSTATUS status;</span><br><span class="line">      UNICODE_STRING dst = &#123; 0 &#125;;</span><br><span class="line">      UNICODE_STRING src = RTL_CONSTANT_STRING(L &quot;Hello My First Driver...\r\n&quot;);</span><br><span class="line"></span><br><span class="line">      // 根据 src 长度给 dst 分配内存</span><br><span class="line">      dst.Buffer = (PWCHAR)ExAllocatePoolWithTag(NonPagedPool, src.Length, MEM_TAG);</span><br><span class="line">      if (NULL == dst.Buffer)</span><br><span class="line">      &#123;</span><br><span class="line">             status = STATUS_INSUFFICIENT_RESOURCES;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      // 指定 dst 字符串的长度</span><br><span class="line">      dst.Length = dst.MaximumLength = src.Length;</span><br><span class="line">      // 拷贝字符串</span><br><span class="line">      RtlCopyUnicodeString(&amp;dst, &amp;src);</span><br><span class="line"></span><br><span class="line">      // 包装一层 DbgPrint，让其只在 Debug 模式下打印</span><br><span class="line">      KdPrint((&quot;ExAllocatePoolWithTag: dst = %wZ\r\n&quot;, &amp;dst));</span><br><span class="line"></span><br><span class="line">      // 释放内存并将字符串指向 NULL，长度置为 0</span><br><span class="line">      ExFreePool(dst.Buffer);</span><br><span class="line">      dst.Buffer = NULL;</span><br><span class="line">      dst.Length = dst.MaximumLength = 0;</span><br><span class="line"></span><br><span class="line">      driver-&gt;DriverUnload = DriverUnload;</span><br><span class="line">      return status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-03-29T18:29:32.000Z" itemprop="datePublished">
+              2016-03-29
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/Drivers/">Drivers</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

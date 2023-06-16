@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Stack 栈模型的链式存储实现 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Stack 栈模型的链式存储实现</h1>
+    </header>
+
+    <section>
+      <p>栈模型使用顺序存储的方式就相当于在数组上进行操作，而本文介绍的则是通过链式存储来实现栈的模型，那么我们就要思考一个问题了。栈只是栈顶来做插入和删除操作，栈顶放在链表的头部还是尾部呢？</p>
+<span id="more"></span>
+<p>由于单链表有头指针，而栈顶指针也是必须的，那干嘛不让他俩合二为一呢，所以比较好的办法就是把栈顶放在单链表的头部（如下图）。另外都已经有了栈顶在头部了，单链表中比较常用的头结点也就失去了意义，通常对于链栈来说，是不需要头结点的。（摘自 <a target="_blank" rel="noopener" href="http://www.itcast.cn/">传智播客</a> 教师课件） 【代码实现】 以下代码需要用到<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/datastruct/302.html">线性表链式存储</a>的头文件。</p>
+<p>#ifndef _LINKSTACK_H<br>#define _LINKSTACK_H<br>#</p>
+<p>typedef void LinkStack;</p>
+<p>&#x2F;&#x2F;创建栈<br>LinkStack* LinkStack_Create();</p>
+<p>&#x2F;&#x2F;销毁栈<br>void LinkStack_Destroy(LinkStack* stack);</p>
+<p>&#x2F;&#x2F;清空栈<br>void LinkStack_Clear(LinkStack* stack);</p>
+<p>&#x2F;&#x2F;压栈<br>int LinkStack_Push(LinkStack* stack, void *item);</p>
+<p>&#x2F;&#x2F;出栈<br>void* LinkStack_Pop(LinkStack* stack);</p>
+<p>&#x2F;&#x2F;获取栈顶元素<br>void* LinkStack_Top(LinkStack* stack);</p>
+<p>&#x2F;&#x2F;获取栈的大小<br>int LinkStack_Size(LinkStack* stack);</p>
+<p>#endif &#x2F;&#x2F;_LINKSTACK_H</p>
+<p>#define _CRT_SECURE_NO_WARNINGS<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include “LinkStack.h”<br>#include “LinkList.h”</p>
+<p>&#x2F;&#x2F;栈节点的数据结构<br>typedef struct tag_linkstacknode<br>{<br>&#x2F;&#x2F;链表节点<br>LinkListNode node;<br>&#x2F;&#x2F;保存数据节点的地址<br>void * data;<br>}LinkStackNode;</p>
+<p>&#x2F;&#x2F;创建栈<br>LinkStack* LinkStack_Create()<br>{<br>return LinkList_Create();<br>}</p>
+<p>&#x2F;&#x2F;销毁栈<br>void LinkStack_Destroy(LinkStack* stack)<br>{<br>&#x2F;&#x2F; 先free所有堆上的内存<br>LinkStack_Clear(stack);</p>
+<p>&#x2F;&#x2F; 销毁线性表<br>LinkList_Destroy(stack);<br>}</p>
+<p>&#x2F;&#x2F;清空栈<br>void LinkStack_Clear(LinkStack* stack)<br>{<br>&#x2F;&#x2F; 无限循环弹出所有栈上的元素，直至长度为0<br>while (LinkStack_Size(stack))<br>{<br>&#x2F;&#x2F; 弹出<br>LinkStack_Pop(stack);<br>}<br>&#x2F;&#x2F; 清空线性表<br>LinkList_Clear(stack);<br>}</p>
+<p>&#x2F;&#x2F;压栈<br>int LinkStack_Push(LinkStack* stack, void *item)<br>{<br>LinkStackNode* pNew &#x3D; malloc(sizeof(LinkStackNode));<br>if (pNew &#x3D;&#x3D; NULL)<br>{<br>return -1;<br>}<br>&#x2F;&#x2F;初始化<br>pNew-&gt;data &#x3D; item;<br>pNew-&gt;node.next &#x3D; NULL;</p>
+<p>&#x2F;&#x2F;将栈节点插入到链表的头部<br>int ret &#x3D; LinkList_Insert(stack, (LinkListNode*)pNew, 0);<br>if (ret !&#x3D; 0)<br>{<br>free(pNew);<br>}<br>return ret;<br>}</p>
+<p>&#x2F;&#x2F;出栈<br>void* LinkStack_Pop(LinkStack* stack)<br>{<br>void* myData &#x3D; NULL;<br>&#x2F;&#x2F;删除链表中的第一个数据节点<br>LinkListNode* pDel &#x3D; LinkList_Delete(stack, 0);<br>&#x2F;&#x2F;<br>&#x2F;&#x2F;释放节点内存<br>if (pDel !&#x3D; NULL)<br>{<br>myData &#x3D; ((LinkStackNode*)pDel)-&gt;data;<br>free(pDel);<br>}</p>
+<p>return myData;<br>}</p>
+<p>&#x2F;&#x2F;获取栈顶元素<br>void* LinkStack_Top(LinkStack* stack)<br>{<br>&#x2F;&#x2F;获取链表第一个节点<br>LinkListNode* pNode &#x3D; LinkList_Get(stack, 0);<br>LinkStackNode * pp &#x3D; (LinkStackNode*)pNode;<br>return pp-&gt;data;<br>}</p>
+<p>&#x2F;&#x2F;获取栈的大小<br>int LinkStack_Size(LinkStack* stack)<br>{<br>return LinkList_Length(stack);<br>}</p>
+<p> </p>
+<p>#define _CRT_SECURE_NO_WARNINGS<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include “LinkStack.h”</p>
+<p>int main()<br>{<br>int i;<br>int array[10] &#x3D; { 0 };<br>LinkStack* stack &#x3D; NULL;<br>&#x2F;&#x2F;创建栈<br>stack &#x3D; LinkStack_Create();<br>&#x2F;&#x2F;初始化数组<br>for (i &#x3D; 0; i &lt; sizeof(array) &#x2F; sizeof(int); i++)<br>{<br>array[i] &#x3D; i;<br>&#x2F;&#x2F;压栈<br>LinkStack_Push(stack, (void*)&amp;array[i]);<br>}</p>
+<p>&#x2F;&#x2F;打印栈的大小<br>printf(“stack size &#x3D; %d\n”, LinkStack_Size(stack));<br>&#x2F;&#x2F;获取栈顶元素<br>printf(“stack top element &#x3D; %d\n”, *(int*)LinkStack_Top(stack));</p>
+<p>&#x2F;&#x2F;所有元素出栈<br>while (LinkStack_Size(stack) &gt; 0)<br>{<br>&#x2F;&#x2F;出栈, 并打印弹出的元素值<br>printf(“Pop – stack top element &#x3D; %d\n”, *(int*)LinkStack_Pop(stack));<br>}<br>&#x2F;&#x2F;销毁栈<br>LinkStack_Destroy(stack);</p>
+<p>printf(“Good good study, day day up!!!\n”);<br>system(“pause”);<br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-28T22:35:04.000Z" itemprop="datePublished">
+              2015-05-28
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

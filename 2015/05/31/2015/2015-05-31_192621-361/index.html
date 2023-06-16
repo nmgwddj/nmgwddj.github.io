@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>STL stack 实现后缀表达式运算 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>STL stack 实现后缀表达式运算</h1>
+    </header>
+
+    <section>
+      <p>以前我们使用自己封装的栈模型探讨并实现了后缀表达式的运算，“<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/datastruct/359.html">计算机是如何基于后缀表达式计算的</a>”，在 C++ 的 STL 中，也有一个栈模型 stack，并且使用了模版类，这样可以让我们更方便的操作数据了，下面的代码就是使用 STL 的 stack 模型实现的后缀表达式运算，我们只是把自己实现的栈模型函数替换成了 STL 的函数而已。</p>
+<span id="more"></span>
+<p>#include <iostream><br>#include <stack></p>
+<p>using namespace std;</p>
+<p>&#x2F;&#x2F; 判断是不是数组<br>int is_number(char ch)<br>{<br>return ch &gt;&#x3D; ‘0’ &amp;&amp; ch &lt;&#x3D; ‘9’;<br>}</p>
+<p>&#x2F;&#x2F; 判断是不是操作数<br>int is_optr(char ch)<br>{<br>return ch &#x3D;&#x3D; ‘+’  ch &#x3D;&#x3D; ‘-‘  ch &#x3D;&#x3D; ‘*‘  ch &#x3D;&#x3D; ‘&#x2F;‘;<br>}</p>
+<p>&#x2F;&#x2F; 计算结果<br>int calc(int left, int right, char optr)<br>{<br>switch (optr)<br>{<br>case ‘+’:<br>return left + right;<br>case ‘-‘:<br>return left - right;<br>case ‘*‘:<br>return left * right;<br>case ‘&#x2F;‘:<br>return left &#x2F; right;<br>}<br>return 0;<br>}</p>
+<p>&#x2F;&#x2F; 将 ch 数字转换为 int 数字<br>int value(char ch)<br>{<br>return ch - ‘0’;<br>}</p>
+<p>int compute(const char* code)<br>{<br>stack<int> st;</p>
+<p>&#x2F;&#x2F; 用于记录下标<br>int i &#x3D; 0;<br>&#x2F;&#x2F; 用于返回值返回<br>int ret &#x3D; 0;<br>&#x2F;&#x2F; 循环读取每一个字符<br>while (code[i])<br>{<br>&#x2F;&#x2F; 判断是否是数字<br>if (is_number(code[i]))<br>{<br>&#x2F;&#x2F; 如果是则压入栈中<br>st.push(value(code[i]));<br>&#x2F;&#x2F;LinkStack_Push(stack, (void*)value(code[i]));<br>}<br>&#x2F;&#x2F; 判断是不是操作数<br>if (is_optr(code[i]))<br>{<br>&#x2F;&#x2F; 如果是取出第一个作为右操作数<br>int right &#x3D; st.top();<br>st.pop();<br>&#x2F;&#x2F;int right &#x3D; (int)LinkStack_Pop(stack);<br>&#x2F;&#x2F; 再取作为左操作数<br>int left &#x3D; st.top();<br>st.pop();<br>&#x2F;&#x2F;int left &#x3D; (int)LinkStack_Pop(stack);<br>&#x2F;&#x2F; 根据操作数计算两个数的结果<br>int result &#x3D; calc(left, right, code[i]);<br>&#x2F;&#x2F; 将结果压入栈中<br>st.push(result);<br>&#x2F;&#x2F;LinkStack_Push(stack, (void*)result);<br>}<br>i++;<br>}</p>
+<p>&#x2F;&#x2F; 判断栈中是否只有一个操作数，如果只有一个那证明完成了<br>if (st.size() &#x3D;&#x3D; 1&#x2F;*LinkStack_Size(stack) &#x3D;&#x3D; 1*&#x2F;)<br>{<br>&#x2F;&#x2F; 弹出最后的值给返回值的变量<br>ret &#x3D; st.top();<br>st.pop();<br>&#x2F;&#x2F;ret &#x3D; (int)LinkStack_Pop(stack);<br>}<br>return ret;<br>}</p>
+<p>int main(int argc, char* argv[])<br>{</p>
+<p>printf(“8 + ( 3 - 1 ) * 5 &#x3D; %d\n”, compute(“831-5*+”));<br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-31T19:26:21.000Z" itemprop="datePublished">
+              2015-05-31
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/STL/">STL</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>内核事件 KEVENT 实现驱动与应用层通讯 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>内核事件 KEVENT 实现驱动与应用层通讯</h1>
+    </header>
+
+    <section>
+      <p>前段时间一直在学习内核监控进程创建的知识，虽然成功监视，但一直在内核输出到 DebugView 中，不能通知我们的应用程序来显示指定内容，无论如何也不方便，所以赶在周末参考了 <code>Windows 内核安全与驱动开发</code> 中第五章 “应用与内核通讯” 制作了以下程序。程序主要使用了内核事件 <code>KEVENT</code> 实现同步，更多请参考 <code>Windows 内核安全与驱动开发</code>，程序运行后的效果如下：</p>
+<span id="more"></span>
+<p><a href="/images/2016/08/2016-08-21_203643.png"><img src="/images/2016/08/2016-08-21_203643.png" alt="2016-08-21_203643"></a> 可以看到，程序可以成功运行在 Win10x64 环境下，下面我们分别仔细的讲解一下程序的细节。程序的主要工作流程如下图： <a href="/images/2016/08/2016-08-21_211926.png"><img src="/images/2016/08/2016-08-21_211926.png" alt="2016-08-21_211926"></a> 先来看一下 DriverEntry 入口函数。函数中先创建了进程创建后的回调监听函数，我们在这个函数里面实现对进程的监控。随后初始化了链表锁、链表头（用于存放已经创建的进程数据）及事件句柄。最后入口函数设置了各个通知函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">NTSTATUS DriverEntry(PDRIVER_OBJECT pDriverObject, PUNICODE_STRING pRegistryPath)</span><br><span class="line">&#123;</span><br><span class="line">    NTSTATUS status = STATUS_SUCCESS;</span><br><span class="line"></span><br><span class="line">    KdPrint((&quot;pRegistryPath = %wZ&quot;, pRegistryPath));</span><br><span class="line"></span><br><span class="line">    // 创建进程监视回调</span><br><span class="line">    status = PsSetCreateProcessNotifyRoutineEx(CreateProcessNotifyEx, FALSE);</span><br><span class="line">    if (!NT_SUCCESS(status))</span><br><span class="line">    &#123;</span><br><span class="line">        KdPrint((&quot;Failed to call PsSetCreateProcessNotifyRoutineEx, error code = 0x%08X&quot;, status));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 初始化事件、锁、链表头</span><br><span class="line">    KeInitializeEvent(&amp;g_Event, SynchronizationEvent, TRUE);</span><br><span class="line">    KeInitializeSpinLock(&amp;g_Lock);</span><br><span class="line">    InitializeListHead(&amp;g_ListHead);</span><br><span class="line"></span><br><span class="line">    // 创建设备和符号链接</span><br><span class="line">    CreateDevice(pDriverObject);</span><br><span class="line"></span><br><span class="line">    // 指派各分发函数</span><br><span class="line">    pDriverObject-&gt;MajorFunction[IRP_MJ_CREATE] = CreateCompleteRoutine;</span><br><span class="line">    pDriverObject-&gt;MajorFunction[IRP_MJ_CLOSE] = CloseCompleteRoutine;</span><br><span class="line">    pDriverObject-&gt;MajorFunction[IRP_MJ_READ] = ReadCompleteRoutine;</span><br><span class="line">    pDriverObject-&gt;MajorFunction[IRP_MJ_WRITE] = WriteCompleteRoutine;</span><br><span class="line">    pDriverObject-&gt;MajorFunction[IRP_MJ_DEVICE_CONTROL] = DeviceControlCompleteRoutine;</span><br><span class="line"></span><br><span class="line">    pDriverObject-&gt;DriverUnload = DriverUnLoad;</span><br><span class="line"></span><br><span class="line">    return status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来我们看一下创建进程会调用的回调函数中，我们设定若发现新进程创建，则将进程的信息作为链表一个节点插入到链表中，并设置全局的 <code>g_Event</code> 为有信号状态。这里一定要注意 KeSetEvent 函数的使用，如果第三个参数设置为 TRUE 的话，100% 会蓝屏，代码为 0x0000004A。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">VOID CreateProcessNotifyEx(</span><br><span class="line">    _Inout_  PEPROCESS              Process,</span><br><span class="line">    _In_     HANDLE                 ProcessId,</span><br><span class="line">    _In_opt_ PPS_CREATE_NOTIFY_INFO CreateInfo</span><br><span class="line">)</span><br><span class="line">&#123;</span><br><span class="line">    // 如果 CreateInfo 结构不为 NULL 则证明是创建进程</span><br><span class="line">    if (NULL != CreateInfo)</span><br><span class="line">    &#123;</span><br><span class="line">        // 创建一个链表节点</span><br><span class="line">        PPROCESSNODE pNode = InitListNode();</span><br><span class="line">        if (pNode != NULL)</span><br><span class="line">        &#123;</span><br><span class="line">            // 给节点的 pProcessInfo 分配内存</span><br><span class="line">            // 该 ProcessInfo 结构体与应用层使用的是同样的结构体</span><br><span class="line">            // 应用层传入相同大小的内存提供内核写入相应数据</span><br><span class="line">            pNode-&gt;pProcessInfo = ExAllocatePoolWithTag(NonPagedPool, sizeof(PROCESSINFO), MEM_TAG);</span><br><span class="line"></span><br><span class="line">            // 给各节点赋值</span><br><span class="line">            pNode-&gt;pProcessInfo-&gt;hParentId = CreateInfo-&gt;ParentProcessId;</span><br><span class="line">            pNode-&gt;pProcessInfo-&gt;hProcessId = ProcessId;</span><br><span class="line">            RtlFillMemory(pNode-&gt;pProcessInfo-&gt;wsProcessPath, MAX_STRING_LENGTH, 0x0);</span><br><span class="line">            RtlFillMemory(pNode-&gt;pProcessInfo-&gt;wsProcessCommandLine, MAX_STRING_LENGTH, 0x0);</span><br><span class="line">            wcsncpy(pNode-&gt;pProcessInfo-&gt;wsProcessPath, CreateInfo-&gt;ImageFileName-&gt;Buffer, CreateInfo-&gt;ImageFileName-&gt;Length / sizeof(WCHAR));</span><br><span class="line">            wcsncpy(pNode-&gt;pProcessInfo-&gt;wsProcessCommandLine, CreateInfo-&gt;CommandLine-&gt;Buffer, CreateInfo-&gt;CommandLine-&gt;Length / sizeof(WCHAR));</span><br><span class="line"></span><br><span class="line">            // 插入链表，设置事件</span><br><span class="line">            ExInterlockedInsertTailList(&amp;g_ListHead, (PLIST_ENTRY)pNode, &amp;g_Lock);</span><br><span class="line"></span><br><span class="line">            // 这里第三个参数一定要注意，如果为 TRUE 则表示 KeSetEvent 后面一定会有一个 KeWaitForSigleObject</span><br><span class="line">            // 而如果 KeWaitForSigleObject 不在 KeSetEvent 调用之后，则设置为 FLASE，否则会导致 0x0000004A 蓝屏</span><br><span class="line">            KeSetEvent(&amp;g_Event, 0, FALSE);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时若有新进程创建全局的 <code>g_Event</code> 会被设置为有信号状态，接下来就到我们处理应用层使用 DeviceIoControl 在驱动中的响应功能了。我们设置了一个无限循环，一直从链表中取数据，若取出的数据为 NULL，则等待 <code>g_Event</code>，当 <code>g_Event</code> 为有信号状态时，证明有新进程创建了，那么 KeWaitForSigleObject 立即返回执行下一次循环，这次循环就可以取到链表中的节点信息了，取到以后直接拷贝给应用层提供的 Buffer 中。应用层接收并打印内容。代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">NTSTATUS DeviceControlCompleteRoutine(PDEVICE_OBJECT pDeviceObject, PIRP pIrp)</span><br><span class="line">&#123;</span><br><span class="line">    NTSTATUS            status = STATUS_SUCCESS;</span><br><span class="line">    PIO_STACK_LOCATION  pIrpsp = IoGetCurrentIrpStackLocation(pIrp);</span><br><span class="line">    ULONG               uLength = 0;</span><br><span class="line"></span><br><span class="line">    PVOID pBuffer           = pIrp-&gt;AssociatedIrp.SystemBuffer;</span><br><span class="line">    ULONG ulInputlength     = pIrpsp-&gt;Parameters.DeviceIoControl.InputBufferLength;</span><br><span class="line">    ULONG ulOutputlength    = pIrpsp-&gt;Parameters.DeviceIoControl.OutputBufferLength;</span><br><span class="line"></span><br><span class="line">    do </span><br><span class="line">    &#123;</span><br><span class="line">        switch (pIrpsp-&gt;Parameters.DeviceIoControl.IoControlCode)</span><br><span class="line">        &#123;</span><br><span class="line">        case CWK_DVC_SEND_STR:          // 接收到发送数据请求</span><br><span class="line">            &#123;</span><br><span class="line">                ASSERT(pBuffer != NULL);</span><br><span class="line">                ASSERT(ulInputlength &gt; 0);</span><br><span class="line">                ASSERT(ulOutputlength == 0);</span><br><span class="line"></span><br><span class="line">                // KdPrint((&quot;pBuffer = %s&quot;, pBuffer));</span><br><span class="line">            &#125;</span><br><span class="line">            break;</span><br><span class="line">        case CWK_DVC_RECV_STR:          // 接收到获取数据请求</span><br><span class="line">            &#123;</span><br><span class="line">                ASSERT(pBuffer != NULL);</span><br><span class="line">                ASSERT(ulInputlength == 0);</span><br><span class="line"></span><br><span class="line">                // 如果给出的 Buffer 大小小于 PROCESSINFO 结构体大小，则判断非法</span><br><span class="line">                if (ulOutputlength &lt; sizeof(PROCESSINFO))</span><br><span class="line">                &#123;</span><br><span class="line">                    status = STATUS_INVALID_BUFFER_SIZE;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                // 创建一个循环，不断从链表中拿是否有节点</span><br><span class="line">                while (TRUE)</span><br><span class="line">                &#123;</span><br><span class="line">                    PPROCESSNODE pNode = (PPROCESSNODE)ExInterlockedRemoveHeadList(&amp;g_ListHead, &amp;g_Lock);</span><br><span class="line"></span><br><span class="line">                    // 如果拿到了节点，则传给应用层，直接想 pBuffer 里面赋值，应用层 DeviceIoControl 就能收到数据</span><br><span class="line">                    if (NULL != pNode)</span><br><span class="line">                    &#123;</span><br><span class="line">                        PPROCESSINFO pProcessInfo = (PPROCESSINFO)pBuffer;</span><br><span class="line">                        if (NULL != pNode-&gt;pProcessInfo)</span><br><span class="line">                        &#123;</span><br><span class="line">                            // 给应用层 Buffer 赋值</span><br><span class="line">                            pProcessInfo-&gt;hParentId = pNode-&gt;pProcessInfo-&gt;hParentId;</span><br><span class="line">                            pProcessInfo-&gt;hProcessId = pNode-&gt;pProcessInfo-&gt;hProcessId;</span><br><span class="line">                            wcsncpy(pProcessInfo-&gt;wsProcessPath, pNode-&gt;pProcessInfo-&gt;wsProcessPath, MAX_STRING_LENGTH);</span><br><span class="line">                            wcsncpy(pProcessInfo-&gt;wsProcessCommandLine, pNode-&gt;pProcessInfo-&gt;wsProcessCommandLine, MAX_STRING_LENGTH);</span><br><span class="line">                            uLength = sizeof(PROCESSINFO);</span><br><span class="line"></span><br><span class="line">                            // 释放内存</span><br><span class="line">                            ExFreePoolWithTag(pNode-&gt;pProcessInfo, MEM_TAG);</span><br><span class="line">                        &#125;</span><br><span class="line"></span><br><span class="line">                        // 释放内存</span><br><span class="line">                        ExFreePoolWithTag(pNode, MEM_TAG);</span><br><span class="line">                        break;</span><br><span class="line">                    &#125;</span><br><span class="line">                    else</span><br><span class="line">                    &#123;</span><br><span class="line">                        // 如果没有取到节点，则等待一个事件通知，该事件在 CreateProcessNotifyEx 函数中会被设置</span><br><span class="line">                        // 当产生一个新的进程时会向链表插入一个节点，同时该事件被设置为有信号状态</span><br><span class="line">                        // 随后 KeWaitForSingleObject 返回继续执行循环，继续执行时就可以取到新的节点数据了</span><br><span class="line">                        KeWaitForSingleObject(&amp;g_Event, Executive, KernelMode, 0, 0);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            break;</span><br><span class="line">        default:</span><br><span class="line">        &#123;</span><br><span class="line">            status = STATUS_INVALID_PARAMETER;</span><br><span class="line">        &#125;</span><br><span class="line">        break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; while (FALSE);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    pIrp-&gt;IoStatus.Status = status;</span><br><span class="line">    pIrp-&gt;IoStatus.Information = uLength;</span><br><span class="line">    IoCompleteRequest(pIrp, IO_NO_INCREMENT);</span><br><span class="line"></span><br><span class="line">    return status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面是驱动层的实现，我们来看一下应用层的示例代码。通过 CreateFile 打开设备，并调用 DeviceIoControl 函数向驱动发送一个接收数据的请求。此时如果驱动链表中没有数据，那么会停在 KeWaitForSingleObject 函数，同时应用层也阻塞在 DeviceIoControl 函数上。一旦 <code>g_Event</code> 被设置为有信号状态，则 KeWaitForSingleObject 返回，拷贝数据给应用层提供的 Buffer，应用层接收数据打印。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">// TestCommunication.cpp : 定义控制台应用程序的入口点。</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &quot;NtStructDef.h&quot;</span><br><span class="line"></span><br><span class="line">#define SYMBOLIC_NAME _T(&quot;\\??\\Communication&quot;)</span><br><span class="line"></span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    HANDLE      hStdHandle;</span><br><span class="line">    HANDLE      hDevice = NULL;</span><br><span class="line">    ULONG       ulResult = 0;</span><br><span class="line">    BOOL        bRet = FALSE;</span><br><span class="line"></span><br><span class="line">    // 设置控制台窗口大小，方便查看</span><br><span class="line">    hStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);</span><br><span class="line">    SMALL_RECT rc = &#123; 0, 0, 120 - 1, 25 - 1 &#125;;  </span><br><span class="line">    SetConsoleWindowInfo(hStdHandle, TRUE, &amp;rc);</span><br><span class="line"></span><br><span class="line">    // 打开驱动设备</span><br><span class="line">    hDevice = CreateFile(SYMBOLIC_NAME, GENERIC_READ  GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_SYSTEM, 0);</span><br><span class="line">    if (hDevice == INVALID_HANDLE_VALUE)</span><br><span class="line">    &#123;</span><br><span class="line">        printf(&quot;Failed to Open device.\r\n&quot;);</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // Receive message from driver</span><br><span class="line">    PROCESSINFO stProcessInfo;</span><br><span class="line">    while (TRUE)</span><br><span class="line">    &#123;</span><br><span class="line">        memset(&amp;stProcessInfo, 0, sizeof(PROCESSINFO));</span><br><span class="line">        bRet = DeviceIoControl(hDevice, CWK_DVC_RECV_STR, NULL, 0, &amp;stProcessInfo, sizeof(stProcessInfo), &amp;ulResult, 0);</span><br><span class="line">        if (bRet)</span><br><span class="line">        &#123;</span><br><span class="line">            // 打印数据，wsProcessCommandLine 也是一个参数，如果需要可以自己放开，格式化字符串中增加一个 %ws</span><br><span class="line">            printf(&quot;PPID = %ld, PID = %ld, %ws\r\n&quot;,</span><br><span class="line">                stProcessInfo.hParentId,</span><br><span class="line">                stProcessInfo.hProcessId,</span><br><span class="line">                stProcessInfo.wsProcessPath/*,</span><br><span class="line">                stProcessInfo.wsProcessCommandLine*/);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    CloseHandle(hDevice);</span><br><span class="line">    system(&quot;PAUSE&quot;);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里请注意应用层和驱动层使用了相同的 <code>PROCESSINFO</code> 结构体，该结构体包含了创建进程的各种信息，我们使用一个公共头文件保存他，所有代码请参考 github：<a target="_blank" rel="noopener" href="https://github.com/nmgwddj/Learn-Windows-Drivers">https://github.com/nmgwddj/Learn-Windows-Drivers</a>，其中 Communication 是驱动层的实现，TestCommunication 是应用层的实现。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-08-21T21:35:38.000Z" itemprop="datePublished">
+              2016-08-21
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/Drivers/">Drivers</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

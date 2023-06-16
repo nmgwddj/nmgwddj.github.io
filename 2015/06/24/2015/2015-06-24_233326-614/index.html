@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>文件描述符详解 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>文件描述符详解</h1>
+    </header>
+
+    <section>
+      <p>在 32 位的 linux&#x2F;unix 系统下，每个程序打开一个文件都会有一段 4G 的虚拟地址空间，这部分空间中，有1G是内核地址空间，3G是用户地址空间，这个概念我们在之前的文章中有介绍过，可参考 “<a target="_blank" rel="noopener" href="http://不同位置的变量在内存中的排布/">不同位置的变量在内存中的排布</a>”，其中在内核地址空间中，维护着一个 PCB 进程控制块，其中包含很多进程相关的信息，比如进程ID、用户ID、组ID等等，但本文我们最关注的，是 PCB 进程控制块中维护的一份“文件描述符表”，表的格式抽象成下图的样子。</p>
+<span id="more"></span>
+<p><a href="/images/2015/06/2015-06-24_230952.png"><img src="/images/2015/06/2015-06-24_230952.png" alt="2015-06-24_230952"></a> 图中右侧表示的，就是我们今天讨论的主题“文件描述符表”，其内部有0~1023个id可以提供用户申请分配，每当用户使用一个 open 操作打开一个文件时，都会返回一个文件描述符，比如如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int nRet = open(&quot;/dev/zero&quot;, O_RDONLY);</span><br></pre></td></tr></table></figure>
+
+<p>这句代码会在当前进程内核区文件描述符表中申请一个新的文件描述符赋值给nRet值，系统默认情况下会帮我们打开三个文件描述符，0代表是标准输入、1代表是标准输出、2代表标准Error。我们open的文件将从第三个开始使用，所以nRet的返回值就是3。 而当我们将nRet使用close函数关闭时，3这个位置就被空闲出来了。再次open某个文件时，会再次从最小的值开始占用，也就还是占用3这个位置。 每一个系统对于文件描述符的数量限制是不同的，我们可以通过 ulimit -a 命令查看默认的系统限制是多少： <a href="/images/2015/06/2015-06-24_232701.png"><img src="/images/2015/06/2015-06-24_232701.png" alt="2015-06-24_232701"></a> 当然我们也可以修改这个值，使用命令 ulimit -n 2048，就可以将 open file 的值设定为2048了，这样我们每个程序就可以打开0~2047个文件描述符了（这种情况很少见）。 <a href="/images/2015/06/2015-06-24_233007.png"><img src="/images/2015/06/2015-06-24_233007.png" alt="2015-06-24_233007"></a> 要注意的是，并不是你想设置多大就可以设置多大的，系统默认情况下是有最高上限的，可以通过查看 &#x2F;proc&#x2F;sys&#x2F;fs&#x2F;file-max 文件得到上限值： <a href="/images/2015/06/2015-06-24_233118.png"><img src="/images/2015/06/2015-06-24_233118.png" alt="2015-06-24_233118"></a> 从图中我们可以看到，上限值是204042，所以我们最大也只能设置这么大了。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-24T23:33:26.000Z" itemprop="datePublished">
+              2015-06-24
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

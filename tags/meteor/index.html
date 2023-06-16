@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ meteor }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/01/20/2018/2018-01-20_144301-2256/">Meteor 1.6.x + Ant Design Table + recompose 实现数据分页效果</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-01-20T14:43:01.000Z" itemprop="datePublished">
+    2018-01-20
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>本文介绍了基于 Meteor 1.6.x + Ant Design Table + recompose + react-router-dom v4 实现分页的整个流程，从项目创建到最终实现完分页效果每个步骤都非常详细，同时也提供了 git 提交记录，用来让大家学习和分析每一步代码的变化。项目地址：<a target="_blank" rel="noopener" href="https://github.com/nmgwddj/meteor-pagination">https://github.com/nmgwddj/meteor-pagination</a></p>
+<h2 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h2><p><a href="/images/2018/01/2018-01-20-14.50.33.gif"><img src="/images/2018/01/2018-01-20-14.50.33.gif"></a></p>
+        
+          <div class="more-link">
+            <a href="/2018/01/20/2018/2018-01-20_144301-2256/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2017/09/21/2017/2017-09-21_121738-2183/">Meteor mongodb 查询某个数据是否在 Collection 的某个 Array 字段中</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2017-09-21T12:17:38.000Z" itemprop="datePublished">
+    2017-09-21
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Database/">Database</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>我们通常会用一个 Array 字段来储存一组用户 ID 列表或者一组文章 ID 列表。当我们需要查询某个用户是否在这个 Collection 的某个 Array 字段时就会用到本文中提到的方法。</p>
+        
+          <div class="more-link">
+            <a href="/2017/09/21/2017/2017-09-21_121738-2183/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2017/09/01/2017/2017-09-01_172927-2172/">Meteor MongoDB 数据库管理工具 Studio T3</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2017-09-01T17:29:27.000Z" itemprop="datePublished">
+    2017-09-01
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/mongodb/">mongodb</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>最近开始做新项目了，熟悉代码的过程中发现以前的 robomongo 工具链接上 Meteor 新版本程序的数据库后看不到数据了，搜索了一些内容没解决问题，后面在群里问了一下，朋友给我介绍了一个『升级款』<a target="_blank" rel="noopener" href="https://studio3t.com/download/">Studio T3</a>。</p>
+        
+          <div class="more-link">
+            <a href="/2017/09/01/2017/2017-09-01_172927-2172/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/07/10/2016/2016-07-10_094825-1671/">summernote toolbar 跟随页面自动滚动</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-07-10T09:48:25.000Z" itemprop="datePublished">
+    2016-07-10
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p><a target="_blank" rel="noopener" href="http://summernote.org/">summernote</a> 是一个功能非常强大的 web 编辑器，可以应用到各种场景下。最近在 Meteor 中做了一个小功能，就是实现 summernote 的 toolbar 跟随页面滚动的效果。这样即使文章内容很长，要插入一个图片或者使用其他特殊标签的时候，不必滚动页面到最上方去找 toolbar 了。效果如下：</p>
+        
+          <div class="more-link">
+            <a href="/2016/07/10/2016/2016-07-10_094825-1671/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/01/24/2016/2016-01-24_143459-1442/">全栈程序员必备 Velocity</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-01-24T14:34:59.000Z" itemprop="datePublished">
+    2016-01-24
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/mysql/">mysql</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/mongodb/">mongodb</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>Velocity 是一个开发语言帮助文档的集合工具。它收集了<strong>几百种</strong>编程语言的 API，按编程语言分类。特别是 Web 开发程序员，自己掌握的后台语言文档、CSS文档、JavaScript文档、数据库文档、Bootstrap文档 等等，至少要开 5 个以上的标签，再加上价格其他的标签，浏览器常常标签数量都数不过来了。还不考虑断网情况下怎么办？这些 Velocity 都能帮你解决，来看看它的样子吧。</p>
+        
+          <div class="more-link">
+            <a href="/2016/01/24/2016/2016-01-24_143459-1442/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/01/22/2016/2016-01-22_122348-1434/">你的第一个 Meteor 应用程序</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-01-22T12:23:48.000Z" itemprop="datePublished">
+    2016-01-22
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>这是一本官方推荐的图书，原名是 Your First Meteor Application.我下载了 pdf，虽然是英文的，但是有些代码还是很值得学习的。</p>
+        
+          <div class="more-link">
+            <a href="/2016/01/22/2016/2016-01-22_122348-1434/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/12/28/2015/2015-12-28_165657-1362/">Meteor 开发环境 mongodb 的连接</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-12-28T16:56:57.000Z" itemprop="datePublished">
+    2015-12-28
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/mongodb/">mongodb</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Database/">Database</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>本文主要总结一下在使用 Meteor 开发过程中对 mongodb 数据库的管理。其中包含使用命令行终端（meteor shell）进行管理，还有图形化界面的工具 Robomongo 工具。</p>
+        
+          <div class="more-link">
+            <a href="/2015/12/28/2015/2015-12-28_165657-1362/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/12/26/2015/2015-12-26_184813-1314/">Meteor 分页包 alethes:pages 详解</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-12-26T18:48:13.000Z" itemprop="datePublished">
+    2015-12-26
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在做大部分真实应用的 web 项目过程中，都会有一样不可或缺的需求，那就是分页。Meteor 项目也不例外，同样会有这样的需求，本文给大家介绍的就是一个非常好用的分页包 <code>alethes:pages</code>。它可以实现简单的根据页数分页，也可以实现强大的滚动分页。内部还支持利用多个 collection 数据进行分页。下面我们就来详细的了解它。 注意：以下内容多是对官方包的一种简述和翻译，如果需要更详细的内容可以参考官方地址。</p>
+        
+          <div class="more-link">
+            <a href="/2015/12/26/2015/2015-12-26_184813-1314/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/11/30/2015/2015-11-30_151807-1289/">Visual Studio Code 下 Meteor 自动补全插件</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-11-30T15:18:07.000Z" itemprop="datePublished">
+    2015-11-30
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/VSCode/">VSCode</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>这段时间一直在用 Visual Studio Code 做 Meteor 开发，但一直苦于没有 Meteor 的代码只能提示插件可以用，今天偶然间在 VSCode 的 marketplace 上逛的时候看到了 Meteor 的插件。最后一次更新就是昨天11月29日，所以马上安装了一下试用。效果非常好，比目前 atom、sublime text 等工具提供的插件都完善，而且智能补全的代码也都是目前 Meteor 官网最新的代码，比如 onRendered。</p>
+        
+          <div class="more-link">
+            <a href="/2015/11/30/2015/2015-11-30_151807-1289/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/11/27/2015/2015-11-27_154341-1269/">Meteor 订阅数据浏览器端查看工具 msavin:mongol</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-11-27T15:43:41.000Z" itemprop="datePublished">
+    2015-11-27
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在过去的开发 Meteor 项目过程中，我们如果想查看某个页面所订阅的数据是否成功或者查看已经订阅成功数据的内容的时候，往往是通过浏览器的控制台打印数据查看，这样非常不方便，而且容易混淆。今天给大家介绍一款工具 <code>msavin:mongol</code> 可以让我们在开发环境中很轻松的就看到我们需要的订阅的数据信息。先来一张图看看效果。</p>
+        
+          <div class="more-link">
+            <a href="/2015/11/27/2015/2015-11-27_154341-1269/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/tags/meteor/page/2/">2</a><a class="extend next" rel="next" href="/tags/meteor/page/2/">next »</a>
+    </nav>
+  </section>
+
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

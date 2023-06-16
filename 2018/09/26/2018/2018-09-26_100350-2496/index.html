@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Cmder git 中文显示乱码解决方案 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Cmder git 中文显示乱码解决方案</h1>
+    </header>
+
+    <section>
+      <p>Cmder 是 Windows 下替换原有 cmd 的绝佳工具，但是与默认的 cmd 一样，都与 git 命令行存在一些兼容性问题，比如中文乱码问题。在 Cmder 安装目录下的 <code>config/user-profile.cmd</code> 中添加如下代码，可以解决中文乱码的问题。 <a href="/images/2018/09/2018-09-26_09-59-16.png"><img src="/images/2018/09/2018-09-26_09-59-16.png"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set LANG=zh_CN.UTF8</span><br></pre></td></tr></table></figure>
+
+<p>添加后的配置文件 <a href="/images/2018/09/2018-09-26_09-59-34.png"><img src="/images/2018/09/2018-09-26_09-59-34.png"></a> 添加后重新打开 Cmder 的效果 <a href="/images/2018/09/2018-09-26_09-58-15.png"><img src="/images/2018/09/2018-09-26_09-58-15.png"></a> 将 Cmder 加入到右键菜单，到 Cmder 目录下执行如下命令即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cmder.exe /REGISTER ALL</span><br></pre></td></tr></table></figure>
+
+<p>添加后的效果： <a href="/images/2018/09/2018-09-27_12-39-47.png"><img src="/images/2018/09/2018-09-27_12-39-47.png"></a> 另外你还可以修改终端起始符号 λ 改成 $，修改 <code>vendor/clink.lua</code> 文件，将</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;\x1b[1;32;40m&#123;cwd&#125; &#123;git&#125;&#123;hg&#125;&#123;svn&#125; \n\x1b[1;39;40m&#123;lamb&#125; \x1b[0m&quot;</span><br></pre></td></tr></table></figure>
+
+<p>替换为 （实际就是将 {lamb} 替换为 $ ）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;\x1b[1;32;40m&#123;cwd&#125; &#123;git&#125;&#123;hg&#125;&#123;svn&#125; \n\x1b[1;39;40m$ \x1b[0m&quot;</span><br></pre></td></tr></table></figure>
+
+<p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_33304418/article/details/79918123">https://blog.csdn.net/qq_33304418&#x2F;article&#x2F;details&#x2F;79918123</a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2018-09-26T10:03:50.000Z" itemprop="datePublished">
+              2018-09-26
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/git/">git</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

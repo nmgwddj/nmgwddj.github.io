@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>CMake 自动安装 git pre-commit hooks | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>CMake 自动安装 git pre-commit hooks</h1>
+    </header>
+
+    <section>
+      <p>在日常开发中，我们经常通过各类 IDE 工具来自动修正代码风格，但由于部分 IDE 工具与 clang-format 配合不是特别完善，导致保存或者按下分号、冒号以后代码自动格式化导致错乱，或者格式化时间过长等问题。这在日常开发中是很难让人接受的。 那么我们有没有办法在开发过程中不去让 clang-format 自动格式化，而是在提交代码时检查一次就够了呢？答案是可以的。Git 天生提供了 pre-commit hooks 能力，允许我们预设一些检查脚本在提交前做一些检查。手动编写脚本是比较麻烦的，而且不同开发者的不同环境适配也是棘手的问题。其实早就有人想到了这些事情，pre-commit 工具就是为这个而生的。</p>
+<span id="more"></span>
+<h2 id="手动配置-pre-commit"><a href="#手动配置-pre-commit" class="headerlink" title="手动配置 pre-commit"></a>手动配置 pre-commit</h2><p>clang-format、pre-commit 可以通过 pip 来安装，安装完成后在你的项目目录下新建一个配置文件 <code>.pre-commit-config.yaml</code>，内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">repos:</span><br><span class="line">-   repo: https://github.com/pre-commit/pre-commit-hooks</span><br><span class="line">    rev: v4.0.1</span><br><span class="line">    hooks:</span><br><span class="line">    -   id: trailing-whitespace</span><br><span class="line">    -   id: check-added-large-files</span><br><span class="line">    -   id: check-merge-conflict</span><br><span class="line">    -   id: end-of-file-fixer</span><br><span class="line"></span><br><span class="line">-   repo: https://github.com/pocc/pre-commit-hooks</span><br><span class="line">    rev: v1.3.4</span><br><span class="line">    hooks:</span><br><span class="line">    -   id: clang-format</span><br><span class="line">        args: [--style=File]</span><br></pre></td></tr></table></figure>
+
+<p>该配置文件告诉我们要到 `<a target="_blank" rel="noopener" href="https://github.com/pre-commit/pre-commit-hooks/%60">https://github.com/pre-commit/pre-commit-hooks\`</a> 中下载已经开发好的一些检查工具，比如行末尾是否有不必要的空格、是否提交了体积较大的文件等。clang-format 的检查也同样具备。在项目目录下执行如下命令来安装这些钩子到本地：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pre-commit install</span><br></pre></td></tr></table></figure>
+
+<p>pre-commit 会自动读取 <code>.pre-commit-config.yaml</code> 的配置来下载并安装指定钩子，这些钩子最终都会以脚本的方式安装到 .git&#x2F;hooks&#x2F;pre-commit 文件中。此时你再提交代码时响应的钩子会自动运行开始检查你修改过的代码文件，正常情况下返回如下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Trim Trailing Whitespace.................................................Passed</span><br><span class="line">Check for added large files..............................................Passed</span><br><span class="line">Check for merge conflicts................................................Passed</span><br><span class="line">Fix End of Files.........................................................Passed</span><br><span class="line">clang-format.............................................................Passed</span><br><span class="line">cpplint..................................................................Passed</span><br></pre></td></tr></table></figure>
+
+<p>表示所有检查项检查通过了，但如果有不符合要求的内容，则会出现如下错误：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Trim Trailing Whitespace.................................................Failed</span><br><span class="line">- hook id: trailing-whitespace</span><br><span class="line">- exit code: 1</span><br><span class="line">- files were modified by this hook</span><br><span class="line"></span><br><span class="line">Fixing nim/dllmain.cpp</span><br><span class="line"></span><br><span class="line">Check for added large files..............................................Passed</span><br><span class="line">Check for merge conflicts................................................Passed</span><br><span class="line">Fix End of Files.........................................................Passed</span><br><span class="line">clang-format.............................................................Passed</span><br><span class="line">cpplint..................................................................Passed</span><br></pre></td></tr></table></figure>
+
+<p>一些钩子是可以自动帮你修复代码风格错误的，如果不能自动修复则按提示修复代码内容即可。</p>
+<h2 id="通过-CMake-自动配置-pre-commit"><a href="#通过-CMake-自动配置-pre-commit" class="headerlink" title="通过 CMake 自动配置 pre-commit"></a>通过 CMake 自动配置 pre-commit</h2><p>在实际的团队协作中，你很难要求所有人都去手动安装这些钩子来提高代码可读性。特别是新人加入团队，如果这些环境都需要手动配置，那光配置项目的时间可能就要很久。所以我们希望它能自动化掉。我们的项目是通过 CMake 来管理的，所以可以在 CMake 中加入如下代码，让工程在初始化的时候自动去安装 clang-format、pre-commit，并自动执行 <code>pre-commit install</code> 将钩子安装到每个开发人员仓库的 .git&#x2F;hooks 目录下。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Pre-commit hooks</span></span><br><span class="line"><span class="keyword">IF</span> (<span class="keyword">NOT</span> <span class="keyword">EXISTS</span> <span class="variable">$&#123;CMAKE_CURRENT_LIST_DIR&#125;</span>/.git/hooks/pre-commit)</span><br><span class="line">    <span class="comment"># FIND_PACKAGE(Python3 COMPONENTS Interpreter Development)</span></span><br><span class="line">    <span class="keyword">IF</span> (<span class="keyword">POLICY</span> CMP0094)  <span class="comment"># https://cmake.org/cmake/help/latest/policy/CMP0094.html</span></span><br><span class="line">        <span class="keyword">CMAKE_POLICY</span>(<span class="keyword">SET</span> CMP0094 NEW)  <span class="comment"># FindPython should return the first matching Python</span></span><br><span class="line">    <span class="keyword">ENDIF</span> ()</span><br><span class="line">    <span class="comment"># needed on GitHub Actions CI: actions/setup-python does not touch registry/frameworks on Windows/macOS</span></span><br><span class="line">    <span class="comment"># this mirrors PythonInterp behavior which did not consult registry/frameworks first</span></span><br><span class="line">    <span class="keyword">IF</span> (<span class="keyword">NOT</span> <span class="keyword">DEFINED</span> Python_FIND_REGISTRY)</span><br><span class="line">        <span class="keyword">SET</span>(Python_FIND_REGISTRY <span class="string">&quot;LAST&quot;</span>)</span><br><span class="line">    <span class="keyword">ENDIF</span> ()</span><br><span class="line">    <span class="keyword">IF</span> (<span class="keyword">NOT</span> <span class="keyword">DEFINED</span> Python_FIND_FRAMEWORK)</span><br><span class="line">        <span class="keyword">SET</span>(Python_FIND_FRAMEWORK <span class="string">&quot;LAST&quot;</span>)</span><br><span class="line">    <span class="keyword">ENDIF</span> ()</span><br><span class="line">    <span class="keyword">FIND_PACKAGE</span>(Python REQUIRED COMPONENTS Interpreter)</span><br><span class="line">    <span class="keyword">MESSAGE</span>(STATUS <span class="string">&quot;Python executable: $&#123;Python_EXECUTABLE&#125;&quot;</span>)</span><br><span class="line">    <span class="keyword">EXECUTE_PROCESS</span>(<span class="keyword">COMMAND</span> <span class="variable">$&#123;Python_EXECUTABLE&#125;</span> -m pip <span class="keyword">install</span> clang-format pre-commit)</span><br><span class="line">    <span class="keyword">EXECUTE_PROCESS</span>(<span class="keyword">COMMAND</span> pre-commit <span class="keyword">install</span> WORKING_DIRECTORY <span class="string">&quot;$&#123;CMAKE_CURRENT_SOURCE_DIR&#125;&quot;</span>)</span><br><span class="line"><span class="keyword">ENDIF</span> ()</span><br></pre></td></tr></table></figure>
+
+<p>这样我们就完美的实现了自动安装 pre-commit 钩子的方法。如果您的项目是通过其他工程管理工具来管理的，可以找到一个开发人员必要的入口文件、脚本来添加这些能力。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2021-12-09T14:17:01.000Z" itemprop="datePublished">
+              2021-12-09
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/CMake/">CMake</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

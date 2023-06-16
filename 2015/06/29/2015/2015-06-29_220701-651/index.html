@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>wait() 回收子进程 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>wait() 回收子进程</h1>
+    </header>
+
+    <section>
+      <p>在前面的文章中我们讨论了如何通过 fork() 函数创建子进程，创建后的子进程如果优先于父进程退出，子进程的虚拟内存空间就消失了，但是进程控制块PCB并没有消失，这里面包含了这个子进程的退出状态，需要由父进程来进行回收。在父进程回收之前，这个进程被称为僵尸进程（僵死进程），任何一个子进程都会经过这段僵尸进程的阶段，最后由父进程来回收。</p>
+<span id="more"></span>
+<p>子进程退出有两种情况，一种是程序正常退出了，比如exit(1)或者main函数返回等。而另外一种则是非正常退出，一般情况下是收到了某种信号，比如“kill -9”。正常退出的情况下，我们要获取进程退出的代码，而非正常退出的状态下我们要获取到底进程因为哪中信号而终止了。 我们首先来看一个最简单的 wait 函数的应用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    pid_t pid, wpid;</span><br><span class="line"></span><br><span class="line">    pid = fork();</span><br><span class="line"></span><br><span class="line">    if (pid  == -1)</span><br><span class="line">    &#123;</span><br><span class="line">        perror(&quot;fork error&quot;);</span><br><span class="line">        exit(1);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (pid == 0)</span><br><span class="line">    &#123;</span><br><span class="line">        printf(&quot;I&#x27;m child, PID = %d\n&quot;, getpid());</span><br><span class="line">        // 子进程等待5秒</span><br><span class="line">        sleep(5);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (pid &gt; 0)</span><br><span class="line">    &#123;</span><br><span class="line">        // 父进程调用wait函数处于阻塞状态，直到子进程结束wait才会返回</span><br><span class="line">        wpid = wait(NULL);</span><br><span class="line">        if (wpid == -1)</span><br><span class="line">        &#123;</span><br><span class="line">            perror(&quot;wait error&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        printf(&quot;I&#x27;m parent, I catched child process, PID = %d\n&quot;, wpid);</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面代码是一个最简单的 wait() 的应用了，这样的 wait() 只起到了回收子进程 PCB 的作用，而并没有对子进程的退出消息做任何的接收或处理。下面的代码演示了如何对子进程的退出情况做出响应。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line">#include &lt;sys/wait.h&gt;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    pid_t pid;</span><br><span class="line">    pid = fork();</span><br><span class="line">    if (pid == -1)</span><br><span class="line">    &#123;</span><br><span class="line">        perror(&quot;fork error&quot;);</span><br><span class="line">        exit(1);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (pid == 0)</span><br><span class="line">    &#123;</span><br><span class="line">        printf(&quot;I&#x27;m child, PID = %d\n&quot;, getpid());</span><br><span class="line">        sleep(1);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (pid &gt; 0)</span><br><span class="line">    &#123;</span><br><span class="line">        int status;</span><br><span class="line">        int wpid;</span><br><span class="line">        wpid = wait(&amp;status);</span><br><span class="line">        // 子进程正常退出判断，如果返回真则证明子进程是正常退出的</span><br><span class="line">        if (WIFEXITED(status))</span><br><span class="line">        &#123;</span><br><span class="line">            // 打印已经退出的子进程的 pid</span><br><span class="line">            printf(&quot;I&#x27;m parent, The child process %d exit normally\n&quot;, wpid);</span><br><span class="line">            // 打印子进程程序退出后的返回值</span><br><span class="line">            printf(&quot;return value : %d\n&quot;, WEXITSTATUS(status));</span><br><span class="line">        &#125;</span><br><span class="line">        // 如果子进程是非正常退出，那么一定是接收到某信号，下面就是判断是否是接收到了信号</span><br><span class="line">        else if (WIFSIGNALED(status))</span><br><span class="line">        &#123;</span><br><span class="line">            // 获取进程是接收到了什么信号导致非正常退出的</span><br><span class="line">            printf(&quot;Child terminated abnormally, signal %d\n&quot;, WTERMSIG(status));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从上面的例子中可以看出，WIFEXITED是用来判断子进程的退出状态的，如果返回真则证明子进程是正常退出的，随后使用了WEXITSTATUS获取了退出代码。而WIFSIGNALED则是判断子进程是否是接收到了某个信号，如果是收到了某个信号证明进程是非正常退出的，那么使用WTERMSIG获取收到的信号。可通过 kill -l 查看信号编号的对应内容。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-29T22:07:01.000Z" itemprop="datePublished">
+              2015-06-29
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

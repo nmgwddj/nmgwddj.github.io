@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>webpack fetch 提示错误 No &#39;Access-Control-Allow-Origin&#39; header is present on the requested resource. | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>webpack fetch 提示错误 No &#39;Access-Control-Allow-Origin&#39; header is present on the requested resource.</h1>
+    </header>
+
+    <section>
+      <p><a href="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-19-00.17.17.png"><img src="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-19-00.17.17.png"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Fetch API cannot load http://v.juhe.cn/toutiao/index?type=&amp;key=9ac9a526985bbd20fa150784********. No &#x27;Access-Control-Allow-Origin&#x27; header is present on the requested resource. Origin &#x27;http://localhost:8080&#x27; is therefore not allowed access. If an opaque response serves your needs, set the request&#x27;s mode to &#x27;no-cors&#x27; to fetch the resource with CORS disabled.</span><br></pre></td></tr></table></figure>
+
+<p>这个错误困扰了我很久，导致无法从网络获取数据，现在很多接口都是 json 或 jsonp 的方式，如果不能用 fetch 或者一些网络请求的方法，简直太受罪了，有些朋友的解决方法是把数据放到自己的服务器上来处理，这莫名的是给自己增加工作量，直到我看到了这篇文章，终于将这个难题解决：<a target="_blank" rel="noopener" href="http://www.jianshu.com/p/19a6aefca350">http://www.jianshu.com/p/19a6aefca350</a></p>
+<span id="more"></span>
+<p>根据文章的提示，我在 webpack 的配置文件中，增加了我常用的一些数据请求的地址： <a href="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-19-00.13.16.png"><img src="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-19-00.13.16.png"></a> 随后在请求数据的时候，根据文章的提示将源地址修改为 localhost:8080 便顺利的解决了问题。 <a href="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-19-00.14.55.png"><img src="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-19-00.14.55.png"></a> <a href="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-19-00.15.21.png"><img src="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-19-00.15.21.png"></a> 在这里要感谢作者帮我们解决了这一大难题，难得的是作者将问题剖析的非常透彻，这种分享解决问题思路的精神非常值得我们学习。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-07-19T00:14:50.000Z" itemprop="datePublished">
+              2017-07-19
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt Label 控件使用技巧 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt Label 控件使用技巧</h1>
+    </header>
+
+    <section>
+      <p>我学过其他的一些语言，在设计程序界面的时候如果想显示一些文字可以使用 Label 控件，如果要显示图片可以使用 img 控件，要显示动画可以使用一些其他的控件，但这些在 Qt 中，全部都可以用 Label 控件实现，甚至他还可以以html方式显示控件。</p>
+<span id="more"></span>
+<h3 id="【一个最简单的-Label-控件】"><a href="#【一个最简单的-Label-控件】" class="headerlink" title="【一个最简单的 Label 控件】"></a>【一个最简单的 Label 控件】</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;cwidget.h&quot;</span><br><span class="line">#include &lt;QLabel&gt;</span><br><span class="line"></span><br><span class="line">CWidget::CWidget(QWidget *parent) : QWidget(parent)</span><br><span class="line">&#123;</span><br><span class="line">    QLabel* label = new QLabel(&quot;label&quot;, this);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="/images/2015/06/2015-06-17_162432.png"><img src="/images/2015/06/2015-06-17_162432.png" alt="2015-06-17_162432"></a></p>
+<h3 id="【使用-Label-显示一张图片】"><a href="#【使用-Label-显示一张图片】" class="headerlink" title="【使用 Label 显示一张图片】"></a>【使用 Label 显示一张图片】</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">QLabel* label = new QLabel(this);</span><br><span class="line">this-&gt;setFixedSize(250, 292);</span><br><span class="line"></span><br><span class="line">// 显示一张图片</span><br><span class="line">QPixmap pixmap(&quot;LOL_banner_r7_25.png&quot;);</span><br><span class="line">label-&gt;setPixmap(pixmap);</span><br></pre></td></tr></table></figure>
+
+<p><a href="/images/2015/06/2015-06-17_162557.png"><img src="/images/2015/06/2015-06-17_162557.png" alt="2015-06-17_162557"></a></p>
+<h3 id="【使用-Label-显示一幅动画】"><a href="#【使用-Label-显示一幅动画】" class="headerlink" title="【使用 Label 显示一幅动画】"></a>【使用 Label 显示一幅动画】</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 显示动画</span><br><span class="line">QMovie* movie = new QMovie(&quot;Cubs.gif&quot;);</span><br><span class="line">label-&gt;setMovie(movie);</span><br><span class="line">movie-&gt;start();</span><br></pre></td></tr></table></figure>
+
+<p><a href="/images/2015/06/2015-06-17_162800.png"><img src="/images/2015/06/2015-06-17_162800.png" alt="2015-06-17_162800"></a></p>
+<h3 id="【使用-Label-显示-html-特效】"><a href="#【使用-Label-显示-html-特效】" class="headerlink" title="【使用 Label 显示 html 特效】"></a>【使用 Label 显示 html 特效】</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 显示html标签</span><br><span class="line">label-&gt;setText(&quot;&lt;h1 style=&#x27;background:#FFF;&#x27;&gt;Hello World&lt;/h1&gt;&quot;);</span><br></pre></td></tr></table></figure>
+
+<p><a href="/images/2015/06/2015-06-17_162920.png"><img src="/images/2015/06/2015-06-17_162920.png" alt="2015-06-17_162920"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-17T16:29:55.000Z" itemprop="datePublished">
+              2015-06-17
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

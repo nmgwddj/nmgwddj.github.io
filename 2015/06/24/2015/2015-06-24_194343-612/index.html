@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>O_EXCL 实现根据文件是否存在来创建文件 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>O_EXCL 实现根据文件是否存在来创建文件</h1>
+    </header>
+
+    <section>
+      <p>在使用 open 函数时，会有这样的需求，如果文件存在，那么就报错退出，如果文件不存在那么就创建该文件。当然我们在执行 open 函数之前可以判断一下文件是否存在，但是这样做不仅多了一步，而且比较麻烦，其实使用 open 中的 O_EXCL 参数就可以解决这种问题。</p>
+<span id="more"></span>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int nRet = open(&quot;/home/mycode/mycode.txt&quot;, O_WRONLY  O_CREAT  O_EXCL, 0644);</span><br></pre></td></tr></table></figure>
+
+<p>当以上代码执行时，如果 &#x2F;home&#x2F;mycode&#x2F;mycode.txt 文件存在，那么 nRet 会返回-1，并且 errno &#x3D;&#x3D; EEXIST，我们可以通过以下两种方法来判断：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int nRet = open(&quot;/home/mycode/mycode.txt&quot;, O_WRONLY  O_CREAT  O_EXCL, 0644);</span><br><span class="line">if (nRet &lt; 0)</span><br><span class="line">&#123;</span><br><span class="line">    perror(&quot;open file error&quot;);</span><br><span class="line">    exit(1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int nRet = open(&quot;/home/mycode/mycode.txt&quot;, O_WRONLY  O_CREAT  O_EXCL, 0644);</span><br><span class="line">if (errno == EEXIST)</span><br><span class="line">&#123;</span><br><span class="line">    perror(&quot;open file error&quot;);</span><br><span class="line">    exit(1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过上面的代码就可以根据文件是否存在而执行不同的工作了。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-24T19:43:43.000Z" itemprop="datePublished">
+              2015-06-24
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

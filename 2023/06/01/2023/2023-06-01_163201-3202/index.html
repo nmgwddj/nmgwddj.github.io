@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>macOS 应用正确签名并公证后分发依然提示“无法验证开发者” | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>macOS 应用正确签名并公证后分发依然提示“无法验证开发者”</h1>
+    </header>
+
+    <section>
+      <h2 id="问题现象"><a href="#问题现象" class="headerlink" title="问题现象"></a>问题现象</h2><p>应用使用正确的证书签名并使用 Apple 推荐的新公证手段公证后，将应用分发给其他人使用时，依然提示无法验证开发者，如下图所示：</p>
+<div align="center">
+<img src=/images/2023/06/Screenshot-2023-06-01-at-13.13.03.png width=30% />
+</div>
+
+<span id="more"></span>
+<h2 id="问题结论"><a href="#问题结论" class="headerlink" title="问题结论"></a>问题结论</h2><p>先说结论，各位看到文章可以先检查，如果你的情况并不是这种原因，在参考下面的排查思路。 原因是 CMake 工程使用 Unix Makefile 而未使用 Xcode generator 编译了依赖库导致运行时未能正确校验开发者信息。</p>
+<h2 id="排查思路"><a href="#排查思路" class="headerlink" title="排查思路"></a>排查思路</h2><p>要验证问题是否解决需要先明确问题如何出现的（重现问题），应用在本地签名、公证后，如果你是通过类似 POPO 的软件内网传输给其他人，macOS 的检查机制是不会生效的，你需要将应用上传到某 Web 服务器后提供给用户下载时才会触发，这里是先要明确的一点。 根据 Apple 官方文档介绍，给出了几个明确的注意事项如使用正确的证书进行签名、启用强化运行时、启用时间戳选项等，<a target="_blank" rel="noopener" href="https://developer.apple.com/cn/documentation/xcode/notarizing_macos_software_before_distribution/">参考官方文档</a>。以下为逐一验证几个步骤的过程。</p>
+<h3 id="确认签名结果"><a href="#确认签名结果" class="headerlink" title="确认签名结果"></a>确认签名结果</h3><p>CI 签名输出没有任何异常：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/Users/yunxin/builds/jFP7tNUz/0/yunxin-app/xkit-desktop/exports/bin/NetEaseMeeting.app: replacing existing signature</span><br><span class="line">/Users/yunxin/builds/jFP7tNUz/0/yunxin-app/xkit-desktop/exports/bin/NetEaseMeeting.app: signed app bundle with Mach-O thin (arm64) [com.netease.nmc.Meeting]</span><br></pre></td></tr></table></figure>
+
+<h3 id="确认公证结果"><a href="#确认公证结果" class="headerlink" title="确认公证结果"></a>确认公证结果</h3><p>CI 公证结果没有任何异常</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$ xcrun notarytool submit <span class="variable">$&#123;PACKAGE_NAME&#125;</span> --apple-id 2894220@qq.com --team-id 569GNZ5392 --password hjci-yfif-****-**** --<span class="built_in">wait</span></span><br><span class="line">Conducting pre-submission checks <span class="keyword">for</span> meeting-darwin-arm64-release-3-12-0-586-build-1934739.dmg and initiating connection to the Apple notary service...</span><br><span class="line">Submission ID received</span><br><span class="line">  <span class="built_in">id</span>: 60e58388-1725-4958-8975-04e48b0d9e09</span><br><span class="line">Successfully uploaded file</span><br><span class="line">  <span class="built_in">id</span>: 60e58388-1725-4958-8975-04e48b0d9e09</span><br><span class="line">  path: /Users/yunxin/builds/1ns5YV66/0/yunxin-app/xkit-desktop/meeting-darwin-arm64-release-3-12-0-586-build-1934739.dmg</span><br><span class="line">Waiting <span class="keyword">for</span> processing to complete.</span><br><span class="line">Current status: Accepted....................Processing complete</span><br><span class="line">  <span class="built_in">id</span>: 60e58388-1725-4958-8975-04e48b0d9e09</span><br><span class="line">  status: Accepted</span><br><span class="line">$ xcrun stapler staple <span class="variable">$&#123;PACKAGE_NAME&#125;</span></span><br><span class="line">Processing: /Users/yunxin/builds/1ns5YV66/0/yunxin-app/xkit-desktop/meeting-darwin-arm64-release-3-12-0-586-build-1934739.dmg</span><br><span class="line">Processing: /Users/yunxin/builds/1ns5YV66/0/yunxin-app/xkit-desktop/meeting-darwin-arm64-release-3-12-0-586-build-1934739.dmg</span><br><span class="line">The staple and validate action worked!</span><br><span class="line">Job succeeded</span><br></pre></td></tr></table></figure>
+
+<h3 id="检查签名"><a href="#检查签名" class="headerlink" title="检查签名"></a>检查签名</h3><p>使用如下命令检查应用的签名信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">codesign -vvv --deep --strict /Applications/网易会议.app</span><br></pre></td></tr></table></figure>
+
+<p>输出后结果一切正常，因为结果较多，仅贴一部分，因为不是重点：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">--prepared:/Applications/网易会议.app/Contents/Frameworks/nem_hosting_module.framework/Versions/Current/.</span><br><span class="line">--validated:/Applications/网易会议.app/Contents/Frameworks/nem_hosting_module.framework/Versions/Current/.</span><br><span class="line">--prepared:/Applications/网易会议.app/Contents/Frameworks/NetEaseMeetingClient.app</span><br><span class="line">--prepared:/Applications/网易会议.app/Contents/Frameworks/NetEaseMeetingClient.app/Contents/PlugIns/position/libqtposition_positionpoll.dylib</span><br><span class="line">--validated:/Applications/网易会议.app/Contents/Frameworks/NetEaseMeetingClient.app/Contents/PlugIns/position/libqtposition_positionpoll.dylib</span><br><span class="line">--prepared:/Applications/网易会议.app/Contents/Frameworks/NetEaseMeetingClient.app/Contents/PlugIns/position/libqtposition_cl.dylib</span><br><span class="line">--validated:/Applications/网易会议.app/Contents/Frameworks/NetEaseMeetingClient.app/Contents/PlugIns/position/libqtposition_cl.dylib</span><br></pre></td></tr></table></figure>
+
+<p>官方文档：<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution/resolving_common_notarization_issues#3087735">https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution/resolving_common_notarization_issues#3087735</a></p>
+<h3 id="检查公证"><a href="#检查公证" class="headerlink" title="检查公证"></a>检查公证</h3><p>使用如下命令检查应用是否已经在 Apple 进行公证，输出结果一切正常，accepted 表示已经公证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ spctl --assess --verbose /Applications/网易会议.app</span><br><span class="line">/Applications/网易会议.app: accepted</span><br><span class="line"><span class="built_in">source</span>=Notarized Developer ID</span><br></pre></td></tr></table></figure>
+
+<h3 id="检查强化运行时及时间戳"><a href="#检查强化运行时及时间戳" class="headerlink" title="检查强化运行时及时间戳"></a>检查强化运行时及时间戳</h3><p>给应用签名时明确指定了强化运行时配置文件并启用了时间戳选项，这里排除：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">COMMAND codesign --entitlements=<span class="variable">$&#123;CMAKE_SOURCE_DIR&#125;</span>/meeting/bin/NetEaseMeeting.entitlements --timestamp --options=runtime -f -s <span class="string">&quot;06C66D0DDF51A99C6A5C0F65BF9B2ABB5FD409B4&quot;</span> -v <span class="variable">$&#123;CMAKE_INSTALL_PREFIX&#125;</span>/bin/<span class="variable">$&#123;PROJECT_NAME&#125;</span>.app --deep</span><br></pre></td></tr></table></figure>
+
+<h3 id="排除依赖库"><a href="#排除依赖库" class="headerlink" title="排除依赖库"></a>排除依赖库</h3><p>经过以上步骤确认了签名、公证均没有异常。最后还是要对产物进行检查，因为历史版本相同的代码生成的应用是没有问题的，有差异的点只有工程组织方式，由原来的本地 QMake + CMake 全面修改为 CMake，并且依赖的三方库使用 conan 进行管理了。 为了排查差异，依次排除可能有异常的三方库，最后锁定到内部使用的一个名为 roomkit 的库上。当不拷贝该库文件到 App bundle 中时进行签名并公证，对端是可以正常显示是否打开应用的提示可以直接打开，如下所示：</p>
+<div align="center">
+<img src="/images/2023/06/Screenshot-2023-06-01-at-13.42.45.png" width=30% />
+</div>
+
+<p>当然 roomkit 是必须要依赖的模块，我们不可能直接移除掉该模块，接下来还是排查 roomkit 模块可能得影响点。</p>
+<h4 id="排除-Info-plist-差异"><a href="#排除-Info-plist-差异" class="headerlink" title="排除 Info.plist 差异"></a>排除 Info.plist 差异</h4><p>经过对比旧版与新版 Info.plist 文件有一些差异，将旧版 Info.plist 拷贝过来使用后依然有问题，该情况排除。</p>
+<h4 id="替换-framework-为-dylib"><a href="#替换-framework-为-dylib" class="headerlink" title="替换 framework 为 dylib"></a>替换 framework 为 dylib</h4><p>怀疑 framework 格式有问题导致无法验证开发者信息，随后将 roomkit 产物修改为 dylib 文件，修改后问题依然存在，该情况排除。</p>
+<h4 id="检查-CMake-generator"><a href="#检查-CMake-generator" class="headerlink" title="检查 CMake generator"></a>检查 CMake generator</h4><p>新的工程管理方案将 roomkit 使用 conan 管理了，在生成 roomkit 时虽然使用 CMake 驱动，但 generator 使用的是 Unix Makefile。当切换 CMake generator 为 Xcode 后依然没有解决问题。</p>
+<h4 id="将工-roomkit-移动到主工程"><a href="#将工-roomkit-移动到主工程" class="headerlink" title="将工 roomkit 移动到主工程"></a>将工 roomkit 移动到主工程</h4><p>不使用 conan 管理后，将源代码移动到主工程后该问题消失了，重新编译并签名公证后，对端是可以正常运行该程序的，不会提示无效的开发者。</p>
+<p>于是对比基于同一工程和使用 conan 管理的两个打包后的产物，文件大小一致、代码一致、签名无误。当检查组件依赖时发现了端倪，有问题的包中包含很多 LC_RPATH 为本地 conan 缓存的目录，运行 otool -l libroomkit.dylib 后如下所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">Load <span class="built_in">command</span> 36</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 144</span><br><span class="line">         path /Users/jj.deng/.conan/data/ne_chromium_base/0.3.0-alpha.15/yunxin/testing/package/7912296e46b47bb505a62f9071f79fb8a6b1cef1/lib (offset 12)</span><br><span class="line">Load <span class="built_in">command</span> 37</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 128</span><br><span class="line">         path /Users/jj.deng/.conan/data/alog/1.1.3-alpha.56/yunxin/testing/package/2f2de4e3345f667bb03ed16a03f45c72c978d397/lib (offset 12)</span><br><span class="line">Load <span class="built_in">command</span> 38</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 120</span><br><span class="line">         path /Users/jj.deng/.conan/data/nim/9.10.0/yunxin/testing/package/c03875a8be5fc1f094417d3708316280c7dde200/lib (offset 12)</span><br><span class="line">Load <span class="built_in">command</span> 39</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 112</span><br><span class="line">         path /Users/jj.deng/.conan/data/libevent/2.1.12/_/_/package/98268102ce1d6461fd77de96dbfe521aa4569a60/lib (offset 12)</span><br><span class="line">Load <span class="built_in">command</span> 40</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 112</span><br><span class="line">         path /Users/jj.deng/.conan/data/sqlcipher/4.5.0/_/_/package/05d14d2fa2a4ecf20bb6d2fc8daa0c4823efd82d/lib (offset 12)</span><br><span class="line">Load <span class="built_in">command</span> 41</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 112</span><br><span class="line">         path /Users/jj.deng/.conan/data/libcurl/7.88.1/_/_/package/d699a8117ee89877a5435732a284bd66e73e8db3/lib (offset 12)</span><br><span class="line">Load <span class="built_in">command</span> 42</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 112</span><br><span class="line">         path /Users/jj.deng/.conan/data/jsoncpp/1.9.4/_/_/package/2f2de4e3345f667bb03ed16a03f45c72c978d397/lib (offset 12)</span><br><span class="line">Load <span class="built_in">command</span> 43</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 112</span><br><span class="line">         path /Users/jj.deng/.conan/data/gtest/1.11.0/_/_/package/fb16a498e820fb09d04ff9374a782b5b21da0601/lib (offset 12)</span><br><span class="line">Load <span class="built_in">command</span> 44</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 112</span><br><span class="line">         path /Users/jj.deng/.conan/data/libuv/1.41.1/_/_/package/240c2182163325b213ca6886a7614c8ed2bf1738/lib (offset 12)</span><br><span class="line">Load <span class="built_in">command</span> 45</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 136</span><br><span class="line">         path /Users/jj.deng/.conan/data/tinyNET/0.1.0-21-g1e1d3f15/yunxin/testing/package/7580092a53c9c8b599007449ce80de252bf43516/lib (offset 12)</span><br><span class="line">Load <span class="built_in">command</span> 46</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 112</span><br><span class="line">         path /Users/jj.deng/.conan/data/openssl/1.1.1n/_/_/package/240c2182163325b213ca6886a7614c8ed2bf1738/lib (offset 12)</span><br><span class="line">Load <span class="built_in">command</span> 47</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 112</span><br><span class="line">         path /Users/jj.deng/.conan/data/zlib/1.2.13/_/_/package/240c2182163325b213ca6886a7614c8ed2bf1738/lib (offset 12)</span><br><span class="line">Load <span class="built_in">command</span> 48</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 136</span><br><span class="line">         path /Users/jj.deng/.conan/data/tinySAK/0.1.0-13-g07d29b61/yunxin/testing/package/2f2de4e3345f667bb03ed16a03f45c72c978d397/lib (offset 12)</span><br><span class="line">Load <span class="built_in">command</span> 49</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 120</span><br><span class="line">         path /Users/jj.deng/.conan/data/nertc/5.3.3/yunxin/testing/package/9aa227859c38818147bd790129a73a89bce37027 (offset 12)</span><br></pre></td></tr></table></figure>
+
+<p>而正常可以运行的包是没有这样的问题的，本质的区别在于，当 roomkit 在主工程编译时，会执行 cmake install 流程，install 以后 LC_RPATH 的信息会被清理，而使用 conan 管理的 roomkit 仅仅进行了编译，并没有执行 cmake install。重新修改 conanfile.py 的导出包流程，使用 cmake install 后的产物作为依赖后，该问题消失。修改代码对比：</p>
+<p>修改前，我们仅仅进行了 build，并且使用 conan 提供的 package 函数，将 cmake 缓存目录下的文件直接拷贝到了产物输出目录。而修改后，直接在 package 函数中执行cmake.install()这样 cmake 会自动拷贝产物到 package 目录并且删除了原产物的 LC_RPATH。conan 在调用 cmake 初始化包的时候，会自动设置 CMAKE_INSTALL_PREFIX 为 conan 包输出目录，所以这里你不用关心会 install 的目录设置问题。参考 conan 官方文档：<a target="_blank" rel="noopener" href="https://docs.conan.io/1/howtos/cmake_install.html">https://docs.conan.io/1/howtos/cmake_install.html</a></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>至此该问题水落石出，最终还是 Gatekeeper 机制让我们再次踩了个坑，在解决完问题后，我尝试在 Google 中搜索（这个时候 ChatGPT 基本上是一本正经的胡说八道）类似问题，果然找到了与我问题贴近的帖子：<a target="_blank" rel="noopener" href="https://developer.apple.com/forums/thread/128038">https://developer.apple.com/forums/thread/128038</a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2023-06-01T16:32:01.000Z" itemprop="datePublished">
+              2023-06-01
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

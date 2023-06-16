@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>运算符成员函数与友元函数重载 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>运算符成员函数与友元函数重载</h1>
+    </header>
+
+    <section>
+      <p><a target="_blank" rel="noopener" href="http://www.mycode.net.cn/file/146.html">上一篇文章</a>我们介绍了运算符重载的目的和一个简单的应用案例。但运算符重载绝非我们想想的那么简单和容易，有很多陷阱我们如果我们还没有去踩过，是不会了解清楚内部的工作原理的。本文只介绍一下运算符重载的两种方式，成员函数重载和友元函数重载，并不具体到某些运算符的具体案例。</p>
+<span id="more"></span>
+<p>成员函数重载（与上一篇文章一致）：</p>
+<p>#include <iostream></p>
+<p>using namespace std;</p>
+<p>class Complex<br>{<br>public:<br>Complex(int x, int y)<br>:_x(x), _y(y){}</p>
+<p>&#x2F;&#x2F; 重载+号运算符<br>Complex operator+(Complex&amp; another)<br>{<br>&#x2F;&#x2F; this此时是s1，another此时是s2<br>return Complex(<br>this-&gt;_x + another._x,<br>this-&gt;_y + another._y);<br>}<br>&#x2F;&#x2F; 打印_x和_y的值<br>void display()<br>{<br>cout &lt;&lt; “_x &#x3D; “ &lt;&lt; _x &lt;&lt; endl;<br>cout &lt;&lt; “_y &#x3D; “ &lt;&lt; _y &lt;&lt; endl;<br>}</p>
+<p>private:<br>int _x;<br>int _y;<br>};</p>
+<p>int main(int argc, char* argv[])<br>{<br>Complex c1(10, 20);<br>Complex c2(15, 25);<br>&#x2F;&#x2F; 构建一个新对象，其内容由c1 + c2得出<br>&#x2F;&#x2F; 此时c1 + c2就会调用我们编写的operator+函数<br>&#x2F;&#x2F; 此句等同于 c3 &#x3D; c1.operator+(c2)<br>Complex c3 &#x3D; c1 + c2;<br>        c3.display();</p>
+<p>return 0;<br>}</p>
+<p>友元函数重载，与成员函数不同的是，全局的友元函数需要传递两个参数，因为他并没有在类中，所以成员函数的this必须转化一个为operator+的参数，否则无法完成函数功能：</p>
+<p>#include <iostream></p>
+<p>using namespace std;</p>
+<p>class Complex<br>{<br>public:<br>Complex(int x, int y)<br>:_x(x), _y(y){}</p>
+<p>&#x2F;&#x2F; 将一个全局的 operator+ 函数声明为Complex的友元函数<br>friend Complex operator+(Complex&amp; left, Complex&amp; right);</p>
+<p>&#x2F;&#x2F; 打印_x和_y的值<br>void display()<br>{<br>cout &lt;&lt; “_x &#x3D; “ &lt;&lt; _x &lt;&lt; endl;<br>cout &lt;&lt; “_y &#x3D; “ &lt;&lt; _y &lt;&lt; endl;<br>}</p>
+<p>private:<br>int _x;<br>int _y;<br>};</p>
+<p>&#x2F;&#x2F; 友元函数的实现，与类的成员函数不同的是，this变成了left参数<br>Complex operator+(Complex&amp; left, Complex&amp; right)<br>{<br>return Complex(left._x + right._x, left._y + right._y);<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>Complex c1(10, 20);<br>Complex c2(15, 25);<br>&#x2F;&#x2F; 构建一个新对象，其内容由c1 + c2得出<br>&#x2F;&#x2F; 此时c1 + c2就会调用我们编写的operator+函数<br>&#x2F;&#x2F; 此句等同于 c3 &#x3D; operator+(c1, c2)<br>Complex c3 &#x3D; c1 + c2;<br>c3.display();</p>
+<p>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-16T21:26:47.000Z" itemprop="datePublished">
+              2015-05-16
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%8F%8B%E5%85%83/">友元</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

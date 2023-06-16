@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>抽象类纯虚函数与虚析构 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>抽象类纯虚函数与虚析构</h1>
+    </header>
+
+    <section>
+      <p>纯虚函数，一般是在设计一个基类时使用的，它将接口函数设置为纯虚函数后，只提供子类去继承并实现，以形成多态，除此以外不提供任何其他功能，我们称这种类为抽象类(abstract)。</p>
+<span id="more"></span>
+<p><strong>【纯虚函数的声明语法】</strong></p>
+<p>virtual 函数声明 &#x3D; 0;</p>
+<p><strong>【纯虚函数的特征】</strong> 1、只有声明，没有实现代码。 2、含有纯虚函数的类称为抽象类(abstract)。不能被实例化，只能被继承。 3、继承抽象类的意义就是提供族类的公共接口。 4、子类继承的纯虚函数，如果未实现，子类仍然为抽象类，仍然不能被实例化。 <strong>【虚函数的若干限制】</strong> 1、只有类的成员函数才能声明为虚函数。虚函数仅适用于有继承关系的类对象，所以普通函数不能声明为虚函数。 2、静态成员函数不能是虚函数静态成员函数不受对象的捆绑，只有类的信息。 3、内联函数不能是虚函数。 4、构造函数不能是虚函数，构造时，对象的创建尚未完成。构造完成后，能算一个名符其实的对象。 5、析构函数可以是虚函数且通常声明为虚函数。 <strong>【实现代码】</strong></p>
+<dl><dt>#include <iostream><br> <br>using namespace std;<br> <br>class Shape<br>{<br>public:<br>Shape(int x, int y)<br>:_x(x), _y(y)<br>{<br>cout &lt;&lt; “Shape constructor” &lt;&lt; endl;<br>}<br> <br>&#x2F;&#x2F; 纯虚函数，初始化为 0，提供族类的公共接口<br>virtual void draw() &#x3D; 0;<br> <br>~Shape()<br>{<br>cout &lt;&lt; “Shape destructor” &lt;&lt; endl;<br>}<br> <br>protected:<br>int _x;<br>int _y;<br>};<br> <br>class Rect : public Shape<br>{<br>public:<br>Rect(int x, int y, int m)</dt><dd>Shape(x, y), _m(m){}<br> <br>&#x2F;&#x2F; 子类若未实现父类纯虚函数，那么这个类也是抽象类，不能被实例化<br> <br>private:<br>int _m;<br>};<br> <br>&#x2F;&#x2F; 继承 Shape 类<br>class Circle : public Shape<br>{<br>public:<br>Circle(int x, int y, int r)<br>:Shape(x, y), _r(r)<br>{<br>cout &lt;&lt; “Circle constructor” &lt;&lt; endl;<br>}<br> <br>&#x2F;&#x2F; 覆写父类 virtual 接口函数<br>void draw()<br>{<br>cout &lt;&lt; “draw Circle “;<br>cout &lt;&lt; “start (“ &lt;&lt; _x &lt;&lt; “,” &lt;&lt; _y &lt;&lt; “) “;<br>cout &lt;&lt; “radio r &#x3D; “ &lt;&lt; _r &lt;&lt; endl;<br>}<br> <br>~Circle()<br>{<br>cout &lt;&lt; “Circle destructor” &lt;&lt; endl;<br>}<br> <br>private:<br>int _r;<br>};<br> <br>int main(int argc, char* argv[])<br>{<br>&#x2F;&#x2F; 抽象类不能实例化对象<br>&#x2F;&#x2F; Shape s;<br> <br>&#x2F;&#x2F; 子类若未实现父类纯虚函数，那么这个类也是抽象类，不能被实例化<br>&#x2F;&#x2F; Rect r;<br> <br>&#x2F;&#x2F; 使用子类对象初始化父类对象指针，构成多态<br>Shape *s &#x3D; new Circle(2, 4, 8);<br>s-&gt;draw();<br> <br>&#x2F;&#x2F; delete 指针，调用析构函数<br>delete s;<br> <br>return 0;<br> <br>}</dd></dl><p>以上代码演示了纯虚函数的定义，但上面代码存在一个问题，我们先看一下运行的结果。 <a href="/images/2015/05/2015-05-25_104401.png"><img src="/images/2015/05/2015-05-25_104401-300x105.png" alt="2015-05-25_104401"></a></p>
+<p>class Shape<br>{<br>public:<br>Shape(int x, int y)<br>:_x(x), _y(y)<br>{<br>cout &lt;&lt; “Shape constructor” &lt;&lt; endl;<br>}<br> <br>&#x2F;&#x2F; 纯虚函数，初始化为 0，提供族类的公共接口<br>virtual void draw() &#x3D; 0;<br> <br>&#x2F;&#x2F; 增加 virtual 关键字，让其自动执行子类析构函数<br>virtual ~Shape()<br>{<br>cout &lt;&lt; “Shape destructor” &lt;&lt; endl;<br>}<br> <br>protected:<br>int _x;<br>int _y;</p>
+<p>};</p>
+<p>这样修改代码后，我们再次运行，结果就能看到，Circle 正常被析构了。 <a href="/images/2015/05/2015-05-25_105303.png"><img src="/images/2015/05/2015-05-25_105303-300x122.png" alt="2015-05-25_105303"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-25T15:43:48.000Z" itemprop="datePublished">
+              2015-05-25
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%A4%9A%E6%80%81/">多态</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

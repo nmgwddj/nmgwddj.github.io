@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>树的基础模型及术语 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>树的基础模型及术语</h1>
+    </header>
+
+    <section>
+      <p>树是一种较为复杂的数据结构，人们这样定义它：“由一个或多个(n&gt;&#x3D;0)节点组成的有限集合T，有且只有一个’根’节点（root），当n&gt;1时，其余的结点分为m(m≥0)个互不相交的有限集合T1,T2，…，Tm。每个集合本身又是棵树，被称作这个根的子树 。”我们首先来看一下我们对其逻辑结构的表示图：</p>
+<span id="more"></span>
+<p><a href="/images/2015/05/2015-05-31_215428.png"><img src="/images/2015/05/2015-05-31_215428.png" alt="2015-05-31_215428"></a> 相对于逻辑结构，其物理储存结构也与我们之前学习过的一些基础结构差不多，要么是一块连续的空间储存，要么是链的方式储存。下面我们总结一下树的特性：</p>
+<ul>
+<li>树是多个互不相交的集合</li>
+<li>树是可以为空的</li>
+<li>树是递归定义的</li>
+</ul>
+<p> </p>
+<h3 id="【树的若干术语】"><a href="#【树的若干术语】" class="headerlink" title="【树的若干术语】"></a>【树的若干术语】</h3><p><a href="/images/2015/05/2015-05-31_221738.png"><img src="/images/2015/05/2015-05-31_221738.png" alt="2015-05-31_221738"></a> <strong>根：</strong>既根节点（没有前驱）上图中A节点 <strong>叶子：</strong>既终端节点（没有后继）上图中K L M节点 <strong>森林：</strong>指m棵不相交的树的集合（例如删除A后的子树个数） <strong>有序树：</strong>结点各子树从左至右有序，不能互换（左为第一） <strong>无序树：</strong>结点各子树可互换位置。 <strong>双亲：</strong>即上层的那个结点(直接前驱) parent <strong>孩子：</strong>即下层结点的子树 (直接后继) child <strong>兄弟：</strong>同一双亲下的同层结点（孩子之间互称兄弟）sibling <strong>堂兄弟：</strong>即双亲位于同一层的结点（但并非同一双亲）cousin <strong>祖先：</strong>即从根到该结点所经分支的所有结点 <strong>子孙：</strong>即该结点下层子树中的任一结点 <strong>节点：</strong>即树的数据元素 <strong>节点的度：</strong>结点挂接的子树数（有几个直接后继就是几度，亦称“次数”）从根到该结点的层数（根结点算第一层） <strong>节点的层次：</strong>从根到该结点的层数（根结点算第一层） <strong>终端节点：</strong>即度为0的结点，即叶子 <strong>分支节点：</strong>除树根以外的结点（也称为内部结点） <strong>树的度：</strong>所有结点度中的最大值（Max{各结点的度}） <strong>树的深度：</strong>指所有结点中最大的层数（Max{各结点的层次}）</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-31T22:19:32.000Z" itemprop="datePublished">
+              2015-05-31
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

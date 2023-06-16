@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>继承权限及关系简单阐述 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>继承权限及关系简单阐述</h1>
+    </header>
+
+    <section>
+      <p>类具有三种成员属性，一种是public、一种是protected、一种是private。这三种在派生的类中也有不同的访问权限，当然不单单只看父类的成员属性，还要看派生类以什么方式继承父类，如下代码所示：</p>
+<span id="more"></span>
+<p>#include <iostream></p>
+<p>using namespace std;</p>
+<p>class Base&#x2F;&#x2F; 父类，又称为基类<br>{<br>public:<br>int pub;<br>&#x2F;&#x2F; protected 通过类对象访问的时候，等同于private<br>protected:<br>int pro;<br>private:<br>int pri;<br>};</p>
+<p>&#x2F;&#x2F; Derive 为 Base 的子类，又称 Base 的派生类<br>class Derive : public Base<br>{<br>public:<br>void display()<br>{<br>pub &#x3D; 200;<br>pro &#x3D; 200;<br>&#x2F;*pri &#x3D; 200;   &#x2F;&#x2F;不允许的*&#x2F;<br>}<br>};</p>
+<p>#if 0</p>
+<p>基类属性public继承protected继承private继承</p>
+<p>publicpublicprotectedprivate</p>
+<p>protectedprotectedprotectedprivate</p>
+<p>privateinaccessable        inaccessableinaccessable</p>
+<p>#endif</p>
+<p>int main(int argc, char* argv[])<br>{<br>Derive d;<br>d.pub &#x3D; 300;<br>&#x2F;*d.pro &#x3D; 200;&#x2F;&#x2F;不允许的*&#x2F;<br>&#x2F;*d.pri &#x3D; 200;&#x2F;&#x2F;不允许的*&#x2F;<br>return 0;<br>}</p>
+<p> 基类属性</p>
+<p> public继承</p>
+<p> protected继承</p>
+<p> private继承</p>
+<p> public 成员</p>
+<p> public</p>
+<p> protected</p>
+<p> private</p>
+<p> protected 成员</p>
+<p> protected</p>
+<p> protected</p>
+<p> private</p>
+<p> private 成员</p>
+<p> inaccessable</p>
+<p> inaccessable</p>
+<p> inaccessable</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-23T22:51:39.000Z" itemprop="datePublished">
+              2015-05-23
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

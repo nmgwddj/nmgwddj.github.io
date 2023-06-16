@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ language }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/02/11/2016/2016-02-11_213132-1475/">一个简单的 Windows 下多线程创建 Demo</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-02-11T21:31:32.000Z" itemprop="datePublished">
+    2016-02-11
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>向往了多年，终于静下心来备战 IOCP，对于语言方面不缺少什么东西了，剩下的就是对操作系统和编程技巧的学习了，所以慢慢的开始写一些周边会涉及到的代码，也算是对 C&#x2F;C++ 的复习，本文写的是一个 Windows 下多线程的例子，跟 Linux 下没什么区别，循环创建线程然后用堆上内存传递参数，代码有详细的注释可以参考。</p>
+        
+          <div class="more-link">
+            <a href="/2016/02/11/2016/2016-02-11_213132-1475/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/02/06/2016/2016-02-06_234035-1462/">获取本机字节顺序（端序、尾序）</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-02-06T23:40:35.000Z" itemprop="datePublished">
+    2016-02-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E4%BD%8D%E6%93%8D%E4%BD%9C/">位操作</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BD%91%E7%BB%9C/">网络</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>字节顺序简单的理解就是一组数据在内存中排列的数据，分大&#x2F;小端顺序，其详细的介绍可以参考<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%AD%97%E8%8A%82%E5%BA%8F">维基百科</a>，本文主要介绍的是如何通过调试查看内存中变量的储存数据以及如何通过代码实现判断本机字节顺序。</p>
+        
+          <div class="more-link">
+            <a href="/2016/02/06/2016/2016-02-06_234035-1462/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/01/24/2016/2016-01-24_181447-1450/">简单的 Windows 服务枚举、启动、停止操作</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-01-24T18:14:47.000Z" itemprop="datePublished">
+    2016-01-24
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/MFC/">MFC</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>最近开始复习 C&#x2F;C++，就拿自己熟悉的 Windows 开始下手，准备把各种小工具写上一遍，第一个就是这个 Windows 服务管理小工具了，不过只实现了简单的枚举（EnumServiceHandle）、启动和停止的操作（OpenService、ControlService）。后面有机会再继续完善。</p>
+        
+          <div class="more-link">
+            <a href="/2016/01/24/2016/2016-01-24_181447-1450/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/12/26/2015/2015-12-26_184813-1314/">Meteor 分页包 alethes:pages 详解</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-12-26T18:48:13.000Z" itemprop="datePublished">
+    2015-12-26
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在做大部分真实应用的 web 项目过程中，都会有一样不可或缺的需求，那就是分页。Meteor 项目也不例外，同样会有这样的需求，本文给大家介绍的就是一个非常好用的分页包 <code>alethes:pages</code>。它可以实现简单的根据页数分页，也可以实现强大的滚动分页。内部还支持利用多个 collection 数据进行分页。下面我们就来详细的了解它。 注意：以下内容多是对官方包的一种简述和翻译，如果需要更详细的内容可以参考官方地址。</p>
+        
+          <div class="more-link">
+            <a href="/2015/12/26/2015/2015-12-26_184813-1314/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/12/13/2015/2015-12-13_173817-1306/">浏览器 window 下子对象</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-12-13T17:38:17.000Z" itemprop="datePublished">
+    2015-12-13
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/BOM/">BOM</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>以前我们操作的都是 window 下的 document 对象，他主要是浏览器的中的节点信息，是最重要的浏览器对象。接下来我记录的是一些浏览器不常用但一定会用到的其他对象，那就是 navigator 对象、location 对象、history 对象和 screen 对象。</p>
+        
+          <div class="more-link">
+            <a href="/2015/12/13/2015/2015-12-13_173817-1306/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/11/27/2015/2015-11-27_154341-1269/">Meteor 订阅数据浏览器端查看工具 msavin:mongol</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-11-27T15:43:41.000Z" itemprop="datePublished">
+    2015-11-27
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在过去的开发 Meteor 项目过程中，我们如果想查看某个页面所订阅的数据是否成功或者查看已经订阅成功数据的内容的时候，往往是通过浏览器的控制台打印数据查看，这样非常不方便，而且容易混淆。今天给大家介绍一款工具 <code>msavin:mongol</code> 可以让我们在开发环境中很轻松的就看到我们需要的订阅的数据信息。先来一张图看看效果。</p>
+        
+          <div class="more-link">
+            <a href="/2015/11/27/2015/2015-11-27_154341-1269/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/11/22/2015/2015-11-22_162853-1236/">onload 加载事件</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-11-22T16:28:53.000Z" itemprop="datePublished">
+    2015-11-22
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Event/">Event</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>前面我们写过的代码中，JavaScript 代码都是在整个 HTML 代码后面的，这样是为了确保 HTML 页面中的所有 DOM 元素都加载完毕了，才能让 JavaScript 代码正确的执行，如果我们把 JavaScript 代码写在了 head 里面，就会导致 JavaScript 代码先执行了，而有些 DOM 元素还没初始化，最终 JavaScript 代码报错。要避免这种问题，我们可以使用 onload 加载事件来解决。</p>
+        
+          <div class="more-link">
+            <a href="/2015/11/22/2015/2015-11-22_162853-1236/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/11/22/2015/2015-11-22_155352-1233/">事件对象的作用和案例</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-11-22T15:53:52.000Z" itemprop="datePublished">
+    2015-11-22
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Event/">Event</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>事件对象，就是在响应某些事件的处理函数内部第一个传递进来的参数。不同的事件，参数的内容也不同，我们可以根据每一个事件对象能用的功能来实现特殊的需求，下面就是几个案例。</p>
+        
+          <div class="more-link">
+            <a href="/2015/11/22/2015/2015-11-22_155352-1233/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/11/22/2015/2015-11-22_145315-1224/">JavaScript 设置事件流流向</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-11-22T14:53:15.000Z" itemprop="datePublished">
+    2015-11-22
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Event/">Event</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>多层标签嵌套如果绑定了相同的事件，那么触发其中某一个标签的事件后，其关联的其他标签也会同时响应该事件，如下图所示：</p>
+        
+          <div class="more-link">
+            <a href="/2015/11/22/2015/2015-11-22_145315-1224/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/11/21/2015/2015-11-21_221249-1218/">JavaScript DOM 操作给元素添加、删除事件</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-11-21T22:12:49.000Z" itemprop="datePublished">
+    2015-11-21
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/DOM/">DOM</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/Event/">Event</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>借用传智播客教师课件中得一句话，“通过鼠标、键盘对浏览器页面所做的动作就是事件”，比如鼠标点击、鼠标移入、鼠标移除、键盘按下、键盘抬起等等，都称之为事件，这些事件有如下几种。</p>
+        
+          <div class="more-link">
+            <a href="/2015/11/21/2015/2015-11-21_221249-1218/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/categories/language/page/11/">« prev</a><a class="page-number" href="/categories/language/">1</a><span class="space">&hellip;</span><a class="page-number" href="/categories/language/page/10/">10</a><a class="page-number" href="/categories/language/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/categories/language/page/13/">13</a><a class="page-number" href="/categories/language/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/categories/language/page/23/">23</a><a class="extend next" rel="next" href="/categories/language/page/13/">next »</a>
+    </nav>
+  </section>
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

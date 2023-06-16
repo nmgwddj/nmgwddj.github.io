@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>线程属性设置 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>线程属性设置</h1>
+    </header>
+
+    <section>
+      <p>本文将通过一个创建n个线程的案例来展示一下线程属性的设定及使用，通常情况下，系统对于线程的创建是没有限制的，但是每一个线程都是需要一个栈空间的，每个栈空间大小也都是固定的，可通过系统命令 ulimit -a 来查看，如果线程栈空间的总数超过了一个进程可使用的虚拟内存用户空间，那么就无法再继续创建线程了。我们只是做一个小的测试，调整每个线程的栈空间大小来揭露线程属性的使用方法，并提高一个程序创建线程的数量（Notice：提高线程数量并没有什么好处，我们只是为了演示如何修改线程属性）。</p>
+<span id="more"></span>
+<hr>
+<h3 id="【普通的创建线程案例】"><a href="#【普通的创建线程案例】" class="headerlink" title="【普通的创建线程案例】"></a>【普通的创建线程案例】</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;pthread.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;</p>
+<p>void* dowork()<br>{<br>while(1)<br>{<br>sleep(1);<br>}<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>int i &#x3D; 0;<br>int res;<br>pthread_t tid;<br>while(1){<br>&#x2F;&#x2F; 无限创建线程，直到遇到错误为止<br>if((res &#x3D; pthread_create(&amp;tid, NULL, dowork, NULL)))<br>{<br>printf(“%s\n”, strerror(res));<br>break;<br>}<br>&#x2F;&#x2F; 每成功创建一个线程将 i++<br>i++;<br>}<br>&#x2F;&#x2F; 最后打印 i 的值<br>printf(“%d\n”, i);<br>return 0;<br>}</p>
+<p>该程序运行后，效果如下图： <a href="/images/2015/07/2015-07-05_165151.png"><img src="/images/2015/07/2015-07-05_165151.png" alt="2015-07-05_165151"></a> 程序最终创建了 381 个线程，每个线程使用的栈大小是系统默认的，这个默认值可以如下： <a href="/images/2015/07/2015-07-05_165338.png"><img src="/images/2015/07/2015-07-05_165338.png" alt="2015-07-05_165338"></a> 381 * 8192Byte &#x3D; 3121152Byte，只是字节数 Byte，3121152Byte &#x2F; 1024Byte &#x3D; 3048MB 得到的是 KByte，而每个进程可使用的虚拟内存用户空间的大小是 3GB （1024 * 3）&#x3D; 3072MB。可以看出，我们的程序已经快将虚拟内存用户空间使用完了，所以程序再次分配线程失败了。</p>
+<hr>
+<p>而如果我们将每一个线程的栈大小设定的更小了（线程属性设置），是不是就可以提高创建线程的数量呢？看如下代码：</p>
+<p>#include &lt;stdio.h&gt;<br>#include &lt;pthread.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;</p>
+<p>#define STACK_SIZE 1024 * 1024</p>
+<p>void* dowork()<br>{<br>while(1)<br>{<br>sleep(1);<br>}<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>int i &#x3D; 0;<br>int res;<br>char* pStack;<br>pthread_t tid;<br>&#x2F;&#x2F; 初始化线程属性结构<br>pthread_attr_t attr;<br>pthread_attr_init(&amp;attr);<br>&#x2F;&#x2F; 设定线程属性为分离属性<br>pthread_attr_setdetachstate(&amp;attr, PTHREAD_CREATE_DETACHED);</p>
+<p>while(1){<br>&#x2F;&#x2F; 分配栈空间<br>pStack &#x3D; malloc(STACK_SIZE);<br>if (NULL &#x3D;&#x3D; pStack) break;<br>&#x2F;&#x2F; 设置线程栈大小<br>pthread_attr_setstack(&amp;attr, pStack, STACK_SIZE);<br>&#x2F;&#x2F; 创建线程<br>if((res &#x3D; pthread_create(&amp;tid, &amp;attr, dowork, NULL)))<br>{<br>printf(“%s\n”, strerror(res));<br>break;<br>}<br>i++;<br>}<br>&#x2F;&#x2F; 销毁线程属性结构<br>pthread_attr_destroy(&amp;attr);<br>printf(“%d\n”, i);<br>return 0;<br>}</p>
+<p>程序将线程的栈大小调整为 1024Byte * 1024Byte &#x3D; 1MB，然后再次循环创建线程，效果如下图： <a href="/images/2015/07/2015-07-05_170330.png"><img src="/images/2015/07/2015-07-05_170330.png" alt="2015-07-05_170330"></a> 程序最终创建了 3055 个线程，每个线程  1MB * 3055 &#x3D; 3055MB，也逼近了可使用的虚拟内存用户空间的大小。至此我们验证了线程数量的创建取决于栈大小并且学会了如何设定一个线程的属性。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-05T17:05:18.000Z" itemprop="datePublished">
+              2015-07-05
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

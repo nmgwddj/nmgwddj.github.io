@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>linux/unix 多线程拷贝文件示例 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>linux/unix 多线程拷贝文件示例</h1>
+    </header>
+
+    <section>
+      <p>为了进一步加深对线程的操作，本文介绍了使用多线程实现拷贝文件的一个案例，网络上虽然有很多多线程拷贝的案例，但是都存在重大 bug。我们独辟蹊径，首先将一个文件分段映射到内存（mmap），随后将每一段映射的内存通知给线程，由线程去对每一段已经映射的内存进行复制。具体实现代码如下：</p>
+<span id="more"></span>
+<hr>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p>#include &lt;stdio.h&gt;&#x2F;&#x2F; printf<br>#include &lt;pthread.h&gt;&#x2F;&#x2F; pthread<br>#include &lt;sys&#x2F;types.h&gt;&#x2F;&#x2F; fstat<br>#include &lt;sys&#x2F;stat.h&gt;&#x2F;&#x2F; fstat<br>#include &lt;fcntl.h&gt;&#x2F;&#x2F; open<br>#include &lt;sys&#x2F;mman.h&gt;&#x2F;&#x2F; mmap<br>#include &lt;sys&#x2F;types.h&gt;&#x2F;&#x2F; ftruncate<br>#include &lt;unistd.h&gt;&#x2F;&#x2F; sleep ..</p>
+<p>&#x2F;&#x2F; 5 个线程<br>#define THREAD_COUNT 5</p>
+<p>&#x2F;&#x2F; 用以线程之间传递参数<br>struct tag_mmap<br>{<br>&#x2F;&#x2F; 要读取源文件的起始内存位置<br>void* r_mem;<br>&#x2F;&#x2F; 要写入目标文件的起始内存位置<br>void* w_mem;<br>&#x2F;&#x2F; 要复制的大小<br>unsigned long long m_size;<br>};</p>
+<p>void* threadfunc(void* arg)<br>{<br>&#x2F;&#x2F; 解析结构体内容<br>struct tag_mmap* recv &#x3D; (struct tag_mmap*)arg;<br>&#x2F;&#x2F; 读的内存起始地址<br>char* r &#x3D; recv-&gt;r_mem;<br>&#x2F;&#x2F; 写的内存起始地址<br>char* w &#x3D; recv-&gt;w_mem;</p>
+<p>#if 0<br>&#x2F;&#x2F; debug<br>printf(“thread id &#x3D; %x, read &#x3D; %x, write &#x3D; %x, size &#x3D; %lld\n”,<br>(unsigned int)pthread_self(),<br>(unsigned int)r,<br>(unsigned int)w,<br>recv-&gt;m_size);<br>#endif</p>
+<p>&#x2F;&#x2F; 一个字节一个字节的赋值，如果直接 memcpy 呢？<br>for (int i &#x3D; 0; i &lt; recv-&gt;m_size; i++)<br>{<br>*w++ &#x3D; *r++;<br>}</p>
+<p>return (void*)0;<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>&#x2F;&#x2F; 取源文件大小<br>int rfd;<br>struct stat buf;<br>rfd &#x3D; open(argv[1], O_RDONLY);<br>fstat(rfd, &amp;buf);<br>printf(“src file size &#x3D; %d\n”, (unsigned int)buf.st_size);</p>
+<p>&#x2F;&#x2F; 创建被写的文件<br>int wfd;<br>&#x2F;&#x2F; 创建被写文件，如果不存在则创建，并截断文件<br>wfd &#x3D; open(argv[2], O_RDWR  O_CREAT  O_TRUNC, 0644);<br>&#x2F;&#x2F; 拓展文件<br>lseek(wfd, buf.st_size - 1, SEEK_SET);<br>&#x2F;&#x2F; 最后一个字节写入数据，这样才真正拓展<br>write(wfd, “\0”, 1);</p>
+<p>&#x2F;&#x2F; 取平均数<br>unsigned long long nCount &#x3D; buf.st_size &#x2F; THREAD_COUNT;<br>&#x2F;&#x2F; 4096整数倍，用来分割文件<br>unsigned long long nSplit &#x3D; nCount - (nCount % 4096);</p>
+<p>if (nCount &lt; 4096 &amp;&amp; nSplit &#x3D;&#x3D; 0)<br>{<br>&#x2F;&#x2F; 如果文件除以线程数以后小于页面的整数倍，那么就直接整个文件都映射进去处理<br>pthread_t tid;<br>struct tag_mmap single;<br>&#x2F;&#x2F; 读文件映射<br>single.r_mem &#x3D; mmap(NULL, buf.st_size, PROT_READ, MAP_SHARED, rfd, 0);<br>if (single.r_mem &#x3D;&#x3D; MAP_FAILED)<br>{<br>perror(“mmap read”);<br>}<br>&#x2F;&#x2F; 写文件映射<br>single.w_mem &#x3D; mmap(NULL, buf.st_size, PROT_WRITE, MAP_SHARED, wfd, 0);<br>if (single.w_mem &#x3D;&#x3D; MAP_FAILED)<br>{<br>perror(“mmap write”);<br>}<br>&#x2F;&#x2F; 映射的长度<br>single.m_size &#x3D; buf.st_size;<br>&#x2F;&#x2F; 一个线程处理复制动作即可<br>pthread_create(&amp;tid, NULL, threadfunc, (void*)&amp;single);</p>
+<p>pthread_join(tid, NULL);<br>munmap(single.r_mem, buf.st_size);<br>munmap(single.w_mem, buf.st_size);<br>}<br>else<br>{</p>
+<p>&#x2F;&#x2F; 每个mmap后的地址和大小结构体数组<br>struct tag_mmap mm[THREAD_COUNT];<br>&#x2F;&#x2F; 线程ID<br>pthread_t tid[THREAD_COUNT];<br>&#x2F;&#x2F; 开始映射内存<br>for (int i &#x3D; 0; i &lt; THREAD_COUNT &amp;&amp; nCount &gt; 4096; i++)<br>{<br>&#x2F;&#x2F; 最后一段所有整数倍映射后剩余的内存大小<br>if (i + 1 &#x3D;&#x3D; THREAD_COUNT)<br>{<br>&#x2F;&#x2F; 读内存映射<br>mm[i].r_mem &#x3D; mmap(NULL, buf.st_size - i * nSplit, PROT_READ, MAP_SHARED, rfd, i * nSplit);<br>if (mm[i].r_mem &#x3D;&#x3D; MAP_FAILED)<br>{<br>perror(“mmap read last”);<br>}<br>&#x2F;&#x2F; 写内存映射<br>mm[i].w_mem &#x3D; mmap(NULL, buf.st_size - i * nSplit, PROT_WRITE, MAP_SHARED, wfd, i * nSplit);<br>if (mm[i].w_mem &#x3D;&#x3D; MAP_FAILED)<br>{<br>perror(“mmap write last”);<br>}<br>&#x2F;&#x2F; 映射的大小保存到结构体<br>mm[i].m_size &#x3D; buf.st_size - i * nSplit;<br>pthread_create(&amp;tid[i], NULL, threadfunc, (void*)&amp;mm[i]);<br>&#x2F;&#x2F; printf(“i &#x3D; %d, %lld —– %lld mem addr &#x3D; 0x%x\n”, i, i * nSplit, buf.st_size - i * nSplit, (unsigned int)mm[i].r_mem);<br>}<br>&#x2F;&#x2F; 前几段符合4096整数倍的<br>else<br>{<br>&#x2F;&#x2F; 读内存映射<br>mm[i].r_mem &#x3D; mmap(NULL, nSplit, PROT_READ, MAP_SHARED, rfd, i * nSplit);<br>if (mm[i].r_mem &#x3D;&#x3D; MAP_FAILED)<br>{<br>perror(“mmap read fast”);<br>}<br>&#x2F;&#x2F; 写内存映射<br>mm[i].w_mem &#x3D; mmap(NULL, nSplit, PROT_WRITE, MAP_SHARED, wfd, i * nSplit);<br>if (mm[i].w_mem &#x3D;&#x3D; MAP_FAILED)<br>{<br>perror(“mmap write fast”);<br>}<br>&#x2F;&#x2F; 映射的大小保存到结构体<br>mm[i].m_size &#x3D; nSplit;<br>pthread_create(&amp;tid[i], NULL, threadfunc, (void*)&amp;mm[i]);<br>&#x2F;&#x2F; printf(“i &#x3D; %d, %lld —– %lld, mem addr &#x3D; 0x%x\n”, i, i * nSplit, nSplit, (unsigned int)mm[i].r_mem);<br>}<br>}</p>
+<p>&#x2F;&#x2F; 回收线程<br>for (int join &#x3D; 0; join &lt; THREAD_COUNT; join++)<br>{<br>pthread_join(tid[join], NULL);<br>}</p>
+<p>&#x2F;&#x2F; 取消内存映射<br>for (int un &#x3D; 0; un &lt; THREAD_COUNT; un++)<br>{<br>munmap(mm[un].r_mem, mm[un].m_size);<br>munmap(mm[un].w_mem, mm[un].m_size);<br>}<br>}<br>&#x2F;&#x2F; 关闭文件描述符<br>close(rfd);<br>close(wfd);</p>
+<p>printf(“finish…\n”);<br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-06T19:50:33.000Z" itemprop="datePublished">
+              2015-07-06
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>aliyun ubuntu 安装 meteor 运行环境 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>aliyun ubuntu 安装 meteor 运行环境</h1>
+    </header>
+
+    <section>
+      <p>阿里云服务器买回来是没有安装 curl 这个工具的，需要我们自己手动安装。你可以到 <a target="_blank" rel="noopener" href="http://curl.haxx.se/download.html">curl 官网</a> 下载源码包安装，也可以使用本文提供的简单的 apt-get 方法安装。</p>
+<p>$ sudo apt-get update<br>$ sudo apt-get install curl<br>$ curl <a target="_blank" rel="noopener" href="https://install.meteor.com/">https://install.meteor.com/</a>  sh</p>
+<p>上面命令执行完成后开始安装 meteor</p>
+<p>$ curl <a target="_blank" rel="noopener" href="https://install.meteor.com/">https://install.meteor.com/</a>  sh<br>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current<br>                                 Dload  Upload   Total   Spent    Left  Speed<br>100  6121    0  6121    0     0   3507      0 –:–:–  0:00:01 –:–:–  3507<br>Downloading Meteor distribution<br>######################################################################## 100.0%</p>
+<p>Meteor 1.2.0.2 has been installed in your home directory (~&#x2F;.meteor).<br>Writing a launcher script to &#x2F;usr&#x2F;local&#x2F;bin&#x2F;meteor for your convenience.<br>This may prompt for your password.<br>sudo: unable to resolve host aliyun</p>
+<p>To get started fast:</p>
+<p>  $ meteor create ~&#x2F;my_cool_app<br>  $ cd ~&#x2F;my_cool_app<br>  $ meteor</p>
+<p>Or see the docs at:</p>
+<p>  docs.meteor.com</p>
+<p>看到如上提示就是已经下载并部署完成了，我们来创建一个 meteor example 测试一下是否可以正常访问了。</p>
+<p>$ meteor create –example todos<br>Created a new Meteor app in ‘todos’.          </p>
+<p>To run your new app:<br>  cd todos<br>  meteor                                      </p>
+<p>If you are new to Meteor, try some of the learning resources here:<br>  <a target="_blank" rel="noopener" href="https://www.meteor.com/learn">https://www.meteor.com/learn</a></p>
+<p>上面是创建了一个 meteor 内置的示例，名字叫 todos，创建完成后进入 todos 文件夹运行 meteor 命令。</p>
+<p>$ cd todos<br>$ meteor<br>[[[[[ ~&#x2F;project&#x2F;todos ]]]]]                   </p>
+<p>&#x3D;&gt; Started proxy.<br>&#x3D;&gt; Started MongoDB.<br>&#x3D;&gt; Started your app.                          </p>
+<p>&#x3D;&gt; App running at: <a target="_blank" rel="noopener" href="http://localhost:3000/">http://localhost:3000/</a></p>
+<p>运行 meteor 命令后提示应用程序运行在 <a target="_blank" rel="noopener" href="http://localhost:3000/">http://localhost:3000/</a> 可以访问试一下吧。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-10-13T10:28:03.000Z" itemprop="datePublished">
+              2015-10-13
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

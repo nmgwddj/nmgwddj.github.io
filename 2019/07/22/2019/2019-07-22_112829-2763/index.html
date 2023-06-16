@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt Quick QSettings 配置信息保存位置 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt Quick QSettings 配置信息保存位置</h1>
+    </header>
+
+    <section>
+      <p>Qt Quick 给我们提供了非常方便的配置文件管理功能，它不仅仅可以在 C++ 中访问，也可以在 QML 中直接访问，最近在看 Qt Examples 目录下的 gallery 项目示例时，虽然知道用的是 QSettings 保存的持久化数据，但是不知道配置保存在哪里了，遂到 Qt 官网查询了一下，有英文阅读能力的可直接参考官网：<a target="_blank" rel="noopener" href="https://doc.qt.io/qt-5/qsettings.html">https://doc.qt.io/qt-5/qsettings.html</a>，以下为照搬翻译：</p>
+<span id="more"></span>
+<p>QSettings 配置保存的位置取决于你应用是系统级别还是用户级别的，这个概念如果不了解可以忽略，只关注下面路径就可以了。</p>
+<h2 id="Unix"><a href="#Unix" class="headerlink" title="Unix"></a>Unix</h2><p>在 Unix 派系系统中，如果文件是 <a target="_blank" rel="noopener" href="https://doc.qt.io/qt-5/qsettings.html#Format-enum">NativeFormat</a> 格式，将使用下面的文件做默认值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$HOME/.config/MySoft/Star Runner.ini (Qt for Embedded Linux: $HOME/Settings/MySoft/Star Runner.ini)</span><br><span class="line">$HOME/.config/MySoft.ini (Qt for Embedded Linux: $HOME/Settings/MySoft.ini)</span><br><span class="line">for each directory &lt;dir&gt; in $XDG_CONFIG_DIRS: &lt;dir&gt;/MySoft/Star Runner.ini</span><br><span class="line">for each directory &lt;dir&gt; in $XDG_CONFIG_DIRS: &lt;dir&gt;/MySoft.ini</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：如果没有设置 XDG_CONFIG_DIRS 值，则使用 &#x2F;etc&#x2F;xdg 作为默认值</p>
+</blockquote>
+<h2 id="macOS（10-2-和-10-3）"><a href="#macOS（10-2-和-10-3）" class="headerlink" title="macOS（10.2 和 10.3）"></a>macOS（10.2 和 10.3）</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$HOME/Library/Preferences/com.MySoft.Star Runner.plist</span><br><span class="line">$HOME/Library/Preferences/com.MySoft.plist</span><br><span class="line">/Library/Preferences/com.MySoft.Star Runner.plist</span><br><span class="line">/Library/Preferences/com.MySoft.plist</span><br></pre></td></tr></table></figure>
+
+<h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HKEY_CURRENT_USER\Software\MySoft\Star Runner</span><br><span class="line">HKEY_CURRENT_USER\Software\MySoft\OrganizationDefaults HKEY_LOCAL_MACHINE\Software\MySoft\Star Runner</span><br><span class="line">HKEY_LOCAL_MACHINE\Software\MySoft\OrganizationDefaults</span><br></pre></td></tr></table></figure>
+
+<p>官网文档中也包含了如果使用 ini 格式文件的保存位置说明，如果需要了解的也可以参考官网说明。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2019-07-22T11:28:29.000Z" itemprop="datePublished">
+              2019-07-22
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

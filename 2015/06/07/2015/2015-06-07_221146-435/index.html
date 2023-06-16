@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>#号法创建树 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>#号法创建树</h1>
+    </header>
+
+    <section>
+      <p>前面我们记录下来的文章都是手动创建的树，我们还从未尝试过将一组数据动态的在内存中构建成为一棵树。本文将详细介绍使用#号创建法动态的在内存中创建树的详细步骤。当然动态创建树并非就这么一种办法，我们记录的是最常用而且是最方便的方法。</p>
+<span id="more"></span>
+<p>动态创建树有一种方法是根据先序和中序遍历的结果推导出树的结构中内存中创建，办法相对复杂而且难以理解。我们不会做介绍，有兴趣的可以自己查找资料。本文重点介绍的是#号法创建树的过程。有以下这么一组数据。</p>
+<blockquote>
+<p>1 2 4 # # # 3 # #</p>
+</blockquote>
+<p>数据中的#号代表了一棵树的结尾，也就是说，#号前面一个的数据可能是一个叶子节点，也可能是一个没有左子节点的节点。这取决于这个数据后面跟随了几个#号。#号法推导一棵树是使用先序遍历（根、左、右）的方式推导的。那么上面这组数据，我们依次来看，具体的排列是什么样子呢？ 1 一定是整棵树的根节点，因为线序遍历优先记录的就是根节点 2 一定是 1 的左子节点 4 就有异议了，他可能是 1 的右子节点，也有可能是 2 的左子节点或 2 的右子节点。但是我们要想到，如果是 1 的右子节点，那么证明 2 肯定已经是左侧子树的叶子节点了，2 的后面应该跟着两个 # 号代表左侧节点的结束标记，而明显上面给出的数据不是这样的，所以 4 为 1 的右子节点不成立，并且间接的证明了，4一定是 2 的左子树，因为 2 后面没有 # 号，而紧随其后的是 4 ，所以可以确定，4 是 2 的左子节点。 # 代表一个节点的结束，紧随 4 的后面，证明是 4 的左侧节点。 # 有跟着一个结束标记，紧随上一个 # ，证明这是 4 的右侧节点。</p>
+<p>【已经组建起来的结构】</p>
+<p><a href="/images/2015/06/2015-06-07_214553.png"><img src="/images/2015/06/2015-06-07_214553.png" alt="2015-06-07_214553"></a>   # 在连续两个结束标记后，又紧随其后的跟着一个 #，看上图，既然 4 已经是叶子节点，那么证明 2 的左侧子树已经遍历完毕，接下来应该是 2 的右子树了。所以这个 # 号是 2 的右子树结束标记。链接后的树结构如下图： <a href="/images/2015/06/2015-06-07_214810.png"><img src="/images/2015/06/2015-06-07_214810.png" alt="2015-06-07_214810"></a> 3 上图中，1 的左侧子树已经全部填充完毕了，那么接下来这个 3 一定就是 1 的右子树。 <a href="/images/2015/06/2015-06-07_215429.png"><img src="/images/2015/06/2015-06-07_215429.png" alt="2015-06-07_215429"></a>   # # 最后两个都是井号，毋庸置疑，肯定代表节点 3 已经是叶子节点了。最后组成的图如下： <a href="/images/2015/06/2015-06-07_215608.png"><img src="/images/2015/06/2015-06-07_215608.png" alt="2015-06-07_215608"></a></p>
+<h3 id="【代码实现】"><a href="#【代码实现】" class="headerlink" title="【代码实现】"></a>【代码实现】</h3><p>上面介绍了具体的思路，我们开始用代码来实现这个需求。</p>
+<p>#include <iostream></p>
+<p>using namespace std;</p>
+<p>typedef struct tag_bitnode<br>{<br>&#x2F;&#x2F; 节点的数据<br>char data;<br>&#x2F;&#x2F; 节点的左子树<br>struct tag_bitnode* leftChild;<br>&#x2F;&#x2F; 节点的右子树<br>struct tag_bitnode* rightChild;<br>}BitNode;</p>
+<p>BitNode* create_tree()<br>{<br>char ch;<br>scanf_s(“%c”, &amp;ch);<br>if (‘#’ &#x3D;&#x3D; ch)<br>{<br>return NULL;<br>}<br>&#x2F;&#x2F; 创建根节点<br>BitNode* pNew &#x3D; (BitNode*)malloc(sizeof(BitNode));<br>if (NULL &#x3D;&#x3D; pNew) return NULL;</p>
+<p>&#x2F;&#x2F; 赋值<br>pNew-&gt;data &#x3D; ch;</p>
+<p>&#x2F;&#x2F; 创建左子树<br>pNew-&gt;leftChild &#x3D; create_tree();</p>
+<p>&#x2F;&#x2F; 创建右子树<br>pNew-&gt;rightChild &#x3D; create_tree();</p>
+<p>return pNew;<br>}</p>
+<p>&#x2F;&#x2F; 打印树<br>void show_tree(BitNode* tree)<br>{<br>if (NULL &#x3D;&#x3D; tree) return;</p>
+<p>printf(“%c “, tree-&gt;data);</p>
+<p>show_tree(tree-&gt;leftChild);<br>show_tree(tree-&gt;rightChild);<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>BitNode* tree &#x3D; create_tree();<br>show_tree(tree);<br>return 0;<br>}</p>
+<p>以上代码演示了如何使用#号法创建树，程序运行时，提示你输入一串数据，我们将之前自己组合的一组数据传递进去，按下回车便会组成树结构，并且我们在程序的最后按 先序遍历的方式打印了整个树。 <a href="/images/2015/06/2015-06-07_221311.png"><img src="/images/2015/06/2015-06-07_221311.png" alt="2015-06-07_221311"></a> 一棵数据较多的树： <a href="/images/2015/06/2015-06-07_221132.png"><img src="/images/2015/06/2015-06-07_221132.png" alt="2015-06-07_221132"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-07T22:11:46.000Z" itemprop="datePublished">
+              2015-06-07
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

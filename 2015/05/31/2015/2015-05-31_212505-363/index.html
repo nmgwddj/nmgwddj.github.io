@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>队列(queue)的概念及常见应用 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>队列(queue)的概念及常见应用</h1>
+    </header>
+
+    <section>
+      <p>队列是一种先进先出的数据模型，它的应用场景比较常见，比如日常生活中我们打10086的电话需要排队时、吃饭排号时的小票、Windows GUI程序的消息队列等等都是基于队列实现的。先进入队列的也是先从队列出去的。他的模型如下：</p>
+<span id="more"></span>
+<p><a href="/images/2015/05/2015-05-29_185230.png"><img src="/images/2015/05/2015-05-29_185230.png" alt="2015-05-29_185230"></a> 【顺序线性表实现队列】 顺序线性表可以实现队列的模型，线性表中哪一端作为队头或者队尾都可以的。具体实现代码如下（需要用到<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/datastruct/258.html">线性表顺序存储的头文件 SeqList.h 和 SeqList.c</a>）：</p>
+<p>#ifndef _SEQQUEUE_H_<br>#define _SEQQUEUE_H_</p>
+<p>typedef void SeqQueue;</p>
+<p>&#x2F;&#x2F;创建队列<br>SeqQueue* SeqQueue_Create(int capacity);</p>
+<p>&#x2F;&#x2F;销毁队列<br>void SeqQueue_Destroy(SeqQueue* queue);</p>
+<p>&#x2F;&#x2F;清空队列<br>void SeqQueue_Clear(SeqQueue* queue);</p>
+<p>&#x2F;&#x2F;进队列<br>int SeqQueue_Push(SeqQueue* queue, void* item);</p>
+<p>&#x2F;&#x2F;出队列<br>void* SeqQueue_Pop(SeqQueue* queue);</p>
+<p>&#x2F;&#x2F;获取队头元素<br>void* SeqQueue_Front(SeqQueue* queue);</p>
+<p>&#x2F;&#x2F;获取队列的长度<br>int SeqQueue_Size(SeqQueue* queue);</p>
+<p>#endif &#x2F;&#x2F;_SEQQUEUE_H_</p>
+<p>#define _CRT_SECURE_NO_WARNINGS<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include “SeqQueue.h”<br>#include “SeqList.h”</p>
+<p>&#x2F;&#x2F;用顺序线性表来实现</p>
+<p>&#x2F;&#x2F;创建队列<br>SeqQueue* SeqQueue_Create(int capacity)<br>{<br>&#x2F;&#x2F;创建一个线性表<br>return SeqList_Create(capacity);<br>}</p>
+<p>&#x2F;&#x2F;销毁队列<br>void SeqQueue_Destroy(SeqQueue* queue)<br>{<br>&#x2F;&#x2F;销毁线性表<br>SeqList_Destroy(queue);<br>}</p>
+<p>&#x2F;&#x2F;清空队列<br>void SeqQueue_Clear(SeqQueue* queue)<br>{<br>&#x2F;&#x2F;重置线性表<br>SeqList_Clear(queue);<br>}</p>
+<p>&#x2F;&#x2F;进队列<br>int SeqQueue_Push(SeqQueue* queue, void* item)<br>{<br>&#x2F;&#x2F;数组的尾部作为队尾<br>&#x2F;&#x2F;在信息表尾部插入元素<br>int ret &#x3D; SeqList_Insert(queue, (SeqListNode*)item, SeqList_Length(queue));<br>return ret;<br>}</p>
+<p>&#x2F;&#x2F;出队列<br>void* SeqQueue_Pop(SeqQueue* queue)<br>{<br>&#x2F;&#x2F;数组的头部作为队头<br>&#x2F;&#x2F;线性表的头部删除元素<br>SeqListNode* pNode &#x3D; SeqList_Delete(queue, 0);<br>return pNode;<br>}</p>
+<p>&#x2F;&#x2F;获取队头元素<br>void* SeqQueue_Front(SeqQueue* queue)<br>{<br>&#x2F;&#x2F;获取线性表第一个元素<br>SeqListNode* pNode &#x3D; SeqList_Get(queue, 0);<br>return pNode;<br>}</p>
+<p>&#x2F;&#x2F;获取队列的长度<br>int SeqQueue_Size(SeqQueue* queue)<br>{<br>&#x2F;&#x2F;线性表长度<br>return SeqList_Length(queue);<br>}</p>
+<p>#define _CRT_SECURE_NO_WARNINGS<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include “SeqQueue.h”</p>
+<p>&#x2F;&#x2F;定义结构体<br>typedef struct tag_Value<br>{<br>int v;<br>}Value;</p>
+<p>int main()<br>{<br>int i;<br>Value val[10];<br>SeqQueue* queue &#x3D; NULL;<br>&#x2F;&#x2F;创建队列<br>queue &#x3D; SeqQueue_Create(20);<br>&#x2F;&#x2F;初始化结构体数组<br>for (i &#x3D; 0; i &lt; sizeof(val) &#x2F; sizeof(Value); i++)<br>{<br>val[i].v &#x3D; i;<br>&#x2F;&#x2F;进队列<br>SeqQueue_Push(queue, (void*)&amp;val[i]);<br>}</p>
+<p>&#x2F;&#x2F;打印队列 的长度<br>printf(“Queue size &#x3D; %d\n”, SeqQueue_Size(queue));<br>&#x2F;&#x2F;打印对队头元素<br>printf(“Queue front element &#x3D; %d\n”, ((Value*)SeqQueue_Front(queue))-&gt;v);</p>
+<p>&#x2F;&#x2F;所有元素出队列<br>while (SeqQueue_Size(queue) &gt; 0)<br>{<br>&#x2F;&#x2F;打印对队头元素, 并弹出<br>printf(“POP – Queue front element &#x3D; %d\n”, ((Value*)SeqQueue_Pop(queue))-&gt;v);<br>}</p>
+<p>&#x2F;&#x2F;销毁队列<br>SeqQueue_Destroy(queue);</p>
+<p>printf(“Good good study, day day up!!!\n”);<br>system(“pause”);<br>return 0;<br>}</p>
+<p>【链式线性表实现队列】 使用顺序线性表可以实现队列的模型，同样链式线性表也是可以的，使用链表来实现队列模型如下： <a href="/images/2015/05/2015-05-29_191008.png"><img src="/images/2015/05/2015-05-29_191008.png" alt="2015-05-29_191008"></a> 实现代码（需要用到<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/datastruct/302.html">链式线性表头文件 LinkList.h 和 LinkList.c</a> ）：</p>
+<p>#ifndef _LINKQUEUE_H_<br>#define _LINKQUEUE_H_</p>
+<p>typedef void LinkQueue;</p>
+<p>&#x2F;&#x2F;创建队列<br>LinkQueue* LinkQueue_Create();</p>
+<p>&#x2F;&#x2F;销毁队列<br>void LinkQueue_Destory(LinkQueue* queue);</p>
+<p>&#x2F;&#x2F;清空队列<br>void LinkQueue_Clear(LinkQueue* queue);</p>
+<p>&#x2F;&#x2F;进队列<br>int LinkQueue_Push(LinkQueue* queue, void* item);</p>
+<p>&#x2F;&#x2F;出队列<br>void* LinkQueue_Pop(LinkQueue* queue);</p>
+<p>&#x2F;&#x2F;获取队头元素<br>void* LinkQueue_Front(LinkQueue* queue);</p>
+<p>&#x2F;&#x2F;获取队列长度<br>int LinkQueue_Size(LinkQueue* queue);</p>
+<p>#endif &#x2F;&#x2F;_LINKQUEUE_H_</p>
+<p>#define _CRT_SECURE_NO_WARNINGS<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include “LinkQueue.h”<br>#include “LinkList.h”</p>
+<p>&#x2F;&#x2F;定义一个队列节点结构体<br>typedef struct tag_listqueueNode<br>{<br>&#x2F;&#x2F;包含一个链表节点<br>LinkListNode node;<br>&#x2F;&#x2F;存储数据<br>void* data;<br>}ListQueueNode;</p>
+<p>&#x2F;&#x2F;创建队列 &#x3D;&#x3D;&gt; 创建链表<br>LinkQueue* LinkQueue_Create()<br>{<br>&#x2F;&#x2F;创建一个链表<br>return LinkList_Create();<br>}</p>
+<p>&#x2F;&#x2F;销毁队列<br>void LinkQueue_Destory(LinkQueue* queue)<br>{<br>&#x2F;&#x2F;释放掉所有分配的存储空间<br>LinkQueue_Clear(queue);<br>&#x2F;&#x2F;销毁这个链表<br>LinkList_Destory(queue);<br>}</p>
+<p>&#x2F;&#x2F;清空队列 &#x3D;&#x3D;&gt; 清空链表<br>&#x2F;&#x2F;因为动态分配了内存, 所有需要释放<br>void LinkQueue_Clear(LinkQueue* queue)<br>{<br>&#x2F;&#x2F;释放掉所有分配的存储空间<br>while (LinkQueue_Size(queue) &gt; 0)<br>{<br>LinkQueue_Pop(queue);<br>}<br>&#x2F;&#x2F;清空链表<br>LinkList_Clear(queue);<br>}</p>
+<p>&#x2F;&#x2F;进队列 &#x3D;&#x3D;&gt; 在链表尾部添加元素<br>int LinkQueue_Push(LinkQueue* queue, void* item)<br>{<br>&#x2F;&#x2F;创建队列节点<br>ListQueueNode* pNew &#x3D; (ListQueueNode*)malloc(sizeof(ListQueueNode));<br>if (pNew &#x3D;&#x3D; NULL)<br>{<br>&#x2F;&#x2F;创建节点失败,直接返回<br>return -1;<br>}<br>&#x2F;&#x2F;初始化<br>pNew-&gt;data &#x3D; item;<br>pNew-&gt;node.next &#x3D; NULL;</p>
+<p>&#x2F;&#x2F;链表 的尾部作为队尾<br>&#x2F;&#x2F;在链表 的尾部插入元素<br>int ret &#x3D; LinkList_Insert(queue, (LinkListNode*)pNew, LinkList_Length(queue));<br>if (ret !&#x3D; 0)<br>{<br>&#x2F;&#x2F;释放内存<br>free(pNew);<br>}<br>return ret;<br>}</p>
+<p>&#x2F;&#x2F;出队列 &#x3D;&#x3D;&gt; 在链表头部删除元素<br>void* LinkQueue_Pop(LinkQueue* queue)<br>{<br>&#x2F;&#x2F;链表的头部作为队头<br>&#x2F;&#x2F;删除链表的第一个数据节点<br>LinkListNode *pDel &#x3D; LinkList_Delete(queue, 0);<br>if (pDel &#x3D;&#x3D; NULL)<br>{<br>return NULL;<br>}<br>void* data &#x3D; ((ListQueueNode*)pDel)-&gt;data;<br>&#x2F;&#x2F;释放内存<br>free(pDel);</p>
+<p>return data;<br>}</p>
+<p>&#x2F;&#x2F;获取队头元素 &#x3D;&#x3D;&gt; 获取链表的第一个数据节点<br>void* LinkQueue_Front(LinkQueue* queue)<br>{<br>&#x2F;&#x2F;获取链表的第一个数据节点<br>LinkListNode* pNode &#x3D; LinkList_Get(queue, 0);<br>return ((ListQueueNode*)pNode)-&gt;data;<br>}</p>
+<p>&#x2F;&#x2F;获取队列长度 &#x3D;&#x3D;&gt; 获取链表的长度<br>int LinkQueue_Size(LinkQueue* queue)<br>{<br>&#x2F;&#x2F;链表长度<br>return LinkList_Length(queue);<br>}</p>
+<p>#define _CRT_SECURE_NO_WARNINGS<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include “LinkQueue.h”</p>
+<p>int main()<br>{<br>int i;<br>int array[10] &#x3D; { 0 };<br>LinkQueue* queue &#x3D; NULL;<br>&#x2F;&#x2F;创建队列<br>queue &#x3D; LinkQueue_Create();<br>&#x2F;&#x2F;数组赋值<br>for (i &#x3D; 0; i &lt; sizeof(array) &#x2F; sizeof(int); i++)<br>{<br>array[i] &#x3D; i;<br>&#x2F;&#x2F;进队列<br>LinkQueue_Push(queue, (void*)&amp;array[i]);<br>}</p>
+<p>&#x2F;&#x2F;打印队列的长度<br>printf(“Queue size &#x3D; %d\n”, LinkQueue_Size(queue));<br>&#x2F;&#x2F;打印队头元素<br>printf(“Queue Front element &#x3D; %d\n”, *(int*)LinkQueue_Front(queue));</p>
+<p>&#x2F;&#x2F;将所有元素出队列<br>while (LinkQueue_Size(queue) &gt; 0)<br>{<br>&#x2F;&#x2F;打印队头元素, 并弹出<br>printf(“POP &#x3D;&#x3D; Queue Front element &#x3D; %d\n”, *(int*)LinkQueue_Pop(queue));<br>}<br>&#x2F;&#x2F;销毁队列<br>LinkQueue_Destory(queue);</p>
+<p>printf(“Good good study, day day up!!!\n”);<br>system(“pause”);<br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-31T21:25:05.000Z" itemprop="datePublished">
+              2015-05-31
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>makefile 基础、进阶及常用 makefile | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>makefile 基础、进阶及常用 makefile</h1>
+    </header>
+
+    <section>
+      <h3 id="makefile-语法"><a href="#makefile-语法" class="headerlink" title="makefile 语法"></a>makefile 语法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">目标:依赖</span><br><span class="line">（tab）命令</span><br><span class="line"></span><br><span class="line">如：add.o:add.c</span><br><span class="line">(一个tab缩进)gcc –Wall –g –c add.c –o add.o</span><br><span class="line"></span><br><span class="line">目标：要生成的目标文件</span><br><span class="line">依赖：目标文件由哪些文件生成</span><br><span class="line">命令：通过执行该命令由依赖文件生成目标</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<h3 id="makefile-工作原理"><a href="#makefile-工作原理" class="headerlink" title="makefile 工作原理"></a>makefile 工作原理</h3><p>1、若想生成目标，检查规则中的依赖条件是否存在，如不存在，则寻找是否有规则用来生成该依赖文件 2、检查规则中的目标是否需要更新，必须先检查它的所有依赖，依赖中有任一个被更新，则目标必须更新</p>
+<ul>
+<li>分析各个目标和依赖之间的关系</li>
+<li>根据依赖关系自底向上执行命令</li>
+<li>根据修改时间比目标新，确定更新</li>
+<li>如果目标不依赖任何条件，则执行对应命令，以示更新</li>
+</ul>
+<h3 id="一个最简单的-makefile"><a href="#一个最简单的-makefile" class="headerlink" title="一个最简单的 makefile"></a>一个最简单的 makefile</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">main:main.c</span><br><span class="line">    gcc main.c -o main</span><br></pre></td></tr></table></figure>
+
+<p>该 makefile 生成目标为 main 的文件，依赖 main.c，所需命令是 <code>gcc main.c -o main</code>，注意前面的 (tab)。</p>
+<h3 id="联合编译-makefile"><a href="#联合编译-makefile" class="headerlink" title="联合编译 makefile"></a>联合编译 makefile</h3><p>上面的例子只是一个最简单的 makefile 的使用方法，但实际项目里面不可能只有一个文件，实际可能是多个 .c .h 组成，像这样的项目，我们该如何通过 makefile 管理呢？我们来看下面这个项目的目录。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mycode@vmware:~/Desktop/code/makefile$ tree</span><br><span class="line">.</span><br><span class="line">├── add.c</span><br><span class="line">├── main.c</span><br><span class="line">├── makefile</span><br><span class="line">├── mul.c</span><br><span class="line">└── sub.c</span><br></pre></td></tr></table></figure>
+
+<p>目录中有 main.c 是项目的 mian 函数入口代码，里面用到了三个函数，分别是 add()、sub()、mul()，他们都再不同的 <code>.c</code> 文件中，如果我们手动编译这个项目需要用到如下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc main.c add.c sub.c mul.c -o app</span><br></pre></td></tr></table></figure>
+
+<p>执行上面命令后会执行联合编译，直接生成可执行文件 <code>app</code>。而有些时候你会发现，这样编译带来的问题是如果我只改动了其中一个文件的代码，执行这个编译语法的时候，会重新编译所有的代码，小工程也就算了，如果是个大项目那肯定会很慢，所以这不是上上之选。正常的做法应该是先使用 <code>-c</code> 参数生成每个文件的 <code>.o</code> 文件，然后联合编译所有的 <code>.o</code> 文件，当某个 <code>.c</code> 文件修改后，只重新编译这个 <code>.c</code> 到 <code>.o</code>，然后再执行联合编译，这样就减少了多余代码编译的过程，方法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -c main.c add.c sub.c mul.c</span><br></pre></td></tr></table></figure>
+
+<p>这样就生成了 4 个 <code>.o</code> 文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mycode@vmware:~/Desktop/code/makefile$ tree</span><br><span class="line">.</span><br><span class="line">├── add.c</span><br><span class="line">├── add.o</span><br><span class="line">├── main.c</span><br><span class="line">├── main.o</span><br><span class="line">├── makefile</span><br><span class="line">├── mul.c</span><br><span class="line">├── mul.o</span><br><span class="line">├── sub.c</span><br><span class="line">└── sub.o</span><br></pre></td></tr></table></figure>
+
+<p>然后对 4 个 <code>.o</code> 文件执行联合编译，最终生成可执行的 <code>app</code> 文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc main.o add.o sub.o mul.o -o app</span><br></pre></td></tr></table></figure>
+
+<p>以上是我们通过手动敲命令的方式执行编译，这种联合编译，我们如何通过 makefile 来处理呢？先来分析一下，我们把手动执行编译的过程逆向思考一下，想生成<strong>目标</strong>为可执行的 <code>app</code> 文件，需要<strong>依赖</strong> 4 个 <code>.o</code> 文件的支持，<code>main.o add.o sub.o mul.o</code>。，所需执行的<strong>命令</strong>是 <code>gcc main.o add.o sub.o mul.o -o app</code>，那么下面的 makefile 语法应运而生了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">app:main.o add.o sub.o mul.o</span><br><span class="line">    gcc main.o add.o sub.o mul.o -o app</span><br></pre></td></tr></table></figure>
+
+<p>但这里你会发现，如果我们项目目录是空的，只有 <code>.c</code> 和 <code>.h</code> 文件时，根本没有 <code>.o</code> 文件，makefile 去哪找这些 .o 文件呢？所以我们还需要制作一些其他的目标文件，那就是这些 <code>.o</code> 文件。语法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">main.o:main.c</span><br><span class="line">    gcc -c main.c</span><br><span class="line"></span><br><span class="line">add.o:add.c</span><br><span class="line">    gcc -c add.c</span><br><span class="line"></span><br><span class="line">sub.o:sub.c</span><br><span class="line">    gcc -c sub.c</span><br><span class="line"></span><br><span class="line">mul.o:mul.c</span><br><span class="line">    gcc -c mul.c</span><br></pre></td></tr></table></figure>
+
+<p>组合后的 makefile 如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">app:main.o add.o sub.o mul.o</span><br><span class="line">    gcc main.o add.o sub.o mul.o -o app</span><br><span class="line"></span><br><span class="line">main.o:main.c</span><br><span class="line">    gcc -c main.c</span><br><span class="line"></span><br><span class="line">add.o:add.c</span><br><span class="line">    gcc -c add.c</span><br><span class="line"></span><br><span class="line">sub.o:sub.c</span><br><span class="line">    gcc -c sub.c</span><br><span class="line"></span><br><span class="line">mul.o:mul.c</span><br><span class="line">    gcc -c mul.c</span><br></pre></td></tr></table></figure>
+
+<p>以上就是一个算是能实现功能的 makefile 了，但是还不算完美，后面我们再引入其他 makefile 的特性，先在这个项目目录下执行一次 <code>make</code> 命令，看看编译的效果如何。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mycode@vmware:~/Desktop/code/makefile$ make</span><br><span class="line">gcc -c main.c</span><br><span class="line">gcc -c add.c</span><br><span class="line">gcc -c sub.c</span><br><span class="line">gcc -c mul.c</span><br><span class="line">gcc main.o add.o sub.o mul.o -o app</span><br></pre></td></tr></table></figure>
+
+<p>执行 make 命令后我们可以看到，首先对每个 <code>.c</code> 文件进行编译，生成 <code>.o</code> 文件，然后对几个 <code>.o</code> 文件联合编译生成可执行的 <code>app</code> 文件。并且如果你修改了其中一个 <code>.c</code> 文件的情况下，重新执行 <code>make</code> 命令，<code>make</code> 只会重新编译你修改过的源文件，并不会重新编译所有。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mycode@vmware:~/Desktop/code/makefile$ vi main.c</span><br><span class="line">mycode@vmware:~/Desktop/code/makefile$ make</span><br><span class="line">gcc -c main.c</span><br><span class="line">gcc main.o add.o sub.o mul.o -o app</span><br></pre></td></tr></table></figure>
+
+<h3 id="makefile-变量"><a href="#makefile-变量" class="headerlink" title="makefile 变量"></a>makefile 变量</h3><p>接下来我们引入 makefile 变量机制，来修改一下上面的 makefile 文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">obj = main.o add.o sub.o mul.o</span><br><span class="line"></span><br><span class="line">app:$(obj)</span><br><span class="line">    gcc $(obj) -o app</span><br><span class="line"></span><br><span class="line">main.o:main.c</span><br><span class="line">    gcc -c main.c</span><br><span class="line"></span><br><span class="line">add.o:add.c</span><br><span class="line">    gcc -c add.c</span><br><span class="line"></span><br><span class="line">sub.o:sub.c</span><br><span class="line">    gcc -c sub.c</span><br><span class="line"></span><br><span class="line">mul.o:mul.c</span><br><span class="line">    gcc -c mul.c</span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">    rm -rf $(obj) app</span><br></pre></td></tr></table></figure>
+
+<p>执行后，同样可以达到效果，我们引入了一个 obj 的变量，注意变量在使用的时候要加 $()，中间变量名字。并且增加了一个 <code>clean</code> 目标，他不依赖任何东西，执行一条清除所有 <code>.o</code> 文件和 <code>app</code> 文件的命令。用来帮助我们清理项目目录。使用方法就是在 <code>make</code> 命令后加 <code>clean</code> 参数即可，以下是执行后的效果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mycode@vmware:~/Desktop/code/makefile$ make clean</span><br><span class="line">rm -rf main.o add.o sub.o mul.o app</span><br><span class="line">mycode@vmware:~/Desktop/code/makefile$ ls</span><br><span class="line">add.c  main.c  makefile  mul.c  sub.c</span><br></pre></td></tr></table></figure>
+
+<h3 id="makefile-自动变量"><a href="#makefile-自动变量" class="headerlink" title="makefile 自动变量"></a>makefile 自动变量</h3><p>makefile 中有一些预定义的变量，你可以理解它像是 C 语言中的一些关键字，分别有不同的意义，我们列举几个常用的自动变量（其他还有很多），通过上面的 makefile 文件做修改来演示他们的用法。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$@：在命令中使用，表示规则中的目标</span><br><span class="line">$&lt;：在命令中使用，表示规则中的第一个条件</span><br><span class="line">$^：在命令中使用，表示规则中的所有条件，组成一个列表，以空格隔开，如果这个列表中有重复的项则消除重复项。</span><br></pre></td></tr></table></figure>
+
+<p>他们的使用方法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">obj = main.o add.o sub.o mul.o</span><br><span class="line"></span><br><span class="line">app:$(obj)</span><br><span class="line">    gcc $^ -o $@ </span><br><span class="line"></span><br><span class="line">main.o:main.c</span><br><span class="line">    gcc -c $&lt; -o $@</span><br><span class="line"></span><br><span class="line">add.o:add.c</span><br><span class="line">    gcc -c $&lt; -o $@</span><br><span class="line"></span><br><span class="line">sub.o:sub.c</span><br><span class="line">    gcc -c $&lt; -o $@</span><br><span class="line"></span><br><span class="line">mul.o:mul.c</span><br><span class="line">    gcc -c $&lt; -o $@</span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">    rm -rf $(obj) app</span><br></pre></td></tr></table></figure>
+
+<p>我们分别把这三个自动变量放到了不同的位置，用来表示他们的作用。可以一目了然。执行 <code>make</code> 命令后，可以达到同样的效果。</p>
+<h3 id="makefile-模式规则"><a href="#makefile-模式规则" class="headerlink" title="makefile 模式规则"></a>makefile 模式规则</h3><p>再分析一下上面的 makefile 代码，对于每个要生成的 <code>.o</code> 文件，我们都要给他写一条规则，如果有很多怎么办？难道要一条一条的写吗？当然不会，makefile 提供了一种模式规则，使用 <code>%</code> 符号来匹配任意字符串达到通配的作用，先来看改造后的代码，然后我们来分析其执行流程。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">obj = main.o add.o sub.o mul.o</span><br><span class="line"></span><br><span class="line">app:$(obj)</span><br><span class="line">    gcc $^ -o $@ </span><br><span class="line"></span><br><span class="line">%.o:%.c</span><br><span class="line">    gcc -c $&lt; -o $@</span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">    rm -rf $(obj) app</span><br></pre></td></tr></table></figure>
+
+<p>上面的 makefile 经过改造后，只剩下这么一点内容了，但别看内容少，一样可以达到我们的需求。其执行流程是要生成的最终目标为 <code>app</code>，<code>app</code> 需要 4 个 <code>.o</code> 文件的支持，这 4 个文件我们用了一个变量 <code>obj</code> 来表示。当去找 <code>main.o</code> 文件时，发现没有，则去下面找是否有匹配生成这个 <code>.o</code> 文件的规则，因为 <code>%.o</code> 可以匹配 <code>main.o</code>，所以找到了下面这条规则：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">%.o:%.c</span><br><span class="line">    gcc -c $&lt; -o $@</span><br></pre></td></tr></table></figure>
+
+<p>规则中的 <code>%.c</code> 的 % 值，取决于目标 <code>%.o</code>，而此时 <code>%.o</code> 中 <code>%</code> 的值是上面生成 <code>app</code> 所需的 <code>main.o</code>，所以解释以后的代码相当于下面这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">main.o:main.c</span><br><span class="line">    gcc -c $&lt; -o $@</span><br></pre></td></tr></table></figure>
+
+<p>根据这条规则，生成出了 <code>main.o</code> 文件，其他 3 个 <code>.o</code> 文件也依次类推。这样就实现自动化的去匹配生成规则。</p>
+<h3 id="mekfile-函数"><a href="#mekfile-函数" class="headerlink" title="mekfile 函数"></a>mekfile 函数</h3><p>如果你认为上面的 makefile 已经很完美了，那你就大错特错了，做一个假设，如果你在项目中新增了一个 <code>.c</code> 的文件后，你还是需要修改 makefile 增加一个所依赖的 <code>.o</code> 文件。想自动化实现这个步骤，如果你自己写脚本，你是不是应该考虑，有多少个 <code>.c</code> 文件就生成多少个 <code>.o</code> 文件，而且每个 <code>.o</code> 文件的名字都与 <code>.c</code> 一样，所以我们可以获取一份 <code>.c</code> 文件的列表，根据这份列表把所有后缀改为 <code>.o</code> 再形成一个新的列表，这份列表就作为生成最终 <code>app</code> 的依赖。想实现这样的功能我们就需要用到 makefile 中的函数！如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 获取所有 .c 文件的列表赋值给 src 变量</span><br><span class="line">src = $(wildcard *.c)</span><br><span class="line"># 根据 src 变量获取 .o 文件列表存放到 obj 变量中</span><br><span class="line">obj = $(patsubst %.c, %.o, $(src))</span><br><span class="line"></span><br><span class="line">app:$(obj)</span><br><span class="line">    gcc $^ -o $@ </span><br><span class="line"></span><br><span class="line">%.o:%.c</span><br><span class="line">    gcc -c $&lt; -o $@</span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">    rm -rf $(obj) app</span><br></pre></td></tr></table></figure>
+
+<p>这次无论你增加多少个 <code>.c</code> 文件，makefile 都会自动遍历到并生成 <code>.o</code> 文件了。我们也可以添加一些自定义的变量，让以后 makefile 维护起来更方便：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># 获取所有 .c 文件的列表赋值给 src 变量</span><br><span class="line">src = $(wildcard *.c)</span><br><span class="line"># 根据 src 变量获取 .o 文件列表存放到 obj 变量中</span><br><span class="line">obj = $(patsubst %.c, %.o, $(src))</span><br><span class="line"></span><br><span class="line"># 方便后面更换编译器</span><br><span class="line">CC = gcc</span><br><span class="line"># 一些通用的编译参数</span><br><span class="line">CFLAGS = -Wall -g</span><br><span class="line"></span><br><span class="line">app:$(obj)</span><br><span class="line">    $(CC) $^ -o $@ </span><br><span class="line"></span><br><span class="line">%.o:%.c</span><br><span class="line">    $(CC) -c $&lt; -o $@ $(CFLAGS)</span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">    rm -rf $(obj) app</span><br></pre></td></tr></table></figure>
+
+<p>我们在生成 <code>.o</code> 文件时增加了 <code>-Wall</code> 和 <code>-g</code> 参数，这样我们就可以看到编译时是不是有警告信息了，因为我这个项目没有引入头文件告诉编译器去哪里找实现函数，所以就会出现一些警告信息，当然我们目的并不是要处理这些警告，而是来描述 makefile 的使用，看这篇文章的人，你可以自己根据需求修改。</p>
+<h3 id="makefile-中的-all"><a href="#makefile-中的-all" class="headerlink" title="makefile 中的 all"></a>makefile 中的 all</h3><p>因为 makefile 的执行流程是找到第一个目标作为最终生成的目标，如果顺序错乱了，makefile 就可能报错，<code>all</code> 方法就是解决这个问题而存在的，并且，<code>all</code> 方法可以让一个 makefile 生成多个目标。示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">src = $(wildcard *.c)</span><br><span class="line">obj = $(patsubst %.c, %.o, $(src))</span><br><span class="line"></span><br><span class="line">CC = gcc</span><br><span class="line">CFLAGS = -Wall -g</span><br><span class="line"></span><br><span class="line">all:app main</span><br><span class="line"></span><br><span class="line">%.o:%.c</span><br><span class="line">    $(CC) -c $&lt; -o $@ $(CFLAGS)</span><br><span class="line"></span><br><span class="line">app:$(obj)</span><br><span class="line">    $(CC) $^ -o $@ </span><br><span class="line"></span><br><span class="line">main:$(obj)</span><br><span class="line">    $(CC) $^ -o $@ </span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">    rm -rf $(obj) app</span><br></pre></td></tr></table></figure>
+
+<h3 id="makefile-clean-方法优化"><a href="#makefile-clean-方法优化" class="headerlink" title="makefile clean 方法优化"></a>makefile clean 方法优化</h3><p><code>make clean</code> 命令是用来清除目录下临时文件的，执行 clean 这个目标时，不需要任何依赖项，也就意味着，如果目录下有一个文件名为 <code>clean</code> 的话，执行 <code>make clean</code> 命令时会判断这个目标所依赖的内容是否有变化，如有变化则重新生成，无变化则跳过，而恰恰我们这个 <code>clean</code> 没写依赖规则！这将导致 <code>clean</code> 无论如何都不会被执行。解决这个问题的办法就是将 <code>clean</code> 方法声明为一个_伪目标_，做就就是让 <code>clean</code> 无论如何都更新，同样我们生成的 <code>all</code> 目标也可能会出现这种情况，所以我们将它们两个都声明为<code>伪目标</code>，方法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">src = $(wildcard *.c)</span><br><span class="line">obj = $(patsubst %.c, %.o, $(src))</span><br><span class="line"></span><br><span class="line">CC = gcc</span><br><span class="line">CFLAGS = -Wall -g</span><br><span class="line"></span><br><span class="line">all:app main</span><br><span class="line"></span><br><span class="line">%.o:%.c</span><br><span class="line">    $(CC) -c $&lt; -o $@ $(CFLAGS)</span><br><span class="line"></span><br><span class="line">app:$(obj)</span><br><span class="line">    $(CC) $^ -o $@ </span><br><span class="line"></span><br><span class="line">main:$(obj)</span><br><span class="line">    $(CC) $^ -o $@ </span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">    -rm -rf $(obj) main app </span><br><span class="line"></span><br><span class="line">.PHONY:clean all</span><br></pre></td></tr></table></figure>
+
+<p>这样即使目录下有名为 <code>clean</code> 或 <code>all</code> 的文件时，也不影响 <code>make clean</code> 的执行。同时注意看代码的人可能也发现了，<code>rm -rf $(obj) main app</code> 命令前增加了一个 <code>-</code> 符号，这个符号的目的就是如果这条命令执行失败了继续执行，不影响后续命令的执行。 至此 makefile 的功能说明到此为止一，下面就是收集的一些常用做测试用的 makefile 代码。</p>
+<h3 id="常用-makefile"><a href="#常用-makefile" class="headerlink" title="常用 makefile"></a>常用 makefile</h3><p>将目录下所有 <code>.c</code> 文件都分别生成为可执行文件，比如有 sort.c、readfile.c、writefile.c，他们都分别有自己的 main 函数，我们希望生成时生成 3 个可执行文件，分别叫 sort、readfile、writefile，那使用以下 makefile 即可实现。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">src = $(wildcard *.c)</span><br><span class="line">dsc = $(patsubst %.c, %, $(src))</span><br><span class="line"></span><br><span class="line">CC = gcc</span><br><span class="line">CFLAGS = -Wall -g</span><br><span class="line"></span><br><span class="line">all:$(dsc)</span><br><span class="line"></span><br><span class="line">%:%.c</span><br><span class="line">    $(CC) $^ -o $@ </span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">    -rm -rf $(dsc) </span><br><span class="line"></span><br><span class="line">.PHONY:clean all</span><br></pre></td></tr></table></figure>
+
+<p>一个有目录规则的 makefile 代码，我们的目录如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">mycode@vmware:~/Desktop/code/project$ tree</span><br><span class="line">.</span><br><span class="line">├── bin</span><br><span class="line">├── inc</span><br><span class="line">│   └── head.h</span><br><span class="line">├── makefile</span><br><span class="line">├── obj</span><br><span class="line">└── src</span><br><span class="line">    ├── add.c</span><br><span class="line">    ├── mian.c</span><br><span class="line">    ├── mul.c</span><br><span class="line">    └── sub.c</span><br><span class="line"></span><br><span class="line">4 directories, 6 files</span><br></pre></td></tr></table></figure>
+
+<p>bin 是生成最终目标文件的目录 inc 是存放头文件的目录 obj 是生成的 .o 文件目录 src 是源文件目录 makefile 如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">src = $(wildcard ./src/*.c)</span><br><span class="line">obj = $(patsubst ./src/%.c, ./obj/%.o, $(src))</span><br><span class="line">inc = ./inc/</span><br><span class="line"></span><br><span class="line">CC = gcc</span><br><span class="line">CFLAGS = -Wall -g</span><br><span class="line">CPPFLAGS = -I</span><br><span class="line"></span><br><span class="line">all:./bin/app</span><br><span class="line"></span><br><span class="line">./bin/app:$(obj)</span><br><span class="line">    $(CC) $^ -o $@ $(CFLAGS)</span><br><span class="line"></span><br><span class="line">./obj/%.o:./src/%.c</span><br><span class="line">    $(CC) -c $&lt; -o $@ $(CFLAGS) $(CPPFLAGS) $(inc)</span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">    -rm -rf $(obj) ./bin/app</span><br><span class="line"></span><br><span class="line">.PHONY:clean all</span><br></pre></td></tr></table></figure>
+
+<p>执行后的结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">mycode@vmware:~/Desktop/code/project$ make</span><br><span class="line">gcc -c src/add.c -o obj/add.o -Wall -g -I ./inc/</span><br><span class="line">gcc -c src/mian.c -o obj/mian.o -Wall -g -I ./inc/</span><br><span class="line">gcc -c src/mul.c -o obj/mul.o -Wall -g -I ./inc/</span><br><span class="line">gcc -c src/sub.c -o obj/sub.o -Wall -g -I ./inc/</span><br><span class="line">gcc obj/add.o obj/mian.o obj/mul.o obj/sub.o -o bin/app -Wall -g</span><br><span class="line">mycode@vmware:~/Desktop/code/project$ tree</span><br><span class="line">.</span><br><span class="line">├── bin</span><br><span class="line">│   └── app</span><br><span class="line">├── inc</span><br><span class="line">│   └── head.h</span><br><span class="line">├── makefile</span><br><span class="line">├── obj</span><br><span class="line">│   ├── add.o</span><br><span class="line">│   ├── mian.o</span><br><span class="line">│   ├── mul.o</span><br><span class="line">│   └── sub.o</span><br><span class="line">└── src</span><br><span class="line">    ├── add.c</span><br><span class="line">    ├── mian.c</span><br><span class="line">    ├── mul.c</span><br><span class="line">    └── sub.c</span><br><span class="line"></span><br><span class="line">4 directories, 11 files</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-02-16T20:19:23.000Z" itemprop="datePublished">
+              2016-02-16
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/gcc/">gcc</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/makefile/">makefile</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

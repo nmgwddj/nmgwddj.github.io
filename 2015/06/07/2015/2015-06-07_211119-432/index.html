@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>树的非递归遍历 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>树的非递归遍历</h1>
+    </header>
+
+    <section>
+      <p>树使用递归遍历非常方便，如果将代码拉伸开来，我们能否是否非递归代码来实现呢？当然是可以的，我们只要把递归的循环步骤修改为while就可以了。但我们需要借用到STL的栈模型来实现这个需求，具体的步骤如下：</p>
+<span id="more"></span>
+<ul>
+<li>步骤1： 如果结点有左子树，该结点入栈，并放弃其左子树； 如果结点没有左子树，访问该结点；</li>
+<li>步骤2： 如果结点有右子树，重复步骤1； 如果结点没有右子树（结点访问完毕），根据栈顶指示回退，访问栈顶元素，并访问右子树，重复步骤1 如果栈为空，表示遍历结束。</li>
+</ul>
+<h3 id="【实现代码】"><a href="#【实现代码】" class="headerlink" title="【实现代码】"></a>【实现代码】</h3><p>TirTNode* findLeft(TirTNode* tree, std::stack&lt;TirTNode*&gt;&amp; st)<br>{<br>if (nullptr &#x3D;&#x3D; tree) return nullptr;</p>
+<p>&#x2F;&#x2F; 持续遍历，到没有左子树为止<br>while (tree-&gt;leftChild !&#x3D; nullptr)<br>{<br>&#x2F;&#x2F; 该结点入栈<br>st.push(tree);<br>&#x2F;&#x2F; 并继续向下找左子树<br>tree &#x3D; tree-&gt;leftChild;<br>}<br>&#x2F;&#x2F; 返回传递进来的 tree 最深的左子树<br>return tree;<br>}</p>
+<p>void myTreeOrder(TirTNode* tree)<br>{<br>std::stack&lt;TirTNode*&gt; st;<br>TirTNode* pLeft &#x3D; findLeft(tree, st);<br>&#x2F;&#x2F; 返回回来的是没有左子树的节点<br>while (nullptr !&#x3D; pLeft)<br>{<br>&#x2F;&#x2F; 打印没有左子树的节点<br>printf(“%c “, pLeft-&gt;data);<br>&#x2F;&#x2F; 判断节点是否有右子树<br>if (nullptr !&#x3D; pLeft-&gt;rightChild)<br>{<br>&#x2F;&#x2F; 如果有，则遍历这个树下最深的左子树<br>pLeft &#x3D; findLeft(pLeft-&gt;rightChild, st);<br>}<br>else<br>&#x2F;&#x2F;如果节点没有右子树（节点访问完毕），弹出并访问栈顶元素，并且访问右子树<br>{<br>&#x2F;&#x2F; 判断栈是否为空<br>if (!st.empty())<br>{<br>&#x2F;&#x2F; 访问栈顶元素<br>pLeft &#x3D; st.top();<br>&#x2F;&#x2F; 弹出<br>st.pop();<br>}<br>else<br>{<br>&#x2F;&#x2F; 遍历完成<br>return;<br>}<br>}<br>}<br>}</p>
+<p>调用时，只需给 myTreeOrder 函数传递一个树根节点的地址就可以了。在函数内部会自动打印出每个节点的内容。</p>
+<p>myTreeOrder(&amp;treeA);</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-07T21:11:19.000Z" itemprop="datePublished">
+              2015-06-07
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/STL/">STL</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

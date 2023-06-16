@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>二叉树的拷贝 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>二叉树的拷贝</h1>
+    </header>
+
+    <section>
+      <p>二叉树拷贝也相对简单，我们只需要在遍历的过程中，将每一个有效的节点依次给传递进来的新树的节点衔接起来就可以了。大致的思路我们可以总结一下。</p>
+<span id="more"></span>
+<ul>
+<li>malloc一个新节点</li>
+<li>拷贝左侧子树、拷贝右侧子树、链接左侧和右侧子树</li>
+<li>如果左侧和右侧子树非叶子节点，重复1、2步骤</li>
+</ul>
+<p>【实现代码】</p>
+<p>TirTNode* copyTree(TirTNode* tree)<br>{<br>&#x2F;&#x2F; 判断节点是否有效<br>if (NULL &#x3D;&#x3D; tree) return NULL;</p>
+<p>&#x2F;&#x2F; 生成新的节点<br>TirTNode* newTree &#x3D; (TirTNode*)malloc(sizeof(TirTNode));</p>
+<p>&#x2F;&#x2F; 拷贝值<br>newTree-&gt;data &#x3D; tree-&gt;data;</p>
+<p>&#x2F;&#x2F; 递归拷贝左侧子节点<br>newTree-&gt;leftChild &#x3D; copyTree(tree-&gt;leftChild);<br>&#x2F;&#x2F; 递归拷贝右侧子节点<br>newTree-&gt;rightChild &#x3D; copyTree(tree-&gt;rightChild);</p>
+<p>&#x2F;&#x2F; 返回树的指针<br>return newTree;<br>}</p>
+<p>调用的时候，只需要将原来树的地址传递给函数作为参数，并找一个树类型的指针接收返回值就可以了。如下：</p>
+<p>TirTNode* newTree;<br>newTree &#x3D; copyTree(&amp;treeA);<br>&#x2F;&#x2F; 打印下树的内容测试结果<br>showTree(newTree);</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-06T22:34:44.000Z" itemprop="datePublished">
+              2015-06-06
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

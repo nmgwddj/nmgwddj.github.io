@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>数组堆排序 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>数组堆排序</h1>
+    </header>
+
+    <section>
+      <p>堆排序也是一种空间换时间的做法，速度相对较快，我们需要生成一个动态的临时数组，以二叉堆的格式将数据插入到数组中，表现形式如下图：</p>
+<span id="more"></span>
+<p><a href="/images/2015/06/2015-06-12_115119.png"><img src="/images/2015/06/2015-06-12_115119.png" alt="2015-06-12_115119"></a> 这个二叉堆是一个完全二叉树或一个近似完全的二叉树，要满足以下两点特性：</p>
+<h3 id="【二叉堆概念】"><a href="#【二叉堆概念】" class="headerlink" title="【二叉堆概念】"></a>【二叉堆概念】</h3><ul>
+<li>父节点的键值总是大于或等于（小于或等于）任何一个子节点的键值。</li>
+<li>每个节点的左子树和右子树都是一个二叉堆（都是最大堆或最小堆）</li>
+</ul>
+<h3 id="【最大堆最小堆概念】"><a href="#【最大堆最小堆概念】" class="headerlink" title="【最大堆最小堆概念】"></a>【最大堆最小堆概念】</h3><ul>
+<li>父节点的键值总是大于或等于子节点的键值时为最大堆（大顶堆）</li>
+<li>父节点的键值总是小于或等于子节点的键值时为最小堆（小顶堆）</li>
+</ul>
+<hr>
+<p>了解以上概念后，我们就要清楚堆排序的过程了，首先我们要将数据按一定格式（比如按大顶堆或者小顶堆的格式）插入到二叉堆中，在插入过程中要对数据进行对比排序。全部插入完成后，将二叉堆中的根节点的数值依次取出，取出的同时，将堆中最后一个数据覆盖到根节点，再将这个数据与所有子节点对比，最终把最大（或最小）的子节点移动到根节点的位置。这样保证每次取出的数据都是最大（或最小）的数据。表现形式如下：</p>
+<h3 id="【插入元素】"><a href="#【插入元素】" class="headerlink" title="【插入元素】"></a>【插入元素】</h3><p>插入元素的步骤</p>
+<ol>
+<li>先将此元素插入添加到完全二叉树的最后面的位置(数组的最后), 此完全二叉树多了一个叶子节点.</li>
+<li>求出此叶子节点的父节点, 与其父节点进行比较, 如果比父节点大则二者交换位置</li>
+<li>重复步骤2</li>
+<li>节点插入完成</li>
+</ol>
+<p><a href="/images/2015/06/2015-06-12_120159.png"><img src="/images/2015/06/2015-06-12_120159.png" alt="2015-06-12_120159"></a></p>
+<h3 id="【弹出元素】"><a href="#【弹出元素】" class="headerlink" title="【弹出元素】"></a>【弹出元素】</h3><p>弹出元素步骤</p>
+<ol>
+<li>删除根节点</li>
+<li>将最后一个叶子节点放到根节点的位置</li>
+<li>新的根节点分别与其左右孩子比较,如果比根节点大, 选出较大的一个</li>
+<li>将根节点与值较大的叶子节点交换位置</li>
+<li>发生交换的孩子节点如果还有子节点, 重复3, 4步</li>
+</ol>
+<p><a href="/images/2015/06/2015-06-12_120518.png"><img src="/images/2015/06/2015-06-12_120518.png" alt="2015-06-12_120518"></a></p>
+<h3 id="【实现代码】"><a href="#【实现代码】" class="headerlink" title="【实现代码】"></a>【实现代码】</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;</p>
+<p>typedef struct _tag_heapTag<br>{<br>&#x2F;&#x2F; 指向数据的指针，用于创建动态数组存储数据<br>int *arrList;<br>&#x2F;&#x2F; 记录当前堆中的节点个数<br>int nSize;<br>}MyHeap;</p>
+<p>int PopMaxValue(MyHeap* pHeap)<br>{<br>int nPos &#x3D; 1;<br>&#x2F;&#x2F; 记录根节点最大值，用于返回值<br>int nMax &#x3D; pHeap-&gt;arrList[nPos];<br>&#x2F;&#x2F; 把数组最后的值挪动到根节点的位置，并记录下挪动过来的值<br>int nTemp &#x3D; pHeap-&gt;arrList[nPos] &#x3D; pHeap-&gt;arrList[pHeap-&gt;nSize];</p>
+<p>&#x2F;&#x2F; 得到根节点的子节点的位置<br>int nChild &#x3D; nPos * 2;<br>while (nChild &lt;&#x3D; pHeap-&gt;nSize)<br>{<br>&#x2F;&#x2F; 判断右子节点的下标不超过数组长度<br>if (nChild + 1 &lt;&#x3D; pHeap-&gt;nSize &amp;&amp;<br>&#x2F;&#x2F; 判断右子节点是否大于左子节点<br>pHeap-&gt;arrList[nChild] &lt; pHeap-&gt;arrList[nChild + 1])<br>{<br>&#x2F;&#x2F; 如果右子节点大于左子节点，那么让子节点位置等于右子节点<br>nChild++;<br>}<br>&#x2F;&#x2F; 根节点的值是最大的，无需交换了<br>if (pHeap-&gt;arrList[nPos] &gt; pHeap-&gt;arrList[nChild])<br>break;</p>
+<p>&#x2F;&#x2F; 如果小于，那么交换子节点和当前根节点的值<br>pHeap-&gt;arrList[nPos] &#x3D; pHeap-&gt;arrList[nChild];<br>&#x2F;&#x2F; 让根节点等于被交换前原子节点的位置<br>nPos &#x3D; nChild;<br>&#x2F;&#x2F; 计算出交换后节点位置下的子节点的位置，用于下次循环<br>nChild *&#x3D; 2;<br>}</p>
+<p>&#x2F;&#x2F; 退出循环后nPos的位置一定是最下面叶子节点的位置，把之前备份的值赋值给它<br>pHeap-&gt;arrList[nPos] &#x3D; nTemp;<br>&#x2F;&#x2F; 数组长度–<br>pHeap-&gt;nSize–;</p>
+<p>&#x2F;&#x2F; 返回被删除的数据<br>return nMax;<br>}</p>
+<p>int InsertKey(MyHeap* pHeap, int nPos)<br>{<br>while (nPos &gt; 1)<br>{<br>&#x2F;&#x2F; 记录下当前nPos节点值<br>int nMax &#x3D; pHeap-&gt;arrList[nPos];<br>&#x2F;&#x2F; 父节点下标<br>int nParent &#x3D; nPos &#x2F; 2;<br>if (nMax &gt; pHeap-&gt;arrList[nParent])<br>{<br>&#x2F;&#x2F; 交换子节点和父节点的值<br>pHeap-&gt;arrList[nPos] &#x3D; pHeap-&gt;arrList[nParent];<br>pHeap-&gt;arrList[nParent] &#x3D; nMax;<br>&#x2F;&#x2F; 记录父节点的位置给nPos，用于下次循环<br>nPos &#x3D; nParent;<br>}<br>else<br>{<br>&#x2F;&#x2F; 子节点已经不大于父节点的值<br>break;<br>}<br>}<br>return 0;<br>}</p>
+<p>void Insert(MyHeap* pHeap, int nData)<br>{<br>pHeap-&gt;nSize++;<br>pHeap-&gt;arrList[pHeap-&gt;nSize] &#x3D; nData;<br>&#x2F;&#x2F; 比较，向上渗透<br>InsertKey(pHeap, pHeap-&gt;nSize);<br>}</p>
+<p>void heapSort(int arr[], int len)<br>{<br>MyHeap myHeap;<br>&#x2F;&#x2F; 给插入数据的数组空间分配内存，因为要跳过下标为0的元素<br>&#x2F;&#x2F; 所以长度要是传递进来的数组长度 + 1的大小<br>myHeap.arrList &#x3D; (int*)malloc(sizeof(int) * (len + 1));<br>myHeap.nSize &#x3D; 0;</p>
+<p>for (int i &#x3D; 1; i &lt;&#x3D; len; i++)<br>{<br>&#x2F;&#x2F; 一次将数组中的元素插入动态分配的数组<br>Insert(&amp;myHeap, arr[i - 1]);<br>}</p>
+<p>&#x2F;&#x2F; 弹出数据并打印弹出的值<br>for (int i &#x3D; 1; i &lt;&#x3D; len; i++)<br>{<br>printf(“%d “, PopMaxValue(&amp;myHeap));<br>}<br>&#x2F;&#x2F; 释放申请的空间<br>free(myHeap.arrList);<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>int arr[] &#x3D; { 12, 5, 33, 6, 10 };<br>int len &#x3D; sizeof(arr) &#x2F; sizeof(int);<br>printf(“待排序数组序列: “);<br>for (int i &#x3D; 0; i &lt; len; ++i)<br>{<br>printf(“%d\t”, arr[i]);<br>}<br>putchar(10);</p>
+<p>&#x2F;&#x2F;遍历<br>printf(“堆排序之后的序列: “);<br>heapSort(arr, len);<br>putchar(10);<br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-12T12:06:13.000Z" itemprop="datePublished">
+              2015-06-12
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>网卡驱动目录中 NDIS62 63 64.. 分别对应什么系统？ | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>网卡驱动目录中 NDIS62 63 64.. 分别对应什么系统？</h1>
+    </header>
+
+    <section>
+      <p>我们在下载一些网卡驱动程序的时候，一般目录规则是硬件目录(如PRO1000)-&gt;所属系统(如Win7x64)-&gt;NDIS版本号(如NDIS62)，这其中 NDIS后面的数字决定了我们系统应该使用哪个目录下的驱动，如下图： <a href="/images/2017/08/2017-08-27_221416.png"><img src="/images/2017/08/2017-08-27_221416.png"></a></p>
+<span id="more"></span>
+<p>这个对应关系在写这篇文章之前我一直是不清楚的，直到我搜索看到了这篇文章的时候，才了解到后面数字所对应的系统到底是什么。 <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows-hardware/drivers/network/overview-of-ndis-versions">https://docs.microsoft.com/en-us/windows-hardware/drivers/network/overview-of-ndis-versions</a> 从连接中我们可以看到，像 NDIS62 就是 NDIS 6.20 对应的就是 Win7 和 2008R2 系统，如下图： <a href="/images/2017/08/2017-08-27_221832.png"><img src="/images/2017/08/2017-08-27_221832.png"></a> 其他的对应关系也都写的非常清楚，这样如果我们 Server2012 系统需要安装网卡驱动时，就可以选择使用 NDIS64 的驱动程序。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-08-27T22:20:06.000Z" itemprop="datePublished">
+              2017-08-27
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

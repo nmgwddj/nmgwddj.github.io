@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>双向链表创建/插入/删除/排序 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>双向链表创建/插入/删除/排序</h1>
+    </header>
+
+    <section>
+      <p>双向链表有别于单向链表，对于数据的排列、查找更加方便，但需要付出的小小代价则是在数据结构中增加一个指向上一个节点的指针，除了结构上的变化，对于我们理解也相对复杂了一些。</p>
+<span id="more"></span>
+<p>我们可以用下面这张非常形象的图片来想象双向链表的表现方式（来自<a target="_blank" rel="noopener" href="http://www.itcast.cn/">传智播客</a>教师课件）： <a href="/images/2015/05/2015-05-06_213347.png"><img src="/images/2015/05/2015-05-06_213347.png" alt="2015-05-06_213347"></a> 双向链表插入数据同样与单向链表一样，都可以使用头插法和尾插法。尾插法相对容易理解，而头插法在双向链表中非常的绕弯，为此，我制作了一个特别的PPT，演示了双向链表头插法的过程： <a href="/images/2015/05/2015-05-06_212942.gif"><img src="/images/2015/05/2015-05-06_212942.gif" alt="2015-05-06_212942"></a> 双向链表的所有操作代码如下：</p>
+<p>#define _CRT_SECURE_NO_WARNINGS<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;</p>
+<p>typedef struct node<br>{<br>int data;<br>struct node *pre;<br>struct node *next;<br>}Node;</p>
+<p>&#x2F;&#x2F; 创建<br>Node* createList();<br>&#x2F;&#x2F; 插入节点<br>void insertList(Node* head, int data);<br>&#x2F;&#x2F; 显示所有节点<br>void displayList(Node* head);<br>&#x2F;&#x2F; 搜索节点<br>Node* searchList(Node* head, int nFind);<br>&#x2F;&#x2F; 删除某节点<br>void deleteList(Node* pFind);<br>&#x2F;&#x2F; 计算链表有效节点个数<br>int lenList(Node* head);<br>&#x2F;&#x2F; 排序<br>void sortList(Node* head, int len);<br>&#x2F;&#x2F; 销毁链表<br>void destoryList(Node* head);</p>
+<p>Node *createList()<br>{<br>&#x2F;&#x2F; 创建头节点<br>Node *head &#x3D; (Node*)malloc(sizeof(Node));<br>&#x2F;&#x2F; 让头节点的pre和next头指向自身<br>head-&gt;pre &#x3D; head;<br>head-&gt;next &#x3D; head;</p>
+<p>int tmp;<br>scanf(“%d”, &amp;tmp);<br>while (tmp)<br>{<br>&#x2F;&#x2F; 向链表插入数据<br>insertList(head, tmp);<br>scanf(“%d”, &amp;tmp);<br>}<br>return head;<br>}</p>
+<p>void insertList(Node *head, int data)<br>{<br>&#x2F;&#x2F; 新建一个节点<br>Node* cur &#x3D; (Node*)malloc(sizeof(Node));<br>&#x2F;&#x2F; 给节点数据域赋值<br>cur-&gt;data &#x3D; data;</p>
+<p>&#x2F;&#x2F; 头插法，让新来的节点有所指向<br>cur-&gt;next &#x3D; head-&gt;next;<br>cur-&gt;pre  &#x3D; head;</p>
+<p>&#x2F;&#x2F; 重新将新节点连接到链表中，打破原有连接关系<br>head-&gt;next-&gt;pre &#x3D; cur;<br>head-&gt;next &#x3D; cur;<br>}</p>
+<p>void displayList(Node *head)<br>{<br>&#x2F;&#x2F; 跳过头节点<br>Node *tmp &#x3D; head-&gt;next;<br>while (tmp !&#x3D; head)<br>{<br>printf(“%d “, tmp-&gt;data);<br>tmp &#x3D; tmp-&gt;next;<br>}<br>putchar(10);<br>}</p>
+<p>Node* searchList(Node* head, int nFind)<br>{<br>&#x2F;&#x2F; 双方向遍历查找，分别使用两个指针指向头节点的上一个和下一个节点<br>Node* pClock &#x3D; head-&gt;next;<br>Node* pAntClock &#x3D; head-&gt;pre;</p>
+<p>&#x2F;&#x2F; 循环直至两个节点相遇<br>while (pAntClock !&#x3D; pClock-&gt;pre)<br>{<br>&#x2F;&#x2F; 判断是否等于查找的数据<br>if (pClock-&gt;data &#x3D;&#x3D; nFind)<br>return pClock;<br>if (pAntClock-&gt;data &#x3D;&#x3D; nFind)<br>return pAntClock;<br>&#x2F;&#x2F; 判断是否走到了一起<br>if (pAntClock &#x3D;&#x3D; pClock)<br>return NULL;</p>
+<p>&#x2F;&#x2F; 让两个指针分别前进<br>pClock &#x3D; pClock-&gt;next;<br>pAntClock &#x3D; pAntClock-&gt;pre;<br>}<br>return NULL;<br>}</p>
+<p>void deleteList(Node* pFind)<br>{<br>if (NULL &#x3D;&#x3D; pFind)<br>{<br>return;<br>}<br>else<br>{<br>&#x2F;&#x2F; 把要删除的节点的上一个节点指向被删除节点的下一个节点<br>pFind-&gt;pre-&gt;next &#x3D; pFind-&gt;next;<br>&#x2F;&#x2F; 把要删除的节点的下一个节点指向被删除节点的上一个节点<br>pFind-&gt;next-&gt;pre &#x3D; pFind-&gt;pre;<br>&#x2F;&#x2F; 分别把上下节点建立关系后，删除当前节点<br>free(pFind);<br>}<br>}</p>
+<p>int lenList(Node* head)<br>{<br>&#x2F;&#x2F; 计算长度不多解释<br>int len &#x3D; 0;<br>Node* pHead &#x3D; head-&gt;next;<br>while (pHead !&#x3D; head)<br>{<br>len++;<br>pHead &#x3D; pHead-&gt;next;<br>}<br>return len;<br>}</p>
+<p>void sortList(Node* head, int len)<br>{<br>&#x2F;&#x2F; 排序也是使用的冒泡交换指针的方式，参考单向链表<br>Node* p;<br>Node* q;<br>Node* tmp;<br>for (int i &#x3D; 0; i &lt; len - 1; i++)<br>{<br>p &#x3D; head-&gt;next;<br>q &#x3D; p-&gt;next;<br>for (int j &#x3D; 0; j &lt; len - 1 - i; j++)<br>{<br>if (p-&gt;data &gt; q-&gt;data)<br>{<br>p-&gt;pre-&gt;next &#x3D; q;<br>q-&gt;pre &#x3D; p-&gt;pre;</p>
+<p>p-&gt;next &#x3D; q-&gt;next;<br>p-&gt;pre &#x3D; q;</p>
+<p>q-&gt;next &#x3D; p;<br>p-&gt;next-&gt;pre &#x3D; p;</p>
+<p>q &#x3D; p-&gt;next;<br>}<br>else<br>{<br>p &#x3D; p-&gt;next;<br>q &#x3D; p-&gt;next;<br>}<br>}<br>}<br>}</p>
+<p>void destoryList(Node* head)<br>{<br>&#x2F;&#x2F; 先掐断链表<br>head-&gt;pre-&gt;next &#x3D; NULL;<br>Node* tmp &#x3D; head-&gt;next;<br>&#x2F;&#x2F; 遍历逐一释放<br>while (head)<br>{<br>head &#x3D; head-&gt;next;<br>printf(“free tmp : %p\n”, tmp);<br>free(tmp);<br>}<br>}</p>
+<p>int main(int argc, char *argv[])<br>{<br>Node *head &#x3D; createList();<br>displayList(head);</p>
+<p>Node* pFind &#x3D; NULL;<br>if (NULL !&#x3D; (pFind &#x3D; searchList(head, 100)))<br>{<br>printf(“search in %d\n”, pFind-&gt;data);<br>}</p>
+<p>deleteList(pFind);<br>displayList(head);</p>
+<p>int len &#x3D; lenList(head);<br>printf(“%d \n”, len);<br>sortList(head, len);<br>displayList(head);</p>
+<p>destoryList(head);<br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-06T21:46:19.000Z" itemprop="datePublished">
+              2015-05-06
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%9F%A5%E6%89%BE/">查找</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

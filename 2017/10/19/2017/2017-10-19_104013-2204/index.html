@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>react-router 环境使用锚点的方法 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>react-router 环境使用锚点的方法</h1>
+    </header>
+
+    <section>
+      <p>锚点是通过在界面中增加一些特征（比如 id），然后在 URL 地址后面加上 #id 就可以访问到指定页面的指定位置，这样可以让我们快速跳转到页面的某个位置，但是在 react-router 中这种方法遇到了问题，因为 react-router 会把 # 当做是 hash 来处理。导致即使跳转到指定页面后，# 后面的锚点也不生效。针对这个问题，在 <a target="_blank" rel="noopener" href="https://github.com/ReactTraining/react-router/issues/394">react-router 的一个 issue 中</a>大家也展开了激烈的讨论。以下是我看过以后整理的几种解决办法。</p>
+<span id="more"></span>
+<h2 id="只有某些页面需要"><a href="#只有某些页面需要" class="headerlink" title="只有某些页面需要"></a>只有某些页面需要</h2><p>当只有某些页面需要使用锚点的时候，可以在访问到该页面后使用 react 生命周期中 componentDidMount 阶段来判断 # 后面的字符串，然后使用 dom 操作取到这个字符串所属的 dom，然后滚动到该位置。具体代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">componentDidMount() &#123;</span><br><span class="line">  // Decode entities in the URL</span><br><span class="line">  // Sometimes a URL like #/foo#bar will be encoded as #/foo%23bar</span><br><span class="line">  window.location.hash = window.decodeURIComponent(window.location.hash);</span><br><span class="line">  const scrollToAnchor = () =&gt; &#123;</span><br><span class="line">    const hashParts = window.location.hash.split(&#x27;#&#x27;);</span><br><span class="line">    if (hashParts.length &gt; 2) &#123;</span><br><span class="line">      const hash = hashParts.slice(-1)[0];</span><br><span class="line">      document.querySelector(`#$&#123;hash&#125;`).scrollIntoView();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">  scrollToAnchor();</span><br><span class="line">  window.onhashchange = scrollToAnchor;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="说不准哪些页面会使用"><a href="#说不准哪些页面会使用" class="headerlink" title="说不准哪些页面会使用"></a>说不准哪些页面会使用</h2><p>以上方法适用于具有生命周期的 react component，而且是在组件的生命周期中实现这个功能，若需要所有页面都实现这个功能，明显我们不可能在所有 component 中都增加这个方法。这就产生另外一个方案，就是在 Router 的 onUpdate 函数中实现该功能。onUpdate 函数在路由跳转后会被调用一次，如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">import React from &#x27;react&#x27;;</span><br><span class="line">import &#123; render &#125; from &#x27;react-dom&#x27;;</span><br><span class="line">import &#123; Router, Route, browserHistory &#125; from &#x27;react-router&#x27;;</span><br><span class="line"></span><br><span class="line">const routes = (</span><br><span class="line">  // your routes</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">function hashLinkScroll() &#123;</span><br><span class="line">  const &#123; hash &#125; = window.location;</span><br><span class="line">  if (hash !== &#x27;&#x27;) &#123;</span><br><span class="line">    // Push onto callback queue so it runs after the DOM is updated,</span><br><span class="line">    // this is required when navigating from a different page so that</span><br><span class="line">    // the element is rendered on the page before trying to getElementById.</span><br><span class="line">    setTimeout(() =&gt; &#123;</span><br><span class="line">      const id = hash.replace(&#x27;#&#x27;, &#x27;&#x27;);</span><br><span class="line">      const element = document.getElementById(id);</span><br><span class="line">      if (element) element.scrollIntoView();</span><br><span class="line">    &#125;, 0);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">render(</span><br><span class="line">  &lt;Router</span><br><span class="line">    history=&#123;browserHistory&#125;</span><br><span class="line">    routes=&#123;routes&#125;</span><br><span class="line">    onUpdate=&#123;hashLinkScroll&#125;</span><br><span class="line">  /&gt;,</span><br><span class="line">  document.getElementById(&#x27;root&#x27;)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>当地址改变后，hashLinkScroll 会被调用，函数内部实现原理与上面的原理是一样的，拿到 # 后面的 id 并找到指定 dom，然后滚动到该 dom 的位置。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>两种方案各有优劣，可以根据自己的情况来选择使用。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-10-19T10:40:13.000Z" itemprop="datePublished">
+              2017-10-19
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

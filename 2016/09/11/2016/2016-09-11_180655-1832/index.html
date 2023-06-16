@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>自定义凭据开启 Windows10 锁屏界面 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>自定义凭据开启 Windows10 锁屏界面</h1>
+    </header>
+
+    <section>
+      <p>微软提供给我们可以自定义凭据的功能，我们可以通过微软提供的接口对登录界面做一系列的定制。但最近在开发过程中遇到了一些问题。在 Win10 系统中，我们无法接收到 <code>CPUS_UNLOCK_WORKSTATION</code> 锁屏的消息，无论在用户登录后点击锁屏还是重新启动电脑后用户登录界面，我们都无法收到该消息。而 Win7 是可以收到这个消息的，所以我们就要考虑在对 Win7 和 Win10 做不同的处理。然而最近搜索一片文章发现，Win10 一样是可以开启锁屏界面的。</p>
+<span id="more"></span>
+<p>我们先来看一下 Win7 在某个用户登录后的锁屏界面： <a href="/images/2016/09/2016-09-11_180114.png"><img src="/images/2016/09/2016-09-11_180114.png" alt="2016-09-11_180114"></a> 可以看到，Win7 的锁屏界面提示当前是已锁定，且可以点击切换用户按钮。而 Win10 的锁屏界面则是光秃秃的，既没有切换用户也不显示锁定状态。 <a href="/images/2016/09/2016-09-11_174940.png"><img src="/images/2016/09/2016-09-11_174940.png" alt="2016-09-11_174940"></a> 导入以下注册表开启 Win10 的解锁界面：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Windows Registry Editor Version 5.00</span><br><span class="line"></span><br><span class="line">[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System]</span><br><span class="line">&quot;dontdisplaylastusername&quot;=dword:00000001</span><br></pre></td></tr></table></figure>
+
+<p>导入以上注册表以后，我们可以在自己的凭据中成功的收到 <code>CPUS_UNLOCK_WORKSTATION</code> 锁屏消息了，而且再次在登录状态下锁屏时，从锁屏的界面来看我们可以看到切换用户的按钮了。 <a href="/images/2016/09/2016-09-11_180438.png"><img src="/images/2016/09/2016-09-11_180438.png" alt="2016-09-11_180438"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-09-11T18:06:55.000Z" itemprop="datePublished">
+              2016-09-11
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

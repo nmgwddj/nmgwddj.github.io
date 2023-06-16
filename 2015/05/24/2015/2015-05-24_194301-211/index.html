@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>多继承三角和钻石问题（虚继承） | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>多继承三角和钻石问题（虚继承）</h1>
+    </header>
+
+    <section>
+      <p>上一篇文章我们简单介绍了一下多继承的语法，但是我们遇到了一个问题，那就是如果多个父类具有相同名称的成员变量或成员方法，子类在调用的时候就会出现二义性问题，子类不知道选择哪一个父类的变量或方法，我们称之为三角问题。如下所示：</p>
+<span id="more"></span>
+<p><a href="/images/2015/05/2015-05-24_192636.png"><img src="/images/2015/05/2015-05-24_192636.png" alt="2015-05-24_192636"></a> 所以在编译的时候程序就无法通过了。其实解决这个问题有很多办法，先说一个最简单的办法就是使用域运算符，直接使用某个父类的成员函数或变量。如下所示：</p>
+<p>#include <iostream></p>
+<p>using namespace std;</p>
+<p>class Bed<br>{<br>public:<br>void sleep()<br>{<br>cout &lt;&lt; “Bed Sleep ~~” &lt;&lt; endl;<br>}<br>protected:<br>int data;<br>};</p>
+<p>class Sofa<br>{<br>public:<br>void sit()<br>{<br>cout &lt;&lt; “Sofa sit ~~” &lt;&lt; endl;<br>}<br>protected:<br>int data;<br>};</p>
+<p>&#x2F;&#x2F; 继承多个父类<br>class Derive : public Bed, public Sofa<br>{<br>public:<br>Derive()<br>:Bed(), Sofa() {}</p>
+<p>void display()<br>{<br>&#x2F;&#x2F; 使用作用域运算符，直接指定调用某个父类的成员<br>cout &lt;&lt; Bed::data &lt;&lt; endl;<br>cout &lt;&lt; Sofa::data &lt;&lt; endl;<br>}<br>};</p>
+<p>int main(int argc, char* argv[])<br>{<br>Derive SofaBed;<br>SofaBed.sleep();<br>SofaBed.sit();<br>SofaBed.display();<br>return 0;<br>}</p>
+<p>这是一种解决办法，当然，本文介绍的绝不止这些。在设计类的过程中，如果多个父类出现了同名的公有成员变量或方法，并且方法所执行的认为是一模一样的情况下，这证明我们设计的类是有问题的，应该保证实现同一功能的方法只有一个。那在上面的案例中我们需要抽象出一个基类，这个基类将Sofa和Bed两个类的公有同名变量或成员存放到基类中，然后让 Sofa 和 Bed 使用虚继承的方式，继承这个基类，这时，子类再多继承 Sofa 和 Bed 类的时候，就不会出现二义性问题了。其中 <strong>虚继承</strong> 起到了重要的作用，他让基类派生的两个类只保留了一份共有公共成员，这种情况，我们称之为钻石问题。 <a href="/images/2015/05/2015-05-24_194407.png"><img src="/images/2015/05/2015-05-24_194407.png" alt="2015-05-24_194407"></a> <a href="/images/2015/05/2015-05-24_192917.png"><img src="/images/2015/05/2015-05-24_192917.png" alt="2015-05-24_192917"></a></p>
+<p>#include <iostream></p>
+<p>using namespace std;</p>
+<p>class M<br>{<br>public:<br>int data;<br>};</p>
+<p>&#x2F;&#x2F; 虚继承 M 类<br>class Bed : virtual public M<br>{<br>public:<br>void sleep()<br>{<br>cout &lt;&lt; “Bed Sleep ~~” &lt;&lt; endl;<br>}<br>};</p>
+<p>&#x2F;&#x2F; 虚继承 M 类<br>class Sofa : virtual public M<br>{<br>public:<br>void sit()<br>{<br>cout &lt;&lt; “Sofa sit ~~” &lt;&lt; endl;<br>}<br>};</p>
+<p>&#x2F;&#x2F; 继承多个父类<br>class Derive : public Bed, public Sofa<br>{<br>public:<br>Derive()<br>:Bed(), Sofa() {}</p>
+<p>void display()<br>{<br>&#x2F;&#x2F; 无需再担心二义性问题<br>cout &lt;&lt; data &lt;&lt; endl;<br>}<br>};</p>
+<p>int main(int argc, char* argv[])<br>{<br>Derive SofaBed;<br>SofaBed.sleep();<br>SofaBed.sit();<br>SofaBed.display();<br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-24T19:43:01.000Z" itemprop="datePublished">
+              2015-05-24
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

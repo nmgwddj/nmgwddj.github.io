@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>编译 EasyHook 32-bit/64-bit 静态库 Lib | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>编译 EasyHook 32-bit/64-bit 静态库 Lib</h1>
+    </header>
+
+    <section>
+      <p>EasyHook 是 Windows 平台下开源的 APIHOOK 工具库，因其开源有 64 位版本而注广为流传，微软也有提供 64 位 APIHOOK 的代码，但是要收费的。最近公司让我做一个 HOOK 的名单功能，顺便就研究了一下 EasyHook 的静态库编译和使用，也弥补一下曾经再这方面耗费的心血。下图是 HOOK 成功后 DebugView 的输出。</p>
+<span id="more"></span>
+<p><a href="/images/2016/07/20160723154255.png"><img src="/images/2016/07/20160723154255.png" alt="20160723154255"></a></p>
+<h2 id="配置-EasyHook-静态库编译环境"><a href="#配置-EasyHook-静态库编译环境" class="headerlink" title="配置 EasyHook 静态库编译环境"></a>配置 EasyHook 静态库编译环境</h2><p>首先去<a target="_blank" rel="noopener" href="https://easyhook.github.io/">官方下载 EasyHook 源代码</a>到本地，使用 VS2015 打开项目（目前官方是 VS2013 编译的，最低不能低于 VS2010 SP1，因为官方最新代码中引入了 C99 标准，VS2008 以下版本缺少很多头文件无法编译通过）。 <a href="/images/2016/07/2016-07-23_180353.png"><img src="/images/2016/07/2016-07-23_180353.png" alt="2016-07-23_180353"></a> <a href="/images/2016/07/2016-07-23_180553.png"><img src="/images/2016/07/2016-07-23_180553.png" alt="2016-07-23_180553"></a> 打开项目后，删除掉一些无用的C#项目代码和一些文档，只保留一个 EasyHookDll 的项目，如下图： <a href="/images/2016/07/2016-07-23_180821.png"><img src="/images/2016/07/2016-07-23_180821.png" alt="2016-07-23_180821"></a> 删除所有无用的文件夹，只保留下图几个文件夹（看你自己需要，这里不删除后面编译的时候会因为项目关联问题导致编译不过去，最好是删除掉） <a href="/images/2016/07/2016-07-23_185115.png"><img src="/images/2016/07/2016-07-23_185115.png" alt="2016-07-23_185115"></a> 打开 EasyHookDll 目录。复制 <code>EasyHookDll.vcxproj</code> 文件和 <code>EasyHookDll.vcxproj.filters</code> 文件，改名为 <code>EasyHookLib.vcxproj</code> 和 <code>EasyHookLib.vcxproj.filters</code>，如下图： <a href="/images/2016/07/2016-07-23_181117.png"><img src="/images/2016/07/2016-07-23_181117.png" alt="2016-07-23_181117"></a> 把复制后的 <code>EasyHookLib.vcxproj</code> 添加到项目中： <a href="/images/2016/07/2016-07-23_181438.png"><img src="/images/2016/07/2016-07-23_181438.png" alt="2016-07-23_181438"></a> <a href="/images/2016/07/2016-07-23_181453.png"><img src="/images/2016/07/2016-07-23_181453.png" alt="2016-07-23_181453"></a> 添加到项目后，在 VS 视图中，打开“属性管理器”视图： <a href="/images/2016/07/2016-07-23_181943.png"><img src="/images/2016/07/2016-07-23_181943.png" alt="2016-07-23_181943"></a> 切换到属性管理器窗口，删除所有 netfx4 的配置： <a href="/images/2016/07/2016-07-23_182122.png"><img src="/images/2016/07/2016-07-23_182122.png" alt="2016-07-23_182122"></a> 然后删除所有 netfx3.5 的名称前缀： <a href="/images/2016/07/2016-07-23_182230.png"><img src="/images/2016/07/2016-07-23_182230.png" alt="2016-07-23_182230"></a> 最后效果如下： <a href="/images/2016/07/2016-07-23_182317.png"><img src="/images/2016/07/2016-07-23_182317.png" alt="2016-07-23_182317"></a> 接下来，修改配置属性，打开配置管理器： <a href="/images/2016/07/2016-07-23_182507.png"><img src="/images/2016/07/2016-07-23_182507.png" alt="2016-07-23_182507"></a> 点击活动解决方案管配置的下拉菜单-&gt;编辑选项，删除所有 netfx4 的配置，并将 netfx3.5 配置的前缀去掉，修改后的效果如下： <a href="/images/2016/07/2016-07-23_182602.png"><img src="/images/2016/07/2016-07-23_182602.png" alt="2016-07-23_182602"></a> <a href="/images/2016/07/2016-07-23_182636.png"><img src="/images/2016/07/2016-07-23_182636.png" alt="2016-07-23_182636"></a> 这样最终就只剩下 Debug 和 Release 版本的，没有那么多无用的配置选项了。随后再点开“活动解决方案的”的下拉菜单，删除 AnyCPU 的选项。如下图： <a href="/images/2016/07/2016-07-23_182910.png"><img src="/images/2016/07/2016-07-23_182910.png" alt="2016-07-23_182910"></a> <a href="/images/2016/07/2016-07-23_182918.png"><img src="/images/2016/07/2016-07-23_182918.png" alt="2016-07-23_182918"></a> 修改完配置后，点击 EasyHookLib 的项目右键-&gt;属性-&gt;常规，由原来的 Dll 修改为 Lib 库，如下图（注意红框的位置，将所有配置所有平台下都修改了）： <a href="/images/2016/07/2016-07-23_181547.png"><img src="/images/2016/07/2016-07-23_181547.png" alt="2016-07-23_181547"></a> 然后切换到 C&#x2F;C++-&gt;预处理器 选项中，将每一个配置下的“预处理器定义”中的 <code>EASYHOOK_EXPORTS</code> 删除，由于每种配置下这个属性不同，所以不能像之前一样，选所有配置一下都修改了，只能一个一个的修改。其实现在只有 Debug 和 Release 两个配置了，改起来也不麻烦。 <a href="/images/2016/07/2016-07-23_231513.png"><img src="/images/2016/07/2016-07-23_231513.png" alt="2016-07-23_231513"></a> 切换到 生成事件-&gt;后期生成事件 选项卡中，删除所有配置下的所有平台中的命令行属性（这个选项是在项目生成后执行的批处理命令，主要是拷贝一些文件到指定目录，我们用不到，所以删除）： <a href="/images/2016/07/2016-07-23_185254.png"><img src="/images/2016/07/2016-07-23_185254.png" alt="2016-07-23_185254"></a> 切换到 库管理器-&gt;命令行 选项卡中，在 Win32 平台下添加选项 <code>/MACHINE:X86</code>，在 x64 平台下添加选项 <code>/MACHINE:X64</code>，这个属性决定了 Lib 库是多少位的。如下图： <a href="/images/2016/07/2016-07-23_185614.png"><img src="/images/2016/07/2016-07-23_185614.png" alt="2016-07-23_185614"></a> <a href="/images/2016/07/2016-07-23_185646.png"><img src="/images/2016/07/2016-07-23_185646.png" alt="2016-07-23_185646"></a> 至此所有配置和属性都修改完了，接下来我们要动一下源代码，不然编译后的 Lib 库也是用不了的。打开 Source Files 下的 dllmain.c，将原来的 dllmain 函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">BOOL APIENTRY DllMain( HMODULE hModule,</span><br><span class="line">        DWORD  ul_reason_for_call,</span><br><span class="line">        LPVOID lpReserved</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>修改为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">EXTERN_C BOOL APIENTRY EasyHookDllMain(HMODULE hModule,</span><br><span class="line">    DWORD  ul_reason_for_call,</span><br><span class="line">    LPVOID lpReserved</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><a href="/images/2016/07/2016-07-23_184129.png"><img src="/images/2016/07/2016-07-23_184129.png" alt="2016-07-23_184129"></a> 然后打开头文件 easyhook.h。删除如下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#ifdef EASYHOOK_EXPORTS</span><br><span class="line">    #define EASYHOOK_API                        __declspec(dllexport) __stdcall</span><br><span class="line">    #define DRIVER_SHARED_API(type, decl)       EXTERN_C type EASYHOOK_API decl</span><br><span class="line">#else</span><br><span class="line">    #ifndef DRIVER</span><br><span class="line">        #define EASYHOOK_API                    __declspec(dllimport) __stdcall</span><br><span class="line">        #define DRIVER_SHARED_API(type, decl)   EXTERN_C type EASYHOOK_API decl</span><br><span class="line">    #else</span><br><span class="line">        #define EASYHOOK_API                    __stdcall</span><br><span class="line">        #define DRIVER_SHARED_API(type, decl)   typedef type EASYHOOK_API PROC_##decl; EXTERN_C type EASYHOOK_API decl</span><br><span class="line">    #endif</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+
+<p>替换为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define EASYHOOK_API __stdcall</span><br><span class="line">#define DRIVER_SHARED_API(type, decl) typedef type EASYHOOK_API PROC_##decl; EXTERN_C type EASYHOOK_API decl</span><br></pre></td></tr></table></figure>
+
+<p><a href="/images/2016/07/2016-07-23_184322.png"><img src="/images/2016/07/2016-07-23_184322.png" alt="2016-07-23_184322"></a> 此时，编译一下项目，即可编译通过了。 <a href="/images/2016/07/2016-07-23_190025.png"><img src="/images/2016/07/2016-07-23_190025.png" alt="2016-07-23_190025"></a> <a href="/images/2016/07/2016-07-23_190052.png"><img src="/images/2016/07/2016-07-23_190052.png" alt="2016-07-23_190052"></a> Lib 库的编译先到这里，至于 Lib 库的使用，我写了一个 Example，请大家访问 github 下载源代码自行编译调试：<a target="_blank" rel="noopener" href="https://github.com/nmgwddj/EasyHook">https://github.com/nmgwddj/EasyHook</a>。该项目包含了 32 位和 64 位的 Lib 库，和一个测试项目，HOOK 了 NtCreateFile 函数实现了对文件打开创建等功能的监控。代码中有较为详细的注释，若有不明白的地方，欢迎随时给我留言。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-07-23T19:04:02.000Z" itemprop="datePublished">
+              2016-07-23
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

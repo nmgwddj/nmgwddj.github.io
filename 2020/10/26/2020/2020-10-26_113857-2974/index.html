@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt 通过自定义 URL Scheme 给已经运行的应用传参（Windows&amp;macOS） | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt 通过自定义 URL Scheme 给已经运行的应用传参（Windows&amp;macOS）</h1>
+    </header>
+
+    <section>
+      <p>在传统的应用程序设计中，我们可以看到很多通过浏览器唤起本地应用的案例，比如百度网盘、迅雷等工具，他们在浏览器访问一个非 http&#x2F;https 协议开头的地址时，会自动打开其自己的应用程序并传递一定的参数。该功能的实现方式网络上有很多示例，在 Windows 和 macOS 不同平台下他们分别需要如下设置：</p>
+<span id="more"></span>
+<h2 id="Windows-注册自定义-URL-Scheme"><a href="#Windows-注册自定义-URL-Scheme" class="headerlink" title="Windows 注册自定义 URL Scheme"></a>Windows 注册自定义 URL Scheme</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Windows Registry Editor Version 5.00</span><br><span class="line"></span><br><span class="line">[HKEY_CLASSES_ROOT\MYSCHEME]</span><br><span class="line">@=&quot;MyApp Name&quot;</span><br><span class="line">&quot;URL Protocol&quot;=&quot;E:\\Documents\\Repositories\\temporary\\MyApp\\bin\\MyApp.exe&quot;</span><br><span class="line"></span><br><span class="line">[HKEY_CLASSES_ROOT\MYSCHEME\shell]</span><br><span class="line"></span><br><span class="line">[HKEY_CLASSES_ROOT\MYSCHEME\shell\open]</span><br><span class="line"></span><br><span class="line">[HKEY_CLASSES_ROOT\MYSCHEME\shell\open\command]</span><br><span class="line">@=&quot;\&quot;E:\\Documents\\Repositories\\temporary\\MyApp\\bin\\MyApp.exe\&quot; --argument=\&quot;%1\&quot;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>在你的程序安装包中需要写入如下注册表内容，告诉系统我们要注册一个自定义 URL Scheme，上面的例子中</p>
+<ul>
+<li><code>MYSCHEME</code> 是自己的 URL Scheme 名称</li>
+<li><code>E:\\Documents\\Repositories\\temporary\\MyApp\\bin\\MyApp.exe</code> 是自己应用安装后的实际路径</li>
+<li><code>--argument=\&quot;%1\</code> 是启动自己应用后后面要加的参数</li>
+</ul>
+<p>当我们通过浏览器访问 <code>MYSCHEME://auth?username=abc&amp;password=def</code> 时，将会唤起 <code>E:\\Documents\\Repositories\\temporary\\MyApp\\bin\\MyApp.exe</code> 这个程序并传递参数为 <code>--argument=MYSCHEME://auth?username=abc&amp;password=def</code>，浏览器会先弹出提示是否打开自己注册的应用： <a href="/images/2020/10/Snipaste_2020-10-24_12-41-42.png"><img src="/images/2020/10/Snipaste_2020-10-24_12-41-42.png"></a> 在选择打开应用后，程序自动启动，并且后面追加了命令行参数： <a href="/images/2020/10/Snipaste_2020-10-24_12-42-45.png"><img src="/images/2020/10/Snipaste_2020-10-24_12-42-45.png"></a></p>
+<h2 id="macOS-注册自定义-URL-Scheme"><a href="#macOS-注册自定义-URL-Scheme" class="headerlink" title="macOS 注册自定义 URL Scheme"></a>macOS 注册自定义 URL Scheme</h2><p>macOS 下与 Windows 在自定义 URL 的实现上有差异，你需要在应用 boundle 里面，修改 Info.plist 增加如下字段：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;array&gt;</span><br><span class="line">    &lt;dict&gt;</span><br><span class="line">        &lt;key&gt;CFBundleURLName&lt;/key&gt;</span><br><span class="line">        &lt;string&gt;com.company.group.app&lt;/string&gt;</span><br><span class="line">        &lt;key&gt;CFBundleTypeRole&lt;/key&gt;</span><br><span class="line">        &lt;string&gt;Editor&lt;/string&gt;</span><br><span class="line">        &lt;key&gt;CFBundleURLSchemes&lt;/key&gt;</span><br><span class="line">        &lt;array&gt;</span><br><span class="line">            &lt;string&gt;MyApp&lt;/string&gt;</span><br><span class="line">        &lt;/array&gt;</span><br><span class="line">    &lt;/dict&gt;</span><br><span class="line">&lt;/array&gt;</span><br></pre></td></tr></table></figure>
+
+<p>其中 MyApp 则为自动注册到系统中的自定义 URL Scheme，当把你的应用安装在应用程序安装目录后，并在 macOS 下通过浏览器访问 MyApp:&#x2F;&#x2F; 的地址时会自动唤起你的应用。 以上是两种系统中实现自定义 URL Scheme 的不同，到这里都已经能成功唤起我们的应用了，但本文主要叙述的内容并不是唤起相关的能力，而是<strong>如何在应用已经启动的情况下，又通过浏览器去唤起应用来实现参数的传递</strong>。</p>
+<h2 id="Windows-下对已启动应用传参"><a href="#Windows-下对已启动应用传参" class="headerlink" title="Windows 下对已启动应用传参"></a>Windows 下对已启动应用传参</h2><p>在 Windows 下我并没有找到像 macOS 一样方便的方式来实现这个功能，我的处理办法是，在第一个客户端启动时检测一下是否已经创建指定命名管道（Linux 下使用 Domian socket）如果未创建则创建并启动应用，如果已经创建则打开命名管道将本次启动时的命令行参数通过管道发送给创建命名管道的实例进程中，这样就实现了一个间接的通讯将参数动态传递给已经运行的程序。 如果你上层应用使用的是 Qt，可以使用 LocalSocket 和 LocalServer，其中 LocalServer 来实现管道服务端的功能，LocalSocket 来实现客户端功能在每次应用启动时尝试一次连接。</p>
+<h2 id="macOS-下对已启动应用传参"><a href="#macOS-下对已启动应用传参" class="headerlink" title="macOS 下对已启动应用传参"></a>macOS 下对已启动应用传参</h2><p>macOS 下相对简单一些，由于 macOS 系统级别限制，仅允许启动一个同名 Boundle ID 的实例，所以像上面 Windows 一样多进程启动后通过管道传递参数的方式就行不通了。但系统提供了另外一组能力，能帮助我们更方便的实现这一功能。 在 Stackoverflow 中有这样一篇回答，清晰的描述了如何使用 OC 的方式监听应用二次启动传参以及如何使用 Qt 来处理以上事件：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/6561661/url-scheme-qt-and-mac">点击查看链接</a> 其中 Qt 的方式非常简单，只需要响应应用的 QFileOpen 事件即可实现此功能，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">bool FileOpenEventFilter::eventFilter(QObject* obj, QEvent* event)</span><br><span class="line">&#123;</span><br><span class="line">    if (event-&gt;type() == QEvent::FileOpen)</span><br><span class="line">    &#123;</span><br><span class="line">        QFileOpenEvent* fileEvent = static_cast&lt;QFileOpenEvent*&gt;(event);</span><br><span class="line">        if (!fileEvent-&gt;url().isEmpty())</span><br><span class="line">        &#123;</span><br><span class="line">            m_lastUrl = fileEvent-&gt;url().toString();</span><br><span class="line">            emit urlOpened(m_lastUrl);</span><br><span class="line">        &#125;</span><br><span class="line">        else if (!fileEvent-&gt;file().isEmpty())</span><br><span class="line">        &#123;</span><br><span class="line">            emit fileOpened(fileEvent-&gt;file());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        // standard event processing</span><br><span class="line">        return QObject::eventFilter(obj, event);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在应用启动过程中动态传递参数在 Windows 和 macOS 上使用的是不同的机制，两个平台不同的实现步骤我们再列一下清单，避免日后遗忘： <strong>Windows</strong></p>
+<ul>
+<li>通过注册表注册 URL Scheme 到系统</li>
+<li>程序首次启动实现自动创建管道能力</li>
+<li>程序二次启动实现读取管道并广播通知参数能力</li>
+</ul>
+<p><strong>macOS</strong></p>
+<ul>
+<li>通过 Info.plist 将 URL Scheme 注册到系统</li>
+<li>原生程序实现 <code>NSApplicationWillFinishLaunchingNotification</code></li>
+<li>Qt 程序处理 QFileOpen 消息</li>
+</ul>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2020-10-26T11:38:57.000Z" itemprop="datePublished">
+              2020-10-26
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

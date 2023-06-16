@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>数组希尔排序 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>数组希尔排序</h1>
+    </header>
+
+    <section>
+      <p>希尔排序是建立在插入排序的基础之上的，只不过是将数据中做插入排序之前做了一次分组，他的分组是根据用户输入的一个数字来决定分多少组的，比如有如下数据：</p>
+<span id="more"></span>
+<blockquote>
+<p>49 58 65 97 26 13 27 49 55 4</p>
+</blockquote>
+<p>按下图表示的方法进行三次分组，对每次分组出来的数据执行插入排序，最后得出有序的数组，乍一看来这岂不是多了一步画蛇添足的步骤？实际并不是这样，因为先将整个待排元素序列分割成若干个子序列（由相隔某个“增量”的元素组成的）分别进行直接插入排序，然后依次缩减增量再进行排序，待整个序列中的元素基本有序（增量足够小）时，再对全体元素进行一次直接插入排序。因为直接插入排序在元素基本有序的情况下（接近最好情况），效率是很高的，因此希尔排序在时间效率上比前三种方法有较大提高。 <a href="/images/2015/06/2015-06-07_233049.png"><img src="/images/2015/06/2015-06-07_233049.png" alt="2015-06-07_233049"></a></p>
+<h3 id="【实现代码】"><a href="#【实现代码】" class="headerlink" title="【实现代码】"></a>【实现代码】</h3><p>void shell_sort(int *arr, int len)<br>{<br>int value &#x3D; len;<br>int temp &#x3D; 0;<br>int index &#x3D; 0;<br>do<br>{<br>&#x2F;&#x2F; 业界统一实验的 平均最好情况 经过若干次后,收敛为1<br>value &#x3D; value &#x2F; 3 + 1;<br>&#x2F;&#x2F; 一次跳 value 个<br>for (int idx &#x3D; 0; idx &lt; value; idx++)<br>{<br>&#x2F;&#x2F; 对分组后的数据进行排序，每一次跳过整个长度<br>for (int i &#x3D; value; i &lt; len; i +&#x3D; value)<br>{<br>index &#x3D; i;<br>temp &#x3D; arr[i];<br>for (int j &#x3D; i - value; j &gt;&#x3D; 0 &amp;&amp; arr[j] &gt; temp; j -&#x3D; value)<br>{<br>arr[j + value] &#x3D; arr[j];<br>index &#x3D; j;<br>}</p>
+<p>arr[index] &#x3D; temp;<br>}<br>}<br>} while (value &gt; 1);<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-07T23:39:04.000Z" itemprop="datePublished">
+              2015-06-07
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

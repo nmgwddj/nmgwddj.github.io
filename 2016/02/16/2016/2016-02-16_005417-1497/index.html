@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>数据全排列组合 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>数据全排列组合</h1>
+    </header>
+
+    <section>
+      <p>所谓全排列就是将一个数据组合拆开重新排列，比如 abc，可重新排序为 acb、bac、bca、cab、cba，通过算法上实现一般就是递归或一个while循环来实现。最近复习算法方面的内容接触到的新的算法，记录一下思路。</p>
+<span id="more"></span>
+<p>主要思路就是把每个子项都拿到第一位，然后递归分别跟后面的交换得出不同的组合。以下是参考代码，网络上有很多种代码，思路都是一样的。我稍作修改，减少了交换次数以换取效率。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;string.h&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">template &lt;typename T&gt;</span><br><span class="line">void Swap(T&amp; a, T&amp; b)</span><br><span class="line">&#123;</span><br><span class="line">    if (a == b) return;</span><br><span class="line">    T tmp = a;</span><br><span class="line">    a = b;</span><br><span class="line">    b = tmp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">template &lt;typename T&gt;</span><br><span class="line">void AllRange(T list[], int begin, int end)</span><br><span class="line">&#123;</span><br><span class="line">    if (begin == end)</span><br><span class="line">    &#123;</span><br><span class="line">        static int idx = 1;</span><br><span class="line">        cout &lt;&lt; idx++ &lt;&lt; &quot;---&quot;;</span><br><span class="line">        for (int i = 0; i &lt; end; ++i)</span><br><span class="line">        &#123;</span><br><span class="line">            cout &lt;&lt; list[i];</span><br><span class="line">        &#125;</span><br><span class="line">        cout &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        for (int i = begin; i &lt; end; ++i)</span><br><span class="line">        &#123;</span><br><span class="line">            Swap(list[begin], list[i]);</span><br><span class="line">            AllRange(list, begin + 1, end);</span><br><span class="line">            Swap(list[i], list[begin]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    char str[] = &quot;abc&quot;;</span><br><span class="line">    AllRange(str, 0, strlen(str));</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; &quot;--------------------&quot; &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    int arr[] = &#123;1, 2, 3&#125;;</span><br><span class="line">    AllRange(arr, 0, 3);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>程序运行的结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mycode@vmware:~/Desktop$ g++ allRange.cpp -o allRange</span><br><span class="line">mycode@vmware:~/Desktop$ ./allRange </span><br><span class="line">1---abc</span><br><span class="line">2---acb</span><br><span class="line">3---bac</span><br><span class="line">4---bca</span><br><span class="line">5---cba</span><br><span class="line">6---cab</span><br><span class="line">--------------------</span><br><span class="line">1---123</span><br><span class="line">2---132</span><br><span class="line">3---213</span><br><span class="line">4---231</span><br><span class="line">5---321</span><br><span class="line">6---312</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-02-16T00:54:17.000Z" itemprop="datePublished">
+              2016-02-16
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%A8%A1%E7%89%88/">模版</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

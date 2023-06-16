@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>proc 编程处理 select 获取的数据集 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>proc 编程处理 select 获取的数据集</h1>
+    </header>
+
+    <section>
+      <p>使用 select 语句获取数据，有两种种结果，第一种，得到的结果只有一行，我们只需要用指定的变量来接收它就可以了，但第二种情况则是有多行数据，每一行数据，处理这种多行返回的数据也有两种方法，一个是使用一个二维宿主数组来接收这些结果（如果不知道结果有多少，宿主数组也不知道该定义多大，所以这种方法不太灵活），另外一个是使用游标的方式来遍历数据，游标又分单向的遍历游标和滚动游标。本文就介绍这些所有的方法。</p>
+<span id="more"></span>
+<hr>
+<h3 id="接收一行数据"><a href="#接收一行数据" class="headerlink" title="接收一行数据"></a>接收一行数据</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;string.h&gt;<br>#include “sqlca.h”</p>
+<p>EXEC SQL BEGIN DECLARE SECTION;</p>
+<p>char *serversid &#x3D; “scott&#x2F;tiger@orcl”;</p>
+<p>&#x2F;&#x2F; 宿主变量<br>int deptno;<br>char dname[20];<br>char loc[20];</p>
+<p>EXEC SQL END DECLARE SECTION;</p>
+<p>int main(void)<br>{<br>int ret &#x3D; 0;</p>
+<p>&#x2F;&#x2F; 连接服务器<br>EXEC SQL CONNECT :serversid;<br>if (sqlca.sqlcode !&#x3D; 0) {<br>ret &#x3D; sqlca.sqlcode;<br>printf(“connect error: %d\n”, ret);<br>return ret;<br>}<br>printf(“connect ok…\n”);</p>
+<p>&#x2F;&#x2F; 执行查询语句，将查询结果存放到之前声明的宿主变量中<br>EXEC SQL select deptno, dname, loc into :deptno, :dname, :loc from dept where deptno&#x3D;20;<br>if (sqlca.sqlcode !&#x3D; 0) {<br>ret &#x3D; sqlca.sqlcode;<br>printf(“select error: %d\n”, ret);<br>return ret;<br>}</p>
+<p>&#x2F;&#x2F; 打印执行完成后存放到宿主变量中的结果<br>printf(“dname:%s, loc:%s, deptno:%d\n”, dname, loc, deptno);</p>
+<p>&#x2F;&#x2F; 提交(commit)并关闭(release)连接<br>EXEC SQL commit release;</p>
+<p>printf(“commit release ok…\n”);</p>
+<p>return 0;<br>}</p>
+<p>以上程序执行后会得到dname，loc，deptno三个数据，结果如下图： <a href="/images/2015/07/2015-07-25_192830.png"><img src="/images/2015/07/2015-07-25_192830.png" alt="2015-07-25_192830"></a> 使用这种方式接收数据我们会发现一个问题，就是每一个读取出来的数据后面都多出了很多空格，这些空格是由于我们数组定义了长度为20，如果数据不满足20个那么会自动把后面的空位补为空格。想避免这种问题可以看下面几种处理方法。</p>
+<h3 id="使用varchar和string接收数据"><a href="#使用varchar和string接收数据" class="headerlink" title="使用varchar和string接收数据"></a>使用varchar和string接收数据</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;string.h&gt;<br>#include “sqlca.h”</p>
+<p>&#x2F;*<br>typedef int int32_t;</p>
+<p>int a &#x3D; 10;<br>int32_t a;</p>
+<p>int a;  -&gt; typedef int a;  a从原来的变量名，变成了int类型。<br>char dnameType[20]; 定义一个字符数组</p>
+<p>typedef char dnameType[20];    dnameType 不在是一个变量，而变成类型了。<br>*&#x2F;</p>
+<p>typedef char dnameType[20];&#x2F;&#x2F;定义了一个有20字符的数组数据类型</p>
+<p>EXEC SQL BEGIN DECLARE SECTION;</p>
+<p>char *serversid &#x3D; “scott&#x2F;tiger@orcl”;</p>
+<p>int deptno1;<br>char dname1[20];<br>char loc1[20];</p>
+<p>int deptno2;<br>varchar dname2[20];<br>varchar loc2[20];</p>
+<p>&#x2F;&#x2F; 将c语言的变量转化为外部变量<br>EXEC SQL TYPE dnameType is string(20);</p>
+<p>int deptno3;<br>dnameType dname3;&#x2F;&#x2F;char *dname   char dname[20];<br>dnameType loc3;</p>
+<p>EXEC SQL END DECLARE SECTION;</p>
+<p>int main(void)<br>{<br>int ret &#x3D; 0;</p>
+<p>&#x2F;&#x2F; 连接服务器<br>EXEC SQL CONNECT :serversid;<br>if (sqlca.sqlcode !&#x3D; 0) {<br>ret &#x3D; sqlca.sqlcode;<br>printf(“connect error: %d\n”, ret);<br>return ret;<br>}<br>printf(“connect ok…\n”);</p>
+<p>&#x2F;&#x2F; 执行查询语句，注意使用宿主变量的方法，使用默认的char类型来接收查询出来的数据<br>EXEC SQL select deptno, dname, loc into :deptno1, :dname1, :loc1 from dept where deptno&#x3D;20;<br>if (sqlca.sqlcode !&#x3D; 0)<br>{<br>ret &#x3D; sqlca.sqlcode;<br>printf(“select error: %d\n”, ret);<br>return ret;<br>}<br>printf(“————–1 char————\n”);<br>printf(“dname:%s, loc:%s, deptno:%d\n”, dname1, loc1, deptno1);</p>
+<p>&#x2F;&#x2F; 使用 varchar 类型来接收查询出来的数据<br>EXEC SQL select deptno, dname, loc into :deptno2, :dname2, :loc2 from dept where deptno&#x3D;20;<br>if (sqlca.sqlcode !&#x3D; 0)<br>{<br>ret &#x3D; sqlca.sqlcode;<br>printf(“select error: %d\n”, ret);<br>return ret;<br>}<br>printf(“————–2 varchar————\n”);<br>printf(“dname:%s, loc:%s, deptno:%d\n”, dname2.arr, loc2.arr, deptno2);</p>
+<p>&#x2F;&#x2F; 使用转换后的 string 类型来接收查询的数据<br>EXEC SQL select deptno, dname, loc into :deptno3, :dname3, :loc3 from dept where deptno&#x3D;20;<br>if (sqlca.sqlcode !&#x3D; 0)<br>{<br>ret &#x3D; sqlca.sqlcode;<br>printf(“select error: %d\n”, ret);<br>return ret;<br>}<br>printf(“————–3 string————\n”);<br>printf(“dname:%s, loc:%s, deptno:%d\n”, dname3, loc3, deptno3);</p>
+<p>EXEC SQL commit release;</p>
+<p>printf(“commit release ok…\n”);</p>
+<p>return 0;<br>}</p>
+<p>可以看出，第一种与上面的例子没什么区别，都是用 char 类型来接收数据，而第二种则是使用了一个新的宿主类型 varchar，这种类型在内部实现实际是将 varchar 转换为一个结构体，结构体中有一个成员为 arr 和 len，arr 记录了返回的字符串内容，len 记录了返回的字符串长度，打印时使用 xxx.arr 就可以取到没有被自动补上空格的字符串了。最后的第三种是在宿主变量声明时就将其转换成为外部变量，这种方式避免了第二种方法中需要调用成员的方法。三种方法各有优略，在平时使用时需要看自己的需求。以下是处理结果返回的数据： <a href="/images/2015/07/2015-07-25_201555.png"><img src="/images/2015/07/2015-07-25_201555.png" alt="2015-07-25_201555"></a></p>
+<h3 id="使用二维宿主数组接收一组数据"><a href="#使用二维宿主数组接收一组数据" class="headerlink" title="使用二维宿主数组接收一组数据"></a>使用二维宿主数组接收一组数据</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;string.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include “sqlca.h”</p>
+<p>EXEC SQL BEGIN DECLARE SECTION;<br>char *serversid &#x3D; “scott&#x2F;tiger@orcl”;</p>
+<p>int deptno;<br>char dname[20];<br>char loc[20];</p>
+<p>int count;&#x2F;&#x2F; 保存查询出来的记录个数rows</p>
+<p>int deptno2[10];&#x2F;&#x2F; 10个编号，称为宿主数组<br>varchar dname2[10][20];&#x2F;&#x2F; 10个名字，每个名字最长20字符<br>varchar loc2[10][20];&#x2F;&#x2F; 10个区域，每个区域最长20字符<br>short loc_ind[10];&#x2F;&#x2F; 10个指示变量</p>
+<p>EXEC SQL END DECLARE SECTION;</p>
+<p>void sqlerr(void)<br>{<br>EXEC SQL WHENEVER SQLERROR CONTINUE;<br>printf(“Error Reason: %.*s\n”, sqlca.sqlerrm.sqlerrml, sqlca.sqlerrm.sqlerrmc);<br>EXEC SQL ROLLBACK RELEASE;<br>exit(1);<br>}</p>
+<p>int main(void)<br>{<br>&#x2F;&#x2F; 错误处理，代替if(sqlca.sqlcode !&#x3D; 0)<br>EXEC SQL WHENEVER SQLERROR DO sqlerr();<br>&#x2F;&#x2F; 链接数据库<br>EXEC SQL CONNECT :serversid;</p>
+<p>&#x2F;&#x2F; 查询dept表所有内容，并将数据储存到前面声明的宿主数组中<br>EXEC SQL select deptno, dname, loc into :deptno2, :dname2, :loc2:loc_ind from dept;<br>&#x2F;&#x2F; 获取通讯区的sqlerrd[2]保存了SQL语句处理的行数。<br>count &#x3D; sqlca.sqlerrd[2];<br>printf(“——SQL rows &#x3D; %d\n”, count);</p>
+<p>&#x2F;&#x2F; 根据查询出来的行数遍历宿主数组内容<br>int i;<br>for (i &#x3D; 0; i &lt; count; i++)<br>{<br>&#x2F;&#x2F;dname2[i]取二维数组的行<br>printf(“%d\t%s\t%s\n”, deptno2[i], dname2[i].arr, loc2[i].arr);<br>}</p>
+<p>printf(“Enter any key to create dept2 \n”);<br>getchar();</p>
+<p>&#x2F;&#x2F; 使用SQL创建一张表dept2，格式同dept<br>EXEC SQL create table dept2 as select * from dept where 1&#x3D;2;</p>
+<p>printf(“Enter any key to insert into dept2 —-lots of rows\n”);<br>getchar();</p>
+<p>&#x2F;&#x2F; 向表中插入刚才查询出来的多行数据：<br>EXEC SQL For :count insert into dept2(deptno, dname, loc)<br>values(:deptno2, :dname2, :loc2:loc_ind);<br>printf(“—-insert into dept2 finish…\n”);</p>
+<p>&#x2F;&#x2F; 提交事物并断开连接<br>EXEC SQL COMMIT RELEASE;</p>
+<p>return 0;<br>}</p>
+<p>这段代码我们可以成功的处理 select 返回的一组数据，但是这组数据的个数如果超过了我们定义的数组的大小，那么就无法接收更多的数据了。所以这种方法并不是特别的通用，但是有的时候还是用的到。 <a href="/images/2015/07/2015-07-25_202037.png"><img src="/images/2015/07/2015-07-25_202037.png" alt="2015-07-25_202037"></a></p>
+<h3 id="使用游标来处理一组数据"><a href="#使用游标来处理一组数据" class="headerlink" title="使用游标来处理一组数据"></a>使用游标来处理一组数据</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;string.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include “sqlca.h”</p>
+<p>typedef char dnameType[20];<br>typedef char locType[20];</p>
+<p>EXEC SQL BEGIN DECLARE SECTION;<br>char *serversid &#x3D; “scott&#x2F;11@orcl”;</p>
+<p>EXEC SQL TYPE dnameType is string(20);<br>EXEC SQL TYPE locType is string(20);</p>
+<p>int deptno;<br>dnameType dname;<br>locType loc;<br>short loc_ind;&#x2F;&#x2F;指示变量不能省略。以防出现NULL值。</p>
+<p>EXEC SQL END DECLARE SECTION;</p>
+<p>void sqlerr(void)<br>{<br>EXEC SQL WHENEVER SQLERROR CONTINUE;<br>printf(“Error Reason: %.*s\n”, sqlca.sqlerrm.sqlerrml, sqlca.sqlerrm.sqlerrmc);<br>EXEC SQL ROLLBACK RELEASE;<br>exit(1);<br>}</p>
+<p>int main(void)<br>{<br>&#x2F;&#x2F;错误处理，代替if(sqlca.sqlcode !&#x3D; 0)<br>EXEC SQL WHENEVER SQLERROR DO sqlerr();<br>&#x2F;&#x2F;链接数据库<br>EXEC SQL CONNECT :serversid;</p>
+<p>&#x2F;&#x2F;1. 定义游标<br>EXEC SQL DECLARE dept_cursor CURSOR For select * from dept;</p>
+<p>&#x2F;&#x2F;2. 打开游标<br>EXEC SQL OPEN dept_cursor;</p>
+<p>&#x2F;&#x2F;3. 提取数据<br>while (1) {<br>&#x2F;&#x2F; fetch 从游标中抽取数据，游标会自动向后移动，依次抽取直到<br>EXEC SQL FETCH dept_cursor INTO :deptno, :dname, :loc:loc_ind;<br>&#x2F;&#x2F; 错误处理<br>if (sqlca.sqlcode &#x3D;&#x3D; 100  sqlca.sqlcode &#x3D;&#x3D; 1403)<br>{<br>break;<br>}<br>printf(“%d\t%s\t%s\n”, deptno, dname, loc);<br>}</p>
+<p>&#x2F;* 官方文档中的错误处理机制</p>
+<p>&#x2F;&#x2F; 如果出现 NOT FOUND 错误，则执行 break 跳出循环<br>EXEC SQL WHENEVER NOT FOUND DO break;<br>for (;;)<br>{<br>&#x2F;&#x2F; 一直取数据，如果出错那么相应上面的出错处理，直接 break;<br>EXEC SQL FETCH dept_cursor INTO :deptno, :dname, :loc:loc_ind;<br>printf(“%d\t%s\t%s\n”, deptno, dname, loc);<br>}<br>*&#x2F;</p>
+<p>&#x2F;&#x2F;4. 关闭游标<br>EXEC SQL CLOSE dept_cursor;<br>&#x2F;&#x2F;提交事物并断开连接<br>EXEC SQL COMMIT RELEASE;</p>
+<p>return 0;<br>}</p>
+<p>使用游标来处理数据我们就不需要担心那么多因为数据定义过小的小问题了，我们可以一行一行的读取数据进行处理，而这种方法也存在部分缺陷，那就是依次遍历整个结果集，却不能定向的指定要取哪部分数据，所以呢，下面的滚动游标应运而生。 <a href="/images/2015/07/2015-07-25_202134.png"><img src="/images/2015/07/2015-07-25_202134.png" alt="2015-07-25_202134"></a></p>
+<h3 id="使用滚动游标来处理一组数据"><a href="#使用滚动游标来处理一组数据" class="headerlink" title="使用滚动游标来处理一组数据"></a>使用滚动游标来处理一组数据</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;string.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include “sqlca.h”</p>
+<p>typedef char dnameType[20];<br>typedef char locType[20];</p>
+<p>EXEC SQL BEGIN DECLARE SECTION;</p>
+<p>char *usrname &#x3D; “scott”;<br>char *passwd &#x3D; “11”;<br>char *serverid &#x3D; “orcl”;</p>
+<p>EXEC SQL TYPE dnameType is string(20);<br>EXEC SQL TYPE locType is string(20);</p>
+<p>intdeptno;<br>dnameTypedname; &#x2F;&#x2F;string 数据类型<br>short dname_ind;</p>
+<p>locType loc;<br>short loc_ind;<br>EXEC SQL END DECLARE SECTION;</p>
+<p>void connet(void)<br>{<br>int ret &#x3D; 0;<br>&#x2F;&#x2F;连接数据库<br>EXEC SQL CONNECT :usrname IDENTIFIED BY :passwd USING :serverid ;<br>if (sqlca.sqlcode !&#x3D; 0)<br>{<br>ret &#x3D; sqlca.sqlcode;<br>printf(“sqlca.sqlcode: err:%d \n”, sqlca.sqlcode);<br>return ;<br>}<br>printf(“connect ok…\n”);<br>}</p>
+<p>void sqlerr(void)<br>{<br>EXEC SQL WHENEVER SQLERROR CONTINUE;<br>printf(“Error Reason: %.*s\n”, sqlca.sqlerrm.sqlerrml, sqlca.sqlerrm.sqlerrmc);<br>EXEC SQL ROLLBACK RELEASE;<br>exit(1);<br>}</p>
+<p>&#x2F;&#x2F;滚动游标查询数据<br>int main(void)<br>{<br>int ret &#x3D; 0;</p>
+<p>EXEC SQL WHENEVER SQLERROR DO sqlerr();<br>connet();</p>
+<p>&#x2F;&#x2F;1 定义游标  declare cursor  在为某一次查询<br>EXEC SQL DECLARE c SCROLL CURSOR FOR select deptno, dname, loc from dept;</p>
+<p>&#x2F;&#x2F;2 打开游标 open cursor<br>EXEC SQL OPEN c;</p>
+<p>&#x2F;&#x2F;3 获取数据 fetch data<br>&#x2F;&#x2F;查询最后一条数据<br>EXEC SQL FETCH LAST c INTO :deptno, :dname:dname_ind, :loc:loc_ind;<br>printf(“1–  %d\t %s\t %s \n”, deptno, dname, loc );</p>
+<p>&#x2F;&#x2F;查询第一条数据<br>EXEC SQL FETCH FIRST c INTO :deptno, :dname:dname_ind, :loc:loc_ind;<br>printf(“2–  %d\t %s\t %s \n”, deptno, dname, loc );</p>
+<p>&#x2F;&#x2F;查询第2条数据(绝对)<br>EXEC SQL FETCH ABSOLUTE 2 c INTO :deptno, :dname:dname_ind, :loc:loc_ind;<br>printf(“3–  %d\t %s\t %s \n”, deptno, dname, loc );</p>
+<p>&#x2F;&#x2F;查询相对第2条数据 也就是第4条<br>EXEC SQL FETCH RELATIVE 2 c INTO :deptno, :dname:dname_ind, :loc:loc_ind;<br>printf(“4–  %d\t %s\t %s \n”, deptno, dname, loc );</p>
+<p>&#x2F;&#x2F;查询下一条(相对)<br>EXEC SQL FETCH NEXT c INTO :deptno, :dname:dname_ind, :loc:loc_ind;<br>printf(“5–  %d\t %s\t %s \n”, deptno, dname, loc );</p>
+<p>&#x2F;&#x2F;查询前一条(相对)<br>EXEC SQL FETCH PRIOR  c INTO :deptno, :dname:dname_ind, :loc:loc_ind;<br>printf(“6–  %d\t %s\t %s \n”, deptno, dname, loc );</p>
+<p>&#x2F;&#x2F;4 关闭游标 close cursor<br>EXEC SQL CLOSE c;<br>EXEC SQL COMMIT RELEASE;</p>
+<p>return ret ;<br>}</p>
+<p>使用滚动游标可以看出，我们可以自由的使用6种方式来获取我们需要的数据，而不像之前的普通游标只能一行一行的读取了。 <a href="/images/2015/07/2015-07-25_202221.png"><img src="/images/2015/07/2015-07-25_202221.png" alt="2015-07-25_202221"></a></p>
+<hr>
+<p>以上便是我们介绍的 proc 编程中处理 select 返回数据的几种方法，每一种方法都各有取舍，所以在使用的时候要根据自己的情况来决定到底要使用哪个方法更适合自己。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-25T19:58:05.000Z" itemprop="datePublished">
+              2015-07-25
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/oracle/">oracle</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/sql/">sql</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

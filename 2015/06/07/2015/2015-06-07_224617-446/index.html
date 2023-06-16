@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>数组选择排序 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>数组选择排序</h1>
+    </header>
+
+    <section>
+      <p>选择排序的规则是让第 i 个元素分别于后边的元素进行比较，记录最小的元素的位置，遍历完成之后，进行交换。将数组中每一个元素进行处理后最终得出有序的数据。其交换步骤图如下（摘自 <a target="_blank" rel="noopener" href="http://www.itcast.cn/">传智播客</a> 教师课件）：</p>
+<span id="more"></span>
+<p><a href="/images/2015/06/2015-06-07_224448.png"><img src="/images/2015/06/2015-06-07_224448.png" alt="2015-06-07_224448"></a></p>
+<h3 id="【实现代码】"><a href="#【实现代码】" class="headerlink" title="【实现代码】"></a>【实现代码】</h3><p>void select_sort(int* arr, int len)<br>{<br>&#x2F;&#x2F; 选择排序<br>int swap;<br>&#x2F;&#x2F; 外循环，i 的长度要小于总长度 - 1，最后一个值剩下的值一定是最大的<br>for (int i &#x3D; 0; i &lt; len - 1; i++)<br>{<br>&#x2F;&#x2F; swap，用来记录最小值的下标，初始化让其等于 i<br>swap &#x3D; i;<br>for (int j &#x3D; i + 1; j &lt; len; j++)<br>{<br>&#x2F;&#x2F; 判断 j 下标的值是否小于 swap 下标的值<br>if (arr[j] &lt; arr[swap])<br>&#x2F;&#x2F; 如果小于则让 swap 重新记录当前最小下标 j 的值<br>swap &#x3D; j;<br>}</p>
+<p>&#x2F;&#x2F; 如果 swap 与 i 相等证明位置没有移动过，所以不需要交换数据，否则交换<br>if (swap !&#x3D; i)<br>{<br>arr[i] &#x3D; arr[i] ^ arr[swap];<br>arr[swap] &#x3D; arr[i] ^ arr[swap];<br>arr[i] &#x3D; arr[i] ^ arr[swap];<br>}<br>}<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-07T22:46:17.000Z" itemprop="datePublished">
+              2015-06-07
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

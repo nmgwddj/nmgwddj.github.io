@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ docker }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/06/21/2018/2018-06-21_140406-2360/">使用 docker 快速搭建一个 VPN 服务器</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-06-21T14:04:06.000Z" itemprop="datePublished">
+    2018-06-21
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/docker/">docker</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/VPN/">VPN</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>你还在一条条命令复制粘贴搭建 SVN 服务器？快别麻烦了，一个 docker 镜像就都帮你搞定了。如果你的服务器安装了 docker，直接使用以下命令（要修改你自己的账户和密码信息哦）拉取一个已经配置好的 VPN 镜像就可以直接使用了，不用那么那麻烦的自己又改配置文件又要安装软件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">docker run \</span><br><span class="line">    --name ipsec-vpn-server \</span><br><span class="line">    --restart=always \</span><br><span class="line">    -e VPN_IPSEC_PSK=你的PSK密码 \</span><br><span class="line">    -e VPN_USER=你的VPN用户名 \</span><br><span class="line">    -e VPN_PASSWORD=你的VPN密码 \</span><br><span class="line">    -p 500:500/udp \</span><br><span class="line">    -p 4500:4500/udp \</span><br><span class="line">    -v /lib/modules:/lib/modules:ro \</span><br><span class="line">    -d --privileged \</span><br><span class="line">    hwdsl2/ipsec-vpn-server</span><br></pre></td></tr></table></figure>
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

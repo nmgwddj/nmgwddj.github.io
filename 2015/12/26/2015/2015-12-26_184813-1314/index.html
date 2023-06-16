@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Meteor 分页包 alethes:pages 详解 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Meteor 分页包 alethes:pages 详解</h1>
+    </header>
+
+    <section>
+      <p>在做大部分真实应用的 web 项目过程中，都会有一样不可或缺的需求，那就是分页。Meteor 项目也不例外，同样会有这样的需求，本文给大家介绍的就是一个非常好用的分页包 <code>alethes:pages</code>。它可以实现简单的根据页数分页，也可以实现强大的滚动分页。内部还支持利用多个 collection 数据进行分页。下面我们就来详细的了解它。 注意：以下内容多是对官方包的一种简述和翻译，如果需要更详细的内容可以参考官方地址。</p>
+<span id="more"></span>
+<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><p>官网上介绍了很多它的特性，由于我的英文不是很好，我只能翻译我们大家非常关注的点。</p>
+<ul>
+<li>仅 subscribe 当前页需要的数据，并不是一次性 sub 所有数据</li>
+<li>本地缓存，获取过的数据本地存储，避免返回时重新获取</li>
+<li>在加载当前页过程中，预取下一页的数据，确保下一页的时候无缝过度</li>
+<li>多个集合产生一个分页数据</li>
+<li>支持 <code>bootstrap 2/3</code> 的分页导航模版</li>
+<li>支持 <code>iron-router</code> 包</li>
+<li>页面无限滚动加载特效</li>
+</ul>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">meteor add alethes:pages</span><br></pre></td></tr></table></figure>
+
+<h3 id="官网"><a href="#官网" class="headerlink" title="官网"></a>官网</h3><p>atomsphere - <a target="_blank" rel="noopener" href="https://atmospherejs.com/alethes/pages/">https://atmospherejs.com/alethes/pages/</a> github - <a target="_blank" rel="noopener" href="https://github.com/alethes/meteor-pages/">https://github.com/alethes/meteor-pages/</a></p>
+<h3 id="Demo-演示"><a href="#Demo-演示" class="headerlink" title="Demo 演示"></a>Demo 演示</h3><p>基本的分页 - <a target="_blank" rel="noopener" href="http://pages.meteor.com/">http://pages.meteor.com/</a> 表格 (快速渲染) - <a target="_blank" rel="noopener" href="http://pages-table.meteor.com/">http://pages-table.meteor.com/</a> 多个 collection 自动刷新 - <a target="_blank" rel="noopener" href="http://pages-multi.meteor.com/">http://pages-multi.meteor.com/</a> 滚动加载效果 - <a target="_blank" rel="noopener" href="http://pages3.meteor.com/">http://pages3.meteor.com/</a></p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>要使用这个包的功能非常简单，首先用你要实现分页的 collection 生成一个 PlayersPages 分页对象。 这里假设之前已经存在一个 Players 的 collection，你需要对它的数据进行分页显示，我们按如下方式对他下手即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 原有存放数据的 collection</span><br><span class="line">Players = new Mongo.Collection(&quot;players&quot;);</span><br><span class="line"></span><br><span class="line">// 根据已经有数据的 collection 生成一个 Meteor.Pagination 类型的对象。</span><br><span class="line">this.PlayersPages = new Meteor.Pagination(Players, &#123;</span><br><span class="line">  // 指定需要分页所使用的模版</span><br><span class="line">  templateName: &quot;playersTemplate&quot;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码可以看到，我们指定了分页所使用的模版名字叫 <code>playersTemplate</code>，此时，我们只需要在增加一个这样的模版即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;template name=&quot;playersTemplate&quot;&gt;</span><br><span class="line">    &#123;&#123;&gt; pages&#125;&#125;</span><br><span class="line">    &#123;&#123;&gt; pagesNav&#125;&#125;  &lt;!--分页导航按钮--&gt;</span><br><span class="line">&lt;/template&gt;</span><br></pre></td></tr></table></figure>
+
+<p>新建的模版中再导入另外两个模版 <code>pages</code> 和 <code>pagesNav</code>，这个两个模版是分页包 <code>alethes:pages</code> 给我们创建的，用来显示数据用。如此这样添加后，playersTemplate 模版就可以分页显示 Players collection 的数据了。</p>
+<h3 id="个性化"><a href="#个性化" class="headerlink" title="个性化"></a>个性化</h3><p>但具体每页显示多少数据、显示数据的样式如何定义、分页导航按钮能不能换成滚动屏幕自动加载瀑布流的方式？等等类似的问题，这个包都提供了解决方案。我们先来看一下它比较重要的几个参数，用一个我们已经使用到项目中的代码片段+注释的方式，来给大家演示这个包的各种参数（更多参数可以参考 github 上的介绍）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">this.ProductPages = new Meteor.Pagination(Products, &#123;</span><br><span class="line">    // 调试模式</span><br><span class="line">    debug: true,</span><br><span class="line">    // 认证函数，内部可以写一些过滤，让一些不想被用户看到的数据被过滤掉</span><br><span class="line">    auth: function (skip, sub) &#123;</span><br><span class="line"></span><br><span class="line">        // 判断是否有用户登陆</span><br><span class="line">        if (!sub.userId) &#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 清空过滤器内容</span><br><span class="line">        this.filters = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">        // userSettings 是每个不同用户本地不同的分页属性，如果有多个访问者，每个访问者可以设定自己的分页属性</span><br><span class="line">        let userSettings = this.userSettings[sub._session.id]  &#123;&#125;</span><br><span class="line">            , uFields = userSettings.fields  this.fields</span><br><span class="line">            , uSort = userSettings.sort  this.sort</span><br><span class="line">            , uPerPage = userSettings.perPage  this.perPage</span><br><span class="line">            , _filters = userSettings.filters  this.filters</span><br><span class="line">            , _options = &#123;fields: uFields, sort: uSort, limit: uPerPage, skip: skip&#125;;</span><br><span class="line"></span><br><span class="line">        // 将不想给用户看到的数据过滤掉，这里你可以写自己的过滤代码</span><br><span class="line">        let shop = ReactionCore.getCurrentShop(this);</span><br><span class="line">        if (shop) &#123;</span><br><span class="line">            _.extend(_filters, &#123;shopId: shop._id&#125;);</span><br><span class="line">            // products are always visible to owners</span><br><span class="line">            if (!(Roles.userIsInRole(sub.userId, [&quot;owner&quot;, &quot;admin&quot;, &quot;createProduct&quot;], shop._id))) &#123;</span><br><span class="line">                _.extend(_filters, &#123;isVisible: true&#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 返回新的分页属性</span><br><span class="line">        return [_filters, _options];</span><br><span class="line">    &#125;,</span><br><span class="line">    // 允许每个不同用户设定的分页属性有那些选项</span><br><span class="line">    availableSettings: &#123;</span><br><span class="line">        limit: true,</span><br><span class="line">        sort: true,</span><br><span class="line">        filters: true</span><br><span class="line">    &#125;,</span><br><span class="line">    // 分页最外部的 div class 名</span><br><span class="line">    divWrapper: &#x27;row&#x27;,</span><br><span class="line">    // 是否启用滚动分页（瀑布流）</span><br><span class="line">    infinite: true,</span><br><span class="line">    // 滚动条加载到什么位置时加载下一组分页数据，这个参数问题比较多，后面再介绍</span><br><span class="line">    infiniteTrigger: .8,</span><br><span class="line">    // 滚动加载模式下，后续页面最小的加载时间间隔</span><br><span class="line">    infiniteRateLimit: 1,</span><br><span class="line">    // 暂时不用</span><br><span class="line">    infiniteStep: 1,</span><br><span class="line">    // 分页时每页数据中所有子项目所用的分页模版，你可以设定各种你已经美化过的模版</span><br><span class="line">    itemTemplate: &quot;productGridItems&quot;,</span><br><span class="line">    // 分页所用的模版</span><br><span class="line">    templateName: &quot;infiniteProducts&quot;,</span><br><span class="line">    // 最多显示多少数据</span><br><span class="line">    pageSizeLimit: 1000,</span><br><span class="line">    // 第一页加载多少数据</span><br><span class="line">    perPage: 4,</span><br><span class="line">    // 最大 subscribe 的数据两</span><br><span class="line">    maxSubscriptions: 500,</span><br><span class="line">    // 预加载页数，dataMargin * perPage + perPage = 页面首次打开显示的数据量</span><br><span class="line">    dataMargin: 1,</span><br><span class="line">    // 对数据进行排序</span><br><span class="line">    sort: &#123;</span><br><span class="line">        order: 1, title: 1</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>以上时参考官方给出的无限滚动模式下所使用到的参数，其中 <code>infiniteTrigger</code> 参数我在使用过程中遇到了很多问题。第一个问题就是滚动条滚动到 0.8 的位置后，数据不会自动继续加载。修正了第一个问题后，随后出现的问题时滚动条并非到 0.8 的位置才加载数据，而是我滚动条只要一动，下一页的数据就自动加载出来了，这样明显不对。 我们通过分析处理 <code>infiniteTrigger</code> 参数的源代码来判断问题出在了哪里，请看代码和注释。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Pages.prototype.setInfiniteTrigger = function() &#123;</span><br><span class="line">  return $(window).scroll((_.throttle(function() &#123;</span><br><span class="line">    var l, oh, t;</span><br><span class="line">    // 获取你设定的 infiniteTrigger 值</span><br><span class="line">    t = this.infiniteTrigger;</span><br><span class="line">    // 获取当前 body 的高度，应该是页面所有数据的高度之和</span><br><span class="line">    oh = document.body.offsetHeight;</span><br><span class="line">    // 判断你设定的 infiniteTrigger 值是否大于 1 做不同的操作</span><br><span class="line">    if (t &gt; 1) &#123;</span><br><span class="line">      l = oh - t;</span><br><span class="line">    &#125; else if (t &gt; 0) &#123;</span><br><span class="line">      // l = body 的高度 * 你设定的 infiniteTrigger 的高度</span><br><span class="line">      // 假设 body 已经有 2500 的高度了，2500 * 0.8 = 2000</span><br><span class="line">      l = oh * t;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      return;</span><br><span class="line">    &#125;</span><br><span class="line">    // 如果当前可视的页面高度 + 滚动条的位置 &gt;= 上面计算出来 l 的值</span><br><span class="line">    if ((window.innerHeight + window.scrollY) &gt;= l) &#123;</span><br><span class="line">      // 加载下一组数据</span><br><span class="line">      if (this.lastPage &lt; this.sess(&quot;totalPages&quot;)) &#123;</span><br><span class="line">        return this.sess(&quot;currentPage&quot;, this.lastPage + 1);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, this.infiniteRateLimit * 1000)).bind(this));</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>分析过代码后，我得出判断，第一个问题时由于我们页面中有一个很大的 div 当作 body 来用，滚动的时候实际时 div 的滚动条在滚动，而 body 的滚动条一直在 0 的位置，所以无论你看到的 div 的滚动条滚动到了哪里，下一组数据都不会继续加载。 在第一个问题解决完以后，再继续分析第二个问题，首先清楚两个概念。 document.body.offsetHeight - body 整个页面的高度，一般是页面中所有元素加起来的高度之和。 window.innerHeight - 可视的高度，当前浏览器显示了多少内容，这些内容的高度之和。 我分别在页面中打印了一下 <code>window.innerHeight</code> 的值和 <code>document.body.offsetHeight</code> 的值，赫然发现两个值时相等的，所以导致我滚动条刚刚开始滚动的时候，<code>window.innerHeight + window.scrollY</code> 一定大于 <code>document.body.offsetHeight * infiniteTrigger</code> 的值。知道原因了，如何解决呢？为什么 <code>document.body.offsetHeight</code> 的值与 <code>window.innerHeight</code> 的值一样大呢？不应该是页面所有元素的高度吗？在分析别人的代码对比后发现，原来我们的 body 被设定了一个 css 样式为 <code>height: 100vh;</code>，该属性的意思就是将 body 的高度设定为可视的高度，所以 body 的高度与 <code>window.innerHeight</code> 就没什么区别了，最终导致了如上问题，将这个 css 修改为 <code>height: 100%</code> 即可解决问题。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>这个包需要研究的地方还有很多，希望我介绍的内容能帮助大家在后期开发 Meteor 项目减少一些麻烦，一起努力共勉。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-12-26T18:48:13.000Z" itemprop="datePublished">
+              2015-12-26
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

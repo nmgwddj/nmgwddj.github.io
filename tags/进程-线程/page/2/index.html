@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ 进程/线程 }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/07/05/2015/2015-07-05_170518-724/">线程属性设置</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-07-05T17:05:18.000Z" itemprop="datePublished">
+    2015-07-05
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>本文将通过一个创建n个线程的案例来展示一下线程属性的设定及使用，通常情况下，系统对于线程的创建是没有限制的，但是每一个线程都是需要一个栈空间的，每个栈空间大小也都是固定的，可通过系统命令 ulimit -a 来查看，如果线程栈空间的总数超过了一个进程可使用的虚拟内存用户空间，那么就无法再继续创建线程了。我们只是做一个小的测试，调整每个线程的栈空间大小来揭露线程属性的使用方法，并提高一个程序创建线程的数量（Notice：提高线程数量并没有什么好处，我们只是为了演示如何修改线程属性）。</p>
+        
+          <div class="more-link">
+            <a href="/2015/07/05/2015/2015-07-05_170518-724/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/07/05/2015/2015-07-05_164417-720/">安装线程相关 man page</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-07-05T16:44:17.000Z" itemprop="datePublished">
+    2015-07-05
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>默认情况下 ubuntu 系统中是没有线程相关的 man page，需要我们手动自己下载一次。使用如下命令可以下载 pthread 相关的 man page 文档：</p>
+        
+          <div class="more-link">
+            <a href="/2015/07/05/2015/2015-07-05_164417-720/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/07/05/2015/2015-07-05_163644-716/">守护进程编写标准和实现</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-07-05T16:36:44.000Z" itemprop="datePublished">
+    2015-07-05
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>Daemon(精灵)进程,是Linux中的后台服务进程,生存期较长的进程，通常独立于控制终端并且周期性地执行某种任务或等待处理某些发生的事件。类似于Windows下的服务程序。通常的 linux 程序在我们通过终端运行挂起后，再关闭终端，这些程序的运行进程也会随着终端一起关闭，这是因为他们属于同一<strong>会话</strong>。如果不想程序随着终端关闭而关闭，那么就要让程序脱离终端的会话组，那么就需要使用到setsid()函数了。一个正确的守护进程编写过程如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/07/05/2015/2015-07-05_163644-716/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/07/02/2015/2015-07-02_190900-701/">信号捕捉（拦截）</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-07-02T19:09:00.000Z" itemprop="datePublished">
+    2015-07-02
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E4%BF%A1%E5%8F%B7/">信号</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在一个程序收到某些信号后，程序都会自动去执行默认的操作，但大多的操作都会导致程序异常退出，除了前文我们介绍的阻塞信号以外，我们还可以对信号进行捕获（拦截）处理，让被捕获的信号去执行我们已经编写好的函数中，这样可以帮我们处理太多的问题。</p>
+        
+          <div class="more-link">
+            <a href="/2015/07/02/2015/2015-07-02_190900-701/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/07/01/2015/2015-07-01_232142-695/">阻塞信号</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-07-01T23:21:42.000Z" itemprop="datePublished">
+    2015-07-01
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E4%BF%A1%E5%8F%B7/">信号</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>所谓阻塞，就是屏蔽掉某信号，让程序在收到某信号以后不做任何事情，包括默认动作也不执行。要实现这个需求，我们首先得了解一下系统对于每一个进程的信号是如何投递的，这个信号的走向流程是怎么样的，才能针对性的下手实现这个需求。</p>
+        
+          <div class="more-link">
+            <a href="/2015/07/01/2015/2015-07-01_232142-695/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/07/01/2015/2015-07-01_214922-689/">使用信号实现进程同步（踢皮球游戏）</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-07-01T21:49:22.000Z" itemprop="datePublished">
+    2015-07-01
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E4%BF%A1%E5%8F%B7/">信号</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>学习了信号机制，我们就可以利用信号机制实现进程间同步了，比如我们希望一个进程处理完某件事情后再通知另外一个进程继续处理某件事情，这种需求实现的方法有很多，但是用信号实现是最方便的，这里我们举例用了一个踢皮球的小游戏充分展示了利用信号实现进程间同步的功能。程序执行后效果如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/07/01/2015/2015-07-01_214922-689/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/29/2015/2015-06-29_220701-651/">wait() 回收子进程</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-29T22:07:01.000Z" itemprop="datePublished">
+    2015-06-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在前面的文章中我们讨论了如何通过 fork() 函数创建子进程，创建后的子进程如果优先于父进程退出，子进程的虚拟内存空间就消失了，但是进程控制块PCB并没有消失，这里面包含了这个子进程的退出状态，需要由父进程来进行回收。在父进程回收之前，这个进程被称为僵尸进程（僵死进程），任何一个子进程都会经过这段僵尸进程的阶段，最后由父进程来回收。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/29/2015/2015-06-29_220701-651/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/29/2015/2015-06-29_143407-639/">使用 frok() 函数一次创建多个子进程</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-29T14:34:07.000Z" itemprop="datePublished">
+    2015-06-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>前面的文章我们讨论了系统函数 fork() 的应用，他可以在一个进程中再创建另外一个子进程，本文测试使用一个 for 循环创建多个子进程，中间一些注意事项已经全部用注释标注清楚。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/29/2015/2015-06-29_143407-639/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/29/2015/2015-06-29_122652-630/">fork() 函数详解</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-29T12:26:52.000Z" itemprop="datePublished">
+    2015-06-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>fork() 函数是 linux&#x2F;unix 下一种特别的创建子进程的函数，它不同与 Windows，这个函数在执行成功后会有两个返回值，一个返回值&#x3D;&#x3D;0代表创建了子进程，一个返回值大于0代表还是当前程序进程，而这个大于0的值就是创建的子进程的进程PID。这个函数比较抽象，我们来看一下代码并对比一下图片就能知道具体该函数的用途了。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/29/2015/2015-06-29_122652-630/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/29/2015/2015-06-29_113419-627/">系统函数 查看/修改/删除 环境变量</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-29T11:34:19.000Z" itemprop="datePublished">
+    2015-06-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>通过系统提供的函数，我们一样可以查看、修改和删除环境变量的内容，使用使用函数分别时 getenv()、setenv()、unsetenv()，它们的用法如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/29/2015/2015-06-29_113419-627/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">« prev</a><a class="page-number" href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">1</a><span class="page-number current">2</span>
+    </nav>
+  </section>
+
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

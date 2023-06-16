@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>自行搭建 shadowsocks 服务端访问被墙资源 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>自行搭建 shadowsocks 服务端访问被墙资源</h1>
+    </header>
+
+    <section>
+      <p>我尝试过各种翻墙的方法，花两千块买终身免费的 VPN 服务、购买年费使用的红杏 Chrome 插件、改 hosts 等等，都是希望稳定的网络能让我顺利的访问国外资源来给工作带来便利，但是不能如愿以偿，两千块块的终身服务连官网都找不到了、红杏在两会期间被彻底屏蔽无法使用、hosts 只不过是指向了一些国内还没停止掉的 google 的服务器。这些方法都泡汤了，直到最近在工作时用上了 shadowsocks，让我彻底摆脱了这些烦恼。shadowsocks 的好处我没办法一一列举，这里只能把搭建它的环境写的劲量清楚，帮助更多人可以顺利访问国外的资源。 参考资料：<a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-windows/wiki/Shadowsocks-Windows-%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E">Shadowsocks Windows 使用说明</a></p>
+<span id="more"></span>
+<h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ul>
+<li>可以访问所有被屏蔽的域名</li>
+<li>可以在国内访问的域名不经过服务器，国内访问不了的网络才走服务器转接</li>
+<li>自己管理服务器</li>
+<li>流量自己控制</li>
+<li>可以分享给朋友使用</li>
+</ul>
+<h3 id="如何实现"><a href="#如何实现" class="headerlink" title="如何实现"></a>如何实现</h3><ul>
+<li>要实现以上需求，需要自己有一台国外的服务器。</li>
+<li>你需要在你购买的服务器上安装 shadowsocks server 并启动。</li>
+<li>最后你只需要下载 shadowsoaks 客户端连接你的服务器即可实现访问各种被墙的资源了。</li>
+</ul>
+<h3 id="购买服务器"><a href="#购买服务器" class="headerlink" title="购买服务器"></a>购买服务器</h3><p>前段时间 aliyun 提供了美国硅谷、和新加坡的服务器购买，拿硅谷的服务器举例，一台 1核、1G、根据流量峰值计费（0.05元&#x2F;GB）的服务器来说，一个月只需 45 元。如果你只单纯用 Google 查查资料、看一看国外的网站，那一个月多说花费 5 块的流量费用，加起来也不过 50 元，但这换来的将是超级稳定和可控的翻墙服务器，你还可以分享给你熟悉的人一起使用。 <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-29-%E4%B8%8B%E5%8D%883.12.01.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-29-%E4%B8%8B%E5%8D%883.12.01-173x300.png" alt="屏幕快照 2015-11-29 下午3.12.01"></a> 购买时最好买 Ubuntu 系统，这样可以快速方便的搭建我们的环境，一定要记得你设置的密码，我们可以使用 Mac OS X 自带的 ssh 或者一些连接 ssh 服务器的工具来连接，比较有名的有 SecureCRT、Xshell 等。通过 aliyun 给出的公网 IP，我们就可以连接到你购买的服务器了。 <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-29-%E4%B8%8B%E5%8D%883.31.50.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-29-%E4%B8%8B%E5%8D%883.31.50-300x81.png" alt="屏幕快照 2015-11-29 下午3.31.50"></a> 我直接使用 Mac 下再带的 ssh 连接到服务器上。 <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-29-%E4%B8%8B%E5%8D%883.34.18.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-29-%E4%B8%8B%E5%8D%883.34.18-288x300.png" alt="屏幕快照 2015-11-29 下午3.34.18"></a> 接下来我们来安装 shadowsocks server。</p>
+<h3 id="安装-shadowsocks"><a href="#安装-shadowsocks" class="headerlink" title="安装 shadowsocks"></a>安装 shadowsocks</h3><p>在 Ubuntu 上安装 shadowsocks 非常简单，只需两条命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get install python-pip</span><br><span class="line">pip install shadowsocks</span><br></pre></td></tr></table></figure>
+
+<p>启动服务端，<code>443</code> 是端口，建议自己换一下，这个端口在连接的时候会用到。<code>password</code> 是连接的密码，需要你自定义。<code>rc4-md5</code> 是加密方式。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssserver -p 443 -k password -m rc4-md5</span><br></pre></td></tr></table></figure>
+
+<p>如果想在后台运行。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ssserver -p 443 -k password -m rc4-md5 --user nobody -d start</span><br></pre></td></tr></table></figure>
+
+<p>如果要停止服务端</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ssserver -d stop</span><br></pre></td></tr></table></figure>
+
+<p>如果要查看日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo less /var/log/shadowsocks.log</span><br></pre></td></tr></table></figure>
+
+<h3 id="客户端连接"><a href="#客户端连接" class="headerlink" title="客户端连接"></a>客户端连接</h3><p>Windows客户端下载：<a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-windows/releases">https://github.com/shadowsocks/shadowsocks-windows/releases</a> Mac OS X 客户端下载：<a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-iOS/releases">https://github.com/shadowsocks/shadowsocks-iOS/releases</a> 下载完成后首次运行会提示你添加服务器信息。根据你启动 shadowsocks 时设定的信息进行添加。 <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-29-%E4%B8%8B%E5%8D%883.53.01.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-29-%E4%B8%8B%E5%8D%883.53.01-300x209.png" alt="屏幕快照 2015-11-29 下午3.53.01"></a></p>
+<ul>
+<li>地址：你阿里云服务器的IP地址</li>
+<li>加密：启动服务器指定的加密方式，我使用的是rc4-md5</li>
+<li>密码：启动服务器指定的密码</li>
+<li>备注：随便写一个方便添加了多个服务器时区分</li>
+</ul>
+<p>点击确定后服务器就添加好了。此时如果是 Windows 在桌面右下角就能看到一个小飞机的图标，在 Mac 上桌面的右上角。右键小飞机选择 <code>服务器-&gt;aliyun 硅谷</code>，并选择 <code>自动代理模式</code>、<code>Shadowsocks: 打开</code>。这样我们就成功开启代理并连接上我们的服务器了。不出意外的话此时你打开浏览器访问 google、youtube、gmail 等都可以正常访问了。 <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-29-%E4%B8%8B%E5%8D%883.58.08.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-29-%E4%B8%8B%E5%8D%883.58.08-300x220.png" alt="屏幕快照 2015-11-29 下午3.58.08"></a></p>
+<h3 id="更新-PAC"><a href="#更新-PAC" class="headerlink" title="更新 PAC"></a>更新 PAC</h3><p>PAC 全称 Proxy auto-config，自动代理配置，里面包含了大量收集起来的被国内屏蔽的域名和 IP 地址，因为被屏蔽的地址在不断的增加，如果你发现某些域名无法访问，首先你要想到的就是更新 PAC。右键小飞机选择 <code>从 GFWList 更新 PAC</code>。 <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-29-%E4%B8%8B%E5%8D%884.05.03.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-29-%E4%B8%8B%E5%8D%884.05.03-205x300.png" alt="屏幕快照 2015-11-29 下午4.05.03"></a> 如果 PAC 更新后依然不能访问你需要访问的域名，那也不难，你可以自己手动自定义指定某些域名从你的服务器走。但到目前为止，我还没用这样的功能，如果你真的发现有些域名并没有被加入到 PAC 配置列表，可以参考 <a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks/wiki/Shadowsocks-%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E">Shadowsocks 的 wiki</a> 自定义添加。</p>
+<h3 id="全局模式和自动代理模式"><a href="#全局模式和自动代理模式" class="headerlink" title="全局模式和自动代理模式"></a>全局模式和自动代理模式</h3><p>自动代理模式就不多说了，就是根据 PAC 列表判断如果某域名在 PAC 列表中则使用代理服务器访问，而如果不在 PAC 列表则不经过服务器访问。<strong>全局模式</strong>则忽略 PAC 列表，所有都经过代理服务器，此时你访问任何网站都会从你硅谷的服务器跑一圈再回来。比如我们使用全局模式打开 <a target="_blank" rel="noopener" href="http://www.ip138.com/">www.ip138.com</a> 看到的就是硅谷的 IP 地址。 <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-29-%E4%B8%8B%E5%8D%884.11.58.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-29-%E4%B8%8B%E5%8D%884.11.58-300x47.png" alt="屏幕快照 2015-11-29 下午4.11.58"></a></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>至此服务器的搭建和客户端的链接方法都介绍完毕了，关于 Shadowsoaks 的问题可以到 Shadowsocks 的 github issues 中提问，前提是先把 wiki 看一遍哦！</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-11-29T16:14:21.000Z" itemprop="datePublished">
+              2015-11-29
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

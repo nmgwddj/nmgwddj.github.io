@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ 继承与派生 }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/25/2015/2015-05-25_162110-253/">cocos2dx 入口分析</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-25T16:21:10.000Z" itemprop="datePublished">
+    2015-05-25
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%A4%9A%E6%80%81/">多态</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>为了理解多态的进一步应用，老师带着我们简单分析了一下cocos2dx的入口，深刻的体会到了虚函数和类静态成员变量的作用。以此给大家分享一下这个过程。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/25/2015/2015-05-25_162110-253/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/25/2015/2015-05-25_155116-229/">“虚函数表”推演及多态的原理</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-25T15:51:16.000Z" itemprop="datePublished">
+    2015-05-25
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%A4%9A%E6%80%81/">多态</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>C++ 的多态性据前辈们所说，是非常难以理解的一部分内容，虽然他实现很简单，但是套用到各种设计模式后，你会非常难以理解，但无论怎样，笔者始终认为，如果了解了内部的实现原理，实际就不会那么难了。本文将介绍虚函数表的相关内容，阐述了它与多态之间难以割舍的关系。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/25/2015/2015-05-25_155116-229/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/25/2015/2015-05-25_154348-225/">抽象类纯虚函数与虚析构</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-25T15:43:48.000Z" itemprop="datePublished">
+    2015-05-25
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%A4%9A%E6%80%81/">多态</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>纯虚函数，一般是在设计一个基类时使用的，它将接口函数设置为纯虚函数后，只提供子类去继承并实现，以形成多态，除此以外不提供任何其他功能，我们称这种类为抽象类(abstract)。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/25/2015/2015-05-25_154348-225/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/24/2015/2015-05-24_230539-222/">多态形成的三要素</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-24T23:05:39.000Z" itemprop="datePublished">
+    2015-05-24
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%A4%9A%E6%80%81/">多态</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>上一篇文章中，我们看到了简单的赋值兼容模型，将子类赋值给父类对象时，调用共有的同名接口时，调用的依然还是父类的成员函数。在 C++ 中，有一个总要的概念，那就是多态。通过父类提供一些虚函数，让子类继承下去并实现为另外的功能，然后将子类对象的地址赋值给父类的对象指针。这样再次使用父类的指针调用共有同名接口时，你会发现它竟然调用的是子类的方法。这一切都来源于一个关键字“virtual”。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/24/2015/2015-05-24_230539-222/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/24/2015/2015-05-24_225759-218/">子类赋值父类的赋值兼容</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-24T22:57:59.000Z" itemprop="datePublished">
+    2015-05-24
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%A4%9A%E6%80%81/">多态</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>C++ 中，类型的匹配检测是非常严格的，但是你会发现一个现象，如果一个类继承了另外一个类，把子类的对象赋值给父类的时候，系统不但不提示错误，而且程序还能顺利的编译通过并运行。这其实就是 C++ 内部提供的赋值兼容的过程，但是要注意，如果子类数据成员比父类多，则会出现数据截断。具体表现形式如下图：</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/24/2015/2015-05-24_225759-218/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/24/2015/2015-05-24_194301-211/">多继承三角和钻石问题（虚继承）</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-24T19:43:01.000Z" itemprop="datePublished">
+    2015-05-24
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>上一篇文章我们简单介绍了一下多继承的语法，但是我们遇到了一个问题，那就是如果多个父类具有相同名称的成员变量或成员方法，子类在调用的时候就会出现二义性问题，子类不知道选择哪一个父类的变量或方法，我们称之为三角问题。如下所示：</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/24/2015/2015-05-24_194301-211/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/24/2015/2015-05-24_191438-207/">多继承案例及常见问题</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-24T19:14:38.000Z" itemprop="datePublished">
+    2015-05-24
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>多继承，是希望一个子类可以继承多个父类的资源，使自己的功能更加强大，有一个床类、一个沙发类，我们希望将两个类的功能整合到一起，成为一个“沙发床”的类，即可以睡觉、又可以做。这就是多继承的应用。当然我们说的有一些抽象，下面代码演示了多继承的案例。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/24/2015/2015-05-24_191438-207/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/23/2015/2015-05-23_230555-205/">派生类的实始化、初始化顺序</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-23T23:05:55.000Z" itemprop="datePublished">
+    2015-05-23
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>1、先实始化父类成员，调用父类的构造函数，有多个基类的从左向右按声明顺序实始化。 2、内嵌对象实始化，内嵌对像的构造器。如果父类或是内嵌对象，有无参构造器的话，可以不用显示的调用。如无无参且未调用则会报错。 3、派生类的构造器。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/23/2015/2015-05-23_230555-205/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/23/2015/2015-05-23_225139-203/">继承权限及关系简单阐述</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-23T22:51:39.000Z" itemprop="datePublished">
+    2015-05-23
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>类具有三种成员属性，一种是public、一种是protected、一种是private。这三种在派生的类中也有不同的访问权限，当然不单单只看父类的成员属性，还要看派生类以什么方式继承父类，如下代码所示：</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/23/2015/2015-05-23_225139-203/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

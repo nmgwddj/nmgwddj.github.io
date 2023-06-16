@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>循环链表的增删改查 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>循环链表的增删改查</h1>
+    </header>
+
+    <section>
+      <p>循环链表与单向链表十分相似，两者唯一不同之处就是，循环链表的尾节点的next属性指向了链表的首节点（非头节点，头节点是没有数据的，头节点的下一个有数据的节点我们称为首节点）。他的表现形式有常见的两种，如下图：</p>
+<span id="more"></span>
+<p><a href="/images/2015/05/2015-05-28_190050.png"><img src="/images/2015/05/2015-05-28_190050.png" alt="2015-05-28_190050"></a> 一种是上面我们说的，而另外一种，则是将尾节点的next指向了头节点，这种做法不是方便，所以用的比较少，并不是不可用。 在循环链表中，我们增加了一个新的功能“游标”，在循环链表中可以定义一个“当前”指针，这个指针通常称为游标，可以通过这个游标来遍历链表中的所有元素，而我们不需要去动头节点的指针指向。以下为循环链表的增删改查操作，同样，我们使用了数据类型与算法分离的思路编写了代码（以下代码出自 <a target="_blank" rel="noopener" href="http://www.itcast.cn/">传智播客</a> 教师课件）</p>
+<p>#ifndef _CIRCLE_LIST_H<br>#define _CIRCLE_LIST_H</p>
+<p>&#x2F;&#x2F;自定义循环链表数据类型<br>typedef void CircleList;<br>&#x2F;&#x2F;自定义循环链表节点数据类型<br>typedef struct tag_CirclListNode<br>{<br>struct tag_CirclListNode *next;<br>}CircleListNode;</p>
+<p>&#x2F;&#x2F;创建循环链表<br>CircleList* CircleList_Create();</p>
+<p>&#x2F;&#x2F;销毁循环链表<br>void CircleList_Destroy(CircleList* list);</p>
+<p>&#x2F;&#x2F;清空循环链表<br>void CircleList_Clear(CircleList* list);</p>
+<p>&#x2F;&#x2F;获取循环链表长度<br>int CircleList_Length(CircleList* list);</p>
+<p>&#x2F;&#x2F;在循环链表中插入新节点<br>int CircleList_Insert(CircleList* list, CircleListNode* node, int pos);</p>
+<p>&#x2F;&#x2F;获取循环链表中的指定位置的节点<br>CircleListNode* CircleList_Get(CircleList* list, int pos);</p>
+<p>&#x2F;&#x2F;删除循环链表中的指定位置的节点<br>CircleListNode* CircleList_Delete(CircleList* list, int pos);</p>
+<p>&#x2F;&#x2F;—————— new add ——————</p>
+<p>&#x2F;&#x2F;直接指定删除链表中的某个数据元素<br>CircleListNode* CircleList_DeleteNode(CircleList* list, CircleListNode* node);</p>
+<p>&#x2F;&#x2F;将游标重置指向链表中的第一个数据元素<br>CircleListNode* CircleList_Reset(CircleList* list);</p>
+<p>&#x2F;&#x2F;获取当前游标指向的数据元素<br>CircleListNode* CircleList_Current(CircleList* list);</p>
+<p>&#x2F;&#x2F;将游标移动指向到链表中的下一个数据元素<br>CircleListNode* CircleList_Next(CircleList* list);</p>
+<p>#endif &#x2F;&#x2F;_CIRCLE_LIST_H</p>
+<p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include “CircleList.h”</p>
+<p>&#x2F;&#x2F;创建结构体管理链表<br>typedef struct tag_CircleList<br>{<br>&#x2F;&#x2F;循环链表头结点<br>CircleListNodeheader;<br>&#x2F;&#x2F;循环链表游标<br>CircleListNode*slider;<br>&#x2F;&#x2F;循环链表长度<br>intlength;<br>}TCircleList;</p>
+<p>&#x2F;&#x2F;创建循环链表<br>CircleList* CircleList_Create()<br>{<br>&#x2F;&#x2F;定义TCircleList指针变量,并分配内存空间<br>TCircleList* tlist &#x3D; (TCircleList*)malloc(sizeof(TCircleList));<br>if (tlist &#x3D;&#x3D; NULL)<br>{<br>printf(“error: TCircleList* tlist &#x3D; (TCircleList*)malloc(sizeof(TCircleList)) \n”);<br>return NULL;<br>}<br>&#x2F;&#x2F;数据初始化<br>tlist-&gt;header.next &#x3D; NULL;<br>tlist-&gt;slider &#x3D; NULL;<br>tlist-&gt;length &#x3D; 0;</p>
+<p>return (CircleList*)tlist;<br>}</p>
+<p>&#x2F;&#x2F;销毁循环链表<br>void CircleList_Destroy(CircleList* list)<br>{<br>&#x2F;&#x2F;定义TCircleList指针变量<br>TCircleList *tlist &#x3D; NULL;<br>&#x2F;&#x2F;判断list是否为有效指针<br>if (list &#x3D;&#x3D; NULL)<br>{<br>printf(“Destory error: list 为无效指针\n”);<br>return;<br>}<br>free(list);<br>}</p>
+<p>&#x2F;&#x2F;清空循环链表<br>void CircleList_Clear(CircleList* list)<br>{<br>&#x2F;&#x2F;定义TCircleList指针变量<br>TCircleList *tlist &#x3D; NULL;<br>&#x2F;&#x2F;判断list是否为有效指针<br>if (list &#x3D;&#x3D; NULL)<br>{<br>printf(“Clear error: list 为无效指针\n”);<br>return;<br>}<br>&#x2F;&#x2F;类型转换并赋值<br>tlist &#x3D; (TCircleList*)list;<br>&#x2F;&#x2F;将长度重置为0<br>tlist-&gt;length &#x3D; 0;<br>&#x2F;&#x2F;头结点指针域指向空<br>tlist-&gt;header.next &#x3D; NULL;<br>&#x2F;&#x2F;游标指向空<br>tlist-&gt;slider &#x3D; NULL;<br>}</p>
+<p>&#x2F;&#x2F;获取循环链表长度<br>int CircleList_Length(CircleList* list)<br>{<br>&#x2F;&#x2F;定义TCircleList指针变量<br>TCircleList *tlist &#x3D; NULL;<br>&#x2F;&#x2F;判断list是否为有效指针<br>if (list &#x3D;&#x3D; NULL)<br>{<br>printf(“Length error: list 为无效指针\n”);<br>return -1;<br>}<br>&#x2F;&#x2F;类型转换并赋值<br>tlist &#x3D; (TCircleList*)list;</p>
+<p>return tlist-&gt;length;<br>}</p>
+<p>&#x2F;&#x2F;在循环链表中插入新节点<br>int CircleList_Insert(CircleList* list, CircleListNode* node, int pos)<br>{<br>int i;<br>&#x2F;&#x2F;定义TCircleList指针变量<br>TCircleList*tlist &#x3D; NULL;<br>&#x2F;&#x2F;定义辅助指针变量<br>CircleListNode*currentNode &#x3D; NULL;<br>&#x2F;&#x2F;判断list是否为有效指针<br>if (list &#x3D;&#x3D; NULL  node &#x3D;&#x3D; NULL  pos &lt; 0)<br>{<br>printf(“Insert error: if (list &#x3D;&#x3D; NULL  node &#x3D;&#x3D; NULL  pos &lt; 0)\n”);<br>return -1;<br>}<br>&#x2F;&#x2F;类型转换并赋值<br>tlist &#x3D; (TCircleList*)list;</p>
+<p>&#x2F;&#x2F;元素插入<br>&#x2F;&#x2F;step 1: 使用辅助指针变量,指向头结点<br>currentNode &#x3D; &amp;tlist-&gt;header;<br>&#x2F;&#x2F;step 2: 找到pos-1位置节点<br>for (i &#x3D; 0; i &lt; pos; ++i)<br>{<br>&#x2F;&#x2F;判断是否有后继节点<br>if (currentNode-&gt;next !&#x3D; NULL)<br>{<br>&#x2F;&#x2F;指针后移<br>currentNode &#x3D; currentNode-&gt;next;<br>}<br>else<br>{<br>&#x2F;&#x2F;没有后继节点跳出循环<br>break;<br>}<br>}<br>&#x2F;&#x2F;step 3: 将node节点的指针指向当前节点(pos-1)的后继节点(pos)<br>node-&gt;next &#x3D; currentNode-&gt;next;<br>&#x2F;&#x2F;step 4: 当前节点的指针指向node节点的地址<br>currentNode-&gt;next &#x3D; node;<br>&#x2F;&#x2F;step 5: 如果是第一次插入节点<br>if (tlist-&gt;length &#x3D;&#x3D; 0)<br>{<br>&#x2F;&#x2F;将游标指向新插入节点<br>tlist-&gt;slider &#x3D; node;<br>}<br>&#x2F;&#x2F;step 6: 链表长度加1<br>tlist-&gt;length++;<br>&#x2F;&#x2F;step 7:若头插法 currentNode仍然指向头部<br>&#x2F;&#x2F;原因: 跳0步, 没有跳走<br>if (currentNode &#x3D;&#x3D; &amp;tlist-&gt;header)<br>{<br>CircleListNode* lastNode &#x3D; CircleList_Get(list, tlist-&gt;length - 1);<br>&#x2F;&#x2F;最后一个节点的指针,指向第一个数据节点<br>lastNode-&gt;next &#x3D; currentNode-&gt;next;<br>}<br>return 0;<br>}</p>
+<p>&#x2F;&#x2F;获取循环链表中的指定位置的节点<br>CircleListNode* CircleList_Get(CircleList* list, int pos)<br>{<br>inti;<br>&#x2F;&#x2F;定义TCircleList指针变量<br>TCircleList*tlist &#x3D; NULL;<br>&#x2F;&#x2F;定义辅助指针变量<br>CircleListNode*currentNode &#x3D; NULL;<br>&#x2F;&#x2F;判断list是否为有效指针<br>if (list &#x3D;&#x3D; NULL  pos &lt; 0)<br>{<br>printf(“CircleList_Get error: if (list &#x3D;&#x3D; NULL  pos &lt; 0)\n”);<br>return NULL;<br>}<br>&#x2F;&#x2F;类型转换并赋值<br>tlist &#x3D; (TCircleList*)list;</p>
+<p>&#x2F;&#x2F;step 1: 使用辅助指针变量,指向头结点<br>currentNode &#x3D; &amp;tlist-&gt;header;<br>&#x2F;&#x2F;step 2: 找到pos位置节点<br>for (i &#x3D; 0; i &lt;&#x3D; pos; ++i)<br>{<br>&#x2F;&#x2F;判断是否有后继节点<br>if (currentNode-&gt;next !&#x3D; NULL)<br>{<br>&#x2F;&#x2F;指针后移<br>currentNode &#x3D; currentNode-&gt;next;<br>}<br>else<br>{<br>&#x2F;&#x2F;没有后继节点跳出循环<br>printf(“error: 没找到指定位置的元素\n”);<br>return NULL;<br>}<br>}</p>
+<p>return currentNode;<br>}</p>
+<p>&#x2F;&#x2F;删除循环链表中的指定位置的节点<br>&#x2F;&#x2F;——————————-<br>CircleListNode* CircleList_Delete(CircleList* list, int pos)<br>{<br>inti;<br>&#x2F;&#x2F;定义TCircleList指针变量<br>TCircleList*tlist &#x3D; NULL;<br>&#x2F;&#x2F;定义链表节点指针,保存要删除的节点地址<br>CircleListNode*deleteNode &#x3D; NULL;<br>&#x2F;&#x2F;定义链表节点指针,保存最后一个节点<br>CircleListNode  *lastNode &#x3D; NULL;<br>&#x2F;&#x2F;定义辅助指针变量<br>CircleListNode  *currentNode &#x3D; NULL;</p>
+<p>&#x2F;&#x2F;判断list是否为有效指针<br>if (list &#x3D;&#x3D; NULL  pos &lt; 0)<br>{<br>printf(“CircleList_Delete error: if (list &#x3D;&#x3D; NULL  pos &lt; 0)\n”);<br>return NULL;<br>}<br>&#x2F;&#x2F;类型转换并赋值<br>tlist &#x3D; (TCircleList*)list;<br>&#x2F;&#x2F;判断链表中是否有节点<br>if (tlist-&gt;length &lt;&#x3D; 0)<br>{<br>printf(“error: 链表为空,不能删除\n”);<br>return NULL;<br>}</p>
+<p>&#x2F;&#x2F;元素删除<br>&#x2F;&#x2F;step 1: 辅助指针变量,指向头结点<br>currentNode &#x3D; &amp;tlist-&gt;header;<br>&#x2F;&#x2F;step 2: 找到pos-1位置节点<br>for (i &#x3D; 0; i &lt; pos; ++i)<br>{<br>&#x2F;&#x2F;指针后移<br>currentNode &#x3D; currentNode-&gt;next;<br>}<br>&#x2F;&#x2F;step 3: 保存要删除的节点的地址<br>deleteNode &#x3D; currentNode-&gt;next;<br>&#x2F;&#x2F;step 4-1: 判断删除的元素是否为第一个元素<br>if (currentNode &#x3D;&#x3D; &amp;tlist-&gt;header)<br>{<br>&#x2F;&#x2F;step 4-2: 找到最后一个节点<br>lastNode &#x3D; CircleList_Get(list, tlist-&gt;length - 1);<br>}<br>&#x2F;&#x2F;step 4-3: 判断lastNode是否为空<br>if (lastNode !&#x3D; NULL)<br>{<br>&#x2F;&#x2F;step 4-4: 将最后一个节点的地址指向要删除节点的后继节点<br>lastNode-&gt;next &#x3D; deleteNode-&gt;next;<br>}<br>&#x2F;&#x2F;step 4-5: 将头结点的指针指向要删除节点的后继节点<br>currentNode-&gt;next &#x3D; deleteNode-&gt;next;<br>&#x2F;&#x2F;step 5: 链表长度减1<br>tlist-&gt;length–;<br>&#x2F;&#x2F;step 6-1: 判断删除的元素是否为游标指向的元素<br>if (tlist-&gt;slider &#x3D;&#x3D; deleteNode)<br>{<br>&#x2F;&#x2F;step 6-2: 游标后移<br>tlist-&gt;slider &#x3D; deleteNode-&gt;next;<br>}<br>&#x2F;&#x2F;step 7-1: 判断删除元素后,链表长度是否为零<br>if (tlist-&gt;length &#x3D;&#x3D; 0)<br>{<br>&#x2F;&#x2F;step 7-2: 链表头结点指针域指向空<br>tlist-&gt;header.next &#x3D; NULL;<br>&#x2F;&#x2F;step 7-3: 链表游标指向空<br>tlist-&gt;slider &#x3D; NULL;<br>}</p>
+<p>return deleteNode;<br>}</p>
+<p>&#x2F;&#x2F;—————— new add ——————</p>
+<p>&#x2F;&#x2F;直接指定删除链表中的某个数据元素<br>CircleListNode* CircleList_DeleteNode(CircleList* list, CircleListNode* node)<br>{<br>inti;<br>intnPos &#x3D; 0;<br>&#x2F;&#x2F;定义TCircleList指针变量<br>TCircleList *tlist &#x3D; NULL;<br>&#x2F;&#x2F;判断list是否为有效指针<br>if (list &#x3D;&#x3D; NULL  node &#x3D;&#x3D; NULL)<br>{<br>printf(“CircleList_DeleteNode error: if (list &#x3D;&#x3D; NULL  node &#x3D;&#x3D; NULL)\n”);<br>return NULL;<br>}<br>&#x2F;&#x2F;类型转换并赋值<br>tlist &#x3D; (TCircleList*)list;</p>
+<p>&#x2F;&#x2F;定义辅助指针变量,指向头结点<br>CircleListNode* currentNode &#x3D; &amp;tlist-&gt;header;<br>&#x2F;&#x2F;定义辅助指针变量,用来保存要删除的节点地址<br>CircleListNode* delNode &#x3D; NULL;<br>&#x2F;&#x2F;查找node节点在循环链表中的位置<br>for (i &#x3D; 0; i &lt; tlist-&gt;length; ++i)<br>{<br>&#x2F;&#x2F;从第一个数据节点开始判断,查找等于node的节点<br>if (currentNode-&gt;next &#x3D;&#x3D; node)<br>{<br>&#x2F;&#x2F;保存与node节点相等的节点的位置<br>nPos &#x3D; i;<br>&#x2F;&#x2F;保存要删除的节点地址<br>delNode &#x3D; currentNode-&gt;next;<br>&#x2F;&#x2F;跳出循环<br>break;<br>}<br>&#x2F;&#x2F;当前节点指针后移<br>currentNode &#x3D; currentNode-&gt;next;<br>}<br>&#x2F;&#x2F;如果找到delNode,根据nPos删除该节点<br>if (delNode !&#x3D; NULL)<br>{<br>&#x2F;&#x2F;删除指定位置的元素<br>CircleList_Delete(list, nPos);<br>}</p>
+<p>return delNode;<br>}</p>
+<p>&#x2F;&#x2F;将游标重置指向链表中的第一个数据元素<br>CircleListNode* CircleList_Reset(CircleList* list)<br>{<br>&#x2F;&#x2F;定义TCircleList指针变量<br>TCircleList *tlist &#x3D; NULL;<br>&#x2F;&#x2F;判断list是否为有效指针<br>if (list &#x3D;&#x3D; NULL)<br>{<br>printf(“CircleList_Reset error: if (list &#x3D;&#x3D; NULL)\n”);<br>return NULL;<br>}<br>&#x2F;&#x2F;类型转换并赋值<br>tlist &#x3D; (TCircleList*)list;<br>&#x2F;&#x2F;重置游标位置<br>tlist-&gt;slider &#x3D; tlist-&gt;header.next;</p>
+<p>return tlist-&gt;slider;<br>}</p>
+<p>&#x2F;&#x2F;获取当前游标指向的数据元素<br>CircleListNode* CircleList_Current(CircleList* list)<br>{<br>&#x2F;&#x2F;定义TCircleList指针变量<br>TCircleList *tlist &#x3D; NULL;<br>&#x2F;&#x2F;判断list是否为有效指针<br>if (list &#x3D;&#x3D; NULL)<br>{<br>printf(“CircleList_Current error: if (list &#x3D;&#x3D; NULL)\n”);<br>return NULL;<br>}<br>&#x2F;&#x2F;类型转换并赋值<br>tlist &#x3D; (TCircleList*)list;</p>
+<p>return tlist-&gt;slider;<br>}</p>
+<p>&#x2F;&#x2F;将游标移动指向到链表中的下一个数据元素<br>CircleListNode* CircleList_Next(CircleList* list)<br>{<br>&#x2F;&#x2F;定义链表节点指针变量<br>CircleListNode*currNode &#x3D; NULL;<br>&#x2F;&#x2F;定义TCircleList指针变量<br>TCircleList*tlist &#x3D; NULL;<br>&#x2F;&#x2F;判断list是否为有效指针<br>if (list &#x3D;&#x3D; NULL)<br>{<br>printf(“CircleList_Next error: if (list &#x3D;&#x3D; NULL)\n”);<br>return NULL;<br>}<br>&#x2F;&#x2F;类型转换并赋值<br>tlist &#x3D; (TCircleList*)list;<br>&#x2F;&#x2F;存储当前游标位置<br>currNode &#x3D; tlist-&gt;slider;</p>
+<p>&#x2F;&#x2F;判断当前游标是否指向空<br>if (tlist-&gt;slider !&#x3D; NULL)<br>{<br>&#x2F;&#x2F;游标后移<br>tlist-&gt;slider &#x3D; currNode-&gt;next;<br>}</p>
+<p>return currNode;<br>}</p>
+<p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include “CircleList.h”</p>
+<p>typedef struct tag_value<br>{<br>CircleListNode circleNode;<br>int v;<br>}Value;</p>
+<p>int main()<br>{<br>int i;<br>&#x2F;&#x2F;定义Value结构体数组<br>Value val[10];&#x2F;&#x2F;创建循环链表<br>CircleList* list &#x3D; CircleList_Create();</p>
+<p>&#x2F;&#x2F;循环初始化数组<br>for (i &#x3D; 0; i &lt; sizeof(val) &#x2F; sizeof(Value); ++i)<br>{<br>val[i].v &#x3D; i + 20;<br>&#x2F;&#x2F;往循环链表中插入数据<br>CircleList_Insert(list, (CircleListNode*)&amp;val[i], i);<br>}<br>&#x2F;&#x2F;遍历循环链表<br>&#x2F;&#x2F;************* 怎么证明是循环链表? *************<br>for (i &#x3D; 0; i &lt; CircleList_Length(list) * 2; ++i)&#x2F;&#x2F;打印两遍<br>{<br>Value *pVal &#x3D; (Value*)CircleList_Get(list, i);<br>printf(“Value %d &#x3D; %d\n”, i, pVal-&gt;v);<br>}<br>&#x2F;&#x2F;删除节点<br>while (CircleList_Length(list) &gt; 0)<br>{<br>Value *pVal &#x3D; (Value*)CircleList_Delete(list, 0);<br>printf(“Delete Value: val &#x3D; %d\n”, pVal-&gt;v);<br>}<br>&#x2F;&#x2F;销毁循环链表<br>CircleList_Destroy(list);</p>
+<p>return 0;<br>}</p>
+<p>最后我们详细分析一下循环链表中，插入数据和删除数据时具体步骤的图解，这样有助于我们有深刻的理解。（大部分内容源自 <a target="_blank" rel="noopener" href="http://www.itcast.cn/">传智播客</a> 教师课件） 【插入元素】 插入元素分很多中情况，如在中间插入元素、在尾部插入元素、在头部插入元素、首次插入元素，下面我们分别来看一下。 1、普通插入元素（和单链表是一样的） <a href="/images/2015/05/2015-05-28_213356.png"><img src="/images/2015/05/2015-05-28_213356.png" alt="2015-05-28_213356"></a> 2、尾插法（和单链表是一样的，单链表的写法支持尾插法； 分析：辅助指针向后跳length次，指向最后面那个元素（length-1位置），因为是循环 链表，所以length位置元素即为第一个数据节点。） <a href="/images/2015/05/2015-05-28_213402.png"><img src="/images/2015/05/2015-05-28_213402.png" alt="2015-05-28_213402"></a> 3、头插法 要进行头插法，需要求出尾节点，连接新的0号位置节点 第一次插入元素时，让游标指向0号结点（即第一个数据节点） <a href="/images/2015/05/2015-05-28_213408.png"><img src="/images/2015/05/2015-05-28_213408.png" alt="2015-05-28_213408"></a> 4、第一次插入元素（相当于头插法） 求出尾节点，尾节点指针指向第一个数据节点（即自己指向自己） <a href="/images/2015/05/2015-05-28_213426.png"><img src="/images/2015/05/2015-05-28_213426.png" alt="2015-05-28_213426"></a> 【删除节点】 1、删除普通结点 <a href="/images/2015/05/2015-05-28_213433.png"><img src="/images/2015/05/2015-05-28_213433.png" alt="2015-05-28_213433"></a> 2、删除头结点（删除0号位置处元素），需要求出尾结点，连接新的零号位置节点 <a href="/images/2015/05/2015-05-28_213437.png"><img src="/images/2015/05/2015-05-28_213437.png" alt="2015-05-28_213437"></a> 以上便是针对循环链表的操作详细介绍，其对比单向链表来看，不但增强了功能，有了游标使遍历更加方便了。但是缺点是点吗的复杂度少有提高，不太好理解。不过完全可以替换掉单向链表了。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-28T19:12:33.000Z" itemprop="datePublished">
+              2015-05-28
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%9F%A5%E6%89%BE/">查找</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">类型转换</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

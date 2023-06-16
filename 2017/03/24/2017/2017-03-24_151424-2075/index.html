@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>React 学习笔记之属性 props | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>React 学习笔记之属性 props</h1>
+    </header>
+
+    <section>
+      <p>React 的每一个组件都可以包含一些数据，这些数据一般情况下都是父组件传递进来的。这个过程就像我们给一个可变参数的函数传递参数一样，只不过组件内部接受到这些参数时，都是在 <code>this.props</code> 这个成员中。该功能一般用于组件之间传递数据使用。</p>
+<span id="more"></span>
+<h2 id="演示代码"><a href="#演示代码" class="headerlink" title="演示代码"></a>演示代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">import React, &#123; Component &#125; from &#x27;react&#x27;;</span><br><span class="line">import ReactDOM from &#x27;react-dom&#x27;;</span><br><span class="line"></span><br><span class="line">class Welcome extends Component &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return &lt;h1&gt;Hello, &#123;this.props.name&#125;&lt;/h1&gt;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class App extends Component &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;Welcome name=&quot;Sara&quot; /&gt;</span><br><span class="line">        &lt;Welcome name=&quot;Cahal&quot; /&gt;</span><br><span class="line">        &lt;Welcome name=&quot;Edite&quot; /&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ReactDOM.render(</span><br><span class="line">  &lt;App /&gt;,</span><br><span class="line">  document.getElementById(&#x27;root&#x27;)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h2 id="代码解析"><a href="#代码解析" class="headerlink" title="代码解析"></a>代码解析</h2><p>首先我们从入口的 ReactDOM.render 中将 App 组件作为主程序展示到界面上。而 App 组件中又使用了 Welcome 组件，在使用 Welcome 组件的同时我们给 Welcome 组件传递了一个 name 的属性。且我们调用了三次 Welcome 组件，这样 Welcome 组件就会被渲染三次，显示三个不同的名字。 在 Welcome 组件内部很简单，就是用一个 h1 标签显示了名字的信息，而名字的信息则使用了 <code>&#123;this.props.name&#125;</code> 访问到我们传递进去的 name 属性。最终效果如下： <a href="/images/2017/03/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-03-24-15.13.45.png"><img src="/images/2017/03/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-03-24-15.13.45.png"></a></p>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>另外需要注意的是，props 里面的数据只能只读访问，不应该去修改 props 里面的数据。这是 React 固有的一些规则。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-03-24T15:14:24.000Z" itemprop="datePublished">
+              2017-03-24
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/ES6/">ES6</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>C++ 读写文本文件和二进制文件 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>C++ 读写文本文件和二进制文件</h1>
+    </header>
+
+    <section>
+      <p>在 C 中，我们通过 FILE 结构体生成的指向 FILE 结构体的指针来操作文件。其提供了诸如 fgetc、fgets、feof等等函数，在 C++ 中重新封装了操作文件的方法，其实现在 iostream 派生的 fstream 中，实际内部实现基本原理与 C 相同。下面就分别介绍下操作文本文件和二进制文件的方法。</p>
+<span id="more"></span>
+<p>【操作文本文件】</p>
+<p>#include <iostream><br>#include <fstream><br> <br>using namespace std;<br> <br>bool txt_write()<br>{<br>ofstream ofs(“abc.txt”, ios::out  ios::trunc);<br>if (!ofs) return false;<br> <br>ofs &lt;&lt; “aaaaaaaaaaaaa” &lt;&lt; endl;<br>ofs &lt;&lt; “bbbbbbbbbbbbb” &lt;&lt; endl;<br>ofs &lt;&lt; “ccccccccccccc” &lt;&lt; endl;<br> <br>ofs.close();<br>return true;<br>}<br> <br>bool txt_read()<br>{<br>ifstream ifs(“abc.txt”, ios::in);<br>if (!ifs) return false;<br> <br>&#x2F;*<br>char buf[1024];<br>getline 方式， 读取不包含换行<br>while (ifs.getline(buf, 1024), !ifs.eof())<br>{<br>cout &lt;&lt; buf &lt;&lt; endl;<br>}<br>*&#x2F;<br> <br>&#x2F;&#x2F; get 方式<br>char ch;<br>while (ifs.get(ch), !ifs.eof())<br>{<br>cout &lt;&lt; ch;<br>}<br> <br>ifs.close();<br>return true;<br>}<br> <br>int main(int argc, char* argv[])<br>{<br>&#x2F;&#x2F;txt_write();<br>txt_read();<br>return 0;</p>
+<p>}</p>
+<p>以上只介绍了一些简单的读写操作，更多的方法可以参考 fstream 的其他成员方法。 【操作二进制文件】</p>
+<p>#include <iostream><br>#include <fstream><br>#include <string><br> <br>using namespace std;<br> <br>struct Student<br>{<br>char name[100];<br>int num;<br>int age;<br>char sex;<br>};<br> <br>bool file_write()<br>{<br>Student s[3] &#x3D; {<br>{“dengjia”, 1001, 18, ‘f’},<br>{“jiadeng”, 1002, 21, ‘m’},<br>{“beijing”, 1003, 22, ‘f’}<br>};<br> <br>ofstream ofs(“student.data”, ios::out  ios::binary);<br>if (!ofs) return false;<br> <br>for (int i &#x3D; 0; i &lt; 3; i++)<br>{<br>&#x2F;&#x2F; 将每个结构体的首地址指针传递给write<br>&#x2F;&#x2F; 它会根据你第二个参数给出的大小读取并写入数据到文本。<br>ofs.write((char*)&amp;s[i], sizeof(s[i]));<br>}<br> <br>ofs.close();<br>return true;<br>}<br> <br>bool file_read()<br>{<br>Student s;<br>ifstream ifs(“student.data”, ios::in  ios::binary);<br>if (!ifs) return false;<br> <br>while (ifs.read((char*)&amp;s, sizeof(Student)), !ifs.eof())<br>{<br>cout &lt;&lt; s.name &lt;&lt; endl;<br>cout &lt;&lt; s.age  &lt;&lt; endl;<br>cout &lt;&lt; s.num  &lt;&lt; endl;<br>cout &lt;&lt; s.sex  &lt;&lt; endl;<br>}<br> <br>ifs.close();<br>return true;<br>}<br> <br>int _tmain(int argc, char* argv[])<br>{<br>&#x2F;&#x2F; file_write();<br>file_read();<br>return 0;</p>
+<p>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-25T16:03:22.000Z" itemprop="datePublished">
+              2015-05-25
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

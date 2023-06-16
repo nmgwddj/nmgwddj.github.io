@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>boost 库中 filesystem::path 功能 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>boost 库中 filesystem::path 功能</h1>
+    </header>
+
+    <section>
+      <p>boost filesystem::path 是对文件目录路径做处理的一个小的类，他把我们平时处理文件路径的繁琐功能简化到不能再简化，比如我们想获取一个路径中的文件名，只需要调用 object.filename().string() 就可以了，如果是C语言或者C++中提供的系统库中，我们是找不到这么方便的方法的。更多的一些功能见下面代码。你也可以查看 boost 帮助文档，查找更多的功能。</p>
+<span id="more"></span>
+<p>#include <iostream><br>#include &lt;boost&#x2F;filesystem.hpp&gt;</p>
+<p>using namespace std;<br>using namespace boost::filesystem;</p>
+<p>int main(int argc, char* argv[])<br>{<br>boost::filesystem::path path_01(<br>“C:\\boost_1_58_0\\stage\\lib\\libboost_atomic-vc120-mt-1_57.lib”);</p>
+<p>&#x2F;&#x2F; 根目录 “\”<br>cout &lt;&lt; path_01.root_directory().string() &lt;&lt; endl;<br>&#x2F;&#x2F; 根目录名字 “C:”<br>cout &lt;&lt; path_01.root_name().string() &lt;&lt; endl;<br>&#x2F;&#x2F; 根目录路径 “C:\”<br>cout &lt;&lt; path_01.root_path().string() &lt;&lt; endl;<br>&#x2F;&#x2F; 文件的完整名称<br>cout &lt;&lt; path_01.filename().string() &lt;&lt; endl;<br>&#x2F;&#x2F; 文件后缀名<br>cout &lt;&lt; path_01.extension().string() &lt;&lt; endl;<br>return 0;<br>}</p>
+<p>要注意的是，以上代码如果在 vs 下编译的话，会提示：</p>
+<blockquote>
+<p>LINK : fatal error LNK1104: 无法打开文件“libboost_filesystem-vc120-mt-gd-1_58.lib”</p>
+</blockquote>
+<p>这说明他找不到外部依赖库的路径，你只需要在 vs 的项目属性中，添加整个 boost 外部依赖库的路径或者单独添加你需要的这个 libboost_filesystem-vc120-mt-gd-1_58.lib 就可以了。 添加外部依赖库的文件夹： <a href="/images/2015/06/2015-06-14_234101.png"><img src="/images/2015/06/2015-06-14_234101.png" alt="2015-06-14_234101"></a> 这样添加完成后，我们的程序就可以成功编译了。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-14T23:54:55.000Z" itemprop="datePublished">
+              2015-06-14
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/Boost/">Boost</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

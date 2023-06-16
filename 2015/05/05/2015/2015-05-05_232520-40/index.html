@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>fgetc、fputc 一次读写一个字符 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>fgetc、fputc 一次读写一个字符</h1>
+    </header>
+
+    <section>
+      <p>在C语言中，文件读写方式有很多种，比如一次读一个字符、一次读一行、一次读指定大小的内容等等方式，我们会依次介绍以上几种方式，本文开头，首先介绍一次读写一个字符的方法，其中需要使用到的函数为fgetc（读）、fputc（写）。期间的操作都需要文件句柄，我们也准备了一些文件做示例：</p>
+<span id="more"></span>
+<p>示例文件 File.txt：</p>
+<p>Open file<br>Opens the file whose name is specified in the parameter filename and associates it with a stream that can be identified in future operations by the FILE pointer returned.</p>
+<p>The operations that are allowed on the stream and how these are performed are defined by the mode parameter.</p>
+<p>The returned stream is fully buffered by default if it is known to not refer to an interactive device (see setbuf).</p>
+<p>The returned pointer can be disassociated from the file by calling fclose or freopen. All opened files are automatically closed on normal program termination.</p>
+<p>The running environment supports at least FOPEN_MAX files open simultaneously.</p>
+<p>对该文件的读写相关代码如下（只需将以上文字保存为File.txt存放到我们编写的程序当前目录即可正常读写），代码在VS下编译通过，注意第一行的</p>
+<p>#define _CRT_SECURE_NO_WARNINGS</p>
+<p>这段文本的意思是让VS可以使用非安全函数，因为VS认为fopen等函数是不安全的，推荐你使用fopen_s等安全函数，这完全根据个人需要，如果大家是在Windows下编程，还是建议大家都使用VS推荐的安全函数，这样可增加程序的健壮性。</p>
+<p>#define _CRT_SECURE_NO_WARNINGS<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;</p>
+<p>int main(int argc, char* argv[])<br>{<br>&#x2F;&#x2F; 一次读写一个字符<br>FILE* pFile &#x3D; fopen(“File.txt”, “r”);<br>if (NULL &#x3D;&#x3D; pFile) return -1;<br>FILE* pWriteFile &#x3D; fopen(“WriteFile.txt”, “w”);<br>if (NULL &#x3D;&#x3D; pWriteFile)<br>{<br>fclose(pFile);<br>return -1;<br>}</p>
+<p>char ch;<br>&#x2F;&#x2F; EOF为文件的结束标志，如果fgetc返回的结果为EOF证明读到了文件末尾<br>&#x2F;&#x2F; 另外还有feof方式判断是否到文件末尾，但由于该函数缺陷过多，不推荐大家使用<br>while ((ch &#x3D; fgetc(pFile)) !&#x3D; EOF)<br>{<br>putchar(ch);<br>&#x2F;&#x2F; 将读取到的字符写入到新文件WriteFile.txt中<br>fputc(ch, pWriteFile);<br>}</p>
+<p>fclose(pFile);<br>fclose(pWriteFile);</p>
+<p>system(“pause”);<br>return 0;<br>}</p>
+<p>注意上面代码中是如何判断文件结尾的，C语言提供了一个feof的函数，但由于该函数缺陷较多，容易出问题，所以不建议大家使用该函数来处理文件。所以并没有给出示例。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-05T23:25:20.000Z" itemprop="datePublished">
+              2015-05-05
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>React 学习笔记之状态(state)和生命周期 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>React 学习笔记之状态(state)和生命周期</h1>
+    </header>
+
+    <section>
+      <p>本文中我们同样使用 React 官方教程中的一个时钟的案例来给大家讲解 state 的作用及时生命周期中的一些接口函数。案例可能与官方不是很匹配，是因为我经过刻意修改，为的是以国人理解的方式再重新梳理一遍，让大家更容易理解。</p>
+<span id="more"></span>
+<h2 id="显示一个时间"><a href="#显示一个时间" class="headerlink" title="显示一个时间"></a>显示一个时间</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">import React, &#123; Component &#125; from &#x27;react&#x27;;</span><br><span class="line">import ReactDOM from &#x27;react-dom&#x27;;</span><br><span class="line"></span><br><span class="line">class Clock extends Component &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;h1&gt;&#123;new Date().toLocaleTimeString()&#125;&lt;/h1&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ReactDOM.render(</span><br><span class="line">  &lt;Clock /&gt;,</span><br><span class="line">  document.getElementById(&#x27;root&#x27;)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>以上代码实现了一个 Clock 的组件，该组件很简单的在一个 h1 标签中显示了当前时间，但是你会发现这个时间是个静止的时间，很明显，它没什么实际作用，我们要想办法让它动起来。所以我们就要用到 state + 生命周期中提供的一些接口来实现这个功能。</p>
+<h2 id="使用-state-来显示时钟"><a href="#使用-state-来显示时钟" class="headerlink" title="使用 state 来显示时钟"></a>使用 state 来显示时钟</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">import React, &#123; Component &#125; from &#x27;react&#x27;;</span><br><span class="line">import ReactDOM from &#x27;react-dom&#x27;;</span><br><span class="line"></span><br><span class="line">class Clock extends Component &#123;</span><br><span class="line">  constructor(props) &#123;</span><br><span class="line">    super(props);</span><br><span class="line">    this.state = &#123;date: new Date()&#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;h1&gt;&#123;this.state.date.toLocaleTimeString()&#125;&lt;/h1&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ReactDOM.render(</span><br><span class="line">  &lt;Clock /&gt;,</span><br><span class="line">  document.getElementById(&#x27;root&#x27;)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>经过改造后，我们仅仅是在构造函数（constructor）中给 this.state 赋了一个初值。然后在 render 中显示了 this.state.date 中的内容。但同样，这个时间还是静止的，我们要想办法让它一秒变一次。那么接下来就用到了生命周期相关的接口。</p>
+<h2 id="使用声明周期相关接口"><a href="#使用声明周期相关接口" class="headerlink" title="使用声明周期相关接口"></a>使用声明周期相关接口</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">import React, &#123; Component &#125; from &#x27;react&#x27;;</span><br><span class="line">import ReactDOM from &#x27;react-dom&#x27;;</span><br><span class="line"></span><br><span class="line">class Clock extends Component &#123;</span><br><span class="line">  constructor(props) &#123;</span><br><span class="line">    super(props);</span><br><span class="line">    this.state = &#123;date: new Date()&#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 组件已经挂载</span><br><span class="line">  componentDidMount() &#123;</span><br><span class="line">    this.timerId = setInterval(</span><br><span class="line">      () =&gt; this.tick(),</span><br><span class="line">      1000</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 组件即将被移除</span><br><span class="line">  componentWillUnMount() &#123;</span><br><span class="line">    clearInterval(this.timerId);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 每一秒设置一次 state 中 date 的值</span><br><span class="line">  tick() &#123;</span><br><span class="line">    this.setState(&#123;</span><br><span class="line">      date: new Date()</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;h1&gt;&#123;this.state.date.toLocaleTimeString()&#125;&lt;/h1&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ReactDOM.render(</span><br><span class="line">  &lt;Clock /&gt;,</span><br><span class="line">  document.getElementById(&#x27;root&#x27;)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>我们增加了两个函数，一个是 <code>componentDidMount</code>，该函数会在组件已经加载完毕后被调用。另外一个是 <code>componentWillUnMount</code>，该函数会在组件即将被销毁时调用。 我们在 componentDidMount 函数中增加了一个定时器，每一秒调用一次 tick 函数，这个函数是我们新实现的，目的就是调用一下 <code>setState</code> 方法来设置 state 里面的值，当 state 里面的值改变时，控件上使用的 state.date.toLocaleTimeString() 的值也就会跟随变更。这样我们就实现了时间的自动更新。最后在组件即将被销毁时，我们有调用了 clearInterval 清除了定时器。最终时间就会在界面上自动变更了。 这就是 state 的作用，大家可以想一想，如果在传统 web 前端技术中，你想实现这样一个功能要如何实现呢？对比 React 有什么优势或者缺点吗？</p>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><h3 id="不可以直接修改状态"><a href="#不可以直接修改状态" class="headerlink" title="不可以直接修改状态"></a>不可以直接修改状态</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// Wrong</span><br><span class="line">this.state.comment = &#x27;Hello&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>必须使用 setState 方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// Correct</span><br><span class="line">this.setState(&#123;comment: &#x27;Hello&#x27;&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>你唯一能给其赋初值的地方就是构造函数。</p>
+<h3 id="setState-是异步的"><a href="#setState-是异步的" class="headerlink" title="setState 是异步的"></a>setState 是异步的</h3><p>参考该文章：<a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000007454080">https://segmentfault.com/a/1190000007454080</a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-03-24T15:54:15.000Z" itemprop="datePublished">
+              2017-03-24
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/ES6/">ES6</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

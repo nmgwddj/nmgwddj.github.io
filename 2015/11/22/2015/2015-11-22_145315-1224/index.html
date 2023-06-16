@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>JavaScript 设置事件流流向 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>JavaScript 设置事件流流向</h1>
+    </header>
+
+    <section>
+      <p>多层标签嵌套如果绑定了相同的事件，那么触发其中某一个标签的事件后，其关联的其他标签也会同时响应该事件，如下图所示：</p>
+<span id="more"></span>
+<p><a href="/images/2015/11/002C1816-141C-483F-B37A-3AEABFA6D04C.jpg"><img src="/images/2015/11/002C1816-141C-483F-B37A-3AEABFA6D04C.jpg" alt="002C1816-141C-483F-B37A-3AEABFA6D04C"></a> 图中 <code>div</code> 嵌套 <code>p</code>，<code>p</code> 又嵌套了一个 <code>span</code>。并且标注了每个标签元素都绑定了 <code>onclick</code> 事件，当点击 <code>span</code> 标签时其上层的两个标签元素也都会响应，但响应的过程分为冒泡型和捕捉型。当添加事件时指定事件的第三个参数为 true 时，该元素的事件就变为捕捉型（由外向内），如果第三个参数指定为 false（默认值）时，该元素的事件就变为冒泡型。</p>
+<h3 id="捕捉型参考代码及效果"><a href="#捕捉型参考代码及效果" class="headerlink" title="捕捉型参考代码及效果"></a>捕捉型参考代码及效果</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">    &lt;link rel=&quot;stylesheet&quot; href=&quot;http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css&quot;&gt;</span><br><span class="line">    &lt;title&gt;js lesson&lt;/title&gt;</span><br><span class="line">    &lt;style&gt;</span><br><span class="line">      div &#123;</span><br><span class="line">        width: 400px;</span><br><span class="line">        height: 300px;</span><br><span class="line">        background-color: pink;</span><br><span class="line">      &#125;</span><br><span class="line">      p &#123;</span><br><span class="line">        width: 300px;</span><br><span class="line">        height: 200px;</span><br><span class="line">        background-color: lightsteelblue;</span><br><span class="line">      &#125;</span><br><span class="line">      span &#123;</span><br><span class="line">        font-size: 22px;</span><br><span class="line">        background-color: darkslategray;</span><br><span class="line">        color: #FFF;</span><br><span class="line">      &#125;</span><br><span class="line">    &lt;/style&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;h2&gt;DOM 操作&lt;/h2&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;p&gt;&lt;span&gt;Today is Sunday&lt;/span&gt;&lt;/p&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">  var sp = document.getElementsByTagName(&quot;span&quot;)[0];</span><br><span class="line">  var pt = document.getElementsByTagName(&quot;p&quot;)[0];</span><br><span class="line">  var dv = document.getElementsByTagName(&quot;div&quot;)[0];</span><br><span class="line"></span><br><span class="line">  sp.addEventListener(&quot;click&quot;, function() &#123;</span><br><span class="line">    console.log(&quot;This is span tag&quot;);</span><br><span class="line">  &#125;, true);</span><br><span class="line">  pt.addEventListener(&quot;click&quot;, function() &#123;</span><br><span class="line">    console.log(&quot;This is p tag&quot;);</span><br><span class="line">  &#125;, true);</span><br><span class="line">  dv.addEventListener(&quot;click&quot;, function() &#123;</span><br><span class="line">    console.log(&quot;This is div tag&quot;);</span><br><span class="line">  &#125;, true);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p><a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-22-%E4%B8%8B%E5%8D%882.43.05.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-22-%E4%B8%8B%E5%8D%882.43.05-234x300.png" alt="屏幕快照 2015-11-22 下午2.43.05"></a></p>
+<h3 id="冒泡型参考代码及效果"><a href="#冒泡型参考代码及效果" class="headerlink" title="冒泡型参考代码及效果"></a>冒泡型参考代码及效果</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">    &lt;link rel=&quot;stylesheet&quot; href=&quot;http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css&quot;&gt;</span><br><span class="line">    &lt;title&gt;js lesson&lt;/title&gt;</span><br><span class="line">    &lt;style&gt;</span><br><span class="line">      div &#123;</span><br><span class="line">        width: 400px;</span><br><span class="line">        height: 300px;</span><br><span class="line">        background-color: pink;</span><br><span class="line">      &#125;</span><br><span class="line">      p &#123;</span><br><span class="line">        width: 300px;</span><br><span class="line">        height: 200px;</span><br><span class="line">        background-color: lightsteelblue;</span><br><span class="line">      &#125;</span><br><span class="line">      span &#123;</span><br><span class="line">        font-size: 22px;</span><br><span class="line">        background-color: darkslategray;</span><br><span class="line">        color: #FFF;</span><br><span class="line">      &#125;</span><br><span class="line">    &lt;/style&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;h2&gt;DOM 操作&lt;/h2&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;p&gt;&lt;span&gt;Today is Sunday&lt;/span&gt;&lt;/p&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">  var sp = document.getElementsByTagName(&quot;span&quot;)[0];</span><br><span class="line">  var pt = document.getElementsByTagName(&quot;p&quot;)[0];</span><br><span class="line">  var dv = document.getElementsByTagName(&quot;div&quot;)[0];</span><br><span class="line"></span><br><span class="line">  sp.addEventListener(&quot;click&quot;, function() &#123;</span><br><span class="line">    console.log(&quot;This is span tag&quot;);</span><br><span class="line">  &#125;, false);</span><br><span class="line">  pt.addEventListener(&quot;click&quot;, function() &#123;</span><br><span class="line">    console.log(&quot;This is p tag&quot;);</span><br><span class="line">  &#125;, false);</span><br><span class="line">  dv.addEventListener(&quot;click&quot;, function() &#123;</span><br><span class="line">    console.log(&quot;This is div tag&quot;);</span><br><span class="line">  &#125;, false);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p><a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-22-%E4%B8%8B%E5%8D%882.42.09.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-22-%E4%B8%8B%E5%8D%882.42.09-241x300.png" alt="屏幕快照 2015-11-22 下午2.42.09"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-11-22T14:53:15.000Z" itemprop="datePublished">
+              2015-11-22
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Event/">Event</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

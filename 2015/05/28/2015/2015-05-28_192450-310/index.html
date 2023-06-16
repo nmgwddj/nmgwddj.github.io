@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>循环链表解决约瑟夫问题 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>循环链表解决约瑟夫问题</h1>
+    </header>
+
+    <section>
+      <p>循环链表的存在很难想象他的应用范围到底是哪里，本文主要介绍的是通过循环链表处理解决约瑟夫问题，让大家更深刻的理解循环链表的使用和应用场景。</p>
+<span id="more"></span>
+<p>例题：n 个人围成一个圆圈，首先第 1 个人从 1 开始一个人一个人顺时针报数，报到第 m 个人，令其出列。然后再从下一 个人开始从 1 顺时针报数，报到第 m 个人，再令其出列，…，如此下去，求出列顺序。 假设： m &#x3D; 8，n&#x3D;3 <a href="/images/2015/05/2015-05-28_191652.png"><img src="/images/2015/05/2015-05-28_191652.png" alt="2015-05-28_191652"></a> 最后我们得出的结果便是 ： 3 6 1 5 2 8 4 7 很明显，如果用循环链表来处理这个问题，将非常简单。大致的思路如下：</p>
+<ol>
+<li>生成一个有 8 个数据的循环链表</li>
+<li>无限循环遍历链表</li>
+<li>无限循环中增加for循环，每次循环 n - 1 次，每循环一次移动一次游标，将for循环完成后游标指向的数据删除</li>
+<li>依次执行，直到链表为空为止</li>
+</ol>
+<p>【实现代码】 注意：需要用到<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/datastruct/307.html">上一篇文章我们编写的 CircleList.h 和 CircleList.c 文件</a>。</p>
+<p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include “circlelist.h”</p>
+<p>&#x2F;&#x2F;定义结构体,存储数据<br>typedef struct tag_value<br>{<br>CircleListNode header;<br>int v;<br>}Value;</p>
+<p>void joseph_question()<br>{<br>int i;<br>&#x2F;&#x2F;定义结构体数组<br>Value val[8];<br>&#x2F;&#x2F;创建循环链表<br>CircleList* list &#x3D; CircleList_Create();<br>&#x2F;&#x2F;判断链表是否创建成功<br>if (list &#x3D;&#x3D; NULL)<br>{<br>printf(“链表创建失败\n”);<br>return;<br>}<br>&#x2F;&#x2F;初始化结构体数组<br>for (i &#x3D; 0; i &lt; sizeof(val) &#x2F; sizeof(Value); ++i)<br>{<br>val[i].v &#x3D; i+1;<br>&#x2F;&#x2F;往循环链表中插入数据<br>CircleList_Insert(list, (CircleListNode*)&amp;val[i], i);<br>}<br>&#x2F;&#x2F;遍历循环链表<br>printf(“插入数据:\n”);<br>for (i &#x3D; 0; i &lt; CircleList_Length(list); ++i)<br>{<br>&#x2F;&#x2F;获取游标指向的元素然后下移<br>Value* pVal &#x3D; (Value*)CircleList_Get(list, i);<br>printf(“%d\t”, pVal-&gt;v);<br>}</p>
+<p>&#x2F;&#x2F;重置游标<br>CircleList_Reset(list);<br>&#x2F;&#x2F;循环删除指定位置的元素<br>printf(“\n\n依次删除的节点为:\n”);<br>while (CircleList_Length(list) &gt; 0)<br>{<br>&#x2F;&#x2F;定义结构体指针变量,指向符合条件的元素<br>Value* pVal &#x3D; NULL;<br>&#x2F;&#x2F;根据条件查找指定位置的元素<br>for (i &#x3D; 0; i &lt; 3-1; ++i)&#x2F;&#x2F;3为案例中的m<br>{<br>&#x2F;&#x2F;向后移动游标<br>pVal &#x3D; (Value*)CircleList_Next(list);<br>}<br>&#x2F;&#x2F;保存符合条件的节点<br>pVal &#x3D; (Value*)CircleList_Current(list);<br>&#x2F;&#x2F;打印节点信息<br>printf(“%d\t”, pVal-&gt;v);<br>&#x2F;&#x2F;从链表中删除符合条件的节点<br>CircleList_DeleteNode(list, (CircleListNode*)pVal);<br>}<br>printf(“\n”);<br>&#x2F;&#x2F;销毁循环链表<br>CircleList_Destroy(list);<br>}</p>
+<p>void main()<br>{<br>joseph_question();<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-28T19:24:50.000Z" itemprop="datePublished">
+              2015-05-28
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

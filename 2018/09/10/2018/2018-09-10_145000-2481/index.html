@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Windows 编译 openssl-1.0.2p（libeay32.lib、ssleay32.lib）静态库 32/64、debug/release、MT/MTd | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Windows 编译 openssl-1.0.2p（libeay32.lib、ssleay32.lib）静态库 32/64、debug/release、MT/MTd</h1>
+    </header>
+
+    <section>
+      <p>最近要用到 libeay32.lib、ssleay32.lib 两个静态库文件，因为以前项目中其中一个文件在 64 位编译时选择的不是 MTd，而导致我引入该库以后提示运行时库和其他库声明冲突，其实实际原因就是生成选项不一样。最终我还是决定自己编译 openssl 的库来使用。</p>
+<h2 id="下载所需工具"><a href="#下载所需工具" class="headerlink" title="下载所需工具"></a>下载所需工具</h2><ul>
+<li>Perl：<a target="_blank" rel="noopener" href="http://downloads.activestate.com/ActivePerl/releases/5.26.1.2601/ActivePerl-5.26.1.2601-MSWin32-x64-404865.exe">http://downloads.activestate.com/ActivePerl/releases/5.26.1.2601/ActivePerl-5.26.1.2601-MSWin32-x64-404865.exe</a></li>
+<li>NASM：<a target="_blank" rel="noopener" href="https://www.nasm.us/pub/nasm/releasebuilds/2.14rc15/win64/nasm-2.14rc15-installer-x64.exe">https://www.nasm.us/pub/nasm/releasebuilds/2.14rc15/win64/nasm-2.14rc15-installer-x64.exe</a></li>
+<li>OpenSSL：<a target="_blank" rel="noopener" href="https://www.openssl.org/source/openssl-1.0.2p.tar.gz">https://www.openssl.org/source/openssl-1.0.2p.tar.gz</a></li>
+</ul>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>安装 Perl 和 NASM，默认下一步下一步就可以了。Perl 安装的时候记得勾选将执行程序添加到系统环境变量中。NASM 安装时没有选项，需要在完成后要将执行程序添加到系统的环境变量中。如下图所示： <a href="/images/2018/09/2018-09-11_14-30-21.png"><img src="/images/2018/09/2018-09-11_14-30-21.png"></a> 解压 openssl-1.0.2p.tar.gz 到任意目录，比如 D:\openssl-1.0.2p</p>
+<h2 id="开始编译"><a href="#开始编译" class="headerlink" title="开始编译"></a>开始编译</h2><p>打开 VS 的命令行工具（我这里安装的是 VS2013），所以目录在 <code>C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\Tools\Shortcuts</code> 下，如果想编译 32 位的静态库就使用 <code>VS2013 x86 本机工具命令提示</code>，如果想编译 64 位，就使用 <code>VS2013 x64 本机工具命令提示</code>。 <a href="/images/2018/09/2018-09-11_14-33-02.png"><img src="/images/2018/09/2018-09-11_14-33-02.png"></a> 打开后切换到 D:\openssl-1.0.2p 目录，执行如下命令生成 makefile 文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perl configure VC-WIN32</span><br></pre></td></tr></table></figure>
+
+<p>如果是生成 64 位则执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perl configure VC-WIN64A</span><br></pre></td></tr></table></figure>
+
+<p>成功后如下所示： <a href="/images/2018/09/2018-09-11_14-37-12.png"><img src="/images/2018/09/2018-09-11_14-37-12.png"></a> 如果你要编译 <strong>debug</strong> 版本，则修改 <code>ms/do_nasm.bat</code> 文件，将原来</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">perl util\mkfiles.pl &gt;MINFO</span><br><span class="line">perl util\mk1mf.pl nasm VC-WIN32 &gt;ms\nt.mak</span><br><span class="line">perl util\mk1mf.pl dll nasm VC-WIN32 &gt;ms\ntdll.mak</span><br><span class="line">perl util\mk1mf.pl nasm BC-NT &gt;ms\bcb.mak</span><br><span class="line"></span><br><span class="line">perl util\mkdef.pl 32 libeay &gt; ms\libeay32.def</span><br><span class="line">perl util\mkdef.pl 32 ssleay &gt; ms\ssleay32.def</span><br></pre></td></tr></table></figure>
+
+<p>修改为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">perl util\mkfiles.pl &gt;MINFO</span><br><span class="line">perl util\mk1mf.pl nasm debug VC-WIN32 &gt;ms\nt.mak</span><br><span class="line">perl util\mk1mf.pl dll nasm debug VC-WIN32 &gt;ms\ntdll.mak</span><br><span class="line">perl util\mk1mf.pl nasm BC-NT &gt;ms\bcb.mak</span><br><span class="line"></span><br><span class="line">perl util\mkdef.pl 32 libeay &gt; ms\libeay32.def</span><br><span class="line">perl util\mkdef.pl 32 ssleay &gt; ms\ssleay32.def</span><br></pre></td></tr></table></figure>
+
+<p>就是将第二行和第三行编译选项增加了 <strong>debug</strong>。修改完成后执行 <code>ms/do_nasm.bat</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ms\do_nasm.bat</span><br></pre></td></tr></table></figure>
+
+<p>运行后结果如下： <a href="/images/2018/09/2018-09-11_14-41-29.png"><img src="/images/2018/09/2018-09-11_14-41-29.png"></a> 修改完成执行如下命令开始编译（如果想编译成 dll，则执行 nmake -f ms\ntdll.mak，编译前要修改 ms\ntdll.mak 将 CFLAG 的 &#x2F;MD 属性修改为 &#x2F;MT，与你调用项目匹配）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmake -f ms\nt.mak</span><br></pre></td></tr></table></figure>
+
+<p>如果没有错误，几分钟后编译后的文件就会生成于 <code>D:\openssl-1.0.2p\out32</code> 目录下。 <a href="/images/2018/09/2018-09-11_14-48-49.png"><img src="/images/2018/09/2018-09-11_14-48-49.png"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2018-09-10T14:50:00.000Z" itemprop="datePublished">
+              2018-09-10
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/openssl/">openssl</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

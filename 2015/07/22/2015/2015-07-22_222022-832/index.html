@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>oracle 表操作 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>oracle 表操作</h1>
+    </header>
+
+    <section>
+      <p>本文记录 oracle 环境下对表的创建、字段处理（增、删、改、重命名）、删除、重命名操作，其中包含了在创建表时常用的约束条件及数据类型。</p>
+<span id="more"></span>
+<hr>
+<h3 id="最简单的创建表命令"><a href="#最简单的创建表命令" class="headerlink" title="最简单的创建表命令"></a>最简单的创建表命令</h3><p>CREATE TABLE dept(deptno NUMBER(2),<br>dname VARCHAR2(14),<br>loc VARCHAR2(13));</p>
+<p>创建后表结构如下： <a href="/images/2015/07/2015-07-22_202950.png"><img src="/images/2015/07/2015-07-22_202950.png" alt="2015-07-22_202950"></a> 也可以通过其他表的数据来创建新的表，参考：<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/database/818.html">sql 根据其他表结构创建新表并批量插入数据</a></p>
+<h3 id="常见数据类型"><a href="#常见数据类型" class="headerlink" title="常见数据类型"></a>常见数据类型</h3><p>在创建表时，每一个字段你都需要给其指定数据类型，oracle 有非常多的数据类型，但是有一些是不常用的，下表列出了一些经常使用的数据类型。</p>
+<p> 数据类型</p>
+<p> 描述</p>
+<p> VARCHAR2(size)</p>
+<p> 可变长字符数据</p>
+<p> CHAR(size)</p>
+<p> 定长字符数据</p>
+<p> NUMBER(p,s)</p>
+<p> 可变长数值数据</p>
+<p> DATE</p>
+<p> 日期型数据</p>
+<p> LONG</p>
+<p> 可变长字符数据，最大可达到 2G</p>
+<p> CLOB</p>
+<p> 字符数据，最大可达到 4G</p>
+<p> RAW and LONG RAW</p>
+<p> 原始的二进制数据</p>
+<p> BLOB</p>
+<p> 二进制数据，最大可达到 4G</p>
+<p> BFILE</p>
+<p> 储存外部文件的二进制数据，最大可达到 4G</p>
+<p> ROWID</p>
+<p> 行地址</p>
+<h3 id="修改表字段信息"><a href="#修改表字段信息" class="headerlink" title="修改表字段信息"></a>修改表字段信息</h3><p>在已经创建的表中，我们可以对其字段(列)信息进行修改，具体的修改有如下几种。 1、添加新字段</p>
+<p>ALTER TABLE dept ADD (job_id, VARCHAR2(9)) &#x2F;* 给dept表新增一个字段job_id，数据类型为 VARCHAR2(9) *&#x2F;</p>
+<p>2、修改字段信息</p>
+<p>ALTER TABLE dept MODIFY (last_name, VARCHAR2(30)) &#x2F;* 修改已有字段信息 *&#x2F;</p>
+<p>3、重命名字段</p>
+<p>ALTER TABLE dept RENAME COLUMN last_name to last_name_new</p>
+<p>4、删除字段</p>
+<p>ALTER TABLE dept DROP COLUMN (last_name)</p>
+<h3 id="删除表"><a href="#删除表" class="headerlink" title="删除表"></a>删除表</h3><p>oracle 下删除一张表默认情况下是存入到 oracle 的回收站中，如下：</p>
+<p>drop table tablename</p>
+<p>要想彻底删除，还要对回收站进行清空：</p>
+<p>purge recyclebin</p>
+<p>如果向直接删除不经过回收站，可以使用如下方法：</p>
+<p>drop table test1 purge &#x2F;* 直接删除表不经过回收站 *&#x2F;</p>
+<h3 id="重命名表"><a href="#重命名表" class="headerlink" title="重命名表"></a>重命名表</h3><p>rename test1 to test2</p>
+<h3 id="常见表字段约束"><a href="#常见表字段约束" class="headerlink" title="常见表字段约束"></a>常见表字段约束</h3><p><strong>Not Null：保证列的值不能为空</strong> <strong>Unique：保证字段数据不重复，唯一</strong> <strong>Primary Key：主键约束，默认主键约束包含 Not Null 和 Unique</strong> <strong>Foreign Key：外键约束，关联另外一张表的一个主键</strong></p>
+<ul>
+<li>FOREIGN KEY: 在子表中，定义了一个表级的约束</li>
+<li>REFERENCES: 指定表和父表中的列</li>
+<li>ON DELETE CASCADE: 当删除父表时，级联删除子表记录</li>
+<li>ON DELETE SET NULL: 将子表的相关依赖记录的外键值置为null</li>
+</ul>
+<p><strong>check：定义每一行记录所必须满足的条件</strong> <strong>一个综合案例：</strong></p>
+<p>&#x2F;* constraint 是声明一种错误名称，当对该表插入数据时不符合后面的约束条件时，则会弹出 constraint 后面的错误名称 *&#x2F;<br>create table student<br>(<br>   sid number constraint student_pk primary key,&#x2F;*number类型，primary key为主键*&#x2F;<br>   sname varchar2(20) constraint student_name_not_null not null,&#x2F;*varchar2 不能为null*&#x2F;<br>   email varchar2(20) constraint student_email_unique unique&#x2F;*varchar2 不能重复*&#x2F;<br>                      constraint student_email_notnull not null,&#x2F;*不能为null*&#x2F;<br>   age number constraint student_age_min check(age &gt; 10),&#x2F;*检查条件 age 必须大于10*&#x2F;<br>   gender varchar2(6) constraint gender_female_or_male check(gender in (‘man’, ‘wman’)),&#x2F;*只能插入 man 或者 woman*&#x2F;<br>   deptno number constraint student_fk references dept(deptno) on delete set null&#x2F;*增加外键为dept(deptno)*&#x2F;<br>)</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-22T22:20:22.000Z" itemprop="datePublished">
+              2015-07-22
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/oracle/">oracle</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/sql/">sql</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

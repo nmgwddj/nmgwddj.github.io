@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Windows 10 键盘 ALT 键与 WIN 键颠倒 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Windows 10 键盘 ALT 键与 WIN 键颠倒</h1>
+    </header>
+
+    <section>
+      <p>最近重新装了家里台式机电脑系统，但是发现键盘左侧和右侧的 ALT 与 WIN 键功能都颠倒了，搜索了很久资料也没有找到为什么会出现这种情况，但是解决办法还是有的。导入以下注册表即可让 ALT 和 WIN 键对换功能</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Windows Registry Editor Version 5.00</span><br><span class="line"></span><br><span class="line">[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout]</span><br><span class="line">&quot;Scancode Map&quot;=hex:00,00,00,00,00,00,00,00,03,00,00,00,38,00,5B,E0,5B,E0,38,00,00,00,00,00</span><br></pre></td></tr></table></figure>
+
+<p>以上注册表内容来自一篇文章，我根据这篇文章修改的具体内容，请参考：<a target="_blank" rel="noopener" href="https://www.qiansw.com/windows-through-the-registry-to-make-ctrl-and-alt-swap.html">https://www.qiansw.com/windows-through-the-registry-to-make-ctrl-and-alt-swap.html</a></p>
+<span id="more"></span>
+<h2 id="原文内容"><a href="#原文内容" class="headerlink" title="原文内容"></a>原文内容</h2><p>重点分析上面代码中的那一长串二进制，为方便分析，拆分为每8位一行，并加上行号，结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&quot;Scancode Map&quot;=hex:</span><br><span class="line">00,00,00,00,</span><br><span class="line">00,00,00,00,</span><br><span class="line">03,00,00,00,</span><br><span class="line">38,00,1D,00,</span><br><span class="line">1D,00,38,00,</span><br><span class="line">00,00,00,00</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>头两行和最后一行，是固定的，都是8个0。</li>
+<li>第3行，表示共更改了多少个按键，本例为3个，怎么算的？从第4行开始，到最末尾行（虽然严格来说末行不算），每行算1个，4、5、6行，刚好3个。</li>
+<li>第4行，前后各4位，分别代表某个按键。本例为将38,00的按键映射为1D,00。38,00代表Left alt键，1D,00代表Left ctrl键。</li>
+<li>第5行，同理，下一行即Left ctrl映射为Left alt。</li>
+<li>第6行，已经讲了，末行，固定8个0。如果需要增加更多的映射，可以在此行之上，不断加类似4、5行格式的。当然，最后的结果，还是要将各行合为一行的。</li>
+</ul>
+<p><strong>键值对照表</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Escape             01 00</span><br><span class="line">Tab                0F 00</span><br><span class="line">Caps Lock          3A 00</span><br><span class="line">Left Alt           38 00</span><br><span class="line">Left Ctrl          1D 00</span><br><span class="line">Left Shift         2A 00</span><br><span class="line">Left Windows       5B E0</span><br><span class="line">Right Alt          38 E0</span><br><span class="line">Right Ctrl         1D E0</span><br><span class="line">Right Shift        36 00</span><br><span class="line">Right Windows      5C E0</span><br><span class="line">Backspace          0E 00</span><br><span class="line">Delete             53 E0</span><br><span class="line">Enter              1C 00</span><br><span class="line">Space              39 00</span><br><span class="line">Insert             52 E0</span><br><span class="line">HOME               47 E0</span><br><span class="line">End                4F E0</span><br><span class="line">Num Lock           45 00</span><br><span class="line">Page Down          51 E0</span><br><span class="line">Page Up            49 E0</span><br><span class="line">Scroll Lock        46 00</span><br></pre></td></tr></table></figure>
+
+<p>更多键值对照表请访问：<a target="_blank" rel="noopener" href="http://www.doc88.com/p-10453230875.html">http://www.doc88.com/p-10453230875.html</a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2019-08-10T12:08:11.000Z" itemprop="datePublished">
+              2019-08-10
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

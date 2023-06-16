@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>JavaScript arguments.callee 使用方法 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>JavaScript arguments.callee 使用方法</h1>
+    </header>
+
+    <section>
+      <p>arguments.callee 的功能是在函数内部调用函数自身，相当于递归的作用，我开始接触它的时候发现，这个东西没有什么实际意义吧，在函数内部调用自身名字就好了，干嘛还要定义这么一个方法？当然存在即是合理，我们看下面的例子。</p>
+<span id="more"></span>
+<p>function jieceng(n) {<br>  if (n &#x3D;&#x3D; 1) {<br>    return 1;<br>  }<br>  return n * jieceng(n - 1);<br>}</p>
+<p>&#x2F;&#x2F; 将 jieceng 指向的函数地址赋值给 jc<br>var jc &#x3D; jieceng;<br>&#x2F;&#x2F; 将 jieceng 置为 null<br>jieceng &#x3D; null;</p>
+<p>console.log(jc(4));</p>
+<p>此时你会发现函数名相当于 C 语言中的指针，而函数是真正加载到内存中的数据块，只不过 jieceng 和 jc 都指向了这个数据块，但是后面我们将 jieceng 置为 null 了。使用 jc 调用这个递归函数的时候，你会发现程序出现报错了。 <a href="/images/2015/10/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-10-31-%E4%B8%8B%E5%8D%886.14.31.png"><img src="/images/2015/10/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-10-31-%E4%B8%8B%E5%8D%886.14.31.png" alt="屏幕快照 2015-10-31 下午6.14.31"></a> 因为我们已经将 jieceng 置为 null，函数内去执行了一个指向 null 的方法（还叫方法吗？），所以程序报错了。在程序任何地方都可能会有将一个函数名字置为 null 的需求，那么解决这个问题的方案就油然而生。arguments.callee 正是为此而来。</p>
+<p>function jieceng(n) {<br>  if (n &#x3D;&#x3D; 1) {<br>    return 1;<br>  }<br>  return n * arguments.callee(n - 1);<br>}</p>
+<p>&#x2F;&#x2F; 将 jieceng 指向的函数地址赋值给 jc<br>var jc &#x3D; jieceng;<br>&#x2F;&#x2F; 将 jieceng 置为 null<br>jieceng &#x3D; null;</p>
+<p>console.log(jc(4));</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-10-31T18:19:17.000Z" itemprop="datePublished">
+              2015-10-31
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>二叉树双亲表示法 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>二叉树双亲表示法</h1>
+    </header>
+
+    <section>
+      <p>前面我们介绍过二叉树的单向表示和双向表示发，分别是借用了几个指针来实现。双亲表示法则是用了一个非常详细的结构体描述了一个节点，然后将节点串联到另外一个结构体中（这个结构体包含一个数组），具体的代码如下：</p>
+<span id="more"></span>
+<p>#define _CRT_SECURE_NO_WARNINGS<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;</p>
+<p>&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F; 双亲表示法 &#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;<br>typedef struct tag_BPTNode<br>{<br>&#x2F;&#x2F;节点数据<br>char data;<br>&#x2F;&#x2F;指向父节点的变量(数组下标)<br>int parentPosition;<br>&#x2F;&#x2F;左右孩子标志域<br>char LRTag;<br>}BPTNode;</p>
+<p>&#x2F;&#x2F;定义树的数据结构<br>typedef struct tag_BPTree<br>{<br>&#x2F;&#x2F;一个代表整个树的数组<br>BPTNode nodes[100];<br>&#x2F;&#x2F;树中已经存入节点的个数<br>int num_node;<br>&#x2F;&#x2F;根节点的位置(***注意此域存储的是父亲节点在数组中的下标***)<br>int root;<br>}BPTree;</p>
+<p>int main()<br>{<br>&#x2F;&#x2F;定义一个变量, 最多可容纳100个节点<br>BPTree tree;<br>&#x2F;&#x2F;初始化<br>memset(&amp;tree, 0, sizeof(BPTNode));<br>tree.root &#x3D; 0;&#x2F;&#x2F;0号位置元素为根节点<br>&#x2F;&#x2F;根节点<br>tree.nodes[0].data &#x3D; ‘a’;<br>tree.num_node++;&#x2F;&#x2F;节点数加1<br>&#x2F;&#x2F;B<br>tree.nodes[1].data &#x3D; ‘b’;<br>tree.nodes[1].parentPosition &#x3D; 0;&#x2F;&#x2F;父亲是a<br>tree.nodes[1].LRTag &#x3D; 1;&#x2F;&#x2F;a的左孩子<br>tree.num_node++;&#x2F;&#x2F;节点数加1<br>&#x2F;&#x2F;c<br>tree.nodes[2].data &#x3D; ‘c’;<br>tree.nodes[2].parentPosition &#x3D; 0;&#x2F;&#x2F;父亲是a<br>tree.nodes[2].LRTag &#x3D; 2;&#x2F;&#x2F;a的右孩子<br>tree.num_node++;&#x2F;&#x2F;节点数加1<br>&#x2F;&#x2F;d<br>tree.nodes[3].data &#x3D; ‘d’;<br>tree.nodes[3].parentPosition &#x3D; 1;&#x2F;&#x2F;父亲是b<br>tree.nodes[3].LRTag &#x3D; 1;&#x2F;&#x2F;b的左孩子<br>tree.num_node++;&#x2F;&#x2F;节点数加1<br>&#x2F;&#x2F;e<br>tree.nodes[4].data &#x3D; ‘e’;<br>tree.nodes[4].parentPosition &#x3D; 1;&#x2F;&#x2F;父亲是b<br>tree.nodes[4].LRTag &#x3D; 2;&#x2F;&#x2F;b的右孩子<br>tree.num_node++;&#x2F;&#x2F;节点数加1<br>&#x2F;&#x2F;f<br>tree.nodes[5].data &#x3D; ‘f’;<br>tree.nodes[5].parentPosition &#x3D; 2;&#x2F;&#x2F;父亲是c<br>tree.nodes[5].LRTag &#x3D; 1;&#x2F;&#x2F;c的左孩子<br>tree.num_node++;&#x2F;&#x2F;节点数加1<br>&#x2F;&#x2F;g<br>tree.nodes[6].data &#x3D; ‘g’;<br>tree.nodes[6].parentPosition &#x3D; 2;&#x2F;&#x2F;父亲是c<br>tree.nodes[6].LRTag &#x3D; 2;&#x2F;&#x2F;a的左孩子<br>tree.num_node++;&#x2F;&#x2F;节点数加1</p>
+<p>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-04T00:01:12.000Z" itemprop="datePublished">
+              2015-06-04
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

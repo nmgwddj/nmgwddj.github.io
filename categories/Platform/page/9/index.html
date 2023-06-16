@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ Platform }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/29/2015/2015-06-29_160446-645/">gdb 调试基础</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-29T16:04:46.000Z" itemprop="datePublished">
+    2015-06-29
+  </time>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>程序运行过程中，会产生各种各样的错误和异常信息，这些信息我们可以通过打印日志、输出文字等方式来判断和检测问题，但有的时候程序是在运行态出现故障，使用打印日志等手段没办法精准的定位问题。如果使用gdb来调试，这种问题就可以迎刃而解了。gdb 可以完全操控程序运行，让程序走就走，让程序暂停就暂停，还可以随时查看程序运行时内部变量的值等信息。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/29/2015/2015-06-29_160446-645/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/29/2015/2015-06-29_143407-639/">使用 frok() 函数一次创建多个子进程</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-29T14:34:07.000Z" itemprop="datePublished">
+    2015-06-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>前面的文章我们讨论了系统函数 fork() 的应用，他可以在一个进程中再创建另外一个子进程，本文测试使用一个 for 循环创建多个子进程，中间一些注意事项已经全部用注释标注清楚。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/29/2015/2015-06-29_143407-639/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/29/2015/2015-06-29_122652-630/">fork() 函数详解</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-29T12:26:52.000Z" itemprop="datePublished">
+    2015-06-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>fork() 函数是 linux&#x2F;unix 下一种特别的创建子进程的函数，它不同与 Windows，这个函数在执行成功后会有两个返回值，一个返回值&#x3D;&#x3D;0代表创建了子进程，一个返回值大于0代表还是当前程序进程，而这个大于0的值就是创建的子进程的进程PID。这个函数比较抽象，我们来看一下代码并对比一下图片就能知道具体该函数的用途了。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/29/2015/2015-06-29_122652-630/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/29/2015/2015-06-29_113419-627/">系统函数 查看/修改/删除 环境变量</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-29T11:34:19.000Z" itemprop="datePublished">
+    2015-06-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>通过系统提供的函数，我们一样可以查看、修改和删除环境变量的内容，使用使用函数分别时 getenv()、setenv()、unsetenv()，它们的用法如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/29/2015/2015-06-29_113419-627/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/29/2015/2015-06-29_111008-623/">遍历环境变量内容</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-29T11:10:08.000Z" itemprop="datePublished">
+    2015-06-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>所有应用程序则运行后都会有一组环境变量值，它是一组指针数组，每一个指针指向的内容都具有 name&#x3D;value 的结构，其中 name 是环境变量名，value 是环境变量值。在程序中我们可以遍历这组环境变量内容，具体代码如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/29/2015/2015-06-29_111008-623/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/24/2015/2015-06-24_233326-614/">文件描述符详解</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-24T23:33:26.000Z" itemprop="datePublished">
+    2015-06-24
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在 32 位的 linux&#x2F;unix 系统下，每个程序打开一个文件都会有一段 4G 的虚拟地址空间，这部分空间中，有1G是内核地址空间，3G是用户地址空间，这个概念我们在之前的文章中有介绍过，可参考 “<a target="_blank" rel="noopener" href="http://不同位置的变量在内存中的排布/">不同位置的变量在内存中的排布</a>”，其中在内核地址空间中，维护着一个 PCB 进程控制块，其中包含很多进程相关的信息，比如进程ID、用户ID、组ID等等，但本文我们最关注的，是 PCB 进程控制块中维护的一份“文件描述符表”，表的格式抽象成下图的样子。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/24/2015/2015-06-24_233326-614/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/24/2015/2015-06-24_194343-612/">O_EXCL 实现根据文件是否存在来创建文件</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-24T19:43:43.000Z" itemprop="datePublished">
+    2015-06-24
+  </time>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在使用 open 函数时，会有这样的需求，如果文件存在，那么就报错退出，如果文件不存在那么就创建该文件。当然我们在执行 open 函数之前可以判断一下文件是否存在，但是这样做不仅多了一步，而且比较麻烦，其实使用 open 中的 O_EXCL 参数就可以解决这种问题。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/24/2015/2015-06-24_194343-612/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/categories/Platform/page/8/">« prev</a><a class="page-number" href="/categories/Platform/">1</a><span class="space">&hellip;</span><a class="page-number" href="/categories/Platform/page/7/">7</a><a class="page-number" href="/categories/Platform/page/8/">8</a><span class="page-number current">9</span>
+    </nav>
+  </section>
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

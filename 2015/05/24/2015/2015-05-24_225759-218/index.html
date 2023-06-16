@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>子类赋值父类的赋值兼容 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>子类赋值父类的赋值兼容</h1>
+    </header>
+
+    <section>
+      <p>C++ 中，类型的匹配检测是非常严格的，但是你会发现一个现象，如果一个类继承了另外一个类，把子类的对象赋值给父类的时候，系统不但不提示错误，而且程序还能顺利的编译通过并运行。这其实就是 C++ 内部提供的赋值兼容的过程，但是要注意，如果子类数据成员比父类多，则会出现数据截断。具体表现形式如下图：</p>
+<span id="more"></span>
+<p><a href="/images/2015/05/2015-05-24_225703.png"><img src="/images/2015/05/2015-05-24_225703.png" alt="2015-05-24_225703"></a> 示例代码如下：</p>
+<p>#include <iostream></p>
+<p>using namespace std;</p>
+<p>class Shape<br>{<br>public:<br>Shape(int x, int y)<br>:_x(x), _y(y){}</p>
+<p>void draw()<br>{<br>cout &lt;&lt; “draw Shap “;<br>cout &lt;&lt; “start (“ &lt;&lt; _x &lt;&lt; “,” &lt;&lt; _y &lt;&lt; “)” &lt;&lt; endl;<br>}</p>
+<p>protected:<br>int _x;<br>int _y;<br>};</p>
+<p>&#x2F;&#x2F; 继承 Shape 类<br>class Circle : public Shape<br>{<br>public:<br>Circle(int x, int y, int r)<br>:Shape(x, y), _r(r){}</p>
+<p>void draw()<br>{<br>cout &lt;&lt; “draw Circle “;<br>cout &lt;&lt; “start (“ &lt;&lt; _x &lt;&lt; “,” &lt;&lt; _y &lt;&lt; “) “;<br>cout &lt;&lt; “radio r &#x3D; “ &lt;&lt; _r &lt;&lt; endl;<br>}</p>
+<p>private:<br>int _r;<br>};</p>
+<p>int main(int argc, char* argv[])<br>{<br>&#x2F;&#x2F; 实例化一个父类对象<br>Shape s(3, 5);<br>s.draw();</p>
+<p>&#x2F;&#x2F; 实例化一个子类对象<br>Circle c(1, 2, 4);<br>c.draw();</p>
+<p>cout &lt;&lt; “————————“ &lt;&lt; endl;</p>
+<p>&#x2F;&#x2F; 子类对象给父类变量赋值，普通赋值兼容，会出现数据截断<br>s &#x3D; c;<br>s.draw();</p>
+<p>return 0;</p>
+<p>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-24T22:57:59.000Z" itemprop="datePublished">
+              2015-05-24
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%A4%9A%E6%80%81/">多态</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

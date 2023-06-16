@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>线性表顺序储存 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>线性表顺序储存</h1>
+    </header>
+
+    <section>
+      <p>线性表，是一个或多个数据元素的集合，数据之间是连续的一段内存。线性表的特性如下。</p>
+<ol>
+<li>数据元素之间是有顺序的</li>
+<li>数据元素个数是有限的</li>
+<li>数据元素的类型必须相同<span id="more"></span>
+以下代码中包含了线性表的增删改查的实现，并且实现了数据结构和算法的分离，使任何数据类型，都可以通过我们编写的线性表类来储存。中间发生的变化在代码后面一幅图中做了充分的表示。</li>
+</ol>
+<p>#ifndef _SEQLIST_H<br>#define _SEQLIST_H</p>
+<p>typedef void SeqList;&#x2F;&#x2F; 表的类型<br>typedef void SeqListNode;&#x2F;&#x2F; 表中每个数据的类型</p>
+<p>&#x2F;&#x2F;创建线性表<br>SeqList* SeqList_Create(int capacity);<br>&#x2F;&#x2F;销毁线性表<br>void SeqList_Destroy(SeqList* list);<br>&#x2F;&#x2F;清空线性表<br>void SeqList_Clear(SeqList* list);<br>&#x2F;&#x2F;获取线性表的长度<br>int SeqList_Length(SeqList* list);<br>&#x2F;&#x2F;获取线性表的容量<br>int SeqList_Capacity(SeqList* list);<br>&#x2F;&#x2F;获取线性表中某个位置的元素<br>SeqListNode* SeqList_Get(SeqList* list, int pos);<br>&#x2F;&#x2F;将元素插入线性表<br>int SeqList_Insert(SeqList* list, SeqListNode* node, int pos);<br>&#x2F;&#x2F;将元素从线性表中删除<br>SeqListNode* SeqList_Delete(SeqList* list, int pos);</p>
+<p>#endif&#x2F;&#x2F;_SEQLIST_H</p>
+<p>#include “SeqList.h”<br>#include <iostream></p>
+<p>#if 0<br>typedef void SeqList;&#x2F;&#x2F; 表的类型<br>typedef void SeqListNode;&#x2F;&#x2F; 表中每个数据的类型<br>#endif</p>
+<p>typedef struct _tag_Seqlist<br>{<br>&#x2F;&#x2F; 容量大小<br>int capacity;<br>&#x2F;&#x2F; 实际有的数据个数<br>int length;<br>&#x2F;&#x2F; 用以储存未知类型指针数据的动态数组，使用时需动态分配<br>unsigned int *array;<br>}TSeqList;</p>
+<p>SeqList* SeqList_Create(int capacity)<br>{<br>&#x2F;&#x2F; 给顺序表分配空间<br>TSeqList* list &#x3D; (TSeqList*)malloc(sizeof(TSeqList));<br>if (NULL &#x3D;&#x3D; list) return NULL;</p>
+<p>&#x2F;&#x2F; 给表中的 array 成员分配空间，用以储存数据<br>list-&gt;array &#x3D; (unsigned int*)malloc(sizeof(unsigned int) * capacity);<br>if (NULL &#x3D;&#x3D; list-&gt;array)<br>{<br>free(list);<br>return NULL;<br>}</p>
+<p>&#x2F;&#x2F; 初始化顺序表中各个成员的数据<br>list-&gt;capacity &#x3D; capacity;<br>list-&gt;length &#x3D; 0;<br>memset(list-&gt;array, 0, sizeof(unsigned int) * capacity);</p>
+<p>&#x2F;&#x2F; 返回链表并转换为外部可识别的格式<br>return (SeqList*)list;<br>}</p>
+<p>void SeqList_Destroy(SeqList* list)<br>{<br>&#x2F;&#x2F; 判断 list 是否有效<br>if (NULL &#x3D;&#x3D; list) return;</p>
+<p>&#x2F;&#x2F; 将外部数据类型转换为内部可以识别的 TSeqList 类型<br>TSeqList *tlist &#x3D; (TSeqList*)list;<br>&#x2F;&#x2F; 判断 TSeqList 成员 array 是否有效<br>if (NULL !&#x3D; tlist-&gt;array)<br>{<br>&#x2F;&#x2F; 如果有效则释放<br>free(tlist-&gt;array);<br>}<br>&#x2F;&#x2F; 释放整个顺序表的内存<br>free(tlist);<br>}</p>
+<p>void SeqList_Clear(SeqList* list)<br>{<br>&#x2F;&#x2F; 判断 list 是否有效<br>if (NULL &#x3D;&#x3D; list) return;</p>
+<p>&#x2F;&#x2F; 将外部数据类型转换为内部可以识别的 TSeqList 类型<br>TSeqList *tlist &#x3D; (TSeqList*)list;<br>&#x2F;&#x2F; 将数据成员中的 length 置为 0，代表清空，后面来的数据会覆盖原有数据<br>tlist-&gt;length &#x3D; 0;<br>}</p>
+<p>int SeqList_Length(SeqList* list)<br>{<br>if (NULL &#x3D;&#x3D; list) return -1;</p>
+<p>TSeqList *tlist &#x3D; (TSeqList*)list;<br>&#x2F;&#x2F; 返回有效个数<br>return tlist-&gt;length;<br>}</p>
+<p>int SeqList_Capacity(SeqList* list)<br>{<br>if (NULL &#x3D;&#x3D; list) return -1;</p>
+<p>TSeqList *tlist &#x3D; (TSeqList*)list;<br>&#x2F;&#x2F; 返回表长度<br>return tlist-&gt;capacity;<br>}</p>
+<p>SeqListNode* SeqList_Get(SeqList* list, int pos)<br>{<br>if (NULL &#x3D;&#x3D; list) return NULL;</p>
+<p>TSeqList *tlist &#x3D; (TSeqList*)list;<br>&#x2F;&#x2F; 获取单个成员的数据转换成外部可识别的类型并返回<br>SeqListNode* pNote &#x3D; (SeqListNode*)tlist-&gt;array[pos];<br>return pNote;<br>}</p>
+<p>int SeqList_Insert(SeqList* list, SeqListNode* node, int pos)<br>{<br>if (NULL &#x3D;&#x3D; list) return -1;</p>
+<p>TSeqList *tlist &#x3D; (TSeqList*)list;<br>&#x2F;&#x2F; 判断是否满了<br>if (tlist-&gt;capacity &#x3D;&#x3D; tlist-&gt;length) return 0;</p>
+<p>&#x2F;&#x2F; 整体向后移动<br>for (int i &#x3D; tlist-&gt;length; i &gt; pos; i–)<br>{<br>tlist-&gt;array[i] &#x3D; tlist-&gt;array[i - 1];<br>}</p>
+<p>&#x2F;&#x2F; 插入数据<br>tlist-&gt;array[pos] &#x3D; (unsigned int)node;<br>&#x2F;&#x2F; 有效个数+1<br>tlist-&gt;length++;</p>
+<p>return 0;<br>}</p>
+<p>SeqListNode* SeqList_Delete(SeqList* list, int pos)<br>{<br>if (NULL &#x3D;&#x3D; list) return NULL;</p>
+<p>TSeqList *tlist &#x3D; (TSeqList*)list;<br>if (0 &#x3D;&#x3D; tlist-&gt;length) return NULL;</p>
+<p>&#x2F;&#x2F; 记录被删除之前的位置<br>SeqListNode* pNodeTmp &#x3D; (SeqListNode*)tlist-&gt;array[pos];</p>
+<p>&#x2F;&#x2F; 整体向前移，覆盖要删除的数据<br>for (int i &#x3D; pos + 1; i &lt; tlist-&gt;length; i++)<br>{<br>tlist-&gt;array[i - 1] &#x3D; tlist-&gt;array[i];<br>}</p>
+<p>&#x2F;&#x2F; 有效个数-1<br>tlist-&gt;length–;<br>return pNodeTmp;<br>}</p>
+<p>#include &lt;stdio.h&gt;<br>#include “SeqList.h”</p>
+<p>&#x2F;&#x2F; 外部要储存的数据的类型结构<br>typedef struct _tag_Teacher<br>{<br>int age;<br>char name[36];<br>}Teacher;</p>
+<p>int main()<br>{<br>SeqList* list &#x3D; SeqList_Create(25);</p>
+<p>&#x2F;&#x2F; 定义一个自己需要储存的数据列表<br>Teacher tea[10];</p>
+<p>&#x2F;&#x2F; 初始化自己的数据<br>for (int i &#x3D; 0; i &lt; 10; i++)<br>{<br>tea[i].age &#x3D; i + 20;<br>sprintf_s(tea[i].name, “teacher idx [teacher_%d]“, i);</p>
+<p>&#x2F;&#x2F; 插入数据，要把我们自己的数据类型转成线性表中数据的类型<br>&#x2F;&#x2F; 其实这里只是传递一个起始地址而已，我们无需关心内部如何储存<br>SeqList_Insert(list, (SeqListNode*)&amp;tea[i], i);<br>}</p>
+<p>for (int i &#x3D; 0; i &lt; SeqList_Length(list); i++)<br>{<br>&#x2F;&#x2F; 利用SeqList_Get函数获取线性表内部的数据<br>&#x2F;&#x2F; 但返回回来的数据是线性表的类型，我们无法解释<br>&#x2F;&#x2F; 所以要强制转换成我们能解释的数据类型，就是结构体 Teacher 类型<br>Teacher* tmp &#x3D; (Teacher*)SeqList_Get(list, i);<br>printf(“%d — %s\n”, tmp-&gt;age, tmp-&gt;name);<br>}</p>
+<p>while (SeqList_Length(list))<br>{<br>Teacher* tmp &#x3D; (Teacher*)SeqList_Delete(list, 0);<br>printf(“delete -&gt; %d — %s\n”, tmp-&gt;age, tmp-&gt;name);<br>}</p>
+<p>SeqList_Destroy(list);<br>return 0;<br>}</p>
+<p>以上为实现的代码，光看代码一定很乱，你根本不知道我们是怎么将数据结构和算法分离开来的，这里我特意画了一幅图，大家可以借鉴一下： <a href="/images/2015/05/2015-05-26_201118.png"><img src="/images/2015/05/2015-05-26_201118.png" alt="2015-05-26_201118"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-26T22:31:15.000Z" itemprop="datePublished">
+              2015-05-26
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%9F%A5%E6%89%BE/">查找</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">类型转换</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

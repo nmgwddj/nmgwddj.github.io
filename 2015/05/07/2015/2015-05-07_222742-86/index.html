@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>练习题目“涨工资” | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>练习题目“涨工资”</h1>
+    </header>
+
+    <section>
+      <p>有一个员工文件salary_back.txt，salary_back.txt文件每行 为部门职员的姓名:工资(如tom:20000)，题目要求：</p>
+<ol>
+<li><p>求出该公司有多少人。</p>
+</li>
+<li><p>从工资文件salary_back.txt中读入全部工人，全部增加100元工资后并保存信息到文件salary.txt中。</p>
+</li>
+<li><p>将加工资之后的所有员工按工资进行降序排序，将排序后的结果选出工资最高TOP10在屏幕上输出。</p>
+<span id="more"></span>
+<p><strong>【题目分析】</strong></p>
+</li>
+<li><p>从文件salary_back.txt读取内容和写入salary.txt文件，都需要使用到文件操作。需要使用到fgets函数，一行一行的读取。</p>
+</li>
+<li><p>期间要对读取出来的数据进行分割，比如tom:20000要分割为tom和20000，这样才方便能处理。需要用到函数strtok。</p>
+</li>
+<li><p>分割出来得到的工资，要使用到atoi函数转换为int类型才能对数据进行加减操作。</p>
+</li>
+<li><p>读取出来的员工姓名和工资，我们需要有一个数据结构来储存他们，这里方法有很多，我们的代码中使用了结构体，并将每一个员工信息以链表的形式连接了起来。</p>
+</li>
+<li><p>最后要对数据进行排序和输出，所以涉及到链表的排序和打印等。</p>
+</li>
+</ol>
+<p><strong>【程序代码】</strong></p>
+<p>#define _CRT_SECURE_NO_WARNINGS<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br> <br>&#x2F;&#x2F; 链表结构体<br>typedef struct emp<br>{<br>char *name;<br>int sal;<br>struct emp *next;<br>}Emp;<br> <br>&#x2F;&#x2F; 获取总人数<br>int getCount(char* szFileName);<br>&#x2F;&#x2F; 创建链表<br>Emp* createList();<br>&#x2F;&#x2F; 读取所有人到链表中<br>int readFileToList(Emp* head, char* srcFile);<br>&#x2F;&#x2F; 打印链表所有数据<br>void displayList(Emp* head);<br>&#x2F;&#x2F; 计算节点个数<br>int getListLen(Emp* head);<br>&#x2F;&#x2F; 排序<br>void sortList(Emp* head, int len);<br>&#x2F;&#x2F; 输出前10个有效数据<br>void showTopTen(Emp* head);<br>&#x2F;&#x2F; 保存到新文件<br>int saveToFile(Emp* head, char* destFile);<br>&#x2F;&#x2F; 销毁链表<br>void destoryList(Emp* head);<br> <br>int main(int argc, char* argv[])<br>{<br>int nCount &#x3D; 0;<br>nCount &#x3D; getCount(“salary_back.txt”);<br>printf(“公司内一共 %d 个人\n”, nCount);<br> <br>&#x2F;&#x2F; 创建链表<br>Emp* head &#x3D;createList();<br>&#x2F;&#x2F; 读取数据存放到链表<br>readFileToList(head, “salary_back.txt”);<br>&#x2F;&#x2F; 打印一次数据<br>&#x2F;&#x2F; displayList(head);<br>&#x2F;&#x2F; 计算有效节点个数<br>int nLen &#x3D; 0;<br>nLen &#x3D; getListLen(head);<br>&#x2F;&#x2F; 排序<br>sortList(head, nLen);<br>&#x2F;&#x2F; 打印一次数据<br>&#x2F;&#x2F; displayList(head);<br>&#x2F;&#x2F; 打印Top10<br>showTopTen(head);<br>&#x2F;&#x2F; 保存到文件<br>saveToFile(head, “salary.txt”);<br>&#x2F;&#x2F; 销毁链表<br>destoryList(head);<br> <br>system(“pause”);<br>return 0;<br>}<br> <br>void destoryList(Emp* head)<br>{<br>Emp* tmp &#x3D; head;<br>while (head)<br>{<br>head &#x3D; head-&gt;next;<br>free(tmp);<br>tmp &#x3D; head;<br>}<br>}<br> <br>int saveToFile(Emp* head, char* destFile)<br>{<br>FILE *pFile &#x3D; fopen(destFile, “w+”);<br>if (NULL &#x3D;&#x3D; pFile) return -1;<br> <br>head &#x3D; head-&gt;next;<br>char buf[256] &#x3D; {0};<br>char ch[128];<br>while (head)<br>{<br>&#x2F;&#x2F; 把链表中的内容拼接起来<br>strcat(buf, head-&gt;name);<br>strcat(buf, “:”);<br>strcat(buf, _itoa(head-&gt;sal, ch, 10));<br>&#x2F;&#x2F; 添加\n<br>buf[strlen(buf)] &#x3D; ‘\n’;<br>fwrite(buf, strlen(buf), 1, pFile);<br> <br>memset(buf, 0, sizeof(buf));<br>head &#x3D; head-&gt;next;<br>}<br> <br>fclose(pFile);<br>}<br> <br>void showTopTen(Emp* head)<br>{<br>int n &#x3D; 10;<br>head &#x3D; head-&gt;next;<br> <br>printf(“Top 10\n”);<br> <br>while (head &amp;&amp; n–)<br>{<br>printf(“%s — %d\n”, head-&gt;name, head-&gt;sal);<br>head &#x3D; head-&gt;next;<br>}<br>}<br> <br>void sortList(Emp* head, int len)<br>{<br>Emp* p;<br>Emp* q;<br>Emp* pre;<br>Emp* tmp;<br>for (int i &#x3D; 0; i &lt; len - 1; i++)<br>{<br>&#x2F;&#x2F; pre一直跟随着是p节点的上一个节点<br>pre &#x3D; head;<br>&#x2F;&#x2F; p一直是pre的下一个节点<br>p &#x3D; pre-&gt;next;<br>&#x2F;&#x2F; q一直是p的下一个节点<br>q &#x3D; p-&gt;next;<br>for (int j &#x3D; 0; j &lt; len - 1 - i; j++)<br>{<br>&#x2F;&#x2F; 判断p的data是否大于q的data<br>if (p-&gt;sal &lt; q-&gt;sal)<br>{<br>&#x2F;&#x2F; 让pre的next等于q的当前位置<br>pre-&gt;next &#x3D; q;<br>&#x2F;&#x2F; 让p的next指向q的next<br>p-&gt;next &#x3D; q-&gt;next;<br>&#x2F;&#x2F; 让q的next指向p，至此指针交换完毕<br>q-&gt;next &#x3D; p;<br> <br>&#x2F;&#x2F; 如果要继续下次循环，必须恢复p和q的位置为进入循环前保持的位置<br>tmp &#x3D; p;<br>p &#x3D; q;<br>q &#x3D; tmp;<br>}<br>&#x2F;&#x2F; 所有指针向后移动一次<br>pre &#x3D; p;<br>p &#x3D; q;<br>q &#x3D; q-&gt;next;<br>}<br>}<br>}<br> <br>int getListLen(Emp* head)<br>{<br>int nCount &#x3D; 0;<br>head &#x3D; head-&gt;next;<br>while (head)<br>{<br>nCount++;<br>head &#x3D; head-&gt;next;<br>}<br>return nCount;<br>}<br> <br>void displayList(Emp* head)<br>{<br>head &#x3D; head-&gt;next;<br>while (head)<br>{<br>printf(“%s – %d\n”, head-&gt;name, head-&gt;sal);<br>head &#x3D; head-&gt;next;<br>}<br>}<br> <br>Emp* createList()<br>{<br>Emp* head &#x3D; (Emp*)malloc(sizeof(Emp));<br>head-&gt;next &#x3D; NULL;<br>return head;<br>}<br> <br>int readFileToList(Emp* head, char* srcFile)<br>{<br>FILE* pFile &#x3D; fopen(srcFile, “r”);<br>if (NULL &#x3D;&#x3D; pFile) return -1;<br> <br>char buf[256];<br>Emp* cur &#x3D; NULL;<br>while (fgets(buf, 256, pFile))<br>{<br>&#x2F;&#x2F; 判断读取的行内是否有有效数据<br>if (strlen(buf) &gt; 1)<br>{<br>&#x2F;&#x2F; 把\n换成\0<br>&#x2F;&#x2F;if (buf[strlen(buf) - 1] &#x3D;&#x3D; ‘\n’)<br>&#x2F;&#x2F;    buf[strlen(buf) - 1] &#x3D; ‘\0’;<br> <br>cur &#x3D; (Emp*)malloc(sizeof(Emp));<br> <br>char* pPos &#x3D; NULL;<br>&#x2F;&#x2F; 人名<br>pPos &#x3D; strtok(buf, “:”);<br>&#x2F;&#x2F; 将名字放入节点中name成员<br>cur-&gt;name &#x3D; (char*)malloc(strlen(pPos) + 1);<br>strcpy(cur-&gt;name, pPos);<br> <br>&#x2F;&#x2F; 工资<br>pPos &#x3D; strtok(NULL, “:”);<br>&#x2F;&#x2F; 将工资放入节点中sal成员<br>cur-&gt;sal &#x3D; atoi(pPos) + 100;<br> <br>&#x2F;&#x2F; 将新加点插入链表（头插法）<br>cur-&gt;next &#x3D; head-&gt;next;<br>head-&gt;next &#x3D; cur;<br>}<br>}<br> <br>fclose(pFile);<br>}<br> <br>int getCount(char* szFileName)<br>{<br>int nCount &#x3D; 0;<br>FILE *pFile &#x3D; fopen(szFileName, “r”);<br>if (NULL &#x3D;&#x3D; pFile) return -1;<br> <br>char buf[256];<br>while (fgets(buf, 256, pFile) !&#x3D; NULL)<br>{<br>&#x2F;&#x2F; 确定读取的每行数据中超过2个有效字符，如果只有1个那证明是个空行<br>if (strlen(buf) &gt; 1) nCount++;<br>&#x2F;&#x2F;printf(“%d “, strlen(buf));<br>}<br> <br>fclose(pFile);<br>return nCount;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-07T22:27:42.000Z" itemprop="datePublished">
+              2015-05-07
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

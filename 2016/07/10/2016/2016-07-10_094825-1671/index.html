@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>summernote toolbar 跟随页面自动滚动 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>summernote toolbar 跟随页面自动滚动</h1>
+    </header>
+
+    <section>
+      <p><a target="_blank" rel="noopener" href="http://summernote.org/">summernote</a> 是一个功能非常强大的 web 编辑器，可以应用到各种场景下。最近在 Meteor 中做了一个小功能，就是实现 summernote 的 toolbar 跟随页面滚动的效果。这样即使文章内容很长，要插入一个图片或者使用其他特殊标签的时候，不必滚动页面到最上方去找 toolbar 了。效果如下：</p>
+<span id="more"></span>
+<p><a href="/images/2016/07/toolbar3.gif"><img src="/images/2016/07/toolbar3.gif" alt="toolbar3"></a> <a href="/images/2016/07/toolbar4.gif"><img src="/images/2016/07/toolbar4.gif" alt="toolbar4"></a></p>
+<h2 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码"></a>实现代码</h2><p>summernote 有一个插件功能，很惭愧，因为个人时间问题，没有去研究如何使用，可以将以下代码封装成 summernote 的插件，这样在任何页面调用 summernote ，toolbar 滚动功能都可以生效了。本文只介绍一下如何在 meteor 应用中使用该函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">Template.articleNewModal.repositionToolbar = function () &#123;</span><br><span class="line">  // 根据 summernote className 找到他的 toolbar</span><br><span class="line">  const $editor = $(&#x27;.editor&#x27;).siblings(&#x27;.note-editor&#x27;);</span><br><span class="line">  const $toolbar = $editor.find(&#x27;.note-toolbar&#x27;);</span><br><span class="line">  // 得到 toolbar 的高度</span><br><span class="line">  const toolbarHeight = $toolbar.height();</span><br><span class="line">  // 得到浏览器当前滚动条 top 位置</span><br><span class="line">  const windowTop = $(window).scrollTop();</span><br><span class="line">  // 编辑器的 top 位置</span><br><span class="line">  const editorTop = $editor.offset().top;</span><br><span class="line">  // 编辑器的 bottom 位置</span><br><span class="line">  const editorBottom = editorTop + $editor.height();</span><br><span class="line"></span><br><span class="line">  // 判断如果滚动条 top 位置大于编辑器 top 位置，且编辑器 bottom 没有超出滚动条 top</span><br><span class="line">  // 且编辑器的 bottom 大于 toolbar 的高度（让 toolbar 不超出编辑器范围）</span><br><span class="line">  if (windowTop &gt; editorTop &amp;&amp; windowTop &lt; editorBottom &amp;&amp; editorBottom &gt; toolbarHeight) &#123;</span><br><span class="line">    // 设置 toolbar position 为 fixed，并根据滚动条设置固定坐标</span><br><span class="line">    const pos = $(&#x27;#mmodal&#x27;).scrollTop() - toolbarHeight + (toolbarHeight &lt; 100 ? 15 : 50);</span><br><span class="line">    $toolbar.css(&#x27;position&#x27;, &#x27;fixed&#x27;);</span><br><span class="line">    $toolbar.css(&#x27;top&#x27;, `$&#123;pos&#125;px`);</span><br><span class="line">    $toolbar.css(&#x27;width&#x27;, `$&#123;$editor.width()&#125;px`);</span><br><span class="line">    $toolbar.css(&#x27;z-index&#x27;, &#x27;99999&#x27;);</span><br><span class="line">    $editor.css(&#x27;padding-top&#x27;, &#x27;42px&#x27;);</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    // 如果不符合以上条件，则让 toolbar 的宽度等于编辑器的宽度</span><br><span class="line">    // 如果自适应页面拖动时可以保证 toolbar 不超出编辑器</span><br><span class="line">    $toolbar.css(&#x27;width&#x27;, `$&#123;$editor.width()&#125;px`);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 如果编辑器的顶部在视野范围内，则让 toolbar 恢复原位。</span><br><span class="line">  if (editorTop &gt; 0) &#123;</span><br><span class="line">    $toolbar.css(&#x27;position&#x27;, &#x27;static&#x27;);</span><br><span class="line">    $editor.css(&#x27;padding-top&#x27;, &#x27;0px&#x27;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Meteor-如何调用"><a href="#Meteor-如何调用" class="headerlink" title="Meteor 如何调用"></a>Meteor 如何调用</h2><p>  在 meteor 中，只需要响应滚动条宿主的 scroll 消息即可。我这里因为弹出的是一个 bootstrap 风格的 modal。所以响应了 modal 的 scroll 消息。将如下代码放到你模版中的 onRendered 函数中即可。这样这个模版下 className 为 modal 的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// scroll event</span><br><span class="line">$(&#x27;.modal&#x27;).scroll(function () &#123;</span><br><span class="line">  $(&#x27;.note-image-popover&#x27;).hide();</span><br><span class="line">  Template.articleNewModal.repositionToolbar();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>还有，当页面发生大小改变的时候，也需要触发这个函数，已保证 toolbar 的位置和宽度是适应编辑器的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// window resize</span><br><span class="line">$(window).resize(function () &#123;</span><br><span class="line">  Template.articleNewModal.repositionToolbar();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-07-10T09:48:25.000Z" itemprop="datePublished">
+              2016-07-10
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Meteor 开发环境 mongodb 的连接 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Meteor 开发环境 mongodb 的连接</h1>
+    </header>
+
+    <section>
+      <p>本文主要总结一下在使用 Meteor 开发过程中对 mongodb 数据库的管理。其中包含使用命令行终端（meteor shell）进行管理，还有图形化界面的工具 Robomongo 工具。</p>
+<span id="more"></span>
+<h3 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h3><p>当使用 meteor 命令启动 meteor 项目后，meteor 会默认使用 <code>3000</code> 端口作为 web 项目的端口，我们可以通过 <a target="_blank" rel="noopener" href="http://domainname:3000/">http://domainName:3000/</a> 这样的地址来访问我们的网站。而数据库所使用的端口，则是在这个端口基础上 +1，就是 <code>3001</code> 端口。也就是说，如果你指定启动 meteor 项目时使用了其他端口，比如 <code>meteor -p 8000</code>，那么 mongodb 的数据库连接端口就是 <code>8001</code>。</p>
+<h3 id="使用-meteor-shell-进行管理"><a href="#使用-meteor-shell-进行管理" class="headerlink" title="使用 meteor shell 进行管理"></a>使用 meteor shell 进行管理</h3><p>通过 meteor shell 管理 mongodb 不需要指定端口，你只要在 meteor 项目启动后的项目目录下执行 <code>meteor mongo</code> 就可以连接到数据库了。如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">myCode:~/Project/microduino$ meteor mongo</span><br><span class="line">MongoDB shell version: 2.6.7</span><br><span class="line">connecting to: 127.0.0.1:3001/meteor</span><br><span class="line">meteor:PRIMARY&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这样就连接到了当前项目的 mongodb 数据库，通过 <code>help</code> 命令可以看到帮助。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">meteor:PRIMARY&gt; help</span><br><span class="line">    db.help()                    help on db methods</span><br><span class="line">    db.mycoll.help()             help on collection methods</span><br><span class="line">    sh.help()                    sharding helpers</span><br><span class="line">    rs.help()                    replica set helpers</span><br><span class="line">    help admin                   administrative help</span><br><span class="line">    help connect                 connecting to a db help</span><br><span class="line">    help keys                    key shortcuts</span><br><span class="line">    help misc                    misc things to know</span><br><span class="line">    help mr                      mapreduce</span><br><span class="line"></span><br><span class="line">    show dbs                     show database names</span><br><span class="line">    show collections             show collections in current database</span><br><span class="line">    show users                   show users in current database</span><br><span class="line">    show profile                 show most recent system.profile entries with time &gt;= 1ms</span><br><span class="line">    show logs                    show the accessible logger names</span><br><span class="line">    show log [name]              prints out the last segment of log in memory, &#x27;global&#x27; is default</span><br><span class="line">    use &lt;db_name&gt;                set current database</span><br><span class="line">    db.foo.find()                list objects in collection foo</span><br><span class="line">    db.foo.find( &#123; a : 1 &#125; )     list objects in foo where a == 1</span><br><span class="line">    it                           result of the last line evaluated; use to further iterate</span><br><span class="line">    DBQuery.shellBatchSize = x   set default number of items to display on shell</span><br><span class="line">    exit                         quit the mongo shell</span><br></pre></td></tr></table></figure>
+
+<p>通过 <code>show dbs</code> 命令可以查看当前的数据库列表。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">meteor:PRIMARY&gt; show dbs</span><br><span class="line">admin   (empty)</span><br><span class="line">local   0.063GB</span><br><span class="line">meteor  0.031GB</span><br></pre></td></tr></table></figure>
+
+<p>上面我们看到，有一个名为 <code>meteor</code> 占用 0.031GB 的空间，使用命令 <code>use meteor</code> 选择它，然后使用命令 <code>show collections</code> 查看所有数据库。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">meteor:PRIMARY&gt; use meteor</span><br><span class="line">switched to db meteor</span><br><span class="line">meteor:PRIMARY&gt; show collections</span><br><span class="line">Accounts</span><br><span class="line">AnalyticsEvents</span><br><span class="line">Articles</span><br><span class="line">Cards</span><br><span class="line">Cart</span><br><span class="line">Discounts</span><br><span class="line">Orders</span><br><span class="line">Packages</span><br><span class="line">Products</span><br><span class="line">Sessions</span><br><span class="line">Shipping</span><br><span class="line">Shops</span><br><span class="line">Tags</span><br><span class="line">Taxes</span><br><span class="line">Translations</span><br><span class="line">cfs.Images.filerecord</span><br><span class="line">cfs._tempstore.chunks</span><br><span class="line">cfs_gridfs._tempstore.chunks</span><br><span class="line">cfs_gridfs._tempstore.files</span><br><span class="line">friends</span><br><span class="line">meteor_accounts_loginServiceConfiguration</span><br><span class="line">meteor_oauth_pendingCredentials</span><br><span class="line">meteor_oauth_pendingRequestTokens</span><br><span class="line">modules</span><br><span class="line">oldUsers</span><br><span class="line">roles</span><br><span class="line">system.indexes</span><br><span class="line">users</span><br></pre></td></tr></table></figure>
+
+<p>如果要对数据库进行查询，那么此时你就可以使用命令 <code>db.collectionName.find(...);</code> 来操作了。下面我们来介绍图形化界面的 Robomongo。</p>
+<h3 id="使用-Robomongo-管理数据库"><a href="#使用-Robomongo-管理数据库" class="headerlink" title="使用 Robomongo 管理数据库"></a>使用 Robomongo 管理数据库</h3><p>下载地址：<a target="_blank" rel="noopener" href="http://robomongo.org/">http://robomongo.org/</a> 安装完成后，配置连接属性，程序刚打开的时候一片空白，我们要手动点右键 Add 一个新的连接。 <a href="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.09.31.png"><img src="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.09.31-1024x669.png" alt="屏幕快照 2015-12-28 16.09.31"></a> 输入 mongodb 的连接信息，记住这个端口，要根据你项目启动的端口来决定的。 <a href="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.09.59.png"><img src="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.09.59-1024x609.png" alt="屏幕快照 2015-12-28 16.09.59"></a> 保存后点击 Connect 连接 <a href="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.10.24.png"><img src="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.10.24-1024x671.png" alt="屏幕快照 2015-12-28 16.10.24"></a> 连接上以后，就可以通过 <code>meteor-&gt;Collections</code> 看到所有的数据库信息了 <a href="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.10.51.png"><img src="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.10.51-1024x711.png" alt="屏幕快照 2015-12-28 16.10.51"></a> 如果想执行查询、更新等语句，可以双击一个数据库，再右侧数据列表的上方输入查询语句 <a href="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.55.09.png"><img src="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.55.09-1024x712.png" alt="屏幕快照 2015-12-28 16.55.09"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-12-28T16:56:57.000Z" itemprop="datePublished">
+              2015-12-28
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/mongodb/">mongodb</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

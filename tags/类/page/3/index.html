@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ 类 }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/20/2015/2015-05-20_232608-167/">运算符重载前++与后++</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-20T23:26:08.000Z" itemprop="datePublished">
+    2015-05-20
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>无论前++还是后++，操作数都只有一个，这样我们做运算符重载的时候，该如何区分呢？这里就要接受一个新的知识，就是亚元。在C++ Primer一书中是这样描述的（中文版 第五版 503 页）“为了解决这个问题，后置版本接受一个额外的（不被使用）int类型的形参。当我们使用后置运算符时，编译器为这个形参提供一个值为0的实参。尽管从语法上来说后置函数可以使用这个额外的形参，但是在实际过程中通常不会这么做。这个形参唯一的作用就是区分前置版本和后置版本的函数，而不是真的要在实现后置版本时参与运算。”</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/20/2015/2015-05-20_232608-167/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/20/2015/2015-05-20_225308-165/">运算符重载 - （负号）操作符</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-20T22:53:08.000Z" itemprop="datePublished">
+    2015-05-20
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>本文介绍重载符号操作符 -，他与减号操作符是一样的，那我们该如何区分开呢？其实符号操作符属于单目运算符，操作数只有一个。而减号操作符则是双目运算符，操作符需要两个才可以，这样我们在重载的时候，只要将控制了操作数，系统就知道我们到底是在重载哪个操作符了。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/20/2015/2015-05-20_225308-165/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/17/2015/2015-05-17_231658-160/">运算符重载 += 操作符</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-17T23:16:58.000Z" itemprop="datePublished">
+    2015-05-17
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>上几篇文章我们介绍了加号运算符的重载，实现了两个类之间相加得出我们想要的结果，本文将介绍+&#x3D;操作符的重载，使两个类的对象可以使用+&#x3D;运算符来进行运算。其中要注意的是返回值为引用（&amp;）的重要性。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/17/2015/2015-05-17_231658-160/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/16/2015/2015-05-16_212647-154/">运算符成员函数与友元函数重载</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-16T21:26:47.000Z" itemprop="datePublished">
+    2015-05-16
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%8F%8B%E5%85%83/">友元</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p><a target="_blank" rel="noopener" href="http://www.mycode.net.cn/file/146.html">上一篇文章</a>我们介绍了运算符重载的目的和一个简单的应用案例。但运算符重载绝非我们想想的那么简单和容易，有很多陷阱我们如果我们还没有去踩过，是不会了解清楚内部的工作原理的。本文只介绍一下运算符重载的两种方式，成员函数重载和友元函数重载，并不具体到某些运算符的具体案例。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/16/2015/2015-05-16_212647-154/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/16/2015/2015-05-16_212541-146/">运算符重载的目的及应用场景</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-16T21:25:41.000Z" itemprop="datePublished">
+    2015-05-16
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>运算符重载的目的是让我们可以对自己编写的类实现 + - * &#x2F; 等运算操作，更多的比如&gt;&gt; &lt;&lt;  new delete 等运算符都是可以重载的，将这些运算符重载后我们就可以对类中的数据成员实现我们需要的运算了。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/16/2015/2015-05-16_212541-146/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/15/2015/2015-05-15_221010-144/">友元类的实现</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-15T22:10:10.000Z" itemprop="datePublished">
+    2015-05-15
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%8F%8B%E5%85%83/">友元</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在将一个类中的成员函数作为另一个类的友元函数的案例中我们看到，为了一个其他类的函数可以访问本类中的私有成员，将 distance 函数声明成了 friend 函数。其实我们也完全可以将整个 ManagerPoint 类声明为 Point 类的友元类。代码如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/15/2015/2015-05-15_221010-144/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/15/2015/2015-05-15_220631-138/">类A的成员函数做类B的友元函数</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-15T22:06:31.000Z" itemprop="datePublished">
+    2015-05-15
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%8F%8B%E5%85%83/">友元</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>这种方法相对麻烦，主要是在两个类之间的前后声明有着复杂的逻辑关系。但只要我们理清思路，是可以实现的。跟着我从最初的想法到实现一步一步的理顺逻辑，就非常容易理解如何操作了。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/15/2015/2015-05-15_220631-138/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/15/2015/2015-05-15_220151-135/">友元概念及简单使用方法</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-15T22:01:51.000Z" itemprop="datePublished">
+    2015-05-15
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%8F%8B%E5%85%83/">友元</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在C++中类的出现，将数据和方法都封装在类中，似有的数据成员只有类中的成员函数才能操作，但有些时需要定义某些函数，它不是类中的成员，但需要频繁的操作类中的私有数据成员。此时可以将这些函数定义为某个类的友元函数。除了友元函数外，还有友元类，两者都成为友元。友元的出现提高了程序的运行效率，但是破坏了类的封装性和隐蔽性，使非成员函数可以访问类的私有成员。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/15/2015/2015-05-15_220151-135/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/15/2015/2015-05-15_001509-131/">指向类数据成员的指针</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-15T00:15:09.000Z" itemprop="datePublished">
+    2015-05-15
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在C++中，可以定义一个指针，使其指向类成员或成员函数，然后通过指针 来访问类的成员。这包括指向属性成员的指针和指向成员函数的指针。它类似与static成员函数或成员变量，具有共享的属性。每一个实例化的对象都可以借助指向类数据成员的指针来访问指向的数据。它的结构图如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/15/2015/2015-05-15_001509-131/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/12/2015/2015-05-12_220035-125/">static修饰的成员变量及函数</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-12T22:00:35.000Z" itemprop="datePublished">
+    2015-05-12
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>static成员变量又称为静态成员变量，在多个对象间共享使用，并且static静态变量在初始化时必须在类外初始化，可以直接通过“类名::变量”访问，哪怕是还没有生成对象时一样可以访问，以此看来static成员变量不隶属于某个对象，而隶属于类，只是所有该类的对象都可以使用而已。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/12/2015/2015-05-12_220035-125/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/tags/%E7%B1%BB/page/2/">« prev</a><a class="page-number" href="/tags/%E7%B1%BB/">1</a><a class="page-number" href="/tags/%E7%B1%BB/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/tags/%E7%B1%BB/page/4/">4</a><a class="extend next" rel="next" href="/tags/%E7%B1%BB/page/4/">next »</a>
+    </nav>
+  </section>
+
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

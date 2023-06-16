@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>值传参、指针传参、引用传参区别 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>值传参、指针传参、引用传参区别</h1>
+    </header>
+
+    <section>
+      <p>在C中，我们只了解到有两种传参方式，一种是值传递，另外一种是传递指针，一般情况下我们选择使用指针传递参数。在C++中，又新增了一种传参方式，那就是引用（type &amp;），引用传参给我们带来了更好的体验。那三者的具体区别在哪里呢？</p>
+<span id="more"></span>
+<p>1、值传递 值传递是一种值拷贝的操作，一般只用于传入参数使用，而且如果传入的值体积过大（比如一个结构体），在函数压栈的过程中会拷贝一份压入栈中，会影响效率。而且在函数生命周期结束后，会随函数一起消失，如不作为返回值是无法传出的。 2、指针传递 指针则解决了上面的两个问题，首先指针在32位系统下（64位系统是8字节）只有4个字节，无论数据多大，只要你将其指针传递给传输在压栈过程中只需要压一个4个字节的指针。并且在函数内部还可以通过指针修改指针指向地址中的数据以作为传出数据的作用。 3、引用传递 引用作为一个变量的别名，相当于一段内存的引用。在传递给函数时相当于包装了原变量指针的地址传递给函数，可以理解为在函数中直接使用原变量进行操作，而且这个期间不会出现拷贝的行为。引用的本质是指针，C++对裸露的内存地址(指针)作了一次包装。又取得的指针的优良特性。所以再对引用取地址，建立引用的指针没有意义。</p>
+<p>#include <iostream><br> <br>using namespace std;<br> <br>&#x2F;&#x2F; 值传递，无法交换变量的值<br>&#x2F;&#x2F; 另外注意：值传递和引用传递函数重载时会出现二义性<br>&#x2F;&#x2F; 程序不知道该重载哪个函数来使用。<br>&#x2F;&#x2F; 所以一定要避免这种情况出现<br>&#x2F;*void swap(int a, int b)<br>{<br> <br>}*&#x2F;<br>&#x2F;&#x2F; 指针传递，会开辟两个指针空间实现交换<br>void swap(int* pa, int* pb)<br>{<br>int tmp &#x3D; *pa;<br>*pa &#x3D; *pb;<br>*pb &#x3D; tmp;<br>}<br>&#x2F;&#x2F; 引用传递，可以理解为没有开辟新的空间直接使用了原变量<br>void swap(int&amp; ra, int&amp; rb)<br>{<br>int tmp &#x3D; ra;<br>ra &#x3D; rb;<br>rb &#x3D; tmp;<br>}<br> <br>int main(int argc, char* argv[])<br>{<br>int x &#x3D; 10;<br>int y &#x3D; 20;<br>&#x2F;&#x2F; 传指针<br>&#x2F;&#x2F; swap(&amp;x, &amp;y);<br>&#x2F;&#x2F; 传引用<br>swap(x, y);<br>cout &lt;&lt; x &lt;&lt; “–” &lt;&lt; y &lt;&lt; endl;<br> <br>getchar();<br>return 0;</p>
+<p>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-12T21:47:01.000Z" itemprop="datePublished">
+              2015-05-12
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%BC%95%E7%94%A8/">引用</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

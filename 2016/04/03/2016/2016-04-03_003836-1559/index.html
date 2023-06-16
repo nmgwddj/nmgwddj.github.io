@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Windows 虚拟内存查看工具 VMMap | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Windows 虚拟内存查看工具 VMMap</h1>
+    </header>
+
+    <section>
+      <p>曾经在杭州一家公司做技术售后的时候，有一个印象深刻的问题，就是腾讯游戏《剑灵》在 Windows 32 位平台上报错的问题：<a target="_blank" rel="noopener" href="http://support.icafe8.com/technologynews/hotfault/4708.html">http://support.icafe8.com/technologynews/hotfault/4708.html</a>。综述原因就是在 32 位平台下虚拟内存地址空间不足（官方给的是这个答复，但真相到底是什么因为当时能力有限没有一探究竟）导致游戏申请不到更多的内存使用而崩溃。那么可以通过 &#x2F;3GB 的手段去拓展用户空间的虚拟内存地址限制。但 Windows 只有一些参数的开关，我不知道开了以后到底这个进程可用的虚拟内存地址空间还有多少。最近在学习 Windows 内存管理时有人介绍了这款工具 VMMap。</p>
+<span id="more"></span>
+<p>它可以很方便的查看每一个进程的虚拟内存地址空间的状态，实际内部就是调用 VirtualQueryEx 实现的功能。我们来看一下它的截图，首次打开它会让你选择你要查看的进程： <a href="/images/2016/04/2016-04-03_002211.png"><img src="/images/2016/04/2016-04-03_002211.png" alt="2016-04-03_002211"></a> 我们打开了一个 32 位的 Chrome.exe 进程，我做了一下简单的标注，把每一个项目所代表的功能标记了一下。其中 Free 就是这个进程可用的虚拟内存地址空间还有多少空余。 <a href="/images/2016/04/2016-04-03_002346.png"><img src="/images/2016/04/2016-04-03_002346.png" alt="2016-04-03_002346"></a> 上面我们提到《剑灵》的问题，官方除了给出 32 位系统可以通过修改 &#x2F;3GB 的方式提高用户空间使用虚拟内存地址的大小限制，更建议用户直接更换 64 位系统，那么原因是什么呢？我们用这个工具打开一个 64 位的进程看一下。 <a href="/images/2016/04/2016-04-03_003312.png"><img src="/images/2016/04/2016-04-03_003312.png" alt="2016-04-03_003312"></a> 从图中我们可以看出，这个 64 位的进程尚有接近 8TB 的虚拟内存地址空间尚未使用，根本不必我们去开什么 &#x2F;3GB 的开关，所以这就是 64 位 CPU 对内存管理的一种扩充，让 64 位系统中 64 位应用程序可以使用更大的虚拟内存地址空间。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-04-03T00:38:36.000Z" itemprop="datePublished">
+              2016-04-03
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

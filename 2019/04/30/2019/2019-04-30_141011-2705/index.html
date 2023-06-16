@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>彻底使用 Cmder 替换掉 Windows 系统默认 Cmd.exe | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>彻底使用 Cmder 替换掉 Windows 系统默认 Cmd.exe</h1>
+    </header>
+
+    <section>
+      <p>安装 Cmder 以后，默认的配置中是没有替换掉 Cmd.exe 的，一直以来我认为是没有这种方法可以替换的，包括什么镜像劫持等方式。但是最近看到一篇文章可以在注册表 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths 下创建一个 <code>cmd.exe</code> 子项，然后在 Default 属性中设置要替换的程序。这样设置虽然可以替换到运行中输入 cmd.exe。但是无法替换直接运行批处理文件打开的 cmd.exe。即使你修改了 batfile 的关联程序，也没有特别好的方法去使用 Cmder 来启动一个批处理。</p>
+<span id="more"></span>
+<h2 id="实现方法"><a href="#实现方法" class="headerlink" title="实现方法"></a>实现方法</h2><p>实际 Cmder 给我们提供了这个方法，见文章：<a target="_blank" rel="noopener" href="https://conemu.github.io/en/DefaultTerminal.html">https://conemu.github.io/en/DefaultTerminal.html</a>。你只需要在设置中，开启替换默认系统终端的选项就可以了。 <a href="/images/2019/04/2019-04-30_14-09-25.png"><img src="/images/2019/04/2019-04-30_14-09-25.png"></a> 开启此选项后，无论你是运行中输入 cmd 还是启动一个批处理文件，都将使用 Cmder 彻底替换。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2019-04-30T14:10:11.000Z" itemprop="datePublished">
+              2019-04-30
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ C/C++ }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2019/01/14/2019/2019-01-14_143427-2636/">CEF 设置页面缩放级别</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2019-01-14T14:34:27.000Z" itemprop="datePublished">
+    2019-01-14
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/CEF/">CEF</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>现在很多高分屏在笔记本和家用市场逐步扩大，普通应用大小在一个 2K 或者 4K 屏幕下就像一个便利签一样贴在屏幕上面，看着很小。于是操作系统提供了对分辨率进行缩放的功能，比如我可以设置当前分辨率放大到 125%，这样就可以让字体或者窗口看着更大一些。同样基于 CEF 制作的客户端程序也会随之放大到 125%，但是内嵌的网页呢？当然也需要根据系统设置放大缩小，CEF 给我们提供了 SetZoomLevel 方法让我们来设置页面的缩放比例。</p>
+        
+          <div class="more-link">
+            <a href="/2019/01/14/2019/2019-01-14_143427-2636/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2019/01/14/2019/2019-01-14_130223-2631/">CEF 拦截打开超链接事件</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2019-01-14T13:02:23.000Z" itemprop="datePublished">
+    2019-01-14
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/CEF/">CEF</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>使用 CEF 加载指定页面后，如果你希望控制页面在打开超链接时根据自己预定义的一些行为来操作，比如在自己的 UI 框架中新建一个 Tab 页又或者阻止打开新的页面等。我们就需要通过 CEF 提供的两个接口来实现这个功能了，分别是 OnBeforeBrowser 和 OnBeforePopup，两个接口各有各的用处，下面分别来详细介绍两个接口的作用。</p>
+        
+          <div class="more-link">
+            <a href="/2019/01/14/2019/2019-01-14_130223-2631/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2019/01/13/2019/2019-01-13_150611-2627/">CEF 文件下载功能实现</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2019-01-13T15:06:11.000Z" itemprop="datePublished">
+    2019-01-13
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/CEF/">CEF</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>CEF 下载功能非常容易拓展，它提供了丰富的接口和控制功能，比如对正在下载的文件实现暂停、继续、取消等操作。并且 CEF 还帮我们默认实现了一个另存为的对话框，如果不是必须你甚至都不需要去自己实现这个保存对话框。接下来我们来看 CEF 对于下载功能提供的两个接口（使用 cefclient 项目举例）</p>
+        
+          <div class="more-link">
+            <a href="/2019/01/13/2019/2019-01-13_150611-2627/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2019/01/09/2019/2019-01-09_100302-2618/">利用 WM_NCHITTEST 消息自定义窗口可拖动区域</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2019-01-09T10:03:02.000Z" itemprop="datePublished">
+    2019-01-09
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/CEF/">CEF</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>最近接到一个比较个性化的需求，原来团队基于 Electron 开发的项目由于不支持 XP 系统，想完全移植到基于 CEF 2623 版本的空壳中，以此来兼容 XP 系统。而程序的界面则完全交由前端来处理了，比如标题栏、最小化、最大化等功能按钮。这其中就涉及到一些原生应用的功能比如拖动窗口的功能是需要原生窗口提供的，微软提供拖动窗口的机制如此文章所描述：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/GnagWang/archive/2010/09/12/1824394.html">https://www.cnblogs.com/GnagWang/archive/2010/09/12/1824394.html</a>。为了保证内容不丢失，我特意截图保留一份。</p>
+        
+          <div class="more-link">
+            <a href="/2019/01/09/2019/2019-01-09_100302-2618/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/12/29/2018/2018-12-29_143626-2606/">VS2017 打开并编译 cef client 项目进行调试</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-12-29T14:36:26.000Z" itemprop="datePublished">
+    2018-12-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/CEF/">CEF</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>最近接触 cef 非常多，有些功能没有做过就去 cef 官网的 cef_client demo 中查找示例，所以第一步是先把他给编译通过，网络上看过一些方法和例子需要单独下载 CMake，其实 VS2017 自带了这个功能。在你安装 VS2017 的时候默认勾选了 CMake 工具集。我们直接使用 CMake 工具打开项目就可以了，如下所示： <a href="/images/2018/12/cmake-install.png"><img src="/images/2018/12/cmake-install.png"></a> 微软官方的教程：<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/cpp/ide/cmake-tools-for-visual-cpp?view=vs-2017">https://docs.microsoft.com/zh-cn/cpp/ide/cmake-tools-for-visual-cpp?view=vs-2017</a></p>
+<h2 id="用-VS2017-打开-CMakeLists-txt-文件"><a href="#用-VS2017-打开-CMakeLists-txt-文件" class="headerlink" title="用 VS2017 打开 CMakeLists.txt 文件"></a>用 VS2017 打开 CMakeLists.txt 文件</h2><p><a href="/images/2018/12/2018-12-29_14-28-42.png"><img src="/images/2018/12/2018-12-29_14-28-42.png"></a> 然后选择 cef_client 的客户端 CMakeLists.txt 文件： <a href="/images/2018/12/2018-12-29_14-29-33.png"><img src="/images/2018/12/2018-12-29_14-29-33.png"></a> 随后项目会进行初始化： <a href="/images/2018/12/2018-12-29_13-47-32.png"><img src="/images/2018/12/2018-12-29_13-47-32.png"></a> 点击上方生成的类型下拉框点击管理配置，在弹出的窗口中选择 x86 Debug <a href="/images/2018/12/2018-12-29_14-32-28.png"><img src="/images/2018/12/2018-12-29_14-32-28.png"></a> <a href="/images/2018/12/2018-12-29_14-32-33.png"><img src="/images/2018/12/2018-12-29_14-32-33.png"></a> 选择后 VS 会在 CMakeLists.txt 目录下创建一个 CMakeSettings.json 的配置文件，这个文件保存了项目配置信息以后可以自己手动随时修改。在选择启动项的下拉菜单中选择启动 cef_client 项目： <a href="/images/2018/12/2018-12-29_14-34-41.png"><img src="/images/2018/12/2018-12-29_14-34-41.png"></a> 然后按下 F7 开始编译项目，生成完成后点击上面的绿色启动按钮就可以启动项目了，并且你也可以随时调试项目了。 <a href="/images/2018/12/2018-12-29_14-35-36.png"><img src="/images/2018/12/2018-12-29_14-35-36.png"></a></p>
+
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/12/27/2018/2018-12-27_103239-2596/">VC++ 串口开、关、读、写操作及注意事项</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-12-27T10:32:39.000Z" itemprop="datePublished">
+    2018-12-27
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/SerialPort/">SerialPort</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>最近帮朋友做一款工具，设计到对操作系统串口的操作，虽然这个东西已经是历史产物了，但是还有很多设备再用，索性从网络上找了一些代码最终完成这个小功能。下面资料将介绍串口在打开、关闭、读和写的时候一些注意事项以及参数的配置（代码中有详细注释。）</p>
+<h2 id="串口的开关"><a href="#串口的开关" class="headerlink" title="串口的开关"></a>串口的开关</h2><p>在串口打开的时候，我们要对串口做一些基础的初始化，比如波特率、数据位、校验位、停止位几个参数，他们分别被声明在 <code>WinBase.h</code> 头文件中。 <a href="/images/2018/12/2018-12-27_10-16-33.png"><img src="/images/2018/12/2018-12-27_10-16-33.png"></a> 打开串口的代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">bool SerialPortManager::Open(ReceiveDataCallback cb/* = nullptr*/)</span><br><span class="line">&#123;</span><br><span class="line">    if (serial_handle_ != NULL)</span><br><span class="line">    &#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (cb != nullptr)</span><br><span class="line">    &#123;</span><br><span class="line">        cb_ = cb;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    serial_handle_ = CreateFile(com_.c_str(), GENERIC_READ  GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL  FILE_FLAG_OVERLAPPED, NULL);</span><br><span class="line">    if (serial_handle_ == INVALID_HANDLE_VALUE)</span><br><span class="line">    &#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 获取旧的 dcb 数据</span><br><span class="line">    DCB dcb;</span><br><span class="line">    dcb.DCBlength = sizeof(DCB);</span><br><span class="line">    if (!GetCommState(serial_handle_, &amp;dcb))</span><br><span class="line">    &#123;</span><br><span class="line">        Close();</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 修改 dcb 数据然后设置端口属性</span><br><span class="line">    // CBR_115200;</span><br><span class="line">    dcb.ByteSize = byte_size_;</span><br><span class="line">    dcb.BaudRate = baud_rate_;</span><br><span class="line">    dcb.StopBits = stop_bits_;</span><br><span class="line">    dcb.Parity = parity_;</span><br><span class="line">    dcb.fBinary = TRUE;</span><br><span class="line">    dcb.fParity = TRUE;</span><br><span class="line">    if (!SetCommState(serial_handle_, &amp;dcb))</span><br><span class="line">    &#123;</span><br><span class="line">        Close();</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 设置读写缓冲区大小</span><br><span class="line">    SetupComm(serial_handle_, 1024, 1024);</span><br><span class="line"></span><br><span class="line">    // 清空数据</span><br><span class="line">    PurgeComm(serial_handle_, PURGE_TXABORT  PURGE_RXABORT  PURGE_TXCLEAR  PURGE_RXCLEAR);</span><br><span class="line"></span><br><span class="line">    // 设置超时 10 秒</span><br><span class="line">    COMMTIMEOUTS to;</span><br><span class="line">    memset(&amp;to, 0, sizeof(to));</span><br><span class="line">    to.ReadIntervalTimeout = 1000;</span><br><span class="line">    to.ReadTotalTimeoutMultiplier = 500;</span><br><span class="line">    to.ReadTotalTimeoutConstant = 5000; //设定写超时</span><br><span class="line">    to.WriteTotalTimeoutMultiplier = 500;</span><br><span class="line">    to.WriteTotalTimeoutConstant = 2000;</span><br><span class="line">    SetCommTimeouts(serial_handle_, &amp;to);</span><br><span class="line"></span><br><span class="line">    PostReadThread();</span><br><span class="line"></span><br><span class="line">    QLOG_APP(L&quot;Serial port device is ready, serial: &#123;0&#125;, baud rate: &#123;1&#125;, byte size: &#123;2&#125;, parity: &#123;3&#125;, stop bits: &#123;4&#125;.&quot;)</span><br><span class="line">        &lt;&lt; com_ &lt;&lt; baud_rate_ &lt;&lt; byte_size_ &lt;&lt; parity_ &lt;&lt; stop_bits_;</span><br><span class="line"></span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中除了打开串口时传递的参数外，还包含了一些串口处理数据超时、读写缓冲区大小等属性，需要用到的根据自己的环境来配置。 串口的关闭很简单，只需要关闭掉 CreateFile 返回的句柄就可以了，这里不多介绍。</p>
+<h2 id="串口读写"><a href="#串口读写" class="headerlink" title="串口读写"></a>串口读写</h2><p>串口的读写可以同步也可以异步，但是同步方式会造成一个问题就是当你调用了 <code>ReadFile</code> 在等待串口数据时，再去调用 <code>WriteFile</code> 就会被阻塞，因为 <code>ReadFile</code> 一直没有返回。所以我还是推荐大家用异步方式来读写串口，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">void SerialPortManager::ReadSerialPortThread()</span><br><span class="line">&#123;</span><br><span class="line">    QLOG_APP(L&quot;PostReadThread is running....&quot;);</span><br><span class="line">    while (TRUE)</span><br><span class="line">    &#123;</span><br><span class="line">        if (!serial_handle_)</span><br><span class="line">        &#123;</span><br><span class="line">            QLOG_ERR(L&quot;Failed to read data from serial port, serial port handle is null.&quot;);</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 计算最小需要读取的数据量</span><br><span class="line">        DWORD read_size = 1024;</span><br><span class="line">        // read_size = min(read_size, (DWORD)com_stat.cbInQue);</span><br><span class="line"></span><br><span class="line">        // 开始异步读取</span><br><span class="line">        OVERLAPPED over_lapped;</span><br><span class="line">        memset(&amp;over_lapped, 0, sizeof(OVERLAPPED));</span><br><span class="line">        over_lapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);</span><br><span class="line"></span><br><span class="line">        std::shared_ptr&lt;BYTE&gt; buffer;</span><br><span class="line">        buffer.reset(new BYTE[read_size]);</span><br><span class="line">        BOOL bReadStatus = ReadFile(serial_handle_, buffer.get(), read_size, &amp;read_size, &amp;over_lapped);</span><br><span class="line">        if (!bReadStatus) // 如果 ReadFile 函数返回 FALSE</span><br><span class="line">        &#123;</span><br><span class="line">            DWORD last_error = GetLastError();</span><br><span class="line">            if (last_error == ERROR_IO_PENDING)</span><br><span class="line">            &#123;</span><br><span class="line">                QLOG_APP(L&quot;Read file return ERROR_IO_PENDING..&quot;);</span><br><span class="line">                BOOL bRet = GetOverlappedResult(serial_handle_, &amp;over_lapped, &amp;read_size, TRUE);</span><br><span class="line">                if (bRet)</span><br><span class="line">                &#123;</span><br><span class="line">                    // 返回 true 代表读取到了数据</span><br><span class="line">                    QLOG_APP(L&quot;Read data &#123;0&#125;&quot;) &lt;&lt; nbase::UTF8ToUTF16((char*)buffer.get());</span><br><span class="line">                    cb_((char*)buffer.get());</span><br><span class="line">                    PurgeComm(serial_handle_, PURGE_TXABORT  PURGE_RXABORT  PURGE_TXCLEAR  PURGE_RXCLEAR);</span><br><span class="line">                &#125;</span><br><span class="line">                else</span><br><span class="line">                &#123;</span><br><span class="line">                    // 返回 false 可能是句柄已经被 close 了</span><br><span class="line">                    QLOG_APP(L&quot;GetOverlappedResult returned false&quot;);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            QLOG_ERR(L&quot;Failed to read data from serial prot, error code = &#123;0&#125;&quot;) &lt;&lt; last_error;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    QLOG_APP(L&quot;PostReadThread is quit....&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">bool SerialPortManager::WriteData(const std::string&amp; data)</span><br><span class="line">&#123;</span><br><span class="line">    QLOG_APP(L&quot;Begin to write data [&#123;0&#125;] to serial port.&quot;) &lt;&lt; data;</span><br><span class="line"></span><br><span class="line">    DWORD bytes_written = data.size() + 1;</span><br><span class="line">    OVERLAPPED over_lapped;</span><br><span class="line">    memset(&amp;over_lapped, 0, sizeof(OVERLAPPED));</span><br><span class="line">    over_lapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);</span><br><span class="line">    BOOL write_stat = WriteFile(serial_handle_, data.c_str(), bytes_written, &amp;bytes_written, &amp;over_lapped);</span><br><span class="line">    if (!write_stat)</span><br><span class="line">    &#123;</span><br><span class="line">        DWORD last_error = GetLastError();</span><br><span class="line">        if (last_error == ERROR_IO_PENDING)</span><br><span class="line">        &#123;</span><br><span class="line">            WaitForSingleObject(over_lapped.hEvent, 2000);</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    QLOG_APP(L&quot;Finished to write data.&quot;);</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>读因为是异步操作，我们需要传一个 <code>OVERLAPPED</code> 结构体到 <code>ReadFile</code> 的最后一个参数。写也是一样，我们可以用 <code>GetOverlappedResult</code> 或 <code>WaitForSingleObject</code> 来等待操作事件完成（记得要初始化 <code>OVERLAPPED</code> 否则会报错的）。两种方式读写我都做了演示，可以根据自己的需求改造。 读写操作的时候可以获取当前返回值判断是不是 <code>ERROR_IO_PENDING</code> 来确定是不是有数据还没有读取完成。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>串口的读写其实还是相对简单的，上面代码基本上把可能出现问题的点都体现出来了，最后再来罗列一下注意事项。</p>
+<ul>
+<li>打开串口时要根据硬件情况初始化串口参数（在 WinBase.h 中有声明）</li>
+<li>设置串口的缓冲区和超时</li>
+<li>异步去读写串口通过返回值判断是否读写成功</li>
+<li>不要忘记初始化 OVERLAPPAD 结构</li>
+<li>读取完成后 PurgeComm 串口</li>
+</ul>
+
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/11/26/2018/2018-11-26_143810-2569/">处理 Qt 中文提示 “常量中有换行符”</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-11-26T14:38:10.000Z" itemprop="datePublished">
+    2018-11-26
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在 Qt 自建的 Widget 窗口生成的 cpp 文件中，直接写中文编译时会提示错误。内容是 “常量中有换行符”。如下图所示： <a href="/images/2018/11/2018-11-26_14-32-03.png"><img src="/images/2018/11/2018-11-26_14-32-03.png"></a></p>
+        
+          <div class="more-link">
+            <a href="/2018/11/26/2018/2018-11-26_143810-2569/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/11/26/2018/2018-11-26_142538-2566/">Qt 注册自定义数据类型提供信号和槽函数传递参数</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-11-26T14:25:38.000Z" itemprop="datePublished">
+    2018-11-26
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>Qt 信号和槽函数参数只能是基于 Qt 的基础类型的，比如 QString、int、bool 等，如果想传递自定义类型默认情况下是行不通的。要想在 Qt 的信号和槽函数之间传递自定义类型，可以先将自己的自定义类型注册一下，使用如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Q_DECLARE_METATYPE(nim::DocTransInfo)</span><br></pre></td></tr></table></figure>
+
+<p><code>nim::DocTransInfo</code> 为你的自定义数据结构，我这里是一个结构体。当需要传递这个数据时，不是直接使用，而是用 <code>QVariant</code> 来包装一下，信号和槽函数则直接使用 <code>QVariant</code> 类型的数据作为参数传递。首先我们连接信号和槽：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">connect(this, SIGNAL(AddDocItemSignalNew(QVariant)), this, SLOT(AddDocItemNew(QVariant)), Qt::QueuedConnection);</span><br></pre></td></tr></table></figure>
+
+<p>信号和槽函数的声明如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">signals:</span><br><span class="line">    void AddDocItemSignalNew(QVariant variant);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">private slots:</span><br><span class="line">    void AddDocItemNew(QVariant variant);</span><br></pre></td></tr></table></figure>
+
+<p>当要发起信号的时候，把我们要传递的这个数据包装到 QVariant 中，然后传递给信号函数就可以了。如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">QVariant data;</span><br><span class="line">data.setValue(file_info);</span><br><span class="line">emit AddDocItemSignalNew(data);</span><br></pre></td></tr></table></figure>
+
+<p>槽函数接受到信号时可以像如下方法一样解析参数出来使用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">void MainForm::AddDocItemNew(QVariant variant)</span><br><span class="line">&#123;</span><br><span class="line">    nim::DocTransInfo doc_info = variant.value&lt;nim::DocTransInfo&gt;();</span><br><span class="line">    // ....... 其他代码</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样包装后，我们就可以使用 Qt 的信号和槽功能来传递自定义数据结构了。</p>
+
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/10/19/2018/2018-10-19_100216-2509/">用于 Windows 下的日志跟踪分析工具（Tail for Windows）</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-10-19T10:02:16.000Z" itemprop="datePublished">
+    2018-10-19
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/DuiLib/">DuiLib</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在 Linux 下做开发和调试任务的时候，有些情况会动态去跟踪一些日志的变化来调试问题。Linux 下使用 <code>tail -f</code> 就可以达到需求了，但 Windows 下一直没有找到类似的好用工具，在 github 上也有一些开源项目，不是项目相对陈旧界面丑陋，就是功能不完善不能让人专注于分析日志。索性自己做了一个，预览图如下： <a href="/images/2018/10/logs_monitor-1.gif"><img src="/images/2018/10/logs_monitor-1.gif"></a></p>
+        
+          <div class="more-link">
+            <a href="/2018/10/19/2018/2018-10-19_100216-2509/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/09/10/2018/2018-09-10_145000-2481/">Windows 编译 openssl-1.0.2p（libeay32.lib、ssleay32.lib）静态库 32/64、debug/release、MT/MTd</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-09-10T14:50:00.000Z" itemprop="datePublished">
+    2018-09-10
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/openssl/">openssl</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>最近要用到 libeay32.lib、ssleay32.lib 两个静态库文件，因为以前项目中其中一个文件在 64 位编译时选择的不是 MTd，而导致我引入该库以后提示运行时库和其他库声明冲突，其实实际原因就是生成选项不一样。最终我还是决定自己编译 openssl 的库来使用。</p>
+<h2 id="下载所需工具"><a href="#下载所需工具" class="headerlink" title="下载所需工具"></a>下载所需工具</h2><ul>
+<li>Perl：<a target="_blank" rel="noopener" href="http://downloads.activestate.com/ActivePerl/releases/5.26.1.2601/ActivePerl-5.26.1.2601-MSWin32-x64-404865.exe">http://downloads.activestate.com/ActivePerl/releases/5.26.1.2601/ActivePerl-5.26.1.2601-MSWin32-x64-404865.exe</a></li>
+<li>NASM：<a target="_blank" rel="noopener" href="https://www.nasm.us/pub/nasm/releasebuilds/2.14rc15/win64/nasm-2.14rc15-installer-x64.exe">https://www.nasm.us/pub/nasm/releasebuilds/2.14rc15/win64/nasm-2.14rc15-installer-x64.exe</a></li>
+<li>OpenSSL：<a target="_blank" rel="noopener" href="https://www.openssl.org/source/openssl-1.0.2p.tar.gz">https://www.openssl.org/source/openssl-1.0.2p.tar.gz</a></li>
+</ul>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>安装 Perl 和 NASM，默认下一步下一步就可以了。Perl 安装的时候记得勾选将执行程序添加到系统环境变量中。NASM 安装时没有选项，需要在完成后要将执行程序添加到系统的环境变量中。如下图所示： <a href="/images/2018/09/2018-09-11_14-30-21.png"><img src="/images/2018/09/2018-09-11_14-30-21.png"></a> 解压 openssl-1.0.2p.tar.gz 到任意目录，比如 D:\openssl-1.0.2p</p>
+<h2 id="开始编译"><a href="#开始编译" class="headerlink" title="开始编译"></a>开始编译</h2><p>打开 VS 的命令行工具（我这里安装的是 VS2013），所以目录在 <code>C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\Tools\Shortcuts</code> 下，如果想编译 32 位的静态库就使用 <code>VS2013 x86 本机工具命令提示</code>，如果想编译 64 位，就使用 <code>VS2013 x64 本机工具命令提示</code>。 <a href="/images/2018/09/2018-09-11_14-33-02.png"><img src="/images/2018/09/2018-09-11_14-33-02.png"></a> 打开后切换到 D:\openssl-1.0.2p 目录，执行如下命令生成 makefile 文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perl configure VC-WIN32</span><br></pre></td></tr></table></figure>
+
+<p>如果是生成 64 位则执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perl configure VC-WIN64A</span><br></pre></td></tr></table></figure>
+
+<p>成功后如下所示： <a href="/images/2018/09/2018-09-11_14-37-12.png"><img src="/images/2018/09/2018-09-11_14-37-12.png"></a> 如果你要编译 <strong>debug</strong> 版本，则修改 <code>ms/do_nasm.bat</code> 文件，将原来</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">perl util\mkfiles.pl &gt;MINFO</span><br><span class="line">perl util\mk1mf.pl nasm VC-WIN32 &gt;ms\nt.mak</span><br><span class="line">perl util\mk1mf.pl dll nasm VC-WIN32 &gt;ms\ntdll.mak</span><br><span class="line">perl util\mk1mf.pl nasm BC-NT &gt;ms\bcb.mak</span><br><span class="line"></span><br><span class="line">perl util\mkdef.pl 32 libeay &gt; ms\libeay32.def</span><br><span class="line">perl util\mkdef.pl 32 ssleay &gt; ms\ssleay32.def</span><br></pre></td></tr></table></figure>
+
+<p>修改为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">perl util\mkfiles.pl &gt;MINFO</span><br><span class="line">perl util\mk1mf.pl nasm debug VC-WIN32 &gt;ms\nt.mak</span><br><span class="line">perl util\mk1mf.pl dll nasm debug VC-WIN32 &gt;ms\ntdll.mak</span><br><span class="line">perl util\mk1mf.pl nasm BC-NT &gt;ms\bcb.mak</span><br><span class="line"></span><br><span class="line">perl util\mkdef.pl 32 libeay &gt; ms\libeay32.def</span><br><span class="line">perl util\mkdef.pl 32 ssleay &gt; ms\ssleay32.def</span><br></pre></td></tr></table></figure>
+
+<p>就是将第二行和第三行编译选项增加了 <strong>debug</strong>。修改完成后执行 <code>ms/do_nasm.bat</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ms\do_nasm.bat</span><br></pre></td></tr></table></figure>
+
+<p>运行后结果如下： <a href="/images/2018/09/2018-09-11_14-41-29.png"><img src="/images/2018/09/2018-09-11_14-41-29.png"></a> 修改完成执行如下命令开始编译（如果想编译成 dll，则执行 nmake -f ms\ntdll.mak，编译前要修改 ms\ntdll.mak 将 CFLAG 的 &#x2F;MD 属性修改为 &#x2F;MT，与你调用项目匹配）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmake -f ms\nt.mak</span><br></pre></td></tr></table></figure>
+
+<p>如果没有错误，几分钟后编译后的文件就会生成于 <code>D:\openssl-1.0.2p\out32</code> 目录下。 <a href="/images/2018/09/2018-09-11_14-48-49.png"><img src="/images/2018/09/2018-09-11_14-48-49.png"></a></p>
+
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/categories/language/C-C/page/3/">« prev</a><a class="page-number" href="/categories/language/C-C/">1</a><a class="page-number" href="/categories/language/C-C/page/2/">2</a><a class="page-number" href="/categories/language/C-C/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/categories/language/C-C/page/5/">5</a><a class="page-number" href="/categories/language/C-C/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/categories/language/C-C/page/17/">17</a><a class="extend next" rel="next" href="/categories/language/C-C/page/5/">next »</a>
+    </nav>
+  </section>
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

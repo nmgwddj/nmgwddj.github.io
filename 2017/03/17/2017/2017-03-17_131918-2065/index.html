@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>React 学习笔记之创建 React 项目 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>React 学习笔记之创建 React 项目</h1>
+    </header>
+
+    <section>
+      <h2 id="安装-React-的学习环境"><a href="#安装-React-的学习环境" class="headerlink" title="安装 React 的学习环境"></a>安装 React 的学习环境</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 安装创建 react 项目的工具</span><br><span class="line">npm install -g create-react-app</span><br><span class="line"></span><br><span class="line">// 创建一个项目</span><br><span class="line">➜  Project create-react-app jiajia-react</span><br><span class="line">Creating a new React app in /Users/myCode/Project/jiajia-react.</span><br><span class="line"></span><br><span class="line">Installing packages. This might take a couple minutes.</span><br><span class="line">Installing react, react-dom, and react-scripts...</span><br><span class="line"></span><br><span class="line">// 启动项目</span><br><span class="line">cd jiajia-react</span><br><span class="line">npm start</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<h2 id="目录结构介绍"><a href="#目录结构介绍" class="headerlink" title="目录结构介绍"></a>目录结构介绍</h2><ul>
+<li>node_modules 存放 npm 包的目录。</li>
+<li>public 存放静态资源，提供外部访问。</li>
+<li>src 存放源代码。</li>
+</ul>
+<h2 id="业务调用顺序"><a href="#业务调用顺序" class="headerlink" title="业务调用顺序"></a>业务调用顺序</h2><p>在 <code>src/index.js</code> 中有如下代码，程序首先导入了 React 和 ReactDom 模块，并导入了一个当前目录下的 App 模块。随后在代码中使用 ReactDOM.render 将 App 模块渲染到了界面上。这个 App 在 React 中称为<code>组件(component)</code>。而这个组件渲染到什么位置则是第二个参数 document.getElementById(‘root’) 决定的，它从 index.html 中获取到了 root 节点，并将 App 插入到 root 节点下。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">import React from &#x27;react&#x27;;</span><br><span class="line">import ReactDOM from &#x27;react-dom&#x27;;</span><br><span class="line">import App from &#x27;./App&#x27;;</span><br><span class="line">import &#x27;./index.css&#x27;;</span><br><span class="line"></span><br><span class="line">ReactDOM.render(</span><br><span class="line">  &lt;App /&gt;,</span><br><span class="line">  document.getElementById(&#x27;root&#x27;)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>而 App 组件中首先导入了 React 的 Component，并创建了一个 App 的类，继承与 React 的 Component。里面实现了 render 函数，该函数仅返回了一些 html 代码，用于界面上显示。值得注意的是，由于 <code>class</code> 是 JavaScript 的关键字，所以在给 div 添加样式的时候，要将 <code>class</code> 修改为 <code>className</code>。这里的代码是 jsx 语法。最终将实现好的 App 通过 ES6 的 export 语法将这个模块导出提供外部使用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">import React, &#123; Component &#125; from &#x27;react&#x27;;</span><br><span class="line">import logo from &#x27;./logo.svg&#x27;;</span><br><span class="line">import &#x27;./App.css&#x27;;</span><br><span class="line"></span><br><span class="line">class App extends Component &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;div className=&quot;App&quot;&gt;</span><br><span class="line">        &lt;div className=&quot;App-header&quot;&gt;</span><br><span class="line">          &lt;img src=&#123;logo&#125; className=&quot;App-logo&quot; alt=&quot;logo&quot; /&gt;</span><br><span class="line">          &lt;h2&gt;Welcome to React&lt;/h2&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">        &lt;p className=&quot;App-intro&quot;&gt;</span><br><span class="line">          To get started, edit &lt;code&gt;src/App.js&lt;/code&gt; and save to reload.</span><br><span class="line">        &lt;/p&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default App;</span><br></pre></td></tr></table></figure>
+
+<h2 id="编译生产环境的项目"><a href="#编译生产环境的项目" class="headerlink" title="编译生产环境的项目"></a>编译生产环境的项目</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 编译项目，会在项目目录下生成一个 build 的文件夹。</span><br><span class="line">npm run build</span><br><span class="line"></span><br><span class="line">// 安装 pushstate-server 用于将已经编译好的项目部署</span><br><span class="line">npm install -g pushstate-server</span><br><span class="line">// 将编译项目运行在本地查看效果</span><br><span class="line">pushstate-server build</span><br><span class="line">// Listening on port 9000 (http://0.0.0.0:9000)</span><br></pre></td></tr></table></figure>
+
+<p>执行以上命令后，会产生一个编译后的生产环境的代码。浏览器访问 <a target="_blank" rel="noopener" href="http://0.0.0.0:9000/">http://0.0.0.0:9000</a> 后就能看到编译后的测试项目了。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-03-17T13:19:18.000Z" itemprop="datePublished">
+              2017-03-17
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

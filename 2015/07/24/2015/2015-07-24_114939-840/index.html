@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>oracle 索引 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>oracle 索引</h1>
+    </header>
+
+    <section>
+      <p>索引的概念不仅仅在 oracle 中存在，很多大型数据库软件都有索引的功能，其主要目的是为某张表的某个经常作为过滤条件的字段创建一个快速的索引区，当用户在查询过程中使用了这个过滤条件（比如 where id &#x3D; 10）那么数据库会自动去索引区查找这个字段的索引，然后通过索引的指向快速找到需要查找的数据，可以抽象的理解它像我们C语言学习的指针一样。</p>
+<span id="more"></span>
+<hr>
+<h3 id="建立一个索引"><a href="#建立一个索引" class="headerlink" title="建立一个索引"></a>建立一个索引</h3><p>create index myindex on emp(deptno);   &#x2F;*为emp表的deptno字段创建一个索引名为 myindex*&#x2F;</p>
+<p>1、有了索引以后插入数据的时候不但要在表插入数据，还要添加索引，所以性能会有所下降。 2、创建索引以后，我们在查询数据的时候不需要指定使用哪一条索引，系统会帮我们自动匹配，我们只需要创建即可。 3、删除表时所有该表的索引也同时被删除</p>
+<h3 id="删除一个索引"><a href="#删除一个索引" class="headerlink" title="删除一个索引"></a>删除一个索引</h3><p>DROP INDEX myindex;</p>
+<p>只有索引的拥有者或拥有DROP ANY INDEX权限的用户才可以删除索引。</p>
+<h3 id="什么时候创建索引"><a href="#什么时候创建索引" class="headerlink" title="什么时候创建索引"></a>什么时候创建索引</h3><ul>
+<li>列中数据值分布范围很广</li>
+<li>列经常在 WHERE 子句或连接条件中出现</li>
+<li>表经常被访问而且数据量很大 ，访问的数据大概占数据总量的2%到4%</li>
+</ul>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-24T11:49:39.000Z" itemprop="datePublished">
+              2015-07-24
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/oracle/">oracle</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

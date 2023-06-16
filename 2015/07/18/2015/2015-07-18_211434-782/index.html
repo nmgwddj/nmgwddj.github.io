@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>epoll 基于非阻塞I/O事件驱动 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>epoll 基于非阻塞I/O事件驱动</h1>
+    </header>
+
+    <section>
+      <p>该程序来源于<a target="_blank" rel="noopener" href="http://www.itcast.cn/">传智博客</a>教师课件，本人只是自己对照着写了一遍并做了注释，该模型可以承载大量客户端的连接二不会出现卡顿等情况，前提是我们交互的数据很少，如果交互数据较大，该例子还是有些小问题的。大家可以自己拓展，配合多线程可以实现大数据多客户端连接传输的程序。具体代码如下：</p>
+<span id="more"></span>
+<hr>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;sys&#x2F;socket.h&gt;<br>#include &lt;sys&#x2F;epoll.h&gt;<br>#include &lt;arpa&#x2F;inet.h&gt;<br>#include &lt;fcntl.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;errno.h&gt;<br>#include &lt;string.h&gt;</p>
+<p>#define MAX_EVENTS1024<br>#define BUFLEN128<br>#define SERV_PORT8080</p>
+<p>struct myevent_s<br>{<br>int fd;&#x2F;&#x2F; 监控的文件描述符<br>int events;&#x2F;&#x2F; 监控什么事件<br>void* arg;&#x2F;&#x2F; 给回调函数传的参数<br>void (*call_back)(int fd, int events, void* arg);<br>int status;&#x2F;&#x2F; 当前监听标志，1为在监听，0为未监听<br>char buf[BUFLEN];&#x2F;&#x2F; 用以发送和接收传递数据的buf<br>int len;&#x2F;&#x2F; 用来存放 buf 长度<br>long last_active;&#x2F;&#x2F; 最后交互时间，有超时判断<br>};</p>
+<p>int g_efd;<br>struct myevent_s g_events[MAX_EVENTS + 1];</p>
+<p>void eventset(struct myevent_s *ev, int fd,<br>void (*call_back)(int, int, void*), void* arg)<br>{<br>ev-&gt;fd &#x3D; fd;&#x2F;&#x2F; 设置文件描述符<br>ev-&gt;call_back &#x3D; call_back;&#x2F;&#x2F; 设置回调函数<br>ev-&gt;events &#x3D; 0;&#x2F;&#x2F; 设置事件为0<br>ev-&gt;arg &#x3D; arg;&#x2F;&#x2F; 设置回调函数的参数，在使用时就是传递结构体自身<br>ev-&gt;status &#x3D; 0;&#x2F;&#x2F; 设置当前监控状态<br>ev-&gt;last_active &#x3D; time(NULL);&#x2F;&#x2F; 设置最后修改时间</p>
+<p>return;<br>}</p>
+<p>void recvdata(int fd, int events, void* arg);<br>void senddata(int fd, int events, void* arg);</p>
+<p>void eventadd(int efd, int events, struct myevent_s* ev)<br>{<br>&#x2F;&#x2F; 声明并初始化一个epoll所需结构体<br>struct epoll_event epv &#x3D; {0, {0}};</p>
+<p>ev-&gt;events &#x3D; events;&#x2F;&#x2F;设置结构体中的事件，在循环处理过程中会判断使用<br>epv.events &#x3D; events;&#x2F;&#x2F;设置epoll监控的事件<br>epv.data.ptr &#x3D; ev;&#x2F;&#x2F;把结构体传给epoll的联合体，触发事件时会拷贝它到数组</p>
+<p>&#x2F;&#x2F; 用以给epoll_ctl传递参数<br>int op;<br>if (ev-&gt;status &#x3D;&#x3D; 1)&#x2F;&#x2F;如果status是1证明是正在监控，再次进入该函数是想修改<br>{<br>op &#x3D; EPOLL_CTL_MOD;&#x2F;&#x2F;将op设定为修改模式<br>}<br>else&#x2F;&#x2F;否则证明是首次添加到监控列表<br>{<br>op &#x3D; EPOLL_CTL_ADD;&#x2F;&#x2F;将op设定为添加模式<br>ev-&gt;status &#x3D; 1;<br>}</p>
+<p>&#x2F;&#x2F; 将文件描述符添加到epoll监控列表<br>int epoll &#x3D; epoll_ctl(efd, op, ev-&gt;fd, &amp;epv);<br>if (epoll &lt; 0)<br>{<br>printf(“event add failed [fd&#x3D;%d], events[%d]\n”, ev-&gt;fd, events);<br>}<br>else<br>{<br>printf(“event add ok [fd&#x3D;%d], op&#x3D;%d, events[%0X]\n”, ev-&gt;fd, op, events);<br>}</p>
+<p>return;<br>}</p>
+<p>void eventdel(int efd, struct myevent_s* ev)<br>{<br>if (ev-&gt;status !&#x3D; 1)&#x2F;&#x2F; 没有监控该事件直接退出<br>{<br>return;<br>}</p>
+<p>struct epoll_event epv &#x3D; {0, {0}};<br>epv.data.ptr &#x3D; ev;<br>ev-&gt;status &#x3D; 0;<br>&#x2F;&#x2F; 从epoll 监控列表中删除该文件描述符的监控<br>epoll_ctl(efd, EPOLL_CTL_DEL, ev-&gt;fd, &amp;epv);</p>
+<p>return;<br>}</p>
+<p>void acceptconn(int lfd, int events, void* arg)<br>{<br>struct sockaddr_in cin;<br>socklen_t len &#x3D; sizeof(cin);<br>int cfd;<br>int i;</p>
+<p>if ((cfd &#x3D; accept(lfd, (struct sockaddr*)&amp;cin, &amp;len)) &#x3D;&#x3D; -1)<br>{<br>if (errno !&#x3D; EAGAIN &amp;&amp; errno !&#x3D; EINTR)<br>{<br>&#x2F;* 没做出错处理  *&#x2F;<br>}<br>printf(“%s: accept, %s\n”, __func__, strerror(errno));<br>return;<br>}</p>
+<p>do<br>{<br>&#x2F;&#x2F; 遍历全局的数组寻找到一个当前没有被监听的数组，记录到i中<br>for (i &#x3D; 0; i &lt; MAX_EVENTS; i++)<br>{<br>if (g_events[i].status &#x3D;&#x3D; 0)<br>{<br>break;<br>}<br>}</p>
+<p>&#x2F;&#x2F; 判断 i 是不是与数组最大上限一致，如果一致证明没有空位了<br>if (i &#x3D;&#x3D; MAX_EVENTS)<br>{<br>printf(“%s: max connect limit[%d]\n”, __func__, MAX_EVENTS);<br>break;<br>}</p>
+<p>int flag &#x3D; 0;<br>if ((flag &#x3D; fcntl(cfd, F_SETFL, O_NONBLOCK)) &lt; 0)<br>{<br>printf(“%s: fcntl nonblocking failed, %s\n”,<br>__func__, strerror(errno));<br>break;<br>}</p>
+<p>&#x2F;&#x2F; 将这个新来的cfd初始化，让其默认相应recvdata函数<br>&#x2F;&#x2F; 把结构体自身作为回调函数的参数传递，让其可以在回调函数中使用该结构体<br>eventset(&amp;g_events[i], cfd, recvdata, &amp;g_events[i]);<br>&#x2F;&#x2F; 添加这个新的文件描述符到监控列表<br>eventadd(g_efd, EPOLLIN, &amp;g_events[i]);<br>}while (0);</p>
+<p>printf(“new connect [%s:%d][time:%ld], pos[%d]\n”,<br>inet_ntoa(cin.sin_addr),&#x2F;&#x2F; 客户端ip<br>ntohs(cin.sin_port),&#x2F;&#x2F; 客户端port<br>g_events[i].last_active,&#x2F;&#x2F; 客户端最后交互时间<br>i);&#x2F;&#x2F; 客户端在全局数组中的位置<br>}</p>
+<p>void recvdata(int fd, int events, void* arg)<br>{<br>&#x2F;&#x2F; 先把参数转成自身结构体<br>struct myevent_s* ev &#x3D; (struct myevent_s*)arg;</p>
+<p>&#x2F;&#x2F; 接收数据<br>int len &#x3D; recv(fd, ev-&gt;buf, sizeof(ev-&gt;buf), 0);<br>&#x2F;&#x2F; 接收完数据后立即从监控列表中将这个文件描述符删除<br>eventdel(g_efd, ev);</p>
+<p>&#x2F;&#x2F; 如果接收到了数据<br>if (len &gt; 0)<br>{<br>&#x2F;&#x2F; 把读取到的字符长度赋值给结构体len，在后面的发送事件中会用到这个长度<br>ev-&gt;len &#x3D; len;<br>&#x2F;&#x2F; 把buf加上\0打印一下内容<br>ev-&gt;buf[len] &#x3D; ‘\0’;<br>printf(“C[%d]:%s\n”, fd, ev-&gt;buf);</p>
+<p>&#x2F;&#x2F; 转为发送事件<br>eventset(ev, fd, senddata, ev);<br>eventadd(g_efd, EPOLLOUT, ev);<br>}<br>else if (len &#x3D;&#x3D; 0)<br>{<br>close(ev-&gt;fd);<br>printf(“[fd&#x3D;%d] pos[%d], closed\n”, fd, ev - g_events);<br>}<br>else<br>{<br>close(ev-&gt;fd);<br>printf(“recv[fd&#x3D;%d] error[%d]:%s\n”, fd, errno, strerror(errno));<br>}<br>}</p>
+<p>void senddata(int fd, int events, void* arg)<br>{<br>&#x2F;&#x2F; 把参数转成自身结构体<br>struct myevent_s* ev &#x3D; (struct myevent_s*)arg;<br>&#x2F;&#x2F; ev-&gt;len 是recvdata时设定的长度，ev-&gt;buf读时也用，写时也用<br>int len &#x3D; send(fd, ev-&gt;buf, ev-&gt;len, 0);<br>&#x2F;&#x2F; 从监控列表删除<br>eventdel(g_efd, ev);</p>
+<p>if (len &gt; 0)<br>{<br>&#x2F;&#x2F; 如果读取到了数据，那么打印接收的数据<br>printf(“send[fd&#x3D;%d], [%d]%s\n”, fd, len, ev-&gt;buf);<br>&#x2F;&#x2F; 再次将事件添加到监控列表，回调函数改回recvdata<br>eventset(ev, fd, recvdata, ev);<br>&#x2F;&#x2F; 监控 EPOLLIN 事件<br>eventadd(g_efd, EPOLLIN, ev);<br>}<br>else<br>{<br>&#x2F;&#x2F; 否则判定为出现错误，关闭文件描述符并打印错误信息<br>close(ev-&gt;fd);<br>printf(“send[fd&#x3D;%d] error %s\n”, fd, strerror(errno));<br>}<br>return;<br>}</p>
+<p>void initlistensocket(int efd, short port)<br>{<br>int lfd &#x3D; socket(AF_INET, SOCK_STREAM, 0);<br>&#x2F;&#x2F; 修改为非阻塞模式<br>fcntl(lfd, F_SETFL, O_NONBLOCK);<br>&#x2F;&#x2F; 初始化结构体，g_events[MAX_EVENTS] 是结构体数组最后一个元素，用来保存lfd<br>eventset(&amp;g_events[MAX_EVENTS], lfd, acceptconn, &amp;g_events[MAX_EVENTS]);<br>&#x2F;&#x2F; 添加到监控事件列表<br>eventadd(efd, EPOLLIN, &amp;g_events[MAX_EVENTS]);</p>
+<p>struct sockaddr_in sin;<br>memset(&amp;sin, 0, sizeof(sin));<br>sin.sin_family &#x3D; AF_INET;<br>sin.sin_addr.s_addr &#x3D; INADDR_ANY;<br>sin.sin_port &#x3D; htons(port);</p>
+<p>bind(lfd, (struct sockaddr*)&amp;sin, sizeof(sin));<br>listen(lfd, 20);</p>
+<p>return;<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>&#x2F;&#x2F; 接收参数传递过来的端口<br>unsigned short port &#x3D; SERV_PORT;<br>if (argc &#x3D;&#x3D; 2)<br>{<br>port &#x3D; atoi(argv[1]);<br>}</p>
+<p>&#x2F;&#x2F; 创建epoll句柄储存到全局变量g_efd中<br>g_efd &#x3D; epoll_create(MAX_EVENTS + 1);<br>if (g_efd &lt;&#x3D; 0)<br>{<br>printf(“create efd in %s err %s\n”, __func__, strerror(errno));<br>}</p>
+<p>&#x2F;&#x2F; 调用上面初始化socket的函数<br>initlistensocket(g_efd, port);</p>
+<p>&#x2F;&#x2F; 创建 epoll 事件循环所需的数组<br>struct epoll_event events[MAX_EVENTS + 1];</p>
+<p>printf(“server running : port[%d]\n”, port);</p>
+<p>int checkpos &#x3D; 0;<br>int i;<br>while (1)<br>{<br>&#x2F;&#x2F; 验证客户端超时机制<br>&#x2F;&#x2F; 取当前时间<br>long now &#x3D; time(NULL);<br>for (i &#x3D; 0; i &lt; 100; i++, checkpos++)<br>{<br>&#x2F;&#x2F; 判断下标变量是否超过了数组最大值<br>if (checkpos &#x3D;&#x3D; MAX_EVENTS)<br>{<br>checkpos &#x3D; 0;<br>}<br>&#x2F;&#x2F; 如果状态不是监听中，那么跳出到下一个循环<br>if (g_events[checkpos].status !&#x3D; 1)<br>{<br>continue;<br>}<br>&#x2F;&#x2F; 当前时间-最后一次交互时间<br>long duration &#x3D; now - g_events[checkpos].last_active;<br>&#x2F;&#x2F; 如果差超过了60秒，那么关闭这个socket<br>if (duration &gt;&#x3D; 60)<br>{<br>close(g_events[checkpos].fd);<br>printf(“[fd&#x3D;%d] timeout\n”, g_events[checkpos].fd);<br>eventdel(g_efd, &amp;g_events[checkpos]);<br>}<br>}</p>
+<p>&#x2F;&#x2F; 等待事件发生<br>int nfd &#x3D; epoll_wait(g_efd, events, MAX_EVENTS + 1, 1000);<br>if (nfd &lt; 0)<br>{<br>printf(“epoll_wait error, exit\n”);<br>break;<br>}<br>for (i &#x3D; 0; i &lt; nfd; i++)<br>{<br>&#x2F;&#x2F; events[i].data.ptr 中存放的是myevent_s结构体，将其解析出来<br>struct myevent_s* ev &#x3D; (struct myevent_s*)events[i].data.ptr;<br>&#x2F;&#x2F; 如果epoll事件和结构体中记录的事件都是EPOLLIN那么调用结构体中的回调函数<br>if ((events[i].events &amp; EPOLLIN) &amp;&amp; (ev-&gt;events &amp; EPOLLIN))<br>{<br>ev-&gt;call_back(ev-&gt;fd, events[i].events, ev-&gt;arg);<br>}<br>if ((events[i].events &amp; EPOLLOUT) &amp;&amp; (ev-&gt;events &amp; EPOLLOUT))<br>{<br>ev-&gt;call_back(ev-&gt;fd, events[i].events, ev-&gt;arg);<br>}<br>}<br>}</p>
+<p>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-18T21:14:34.000Z" itemprop="datePublished">
+              2015-07-18
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%BD%91%E7%BB%9C/">网络</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

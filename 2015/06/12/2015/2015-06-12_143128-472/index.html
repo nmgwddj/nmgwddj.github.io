@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>算法效率的度量 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>算法效率的度量</h1>
+    </header>
+
+    <section>
+      <p>我们已经接触了很多对于数组排序的算法，比如冒泡排序、选择排序、快速排序、插入排序、希尔排序、归并排序等，算法这么多，我们到底该在实际运用中选择哪一个呢？这就涉及到了取舍的问题，当然我们取舍的重点是算法的运行效率。那算法的运行效率到底如何评价呢？有的人说，你写一个测试程序运行一下（事后统计法），看看具体使用了多少时间不就知道了吗？当然这是一种办法，但是它还有很多的缺陷，下面我们就详细介绍一下算法统计的两种方法，一种称为“事后统计法”，另外一种称为“事前分析估算”。</p>
+<span id="more"></span>
+<h3 id="【事后统计法】"><a href="#【事后统计法】" class="headerlink" title="【事后统计法】"></a>【事后统计法】</h3><p><strong>统计方法：</strong></p>
+<ul>
+<li>比较不同算法同一组输入数据的运行处理时间。</li>
+</ul>
+<p><strong>缺陷：</strong></p>
+<ul>
+<li>为了获得不同算法的运行时间必须编写相应的测试程序。</li>
+<li>运行时间严重依赖硬件及运行时间的环境因素。</li>
+<li>算法的测试数据的选取相当困难。</li>
+</ul>
+<p><strong>总结：</strong></p>
+<ul>
+<li>时候统计法虽然直观，但是实际困难且缺陷多。</li>
+</ul>
+<h3 id="【事前分析估算】"><a href="#【事前分析估算】" class="headerlink" title="【事前分析估算】"></a>【事前分析估算】</h3><p><strong>统计方法：</strong></p>
+<ul>
+<li>依据统计的方法对算法效率进行估算</li>
+</ul>
+<p><strong>影响算法效率的主要原因：</strong></p>
+<ul>
+<li>算法采用的策略和方法</li>
+<li>问题的输入规模</li>
+<li>编译器所产生的代码</li>
+<li>计算机执行速度</li>
+</ul>
+<p><strong>算法推倒的理论基础：</strong></p>
+<ol>
+<li>算法最终编译成具体的计算机指令</li>
+<li>每一个指令，在具体的计算机上运行速度固定</li>
+<li>通过具体的步骤，就可以推导出算法的复杂度（如下图）</li>
+</ol>
+<p><a href="/images/2015/06/2015-06-12_134026.png"><img src="/images/2015/06/2015-06-12_134026.png" alt="2015-06-12_134026"></a> <a href="/images/2015/06/2015-06-12_134050.png"><img src="/images/2015/06/2015-06-12_134050.png" alt="2015-06-12_134050"></a> 图中我们可以看出，随着n值的增加，每种算法最终的数据会越来越大，这个数据就代表了算法的执行次数，既然执行速度是固定的（第二条规则），那么次数越多随之时间也就用的越多，这就是算法的复杂度。 <strong>怎么判断一个算法的效率？（规则如下）：</strong></p>
+<ul>
+<li>判断一个算法的效率时，往往只需要关注操作数量的最高次项，其它次要项和常数项可以忽略。</li>
+<li>在没有特殊说明时，我们所分析的算法的时间复杂度都是指最坏时间复杂度。</li>
+<li>只有常数项记做1</li>
+</ul>
+<p><strong>用什么标志来表示算法的效率？</strong></p>
+<ul>
+<li>大O表示法，如下常见的时间复杂度：</li>
+</ul>
+<p><a href="/images/2015/06/2015-06-12_135208.png"><img src="/images/2015/06/2015-06-12_135208.png" alt="2015-06-12_135208"></a> 常见时间复杂度之间的关系图： <a href="/images/2015/06/2015-06-12_135423.png"><img src="/images/2015/06/2015-06-12_135423.png" alt="2015-06-12_135423"></a> 上图就是不同的时间复杂度所用的时间表示图。如果是O(1)用的时间最短、其次是O(logn)，一次类推。 时间复杂度的小练习（参考算法的效率规则判断） O(5) &#x3D; O(1) O(2n + 1) &#x3D; O(n) O(n2 + n + 1) &#x3D; O(n2) O(3n3 + 1) &#x3D; O(n3) <strong>总结：只关注最高次项、时间复杂度是指最坏的时间复杂度、只有常数项记做1</strong></p>
+<h3 id="【算法的空间复杂度】"><a href="#【算法的空间复杂度】" class="headerlink" title="【算法的空间复杂度】"></a>【算法的空间复杂度】</h3><p><strong>计算方式：</strong></p>
+<ul>
+<li>通过计算算法的存储空间实现</li>
+</ul>
+<p><strong>公式：</strong></p>
+<ul>
+<li>S(n) &#x3D; O(f(n))</li>
+<li>n为问题规模，f(n))为在问题规模为n时所占用存储空间的函数</li>
+<li>当算法执行时所需要的空间是常数时，空间复杂度为O(1)</li>
+</ul>
+<p><strong>空间与时间的策略：</strong></p>
+<ul>
+<li>多数情况下，算法执行时所用的时间更令人关注</li>
+<li>如果有必要，可以通过增加空间复杂度来降低时间复杂度</li>
+<li>同理，也可以通过增加时间复杂度来降低空间复杂度</li>
+</ul>
+<p><strong>练习：</strong></p>
+<ul>
+<li>O(4n+12) &#x3D; O(n)</li>
+<li>O(8) &#x3D; O(1)</li>
+<li>O(4) &#x3D; O(1)</li>
+</ul>
+<p><strong>总结：实现算法时，需要分析具体问题，对执行时间和空间的要求。</strong></p>
+<h3 id="【结合代码综合练习】"><a href="#【结合代码综合练习】" class="headerlink" title="【结合代码综合练习】"></a>【结合代码综合练习】</h3><p>long sum1(int n)<br>{<br>long ret &#x3D; 0;&#x2F;&#x2F; 时间只走了一步 1  &#x2F;&#x2F; 空间 long 占 4 个字节，就是 4<br>int* arr &#x3D; (int*)malloc(n * sizeof(int));&#x2F;&#x2F; 时间只走了一步 1 &#x2F;&#x2F; 空间int4个字节，就是 4 * n<br>int i &#x3D; 0;&#x2F;&#x2F; 时间只走了一步 1  &#x2F;&#x2F; 空间 int 占 4 个字节，就是 4</p>
+<p>for (i &#x3D; 0; i &lt; n; i++)&#x2F;&#x2F; n无法确定就是n步 n &#x2F;&#x2F; 空间没有分配 是0<br>{<br>arr[i] &#x3D; i + 1;<br>}</p>
+<p>for (i &#x3D; 0; i &lt; n; i++) &#x2F;&#x2F; n无法确定就是n步 n &#x2F;&#x2F; 空间没有分配 是0<br>{<br>ret +&#x3D; arr[i];<br>}</p>
+<p>free(arr);&#x2F;&#x2F; 只走了一步 1 &#x2F;&#x2F; 空间没有分配 是0<br>return ret;&#x2F;&#x2F; 只走了一步 1 &#x2F;&#x2F; 空间没有分配 是0<br>}</p>
+<p>&#x2F;&#x2F; 从上面的例子可以看出，时间复杂度是两个n加上5步普通语句，就是 2n + 5，换算成大O表示法就是 O(n)<br>&#x2F;&#x2F; 空间复杂度，分配存储空间的是 4 * n 的大小，再算上第一句和第三句，那最终结果是 4n + 4 + 4 &#x3D;&#x3D; 4n + 8，换算成大O表示法就是 O(n)</p>
+<p>上面计算了一个简单的从1加到100的一个算法的复杂度。下面我们来看看冒泡排序的时间复杂度：</p>
+<p>void popSort(int arr[], int len)<br>{<br>&#x2F;&#x2F; 两次for循环，循环了len次，相当于 n*2，其他单步步骤不及<br>&#x2F;&#x2F; 最终转换为大O表示法就是 O(n^2)<br>for (int i &#x3D; 0; i &lt; len - 1; i++)<br>{<br>for (int j &#x3D; 0; j &lt; len - i - 1; j++)<br>{<br>if (arr[j] &gt; arr[j + 1])<br>{<br>arr[j] &#x3D; arr[j] ^ arr[j + 1];<br>arr[j + 1] &#x3D; arr[j] ^ arr[j + 1];<br>arr[j] &#x3D; arr[j] ^ arr[j + 1];<br>}<br>}<br>}<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-12T14:31:28.000Z" itemprop="datePublished">
+              2015-06-12
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

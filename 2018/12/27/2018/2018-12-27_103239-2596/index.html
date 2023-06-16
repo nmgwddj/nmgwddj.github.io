@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>VC++ 串口开、关、读、写操作及注意事项 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>VC++ 串口开、关、读、写操作及注意事项</h1>
+    </header>
+
+    <section>
+      <p>最近帮朋友做一款工具，设计到对操作系统串口的操作，虽然这个东西已经是历史产物了，但是还有很多设备再用，索性从网络上找了一些代码最终完成这个小功能。下面资料将介绍串口在打开、关闭、读和写的时候一些注意事项以及参数的配置（代码中有详细注释。）</p>
+<h2 id="串口的开关"><a href="#串口的开关" class="headerlink" title="串口的开关"></a>串口的开关</h2><p>在串口打开的时候，我们要对串口做一些基础的初始化，比如波特率、数据位、校验位、停止位几个参数，他们分别被声明在 <code>WinBase.h</code> 头文件中。 <a href="/images/2018/12/2018-12-27_10-16-33.png"><img src="/images/2018/12/2018-12-27_10-16-33.png"></a> 打开串口的代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">bool SerialPortManager::Open(ReceiveDataCallback cb/* = nullptr*/)</span><br><span class="line">&#123;</span><br><span class="line">    if (serial_handle_ != NULL)</span><br><span class="line">    &#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (cb != nullptr)</span><br><span class="line">    &#123;</span><br><span class="line">        cb_ = cb;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    serial_handle_ = CreateFile(com_.c_str(), GENERIC_READ  GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL  FILE_FLAG_OVERLAPPED, NULL);</span><br><span class="line">    if (serial_handle_ == INVALID_HANDLE_VALUE)</span><br><span class="line">    &#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 获取旧的 dcb 数据</span><br><span class="line">    DCB dcb;</span><br><span class="line">    dcb.DCBlength = sizeof(DCB);</span><br><span class="line">    if (!GetCommState(serial_handle_, &amp;dcb))</span><br><span class="line">    &#123;</span><br><span class="line">        Close();</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 修改 dcb 数据然后设置端口属性</span><br><span class="line">    // CBR_115200;</span><br><span class="line">    dcb.ByteSize = byte_size_;</span><br><span class="line">    dcb.BaudRate = baud_rate_;</span><br><span class="line">    dcb.StopBits = stop_bits_;</span><br><span class="line">    dcb.Parity = parity_;</span><br><span class="line">    dcb.fBinary = TRUE;</span><br><span class="line">    dcb.fParity = TRUE;</span><br><span class="line">    if (!SetCommState(serial_handle_, &amp;dcb))</span><br><span class="line">    &#123;</span><br><span class="line">        Close();</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 设置读写缓冲区大小</span><br><span class="line">    SetupComm(serial_handle_, 1024, 1024);</span><br><span class="line"></span><br><span class="line">    // 清空数据</span><br><span class="line">    PurgeComm(serial_handle_, PURGE_TXABORT  PURGE_RXABORT  PURGE_TXCLEAR  PURGE_RXCLEAR);</span><br><span class="line"></span><br><span class="line">    // 设置超时 10 秒</span><br><span class="line">    COMMTIMEOUTS to;</span><br><span class="line">    memset(&amp;to, 0, sizeof(to));</span><br><span class="line">    to.ReadIntervalTimeout = 1000;</span><br><span class="line">    to.ReadTotalTimeoutMultiplier = 500;</span><br><span class="line">    to.ReadTotalTimeoutConstant = 5000; //设定写超时</span><br><span class="line">    to.WriteTotalTimeoutMultiplier = 500;</span><br><span class="line">    to.WriteTotalTimeoutConstant = 2000;</span><br><span class="line">    SetCommTimeouts(serial_handle_, &amp;to);</span><br><span class="line"></span><br><span class="line">    PostReadThread();</span><br><span class="line"></span><br><span class="line">    QLOG_APP(L&quot;Serial port device is ready, serial: &#123;0&#125;, baud rate: &#123;1&#125;, byte size: &#123;2&#125;, parity: &#123;3&#125;, stop bits: &#123;4&#125;.&quot;)</span><br><span class="line">        &lt;&lt; com_ &lt;&lt; baud_rate_ &lt;&lt; byte_size_ &lt;&lt; parity_ &lt;&lt; stop_bits_;</span><br><span class="line"></span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中除了打开串口时传递的参数外，还包含了一些串口处理数据超时、读写缓冲区大小等属性，需要用到的根据自己的环境来配置。 串口的关闭很简单，只需要关闭掉 CreateFile 返回的句柄就可以了，这里不多介绍。</p>
+<h2 id="串口读写"><a href="#串口读写" class="headerlink" title="串口读写"></a>串口读写</h2><p>串口的读写可以同步也可以异步，但是同步方式会造成一个问题就是当你调用了 <code>ReadFile</code> 在等待串口数据时，再去调用 <code>WriteFile</code> 就会被阻塞，因为 <code>ReadFile</code> 一直没有返回。所以我还是推荐大家用异步方式来读写串口，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">void SerialPortManager::ReadSerialPortThread()</span><br><span class="line">&#123;</span><br><span class="line">    QLOG_APP(L&quot;PostReadThread is running....&quot;);</span><br><span class="line">    while (TRUE)</span><br><span class="line">    &#123;</span><br><span class="line">        if (!serial_handle_)</span><br><span class="line">        &#123;</span><br><span class="line">            QLOG_ERR(L&quot;Failed to read data from serial port, serial port handle is null.&quot;);</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 计算最小需要读取的数据量</span><br><span class="line">        DWORD read_size = 1024;</span><br><span class="line">        // read_size = min(read_size, (DWORD)com_stat.cbInQue);</span><br><span class="line"></span><br><span class="line">        // 开始异步读取</span><br><span class="line">        OVERLAPPED over_lapped;</span><br><span class="line">        memset(&amp;over_lapped, 0, sizeof(OVERLAPPED));</span><br><span class="line">        over_lapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);</span><br><span class="line"></span><br><span class="line">        std::shared_ptr&lt;BYTE&gt; buffer;</span><br><span class="line">        buffer.reset(new BYTE[read_size]);</span><br><span class="line">        BOOL bReadStatus = ReadFile(serial_handle_, buffer.get(), read_size, &amp;read_size, &amp;over_lapped);</span><br><span class="line">        if (!bReadStatus) // 如果 ReadFile 函数返回 FALSE</span><br><span class="line">        &#123;</span><br><span class="line">            DWORD last_error = GetLastError();</span><br><span class="line">            if (last_error == ERROR_IO_PENDING)</span><br><span class="line">            &#123;</span><br><span class="line">                QLOG_APP(L&quot;Read file return ERROR_IO_PENDING..&quot;);</span><br><span class="line">                BOOL bRet = GetOverlappedResult(serial_handle_, &amp;over_lapped, &amp;read_size, TRUE);</span><br><span class="line">                if (bRet)</span><br><span class="line">                &#123;</span><br><span class="line">                    // 返回 true 代表读取到了数据</span><br><span class="line">                    QLOG_APP(L&quot;Read data &#123;0&#125;&quot;) &lt;&lt; nbase::UTF8ToUTF16((char*)buffer.get());</span><br><span class="line">                    cb_((char*)buffer.get());</span><br><span class="line">                    PurgeComm(serial_handle_, PURGE_TXABORT  PURGE_RXABORT  PURGE_TXCLEAR  PURGE_RXCLEAR);</span><br><span class="line">                &#125;</span><br><span class="line">                else</span><br><span class="line">                &#123;</span><br><span class="line">                    // 返回 false 可能是句柄已经被 close 了</span><br><span class="line">                    QLOG_APP(L&quot;GetOverlappedResult returned false&quot;);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            QLOG_ERR(L&quot;Failed to read data from serial prot, error code = &#123;0&#125;&quot;) &lt;&lt; last_error;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    QLOG_APP(L&quot;PostReadThread is quit....&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">bool SerialPortManager::WriteData(const std::string&amp; data)</span><br><span class="line">&#123;</span><br><span class="line">    QLOG_APP(L&quot;Begin to write data [&#123;0&#125;] to serial port.&quot;) &lt;&lt; data;</span><br><span class="line"></span><br><span class="line">    DWORD bytes_written = data.size() + 1;</span><br><span class="line">    OVERLAPPED over_lapped;</span><br><span class="line">    memset(&amp;over_lapped, 0, sizeof(OVERLAPPED));</span><br><span class="line">    over_lapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);</span><br><span class="line">    BOOL write_stat = WriteFile(serial_handle_, data.c_str(), bytes_written, &amp;bytes_written, &amp;over_lapped);</span><br><span class="line">    if (!write_stat)</span><br><span class="line">    &#123;</span><br><span class="line">        DWORD last_error = GetLastError();</span><br><span class="line">        if (last_error == ERROR_IO_PENDING)</span><br><span class="line">        &#123;</span><br><span class="line">            WaitForSingleObject(over_lapped.hEvent, 2000);</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    QLOG_APP(L&quot;Finished to write data.&quot;);</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>读因为是异步操作，我们需要传一个 <code>OVERLAPPED</code> 结构体到 <code>ReadFile</code> 的最后一个参数。写也是一样，我们可以用 <code>GetOverlappedResult</code> 或 <code>WaitForSingleObject</code> 来等待操作事件完成（记得要初始化 <code>OVERLAPPED</code> 否则会报错的）。两种方式读写我都做了演示，可以根据自己的需求改造。 读写操作的时候可以获取当前返回值判断是不是 <code>ERROR_IO_PENDING</code> 来确定是不是有数据还没有读取完成。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>串口的读写其实还是相对简单的，上面代码基本上把可能出现问题的点都体现出来了，最后再来罗列一下注意事项。</p>
+<ul>
+<li>打开串口时要根据硬件情况初始化串口参数（在 WinBase.h 中有声明）</li>
+<li>设置串口的缓冲区和超时</li>
+<li>异步去读写串口通过返回值判断是否读写成功</li>
+<li>不要忘记初始化 OVERLAPPAD 结构</li>
+<li>读取完成后 PurgeComm 串口</li>
+</ul>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2018-12-27T10:32:39.000Z" itemprop="datePublished">
+              2018-12-27
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/SerialPort/">SerialPort</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>树的三种遍历方式（先序、中序、后序） | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>树的三种遍历方式（先序、中序、后序）</h1>
+    </header>
+
+    <section>
+      <p>树的遍历分很多种，经过前人总结，树的遍历其实一共就有三种方法，一种为先序遍历、一种为中序遍历、最后一种为后续遍历。他们不同的区别就是在遍历过程中查找树的根、左节点、右节点的顺序，同样由于遍历树惯用递归的方式，所以所谓的查找顺序不同就是在递归过程中打印节点数据时的代码位置不同而已，如果这句话你看的比较绕，那么在后面的代码中你将会恍然大悟。不过再看代码之前，你还是要记住下面的顺序。</p>
+<span id="more"></span>
+<h3 id="【三种遍历方式的顺序】"><a href="#【三种遍历方式的顺序】" class="headerlink" title="【三种遍历方式的顺序】"></a>【三种遍历方式的顺序】</h3><p>先序遍历：先根、再左、后右 中序遍历：先左、再根、后右 后续遍历：先坐、再右、后根 <strong>一定要注意，由于是递归，所以每当遇到一个非叶子节点的时候，都要重新应用规则（相当于代码中递归入口）</strong>。如果你还是不理解，那么我们用下面的树结构来做一个小练习。 <a href="/images/2015/06/2015-06-05_223421.png"><img src="/images/2015/06/2015-06-05_223421.png" alt="2015-06-05_223421"></a> <strong>上图使用先序遍历的顺序如下（根、左、右）：</strong> 第一步：输出根 A 第二步：遇到非叶子节点，重新应用规则，输出根 B 第三步：继续上一次的规则，输出左节点 D 第四部：继续上一次的规则，输出右节点 E 第五步：A 的左侧节点都已经遍历到并输出完毕，继续 A 遍历的右侧节点，遇到非叶子节点 C，重新应用规则，输出根 C 第六步：继续以 C 为根节点的遍历，由于 C 没有左侧节点，所以直接输出右侧节点 F 最后：遍历出来的顺序就是 A B D E C F <strong>使用中序遍历的顺序如下（左、根、右）：</strong> 第一步：找到 A 的左侧节点 B，发现其是非叶子节点，则重新应用规则向下找，B 的左节点是 D，并且没有子节点，所以遍历到底后最先输出 D 第二步：左节点找到了，按规则继续找这个左节点的根节点，输出 B 第三步：找到根节点 B 后继续找它的右节点 E，输出 E 第四步：A 的左侧节点都遍历完了，那么开始输出以 A 为根节点的根，输出 A 第五步：查找 A 的右子节点是 C ，但由于其是非叶子节点，所以重新应用规则，找 C 的左侧节点，由于 C 没有左子几点，输出根 C 第六步：输出根 C 完成后继续查找其右子节点，输出 F，右侧遍历完成 最后：遍历出来的顺序就是 D B E A C F <strong>使用后续遍历的顺序如下（左、右、根）：</strong> 第一步：找到 A 的左侧节点 B，发现其是非叶子节点，则重新应用规则向下找，B 的左节点是 D，并且没有子节点，所以遍历到底后最先输出 D 第二步：继续找以 B 为跟节点的右子节点，输出 E 第三步：找根节点，输出 C 第四步：所有左侧节点遍历完成后，继续遍历 A 的右侧节点，找到 C，但 C 是非叶子节点，所以继续找其左节点，左节点不存在继续找右节点，输出 F 第五步：右侧节点全部遍历完毕，最后输出根节点 A 最后：遍历出来的顺序就是 D E B F C A</p>
+<h3 id="【代码实现】"><a href="#【代码实现】" class="headerlink" title="【代码实现】"></a>【代码实现】</h3><p>上面我们使用逻辑思维过了一次遍历过程，下面我们就用代码实现一次，其实代码实现所谓的先序、中序、后序，只是输出语句在不同位置时则有不同的效果。代码如下：</p>
+<p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;</p>
+<p>typedef struct tag_tirTNode<br>{<br>&#x2F;&#x2F;节点的数据<br>char data;<br>&#x2F;&#x2F;左子节点指针<br>struct tag_tirTNode* leftChild;<br>&#x2F;&#x2F;右子节点指针<br>struct tag_tirTNode* rightChild;<br>}TirTNode;</p>
+<p>void showTree(TirTNode* tree)<br>{<br>if (tree &#x3D;&#x3D; NULL)<br>{<br>return;<br>}</p>
+<p>&#x2F;&#x2F; 先序遍历<br>printf(“%c “, tree-&gt;data);</p>
+<p>if (tree-&gt;leftChild !&#x3D; NULL)<br>{<br>showTree(tree-&gt;leftChild);<br>}</p>
+<p>&#x2F;&#x2F; 中序遍历<br>&#x2F;&#x2F;printf(“%c “, tree-&gt;data);</p>
+<p>if (tree-&gt;rightChild !&#x3D; NULL)<br>{<br>showTree(tree-&gt;rightChild);<br>}</p>
+<p>&#x2F;&#x2F; 后序遍历<br>printf(“%c “, tree-&gt;data);<br>}</p>
+<p>int main()<br>{<br>&#x2F;&#x2F; 定义树的节点元素<br>TirTNode treeA, treeB, treeC, treeD, treeE, treeF, treeG;</p>
+<p>&#x2F;&#x2F; 初始化<br>memset(&amp;treeA, 0, sizeof(TirTNode));<br>memset(&amp;treeB, 0, sizeof(TirTNode));<br>memset(&amp;treeC, 0, sizeof(TirTNode));<br>memset(&amp;treeD, 0, sizeof(TirTNode));<br>memset(&amp;treeE, 0, sizeof(TirTNode));<br>memset(&amp;treeF, 0, sizeof(TirTNode));<br>memset(&amp;treeG, 0, sizeof(TirTNode));</p>
+<p>treeA.data &#x3D; ‘A’;&#x2F;&#x2F; 节点值<br>treeA.leftChild &#x3D; &amp;treeB;&#x2F;&#x2F; 左子节点<br>treeA.rightChild &#x3D; &amp;treeC;&#x2F;&#x2F; 右子节点</p>
+<p>treeB.data &#x3D; ‘B’;<br>treeB.leftChild &#x3D; &amp;treeD;<br>treeB.rightChild &#x3D; &amp;treeE;</p>
+<p>treeC.data &#x3D; ‘C’;<br>treeC.leftChild &#x3D; NULL;<br>treeC.rightChild &#x3D; &amp;treeF;</p>
+<p>&#x2F;&#x2F; 让叶子节点的left和right都指向NULL<br>treeD.data &#x3D; ‘D’;<br>treeD.leftChild &#x3D; NULL;<br>treeD.rightChild &#x3D; NULL;</p>
+<p>treeE.data &#x3D; ‘E’;<br>treeE.leftChild &#x3D; NULL;<br>treeE.rightChild &#x3D; NULL;</p>
+<p>treeF.data &#x3D; ‘F’;<br>treeF.leftChild &#x3D; NULL;<br>treeF.rightChild &#x3D; NULL;</p>
+<p>showTree(&amp;treeA);</p>
+<p>return 0;<br>}</p>
+<p>从代码上我们可以看出来，所谓先序、中序、后序，在代码上只不过是输出语句 printf(“%c “, tree-&gt;data); 在进入递归代码的不同位置而起到的不同的输出作用。以上代码是先序遍历，如果你想改成中序遍历，就把进入递归前的 printf(“%c “, tree-&gt;data); 注释，然后将递归左子树下面的 printf(“%c “, tree-&gt;data); 解除注释就可以了。想改为后序遍历也是一样。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-05T22:58:49.000Z" itemprop="datePublished">
+              2015-06-05
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

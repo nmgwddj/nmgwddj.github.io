@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>函数模版与类模版 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>函数模版与类模版</h1>
+    </header>
+
+    <section>
+      <p>模版是泛型编程中一种重要的手段，泛型编程意思是让多种数据类型的数据都可以在一个代码段算法中使用。泛型的代表作就是STL。其中模版则是让数据类型参数化，让调用者在使用的时候，多传递一个操作数据的类型便可以调用一份“参数个数相同而类型不同，且函数体相同”的代码段，这个代码段可以让多种数据类型都可以计算出正确的结果。我们首先来看一个常规情况下函数重载的例子。</p>
+<span id="more"></span>
+<p>#include <iostream><br> <br>using namespace std;<br> <br>int Max(int a, int b)<br>{<br>return a &gt; b ? a : b;<br>}<br> <br>double Max(double a, double b)<br>{<br>return a &gt; b ? a : b;<br>}<br> <br>int main(int argc, char* argv[])<br>{<br>cout &lt;&lt; Max(15, 22) &lt;&lt; endl;<br>cout &lt;&lt; Max(12.4, 18.7) &lt;&lt; endl;<br> <br>return 0;<br>}</p>
+<p>上面代码中重载了 Max 函数，让调用者可以操作两种类型的数据，一种是int，一种的double，而一旦我们再想操作一个其他类型，就必须要重写一份 Max 函数来构成重载。而如果用函数模版的方式来解决这个问题，将是非常简单的。代码如下：</p>
+<p>#include <iostream><br>#include <string><br> <br>using namespace std;<br> <br>&#x2F;&#x2F; 声明一个模版<br>template<typename T><br> <br>&#x2F;&#x2F; 利用模版，把函数里面的类型全部替换掉<br>T Max(T a, T b)<br>{<br>return a &gt; b ? a : b;<br>}<br> <br>int main(int argc, char* argv[])<br>{<br>cout &lt;&lt; Max(15, 22) &lt;&lt; endl;<br>cout &lt;&lt; Max(12.4, 18.7) &lt;&lt; endl;<br>cout &lt;&lt; Max(11.4, 28.5) &lt;&lt; endl;<br>cout &lt;&lt; Max(“abcd”, “efgh”) &lt;&lt; endl;<br> <br>return 0;<br>}</p>
+<p>以上便阐述了函数模版存在的价值以及简单的实现方法，下面我们看一下类模版。同样，类模版也是为了解决上面类似的问题。</p>
+<p>#include <iostream><br>#include <string><br> <br>using namespace std;</p>
+<p>template<typename T><br>class TemplateTest<br>{<br>public:<br>T Max(T a, T b);<br>};</p>
+<p>&#x2F;&#x2F; 每一个实现的前方都要加这段语句<br>template<typename T><br>T TemplateTest<T>::Max(T a, T b)<br>{<br>return a &gt; b ? a : b;<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>TemplateTest<int> t;<br>cout &lt;&lt; t.Max(10, 20) &lt;&lt; endl;<br> <br>TemplateTest<double> t1;<br>cout &lt;&lt; t1.Max(15.2, 20.3) &lt;&lt; endl;<br>return 0;</p>
+<p>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-25T15:53:24.000Z" itemprop="datePublished">
+              2015-05-25
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%A8%A1%E7%89%88/">模版</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

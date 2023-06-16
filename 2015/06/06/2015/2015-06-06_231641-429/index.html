@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>求二叉树高度 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>求二叉树高度</h1>
+    </header>
+
+    <section>
+      <p>二叉树的高度就是从根节点到最深的叶子节点之间的节点数，计算方法使用递归时，判断如果到了树的叶子节点那么就返回0。依次遍历左侧和右侧节点的数量，然后求出最大值再算上当前根节点的数量+1，递归循环返回后得出最终的结果。代码如下：</p>
+<span id="more"></span>
+<p>int depthTree(TirTNode* tree)<br>{<br>if (NULL &#x3D;&#x3D; tree) return 0;<br>&#x2F;&#x2F; 计算左子树的高度<br>int left &#x3D; depthTree(tree-&gt;leftChild);<br>&#x2F;&#x2F; 计算右子树的高度<br>int right &#x3D; depthTree(tree-&gt;rightChild);<br>&#x2F;&#x2F; 记录左子树和右子树最深的数量<br>int max &#x3D; left &gt; right ? left : right;<br>&#x2F;&#x2F; 将高度+1，相当于加上了根节点的数量<br>max++;<br>&#x2F;&#x2F; 返回结果<br>return max;<br>}</p>
+<p>调用时只需要一句话就可以得到结果了。</p>
+<p>printf(“tree height is : %d\n”, depthTree(&amp;treeA));</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-06T23:16:41.000Z" itemprop="datePublished">
+              2015-06-06
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

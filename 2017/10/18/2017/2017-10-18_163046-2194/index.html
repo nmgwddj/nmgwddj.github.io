@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>在 react-router 环境下使用 antd-mobile tabbar | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>在 react-router 环境下使用 antd-mobile tabbar</h1>
+    </header>
+
+    <section>
+      <p>本文阐述了如何在一个使用了 react-router 的 react 项目中合理的使用 antd-mobile tabbar 功能。在 <a target="_blank" rel="noopener" href="http://beta.mobile.ant.design/components/tab-bar-cn/">antd-mobile 官方的例子中</a>可以看到，只需要将不同的组件放置到每个 <code>TabBar.Item</code> 里面就可以了，这样就可以实现简单的切换效果，但是存在几个问题。 一个是切换过程中，路由是不会跟着切换的。比如我们想分享一个地址，当其他人打开这个地址时自动就跳转到第二个 tab 上。如果按上面的方法做是无法实现的。 另外一个问题是这样的设计不太符合大型项目的框架设计，我们往往会制作一些 layouts，给不同的组件匹配不同的 layout。如果按上面介绍的方法做，也是不好实现的。 综合以上两点问题，再加上 Google 了一些资料后，写下本文，以帮助更多遇到类似问题的人。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>首先定义四个路由分别指定不同的 component，要注意的是这四个路由都统一使用一个 layout，这也就解决了一些大型项目中分多种 layout 的问题。如下代码所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;Router history=&#123;browserHistory&#125;&gt;</span><br><span class="line">  &#123;/* MainLayout 中包含了 antd-mobile tabbar */&#125;</span><br><span class="line">  &lt;Route path=&#x27;/&#x27; component=&#123;MainLayout&#125;&gt;</span><br><span class="line">    &#123;/* 默认跳转到 questions 页面 */&#125;</span><br><span class="line">    &lt;IndexRedirect to=&#x27;/questions&#x27; /&gt;</span><br><span class="line">    &lt;Route path=&#x27;/questions&#x27; component=&#123;Questions&#125; /&gt;</span><br><span class="line">    &lt;Route path=&#x27;/activities&#x27; component=&#123;Activities&#125; /&gt;</span><br><span class="line">    &lt;Route path=&#x27;/videos&#x27; component=&#123;Videos&#125; /&gt;</span><br><span class="line">    &lt;Route path=&#x27;/mine&#x27; component=&#123;Mine&#125; /&gt;</span><br><span class="line">  &lt;/Route&gt;</span><br><span class="line">&lt;/Router&gt;</span><br></pre></td></tr></table></figure>
+
+<p>随后我们看一下 mainLayout 的代码:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">const MainLayout = (&#123;children&#125;) =&gt; &#123;</span><br><span class="line">  const pathname = children.props.location.pathname</span><br><span class="line"></span><br><span class="line">  return (</span><br><span class="line">    &lt;TabBar</span><br><span class="line">      unselectedTintColor=&#x27;#949494&#x27;</span><br><span class="line">      tintColor=&#x27;#33A3F4&#x27;</span><br><span class="line">      barTintColor=&#x27;white&#x27;</span><br><span class="line">    &gt;</span><br><span class="line">      &lt;TabBar.Item</span><br><span class="line">        title=&#x27;问答&#x27;</span><br><span class="line">        key=&#x27;questions&#x27;</span><br><span class="line">        icon=&#123;&lt;div className=&#x27;questions-icon&#x27; /&gt;&#125;</span><br><span class="line">        selectedIcon=&#123;&lt;div className=&#x27;questions-selected-icon&#x27; /&gt;&#125;</span><br><span class="line">        selected=&#123;pathname === &#x27;/questions&#x27;&#125;</span><br><span class="line">        onPress=&#123;() =&gt; &#123;</span><br><span class="line">          browserHistory.push(&#x27;/questions&#x27;)</span><br><span class="line">        &#125;&#125;</span><br><span class="line">      &gt;</span><br><span class="line">        &#123; pathname === &#x27;/questions&#x27; ? children : null &#125;</span><br><span class="line">      &lt;/TabBar.Item&gt;</span><br><span class="line">      &lt;TabBar.Item</span><br><span class="line">        title=&#x27;活动&#x27;</span><br><span class="line">        key=&#x27;activities&#x27;</span><br><span class="line">        icon=&#123;&lt;div className=&#x27;activities-icon&#x27; /&gt;&#125;</span><br><span class="line">        selectedIcon=&#123;&lt;div className=&#x27;activities-selected-icon&#x27; /&gt;&#125;</span><br><span class="line">        selected=&#123;pathname === &#x27;/activities&#x27;&#125;</span><br><span class="line">        onPress=&#123;() =&gt; &#123;</span><br><span class="line">          browserHistory.push(&#x27;/activities&#x27;)</span><br><span class="line">        &#125;&#125;</span><br><span class="line">      &gt;</span><br><span class="line">        &#123; pathname === &#x27;/activities&#x27; ? children : null &#125;</span><br><span class="line">      &lt;/TabBar.Item&gt;</span><br><span class="line">      &lt;TabBar.Item</span><br><span class="line">        title=&#x27;视频&#x27;</span><br><span class="line">        key=&#x27;videos&#x27;</span><br><span class="line">        icon=&#123;&lt;div className=&#x27;videos-icon&#x27; /&gt;&#125;</span><br><span class="line">        selectedIcon=&#123;&lt;div className=&#x27;videos-selected-icon&#x27; /&gt;&#125;</span><br><span class="line">        selected=&#123;pathname === &#x27;/videos&#x27;&#125;</span><br><span class="line">        onPress=&#123;() =&gt; &#123;</span><br><span class="line">          browserHistory.push(&#x27;/videos&#x27;)</span><br><span class="line">        &#125;&#125;</span><br><span class="line">      &gt;</span><br><span class="line">        &#123; pathname === &#x27;/videos&#x27; ? children : null &#125;</span><br><span class="line">      &lt;/TabBar.Item&gt;</span><br><span class="line">      &lt;TabBar.Item</span><br><span class="line">        title=&#x27;我的&#x27;</span><br><span class="line">        key=&#x27;mine&#x27;</span><br><span class="line">        icon=&#123;&lt;div className=&#x27;mine-icon&#x27; /&gt;&#125;</span><br><span class="line">        selectedIcon=&#123;&lt;div className=&#x27;mine-selected-icon&#x27; /&gt;&#125;</span><br><span class="line">        selected=&#123;pathname === &#x27;/mine&#x27;&#125;</span><br><span class="line">        onPress=&#123;() =&gt; &#123;</span><br><span class="line">          browserHistory.push(&#x27;/mine&#x27;)</span><br><span class="line">        &#125;&#125;</span><br><span class="line">      &gt;</span><br><span class="line">        &#123; pathname === &#x27;/mine&#x27; ? children : null &#125;</span><br><span class="line">      &lt;/TabBar.Item&gt;</span><br><span class="line">    &lt;/TabBar&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里重点的代码就是 <code>pathname === &#39;/questions&#39; ? children : null</code>，根据当前路由判断加载不同的 component，并且在点击任何一个按钮的时候，自动跳转到指定的路由上。其中 selected 属性也根据路由动态的变换样式。路由传递给 mainLayout 是一个 children，这个 children 中就包含了组件的信息，我们根据路由的不同加载即可。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这样处理后无论我们直接访问 URL 还是点击 tabbar 下面的任意按钮，不但可以切换页面，路由也会随之变动。最重要的是我们套用了 layout，让项目看起来更加合理。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-10-18T16:30:46.000Z" itemprop="datePublished">
+              2017-10-18
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

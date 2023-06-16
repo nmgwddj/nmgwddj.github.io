@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>自己常用的 Sublime Text3 属性设置 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>自己常用的 Sublime Text3 属性设置</h1>
+    </header>
+
+    <section>
+      <p>用过了诸多的编辑器，Atom、VSCode、Webstorm 等等，最终我还是留在了 Sublime Text3 阵营，其优点对于我来说必定是多余其他编辑器。比如启动速度快、有强大且完善的插件社区等。因为经常换工作系统和环境，所以记录一下 Sublime Text3 的一些常用的用户设置。不用每次都去查询了。</p>
+<span id="more"></span>
+<h2 id="Packages-Control-安装代码"><a href="#Packages-Control-安装代码" class="headerlink" title="Packages Control 安装代码"></a>Packages Control 安装代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import urllib.request,os,hashlib; h = &#x27;2915d1851351e5ee549c20394736b442&#x27; + &#x27;8bc59f460fa1548d1514676163dafc88&#x27;; pf = &#x27;Package Control.sublime-package&#x27;; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( &#x27;http://packagecontrol.io/&#x27; + pf.replace(&#x27; &#x27;, &#x27;%20&#x27;)).read(); dh = hashlib.sha256(by).hexdigest(); print(&#x27;Error validating download (got %s instead of %s), please try manual install&#x27; % (dh, h)) if dh != h else open(os.path.join( ipp, pf), &#x27;wb&#x27; ).write(by)</span><br></pre></td></tr></table></figure>
+
+<h2 id="常用属性设置"><a href="#常用属性设置" class="headerlink" title="常用属性设置"></a>常用属性设置</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&quot;font_face&quot;: &quot;Monaco&quot;,          // 字体</span><br><span class="line">&quot;font_size&quot;: 11,                // 字体大小</span><br><span class="line">&quot;hot_exit&quot;: false,              // 是否出现保存提示</span><br><span class="line">&quot;tab_size&quot;: 2,                  // 缩进大小</span><br><span class="line">&quot;word_wrap&quot;: false,             // 自动换行</span><br><span class="line">&quot;remember_open_files&quot;: false    // 记住上次打开的文件</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-06-24T17:32:35.000Z" itemprop="datePublished">
+              2016-06-24
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/sublime-text/">sublime text</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

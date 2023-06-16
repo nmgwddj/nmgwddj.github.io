@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>重载 new、delete 检测内存泄露 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>重载 new、delete 检测内存泄露</h1>
+    </header>
+
+    <section>
+      <p>内存泄露带来的问题我想我就不必多少了，检测内存泄露有很多种方法，比如使用一些智能指针。但本文介绍的方法有些不同，我们将自己维护一个数组列表，记录下 new 内存时代码所在的文件、行号、以及大小、和是否已经被 delete 信息，将这些信息放到我们维护的数组中，当程序要检查内存泄露或者程序退出时，我们遍历整个堆内存，并把每一个堆内存块在我们维护的数组中遍历，如果发现某些内存并没有被标记为 delete 状态，那么则判定为泄露。</p>
+<span id="more"></span>
+<h2 id="代码示意图"><a href="#代码示意图" class="headerlink" title="代码示意图"></a>代码示意图</h2><p><a href="/images/2016/04/2016-04-15_114609.png"><img src="/images/2016/04/2016-04-15_114609.png" alt="2016-04-15_114609"></a></p>
+<h2 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h2><p>这里的代码巧妙的用到了 Visual Studio 一个小技巧，在输出窗口中输入文件+行号后，我们可以双击这一行的内容快速定位到文件和具体行。先看一下效果图。 <a href="/images/2016/04/2016-04-15_114209.png"><img src="/images/2016/04/2016-04-15_114209.png" alt="2016-04-15_114209"></a></p>
+<h2 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码"></a>实现代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;tchar.h&gt;</span><br><span class="line">#include &lt;windows.h&gt;</span><br><span class="line">#include &lt;strsafe.h&gt;</span><br><span class="line"></span><br><span class="line">#define H_ALLOC(sz)        HeapAlloc(GetProcessHeap(),0,sz)</span><br><span class="line">#define H_CALLOC(sz)   HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY,sz)</span><br><span class="line">#define H_REALLOC(p,sz) HeapReAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY,p,sz)</span><br><span class="line">#define H_FREE(p)      HeapFree(GetProcessHeap(),0,p)</span><br><span class="line"></span><br><span class="line">//支持memory leak 的new 和 delete 主要用于调试</span><br><span class="line">#ifdef _DEBUG</span><br><span class="line"></span><br><span class="line">typedef struct _ST_BLOCK_INFO</span><br><span class="line">&#123;</span><br><span class="line">    TCHAR m_pszSourceFile[MAX_PATH];    // 执行 new 语句的源文件</span><br><span class="line">    INT   m_iSourceLine;                // 执行 new 语句的行号</span><br><span class="line">    BOOL  m_bDelete;                    // 是否被 DELETE</span><br><span class="line">    VOID* m_pMemBlock;                  // 内存起始地址</span><br><span class="line">&#125;ST_BLOCK_INFO,*PST_BLOCK_INFO;</span><br><span class="line"></span><br><span class="line">HANDLE         g_hBlockInfoHeap = NULL; // 用以存放管理数组的堆</span><br><span class="line"></span><br><span class="line">UINT           g_nMaxBlockCnt = 100;    // 默认让管理 new 次数的数组有 100 个成员</span><br><span class="line">UINT           g_nCurBlockIndex = 0;    // 默认起始下标 0</span><br><span class="line">PST_BLOCK_INFO g_pMemBlockList = NULL;  // 管理 new 次数的数组其实地址默认为 NULL，需要为其单独创建一个堆实现动态扩容</span><br><span class="line"></span><br><span class="line">void* __cdecl operator new(size_t nSize,LPCTSTR pszCppFile,int iLine)</span><br><span class="line">&#123;</span><br><span class="line">    // 如果管理数组当前已经分配了堆内存</span><br><span class="line">    if(NULL != g_pMemBlockList)</span><br><span class="line">    &#123;   </span><br><span class="line">        // 比较是否超出了最大成员数</span><br><span class="line">        if( g_nCurBlockIndex &gt;= g_nMaxBlockCnt )    </span><br><span class="line">        &#123;</span><br><span class="line">            //如果当前块信息超过最大值,那么就扩大数组</span><br><span class="line">            g_nMaxBlockCnt *= 2;</span><br><span class="line">            g_pMemBlockList = (PST_BLOCK_INFO)HeapReAlloc(g_hBlockInfoHeap,HEAP_ZERO_MEMORY,g_pMemBlockList,g_nMaxBlockCnt * sizeof(ST_BLOCK_INFO));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        // 如果还没有给管理数组创建堆</span><br><span class="line">        if( NULL == g_hBlockInfoHeap )</span><br><span class="line">        &#123;</span><br><span class="line">            //如果块信息堆还没有创建那么就创建,并设置为LFH</span><br><span class="line">            g_hBlockInfoHeap = HeapCreate(HEAP_GENERATE_EXCEPTIONS,0,0);</span><br><span class="line">            ULONG  HeapFragValue = 2;</span><br><span class="line">            HeapSetInformation( g_hBlockInfoHeap,HeapCompatibilityInformation,&amp;HeapFragValue ,sizeof(HeapFragValue) ) ;</span><br><span class="line">        &#125;</span><br><span class="line">        //申请块信息数组</span><br><span class="line">        g_pMemBlockList = (PST_BLOCK_INFO)HeapAlloc(g_hBlockInfoHeap,HEAP_ZERO_MEMORY,g_nMaxBlockCnt * sizeof(ST_BLOCK_INFO));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 分配内存</span><br><span class="line">    void* pRet = H_ALLOC(nSize);</span><br><span class="line"></span><br><span class="line">    //记录当前这个分配操作的信息</span><br><span class="line">    g_pMemBlockList[g_nCurBlockIndex].m_pMemBlock   = pRet;                                 // 记录起始地址</span><br><span class="line">    StringCchCopy(g_pMemBlockList[g_nCurBlockIndex].m_pszSourceFile,MAX_PATH,pszCppFile);   // 记录执行 new 的文件</span><br><span class="line">    g_pMemBlockList[g_nCurBlockIndex].m_iSourceLine = iLine;                                // 记录执行 new 的行号</span><br><span class="line">    g_pMemBlockList[g_nCurBlockIndex].m_bDelete     = FALSE;                                // 刚申请，将 DELETE 置为 FALSE</span><br><span class="line"></span><br><span class="line">    // 管理 new 次数的数组索引下标 ++</span><br><span class="line">    ++ g_nCurBlockIndex;</span><br><span class="line"></span><br><span class="line">    // 返回实际分配的内存地址</span><br><span class="line">    return pRet;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void __cdecl operator delete(void* p)</span><br><span class="line">&#123;</span><br><span class="line">    for( UINT i = 0;i &lt; g_nCurBlockIndex; i ++ )</span><br><span class="line">    &#123;</span><br><span class="line">        //遍历块信息数组,找到对应的块信息,打上已删除标记  </span><br><span class="line">        if( p == g_pMemBlockList[i].m_pMemBlock )</span><br><span class="line">        &#123;</span><br><span class="line">            g_pMemBlockList[i].m_bDelete = TRUE;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    H_FREE(p);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void __cdecl operator delete(void* p,LPCTSTR pszCppFile,int iLine)</span><br><span class="line">&#123;</span><br><span class="line">    ::operator delete(p);</span><br><span class="line">    H_FREE(p);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void GRSMemoryLeak(BOOL bDestroyHeap = FALSE)</span><br><span class="line">&#123;//内存泄露检测</span><br><span class="line">    TCHAR pszOutPutInfo[2*MAX_PATH];</span><br><span class="line">    BOOL  bRecord = FALSE;</span><br><span class="line">    PROCESS_HEAP_ENTRY phe = &#123;&#125;;</span><br><span class="line">    HeapLock(GetProcessHeap());</span><br><span class="line">    OutputDebugString(_T(&quot;开始检查内存泄露情况.........\n&quot;));</span><br><span class="line"></span><br><span class="line">    //遍历进程默认堆</span><br><span class="line">    while (HeapWalk(GetProcessHeap(), &amp;phe))</span><br><span class="line">    &#123;</span><br><span class="line">        // 如果是已分配内存</span><br><span class="line">        if( PROCESS_HEAP_ENTRY_BUSY &amp; phe.wFlags )</span><br><span class="line">        &#123;</span><br><span class="line">            bRecord = FALSE;</span><br><span class="line">            // 查找我们维护的数组中这个块是否被标记为 delete</span><br><span class="line">            for(UINT i = 0; i &lt; g_nCurBlockIndex; i ++ )</span><br><span class="line">            &#123;</span><br><span class="line">                if( phe.lpData == g_pMemBlockList[i].m_pMemBlock )</span><br><span class="line">                &#123;</span><br><span class="line">                    if(!g_pMemBlockList[i].m_bDelete)</span><br><span class="line">                    &#123;</span><br><span class="line">                        // 如果未标记 delete，则判定为内存泄露</span><br><span class="line">                        StringCchPrintf(pszOutPutInfo,2*MAX_PATH,_T(&quot;%s(%d):检查到内存泄露，内存块(Point=0x%08X,Size=%u)\n&quot;)</span><br><span class="line">                            ,g_pMemBlockList[i].m_pszSourceFile,g_pMemBlockList[i].m_iSourceLine,phe.lpData,phe.cbData);</span><br><span class="line">                        OutputDebugString(pszOutPutInfo);</span><br><span class="line">                    &#125;</span><br><span class="line">                    bRecord = TRUE;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            // 如果没有在我们维护的列表中发现这个内存块的申请信息，那么输出未记录内存</span><br><span class="line">            if( !bRecord )</span><br><span class="line">            &#123;</span><br><span class="line">                StringCchPrintf(pszOutPutInfo,2*MAX_PATH,_T(&quot;未记录的内存块(Point=0x%08X,Size=%u)\n&quot;)</span><br><span class="line">                    ,phe.lpData,phe.cbData);</span><br><span class="line">                //OutputDebugString(pszOutPutInfo);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    HeapUnlock(GetProcessHeap());</span><br><span class="line">    OutputDebugString(_T(&quot;内存泄露检查完毕.\n&quot;));</span><br><span class="line">    if( bDestroyHeap )</span><br><span class="line">    &#123;</span><br><span class="line">        HeapDestroy(g_hBlockInfoHeap);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//__FILE__预定义宏的宽字符版本</span><br><span class="line">#define GRS_WIDEN2(x) L ## x</span><br><span class="line">#define GRS_WIDEN(x) GRS_WIDEN2(x)</span><br><span class="line">#define __WFILE__ GRS_WIDEN(__FILE__)</span><br><span class="line"></span><br><span class="line">#define new new(__WFILE__,__LINE__)</span><br><span class="line">#define delete(p) ::operator delete(p,__WFILE__,__LINE__)</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">int _tmain()</span><br><span class="line">&#123;</span><br><span class="line">    int* pInt1 = new int;</span><br><span class="line">    int* pInt2 = new int;</span><br><span class="line">    float* pFloat1 = new float;</span><br><span class="line"></span><br><span class="line">    BYTE* pBt = new BYTE[100];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    delete pInt2;</span><br><span class="line"></span><br><span class="line">    GRSMemoryLeak();</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-04-15T11:52:03.000Z" itemprop="datePublished">
+              2016-04-15
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

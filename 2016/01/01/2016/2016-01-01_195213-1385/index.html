@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Sublime Text 2/3 高亮多余空格插件 TrailingSpaces | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Sublime Text 2/3 高亮多余空格插件 TrailingSpaces</h1>
+    </header>
+
+    <section>
+      <p>在编写代码的过程中，难免会有多按下回车、多按一个空格的情况，这种情况虽然肉眼很难看到，但是在 git 的圈子里，这种情况是不被允许的，为什么呢？我们来看一下下面的图片：</p>
+<span id="more"></span>
+<p><a href="/images/2016/01/2016-01-01-19.19.23.png"><img src="/images/2016/01/2016-01-01-19.19.23.png" alt="2016-01-01 19.19.23"></a> 这是在命令行下，使用 git diff 命令查看的代码修改时，代码修改的每一处细节都会体现出来，包括空格，上图中可以看到，这些空格虽然对代码执行没有影响，但是会红色高亮显示，这就是告诉你，这样的代码是不“完美”的，如果你发了一个这样的 pull request，那么很有可能就会被忽略掉。 那么在编写代码的过程中，如何避免这种情况出现呢？那么就有请本文的主角 <code>TrailingSpaces</code>，它是一款 Sublime Text 2&#x2F;3 的插件，可以在你编写代码的过程中，就高亮显示出多余的空格，不必你在 git diff 的时候再去一个文件一个文件的对比。这样不但提高了效率，而且也间接的养成了良好的编写代码习惯。它的效果如下图： <a href="/images/2016/01/2016-01-01-19.16.58.png"><img src="/images/2016/01/2016-01-01-19.16.58-1024x282.png" alt="2016-01-01 19.16.58"></a></p>
+<h3 id="安装-TrailingSpaces"><a href="#安装-TrailingSpaces" class="headerlink" title="安装 TrailingSpaces"></a>安装 TrailingSpaces</h3><p>在 Sublime Text 2&#x2F;3 中，按 <code>⌘⇧P</code> 显示出安装插件的列表，输入 <code>Install Package</code> 后回车稍等几秒，如下图：（如果你尚未安装 <code>Package Control</code>，需要先安装它，否则无法安装其他插件，安装 <code>Package Control</code> 需要翻墙） <a href="/images/2016/01/2016-01-01-19.29.13.png"><img src="/images/2016/01/2016-01-01-19.29.13-1024x118.png" alt="2016-01-01 19.29.13"></a> 等待一会出现插件搜索安装列表，输入 <code>TrailingSpaces</code> 搜索到直接按回车安装即可。安装完成后关闭 Sublime Text 编辑器再开启就可以看到效果了。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-01-01T19:52:13.000Z" itemprop="datePublished">
+              2016-01-01
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/sublime-text/">sublime text</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

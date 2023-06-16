@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>C与C++申请堆内存的不同 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>C与C++申请堆内存的不同</h1>
+    </header>
+
+    <section>
+      <p>C 没有关键字可以申请堆内存，只提供了一些库函数如malloc、calloc、realloc等。而C++提供了一个一系列新的关键字来处理堆内存，那就是new和delete，下面示例代码分别编写了C和C++各种申请内存的方式。</p>
+<span id="more"></span>
+<p>#if __cplusplus<br>#include <iostream><br>using namespace std;<br>#else<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#endif<br> <br> <br>int main(int argc, char* argv[])<br>{<br>#if __cplusplus<br>&#x2F;&#x2F; 申请单变量，可直接使用小括号初始化<br>int* p &#x3D; new int(5);<br>&#x2F;&#x2F; 申请数组<br>int* pa &#x3D; new int[10];<br>&#x2F;&#x2F; 申请指针数组<br>char **pp &#x3D; new char*[5];<br>&#x2F;&#x2F; 申请一个两行三列的数组指针<br>int (*pAp)[3] &#x3D; new int[2][3];<br> <br>&#x2F;&#x2F; 释放单个变量空间<br>&#x2F;&#x2F; 释放数组变量空间，无论数据纬度是多少，都只需要一个[]<br>delete p;<br>delete [] pa;<br>delete pp;<br>delete pAp;<br>#else<br>&#x2F;&#x2F; 申请单变量<br>int* p &#x3D; (int*)malloc(sizeof(int));<br>printf(“%d\n”, *p);<br>&#x2F;&#x2F; 申请数组<br>int* pa &#x3D; (int*)malloc(sizeof(int) * 10);<br>&#x2F;&#x2F; 申请指针数组<br>char **pp &#x3D; (char**)malloc(sizeof(char*) * 5);<br> <br>&#x2F;&#x2F; 无论单变量还是数组等，均传递首地址即可<br>free(p);<br>free(pa);<br>free(pp);<br>#endif<br> <br>#if __cplusplus<br>getchar();<br>#else<br>system(“pause”);<br>#endif<br> <br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-12T21:55:13.000Z" itemprop="datePublished">
+              2015-05-12
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

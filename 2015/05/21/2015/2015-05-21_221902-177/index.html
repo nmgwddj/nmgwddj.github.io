@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>运算符重载流输入输出&lt;&lt; &gt;&gt; | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>运算符重载流输入输出&lt;&lt; &gt;&gt;</h1>
+    </header>
+
+    <section>
+      <p>流输入输出运算符 &gt;&gt; &lt;&lt; 比较简单，C++提供了固定的格式，语法上并不是非常难，你只需要记住 istream 和 ostream 这两个类就可以了。本文使用了友元函数方式来实现。具体实现的代码如下，请注意看返回 istream 和 ostream 引用的原因是为了可以使用连续的&gt;&gt;或&lt;&lt;操作符来输入输出。</p>
+<span id="more"></span>
+<p>#include <iostream></p>
+<p>using namespace std;</p>
+<p>class Complex<br>{<br>public:<br>Complex(float x &#x3D; 0, float y &#x3D; 0)<br>:_x(x), _y(y) {}</p>
+<p>friend istream&amp; operator&gt;&gt;(istream&amp; is, Complex&amp; another);<br>friend ostream&amp; operator&lt;&lt;(ostream&amp; os, Complex&amp; another);</p>
+<p>private:<br>float _x;<br>float _y;<br>};</p>
+<p>istream&amp; operator&gt;&gt;(istream&amp; is, Complex&amp; another)<br>{<br>is &gt;&gt; another._x &gt;&gt; another._y;<br>return is;<br>}</p>
+<p>ostream&amp; operator&lt;&lt;(ostream&amp; os, Complex&amp; another)<br>{<br>os &lt;&lt; another._x &lt;&lt; “ “ &lt;&lt;  another._y &lt;&lt; endl;<br>return os;<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>Complex c, c2;<br>&#x2F;&#x2F; 考虑连等的情况，实现函数要返回 istream 对象的引用<br>cin &gt;&gt; c &gt;&gt; c2;<br>cout &lt;&lt; c &lt;&lt; c2;</p>
+<p>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-21T22:19:02.000Z" itemprop="datePublished">
+              2015-05-21
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%8F%8B%E5%85%83/">友元</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

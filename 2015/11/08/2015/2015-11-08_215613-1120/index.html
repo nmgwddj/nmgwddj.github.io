@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>JavaScript DOM 操作创建和追加节点 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>JavaScript DOM 操作创建和追加节点</h1>
+    </header>
+
+    <section>
+      <p>jQuery 有一个 append 方法，就是在某个元素基础上追加一些元素，但实际内部实现是需要先创建在追加，下面代码演示了一个创建 ul 和 li 的过程。注意：如果操作已有节点，那么已有节点会发生物理位置移动的现象。</p>
+<span id="more"></span>
+<h3 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码"></a>实现代码</h3><p>var obj_ul &#x3D; document.createElement(“ul”);<br>var province &#x3D; [“辽宁”, “浙江”, “河南”];<br>var city &#x3D; [“shenyang”, “hangzhou”, “zhengzhou”];<br>for (var key in province) {<br>  &#x2F;&#x2F; 创建 li<br>  var obj_li &#x3D; document.createElement(“li”);<br>  var text &#x3D; document.createTextNode(province[key]);<br>  &#x2F;&#x2F; 把新建的文本追加到 li 中<br>  obj_li.appendChild(text);<br>  &#x2F;&#x2F; 给 li 添加 id 属性<br>  obj_li.setAttribute(“id”, city[key]);<br>  &#x2F;&#x2F; 把 li 追加到 ul<br>  obj_ul.appendChild(obj_li);<br>}<br>&#x2F;&#x2F; 将新建的 ul 追加到 body<br>document.getElementsByTagName(“body”)[0].appendChild(obj_ul);</p>
+<p>&#x2F;&#x2F; 在指定节点位置前追加一个元素<br>var new_li &#x3D; document.createElement(“li”);<br>var new_text &#x3D; document.createTextNode(“广东”);<br>new_li.setAttribute(“id”, “guangzhou”);<br>new_li.appendChild(new_text);<br>&#x2F;&#x2F; 在指定位置追加<br>var obj_zj &#x3D; document.getElementById(“hangzhou”);<br>document.getElementsByTagName(“ul”)[0].insertBefore(new_li, obj_zj);<br>&#x2F;&#x2F; 替换<br>document.getElementsByTagName(“ul”)[0].replaceChild(new_li, obj_zj);</p>
+<h3 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h3><p><a href="/images/2015/11/Screen-Shot-2015-11-08-at-9.55.29-PM.png"><img src="/images/2015/11/Screen-Shot-2015-11-08-at-9.55.29-PM-300x66.png" alt="Screen Shot 2015-11-08 at 9.55.29 PM"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-11-08T21:56:13.000Z" itemprop="datePublished">
+              2015-11-08
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/DOM/">DOM</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

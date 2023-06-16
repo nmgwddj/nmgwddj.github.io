@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>运算符重载 - （负号）操作符 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>运算符重载 - （负号）操作符</h1>
+    </header>
+
+    <section>
+      <p>本文介绍重载符号操作符 -，他与减号操作符是一样的，那我们该如何区分开呢？其实符号操作符属于单目运算符，操作数只有一个。而减号操作符则是双目运算符，操作符需要两个才可以，这样我们在重载的时候，只要将控制了操作数，系统就知道我们到底是在重载哪个操作符了。</p>
+<span id="more"></span>
+<p>符号操作符重载问题比较多，特别是代码中返回值用 const 以及将函数修饰为 const 的必要性。在代码中我们均有注释，请大家细细品味。</p>
+<p>#include <iostream></p>
+<p>using namespace std;</p>
+<p>class Complex<br>{<br>public:<br>Complex(float x, float y)<br>:_x(x), _y(y) {}</p>
+<p>void display()<br>{<br>cout &lt;&lt; “(x &#x3D; “ &lt;&lt; _x &lt;&lt; “, y &#x3D; “ &lt;&lt; _y &lt;&lt; “)” &lt;&lt; endl;<br>}</p>
+<p>&#x2F;&#x2F; 前 const 防止出现这种语句 -c1 &#x3D; Complex(4, 5);<br>&#x2F;&#x2F; 后 const 解决加了前 const 以后导致 -(-c1) 这种语法不通过<br>const Complex operator-() const<br>{<br>&#x2F;&#x2F; 返回一个临时对象<br>return Complex(-this-&gt;_x, -this-&gt;_y);<br>}</p>
+<p>private:<br>float _x;<br>float _y;<br>};</p>
+<p>int main(int argc, char* argv[])<br>{<br>&#x2F;*<br>基础数据类型的案例<br>int n &#x3D; 10;<br>cout &lt;&lt; n &lt;&lt; endl;<br>cout &lt;&lt; -n &lt;&lt; endl;&#x2F;&#x2F; 返回临时对象<br>cout &lt;&lt; -(-n) &lt;&lt; endl;<br>*&#x2F;<br>Complex c1(1, 2);<br>Complex c2 &#x3D; -c1;<br>c2.display();<br>c1.display();</p>
+<p>&#x2F;&#x2F; 普通对象调用 const 函数，保证操作数原值不被修改</p>
+<p>Complex c3 &#x3D; -(-c1);<br>c3.display();</p>
+<p>&#x2F;&#x2F; 这种语法在基础数据类型中是不允许的，所以返回值必须是const<br>&#x2F;&#x2F; -c1 &#x3D; Complex(4, 5);</p>
+<p>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-20T22:53:08.000Z" itemprop="datePublished">
+              2015-05-20
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Meteor mongodb 查询某个数据是否在 Collection 的某个 Array 字段中 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Meteor mongodb 查询某个数据是否在 Collection 的某个 Array 字段中</h1>
+    </header>
+
+    <section>
+      <p>我们通常会用一个 Array 字段来储存一组用户 ID 列表或者一组文章 ID 列表。当我们需要查询某个用户是否在这个 Collection 的某个 Array 字段时就会用到本文中提到的方法。</p>
+<span id="more"></span>
+<h2 id="示例数据源"><a href="#示例数据源" class="headerlink" title="示例数据源"></a>示例数据源</h2><p><a href="/images/2017/09/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-09-21-12.15.01.png"><img src="/images/2017/09/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-09-21-12.15.01.png"></a></p>
+<h2 id="查询数据"><a href="#查询数据" class="headerlink" title="查询数据"></a>查询数据</h2><p>以上面数据为例，我们要查询 <code>MoAGij5SatoPsP5G3</code> 这个数据是否在 <code>invitationIds</code> 这个数组字段中时，可以使用如下查询：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CollectionName.find(&#123; invitationIds: &#123; $elemMatch: &#123; $in: [&#x27;MoAGij5SatoPsP5G3&#x27;] &#125; &#125; &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>这里用到了 $elemMatch 和 $in 方法，更多内容大家可以自己搜索一下 mongodb 的文档来寻找你需要的答案。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-09-21T12:17:38.000Z" itemprop="datePublished">
+              2017-09-21
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

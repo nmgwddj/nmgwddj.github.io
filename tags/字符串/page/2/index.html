@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ 字符串 }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/07/2015/2015-05-07_221327-84/">求字符串中出现频次最高的字符</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-07T22:13:27.000Z" itemprop="datePublished">
+    2015-05-07
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>题目给出的函数原型如下： char getMostCharFromString(const char *str); 具体要求为，若有多个相同的字符备选,返回其中最早出现的字符，比如字符串”wwwwwwdddaaabbbdddcccc”，w和d都出现过6次，但只返回第一个最早出现的w。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/07/2015/2015-05-07_221327-84/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/07/2015/2015-05-07_080606-78/">计算一个字符串不重复字符个数</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-07T08:06:06.000Z" itemprop="datePublished">
+    2015-05-07
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>题目给出的函数原型如下： int getCountOfString(const char *str); 由于参数是const的，所以字符串本身肯定是不能被修改的，题目大致思路就是备份一份字符串到堆空间中（可修改），然后遍历堆空间将重复的字符串置成\0，最后遍历整个堆上的字符串将去除\0后得到的总数返回。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/07/2015/2015-05-07_080606-78/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/06/2015/2015-05-06_230418-74/">逆置字符串</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-06T23:04:18.000Z" itemprop="datePublished">
+    2015-05-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>逆置字符串是将字符串所有字符前后颠倒，有比较常见的两种思路，第一种是生成两个分别指向头和尾的指针，遍历字符串交换头尾指针，然后对头尾指针向字符串中间移动，最终得出交换结果。另外一种思路则是后续递归的方式。以字符串结束\0为递归终止条件，再调用自身函数后打印每一个字符即可逆置显示一个字符串。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/06/2015/2015-05-06_230418-74/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/06/2015/2015-05-06_225918-71/">去除字符串中的空白符</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-06T22:59:18.000Z" itemprop="datePublished">
+    2015-05-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>函数提供三个功能，一种是去除左侧空格和TAB、另外一种是去除右侧的空格和TAB，最后一种则是去除所有空格和TAB，适当修改代码也可以去除ASCII中的9~13的其他空白符。具体实现如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/06/2015/2015-05-06_225918-71/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/06/2015/2015-05-06_220005-68/">自定义实现字符串函数</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-06T22:00:05.000Z" itemprop="datePublished">
+    2015-05-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>C语言库函数中strlen、strcmp、strcpy、strcat是我们非常常用的一些字符串处理函数，我们不得不了解一下内部的工作原理，有必要思考如果没有这些库函数我们该如何实现这些函数的功能。以深入的了解字符串内部的处理机制。本文就记录了一些前辈们留下的非常简练的实现。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/06/2015/2015-05-06_220005-68/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/06/2015/2015-05-06_153201-44/">fgets 一次读取一行数据</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-06T15:32:01.000Z" itemprop="datePublished">
+    2015-05-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>上一篇文章我们介绍过一次性读取一个字符，这样读取更加精确，但有不同的需求，比如需要一次读取一行或一段。本文将介绍如何一次读取一行内容，提供了两个函数，并分析了两个函数的区别。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/06/2015/2015-05-06_153201-44/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/04/29/2015/2015-04-29_230012-10/">一幅图看懂strlen和sizeof</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-04-29T23:00:12.000Z" itemprop="datePublished">
+    2015-04-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>因为不熟练，往往我在编写代码的过程中，总会把字符串长度、占用空间、大小等概念搞混淆，所以做个笔记，用图文的方式记录一下让自己记忆的更加清楚一些，下图就是一个字符串在内存中的排布，以及一些计算单位的函数是如何计算他们的所需的数据的。要注意的是，在内存中，最小单位就是BYTE。</p>
+        
+          <div class="more-link">
+            <a href="/2015/04/29/2015/2015-04-29_230012-10/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">« prev</a><a class="page-number" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">1</a><span class="page-number current">2</span>
+    </nav>
+  </section>
+
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

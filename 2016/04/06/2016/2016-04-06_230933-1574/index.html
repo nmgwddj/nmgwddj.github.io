@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>查看虚拟内存信息 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>查看虚拟内存信息</h1>
+    </header>
+
+    <section>
+      <p>以前介绍过 <a target="_blank" rel="noopener" href="http://www.mycode.net.cn/language/ccplusplus/1559.html">VMMap 工具</a>是可以查看一个进程中的虚拟内存信息的，其内部的实现原理就是调用 VirtualQueryEx 函数（支持查看其他进程）得到一个进程的虚拟内存信息。根据学习的视频我也自己实现了一下，但我们用到的是 <code>VirtualQuery</code> 来查看自身进程的内容。</p>
+<span id="more"></span>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;tchar.h&gt;</span><br><span class="line">#include &lt;windows.h&gt;</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;atlstr.h&gt;</span><br><span class="line"></span><br><span class="line">CString FormatMemInfo(MEMORY_BASIC_INFORMATION &amp;mi)</span><br><span class="line">&#123;</span><br><span class="line">    CString strAllocProtect;</span><br><span class="line">    if (mi.AllocationProtect &amp; PAGE_NOACCESS)                // 0x0001</span><br><span class="line">    &#123;</span><br><span class="line">        strAllocProtect = _T(&quot;N  &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if (mi.AllocationProtect &amp; PAGE_READONLY)                // 0x0002</span><br><span class="line">    &#123;</span><br><span class="line">        strAllocProtect = _T(&quot;R  &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.AllocationProtect &amp; PAGE_READWRITE)          // 0x0004</span><br><span class="line">    &#123;</span><br><span class="line">        strAllocProtect = _T(&quot;RW &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.AllocationProtect &amp; PAGE_WRITECOPY)          // 0x0008</span><br><span class="line">    &#123;</span><br><span class="line">        strAllocProtect = _T(&quot;WC &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.AllocationProtect &amp; PAGE_EXECUTE)            // 0x0010</span><br><span class="line">    &#123;</span><br><span class="line">        strAllocProtect = _T(&quot;E  &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.AllocationProtect &amp; PAGE_EXECUTE_READ)       // 0x0020</span><br><span class="line">    &#123;</span><br><span class="line">        strAllocProtect = _T(&quot;ER &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.AllocationProtect &amp; PAGE_EXECUTE_READWRITE)  // 0x0040</span><br><span class="line">    &#123;</span><br><span class="line">        strAllocProtect = _T(&quot;ERW&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.AllocationProtect &amp; PAGE_EXECUTE_WRITECOPY)  // 0x0080</span><br><span class="line">    &#123;</span><br><span class="line">        strAllocProtect = _T(&quot;EWC&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if (mi.AllocationProtect &amp; PAGE_GUARD)                   // 0x0100</span><br><span class="line">    &#123;</span><br><span class="line">        strAllocProtect += _T(&quot;+Guard&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if (mi.AllocationProtect &amp; PAGE_NOCACHE)                 // 0x0200</span><br><span class="line">    &#123;</span><br><span class="line">        strAllocProtect += _T(&quot;+NoCache&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    CString strState;</span><br><span class="line">    if (mi.State == MEM_COMMIT)</span><br><span class="line">    &#123;</span><br><span class="line">        strState = _T(&quot;Commit &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.State == MEM_FREE)</span><br><span class="line">    &#123;</span><br><span class="line">        strState = _T(&quot;Free   &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.State == MEM_RESERVE)</span><br><span class="line">    &#123;</span><br><span class="line">        strState = _T(&quot;Reserve&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        strState = _T(&quot;Damned &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    CString strProtect;</span><br><span class="line">    if (mi.Protect &amp; PAGE_NOACCESS)</span><br><span class="line">    &#123;</span><br><span class="line">        strProtect = _T(&quot;N  &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.Protect &amp; PAGE_READONLY)</span><br><span class="line">    &#123;</span><br><span class="line">        strProtect = _T(&quot;R  &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.Protect &amp; PAGE_READWRITE)</span><br><span class="line">    &#123;</span><br><span class="line">        strProtect = _T(&quot;RW &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.Protect &amp; PAGE_WRITECOPY)</span><br><span class="line">    &#123;</span><br><span class="line">        strProtect = _T(&quot;WC &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.Protect &amp; PAGE_EXECUTE)</span><br><span class="line">    &#123;</span><br><span class="line">        strProtect = _T(&quot;E  &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.Protect &amp; PAGE_EXECUTE_READ)</span><br><span class="line">    &#123;</span><br><span class="line">        strProtect = _T(&quot;ER &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.Protect &amp; PAGE_EXECUTE_READWRITE)</span><br><span class="line">    &#123;</span><br><span class="line">        strProtect = _T(&quot;ERW&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.Protect &amp; PAGE_EXECUTE_WRITECOPY)</span><br><span class="line">    &#123;</span><br><span class="line">        strProtect = _T(&quot;EWC&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.Protect &amp; PAGE_GUARD)</span><br><span class="line">    &#123;</span><br><span class="line">        strProtect += _T(&quot;+Guard&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.Protect &amp; PAGE_NOCACHE)</span><br><span class="line">    &#123;</span><br><span class="line">        strProtect += _T(&quot;+NoCache&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    CString strType;</span><br><span class="line">    if (mi.Type == MEM_IMAGE)</span><br><span class="line">    &#123;</span><br><span class="line">        strType = _T(&quot;Image  &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.Type == MEM_MAPPED)</span><br><span class="line">    &#123;</span><br><span class="line">        strType = _T(&quot;Mapped &quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (mi.Type == MEM_PRIVATE)</span><br><span class="line">    &#123;</span><br><span class="line">        strType = _T(&quot;Private&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        strType = _T(&quot;-      &quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    CString strRet;</span><br><span class="line">    strRet.Format(_T(&quot;%8X  %8X  %8X   %10uKB    %12s  %7s  %8s  %7s&quot;), mi.BaseAddress, mi.AllocationBase</span><br><span class="line">        , (DWORD)mi.AllocationBase + (DWORD)mi.RegionSize</span><br><span class="line">        , (DWORD)mi.RegionSize / 1024</span><br><span class="line">        , strAllocProtect, strState, strProtect, strType);</span><br><span class="line"></span><br><span class="line">    return strRet;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int _tmain()</span><br><span class="line">&#123;</span><br><span class="line">    SYSTEM_INFO info;</span><br><span class="line">    GetSystemInfo(&amp;info);</span><br><span class="line"></span><br><span class="line">    // 用户进程空间的最低地址和最高地址（跳过了64K的NULL区）</span><br><span class="line">    VOID* pLowerBound = (VOID*)info.lpMinimumApplicationAddress;</span><br><span class="line">    VOID* pUpperBound = (VOID*)info.lpMaximumApplicationAddress;</span><br><span class="line"></span><br><span class="line">    MEMORY_BASIC_INFORMATION mi;</span><br><span class="line">    VOID* pPtr = pLowerBound;</span><br><span class="line">    VOID* pOldPtr = pPtr;</span><br><span class="line"></span><br><span class="line">    _putts(_T(&quot;BaseAddress  AllocBase   EndAddress        SIZE  AllocProtect  State  CurProtect  TYPE&quot;));</span><br><span class="line"></span><br><span class="line">    // 不超过最高地址就一直循环</span><br><span class="line">    while (pPtr &lt;= pUpperBound)</span><br><span class="line">    &#123;</span><br><span class="line">        // 查询存放到 mi 结构体中</span><br><span class="line">        if (VirtualQuery((void*)pPtr, &amp;mi, sizeof(mi)) == 0)</span><br><span class="line">        &#123;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 打印信息</span><br><span class="line">        _putts(FormatMemInfo(mi));</span><br><span class="line"></span><br><span class="line">        // 记录本次指针指向</span><br><span class="line">        pOldPtr = pPtr;</span><br><span class="line">        // 让指针向后移，BaseAddress是本次的基础地址，RegionSize是本次的内存块大小</span><br><span class="line">        pPtr = (BYTE*)mi.BaseAddress + mi.RegionSize;</span><br><span class="line"></span><br><span class="line">        // 判断移动后的是不是和移动前相等</span><br><span class="line">        if (pPtr &lt;= pOldPtr)</span><br><span class="line">        &#123;</span><br><span class="line">            printf(&quot;mi.BaseAddress = %X, mi.RegionSize = %X\n&quot;, </span><br><span class="line">                mi.BaseAddress, mi.RegionSize);</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _tsystem(_T(&quot;pause&quot;));</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-04-06T23:09:33.000Z" itemprop="datePublished">
+              2016-04-06
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ES6 学习笔记之函数的拓展 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>ES6 学习笔记之函数的拓展</h1>
+    </header>
+
+    <section>
+      <p>本文记录了一些 ES6 函数相关的改动，比较重要的就是箭头函数及箭头函数内部 this 的变化，其他一些不常见的概念我也仅仅是看了看，并没有实际操作测试效果。待需要用到的时候再研究。</p>
+<span id="more"></span>
+<h2 id="rest-参数"><a href="#rest-参数" class="headerlink" title="rest 参数"></a>rest 参数</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const add = (...values) =&gt; &#123;</span><br><span class="line">  let sum = 0;</span><br><span class="line"></span><br><span class="line">  for (let value of values) &#123;</span><br><span class="line">    sum += value;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  return sum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(add(10, 4, 1, 5));</span><br></pre></td></tr></table></figure>
+
+<h2 id="扩展运算符"><a href="#扩展运算符" class="headerlink" title="扩展运算符"></a>扩展运算符</h2><p>扩展运算符就是三个点 <code>...</code>，将一个数组转为用逗号分隔的参数序列。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">console.log(...[1, 2, 3, 4]);</span><br><span class="line">// 1 2 3 4</span><br><span class="line">console.log(1, ...[2, 3, 4], 5);</span><br><span class="line">// 1 2 3 4 5</span><br></pre></td></tr></table></figure>
+
+<p>扩展运算符用于函数调用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function sum(a, b) &#123;</span><br><span class="line">  return a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var numbers = [2, 17];</span><br><span class="line">console.log(sum(...numbers));</span><br><span class="line">// 19</span><br><span class="line"></span><br><span class="line">function f(v, w, x, y, z) &#123;/*...*/&#125;</span><br><span class="line">var args = [1, 2];</span><br><span class="line">f(-1, ...args, 2, ...[3]);</span><br></pre></td></tr></table></figure>
+
+<p>替代 ES5 的 apply，ES5 中如果要将一个数组转为参数传递，需要用到 apply 方法，而 ES6 中拓展运算符则替代了这一功能。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">let max;</span><br><span class="line">// ES5 写法</span><br><span class="line">max = Math.max.apply(null, [14, 3, 77]);</span><br><span class="line">console.log(max);</span><br><span class="line"></span><br><span class="line">// ES6 写法</span><br><span class="line">max = Math.max(...[11, 2, 100]);</span><br><span class="line">console.log(max);</span><br></pre></td></tr></table></figure>
+
+<p>另外一个例子是在一个数组后追加元素的例子。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// ES5 写法</span><br><span class="line">var arr1 = [1, 2, 3];</span><br><span class="line">var arr2 = [4, 5, 6];</span><br><span class="line">Array.prototype.push.apply(arr1, arr2);</span><br><span class="line">console.log(arr1);</span><br><span class="line">// [ 1, 2, 3, 4, 5, 6 ]</span><br><span class="line"></span><br><span class="line">// ES6 写法</span><br><span class="line">var arr3 = [1, 2, 3];</span><br><span class="line">var arr4 = [4, 5, 6];</span><br><span class="line">arr3.push(...arr4);</span><br><span class="line">console.log(arr3);</span><br><span class="line">// [ 1, 2, 3, 4, 5, 6 ]</span><br></pre></td></tr></table></figure>
+
+<h2 id="箭头函数"><a href="#箭头函数" class="headerlink" title="箭头函数"></a>箭头函数</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// ES5</span><br><span class="line">var f_es5 = function (v) &#123;</span><br><span class="line">  return v;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// ES6</span><br><span class="line">var f_es6 = v =&gt; v;</span><br></pre></td></tr></table></figure>
+
+<p>如果不需要参数或需要多个参数，则吧多个参数用括号括起来</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var f_es6_1 = () =&gt; 5;</span><br><span class="line">// 等同于</span><br><span class="line">var f_es5_1 = function () &#123; return 5; &#125;;</span><br><span class="line"></span><br><span class="line">var f_es6_2 = (value1, value2) =&gt; value1 + value2;</span><br><span class="line">// 等同于</span><br><span class="line">var f_es5_2 = function (value1, value2) &#123; return value1 + value2; &#125;;</span><br></pre></td></tr></table></figure>
+
+<p>this 对象的变化，使用箭头函数，this 是 undefined，而使用普通函数，this 返回的是全局对象。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">setInterval(() =&gt; console.log(this), 1000);</span><br><span class="line">// undefined</span><br><span class="line">setInterval(function () &#123; console.log(this); &#125;, 1000);</span><br><span class="line">// 返回全局对象</span><br></pre></td></tr></table></figure>
+
+<p>箭头函数中是没有 this 指针的，如果在箭头函数中打印 this 有具体的值，是因为其使用了外层代码块的 this。如下案例来自书中。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// ES6</span><br><span class="line">function foo() &#123;</span><br><span class="line">  setTimeout(() =&gt; &#123;</span><br><span class="line">    console.log(&#x27;id&#x27;, this.id);</span><br><span class="line">  &#125;, 100);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 转为 ES5 表达就是类似如下代码</span><br><span class="line">function foo() &#123;</span><br><span class="line">  var _this = this;</span><br><span class="line">  setTimeout(function () &#123;</span><br><span class="line">    console.log(&#x27;id:&#x27;, _this.id);</span><br><span class="line">  &#125;, 100);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-02-22T11:02:44.000Z" itemprop="datePublished">
+              2017-02-22
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/ES6/">ES6</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

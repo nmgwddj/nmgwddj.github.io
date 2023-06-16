@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ES6 学习笔记之 Symbol | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>ES6 学习笔记之 Symbol</h1>
+    </header>
+
+    <section>
+      <p>ES6 新增的 Symbol 功能还是比较多的，建议大家还是看看原著的内容来充分理解，我仅自己记录一些我可能需要用到的内容。 Symbol 返回的是一个唯一值，类似于 GUID，它的类型是 symbol，不能与字符串混淆。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let s = Symbol();</span><br><span class="line">console.log(typeof s);</span><br><span class="line">// symbol</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<p>Symbol 定义的方法名，只能通过方括号的方式来调用，如果使用了.运算符则会报错提示找不到这个方法。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">let obj = &#123;</span><br><span class="line">  init() &#123;</span><br><span class="line">    return &#x27;init&#x27;;</span><br><span class="line">  &#125;,</span><br><span class="line">  [s]() &#123;</span><br><span class="line">    return &#x27;Hello.&#x27;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// obj.s(); 报错</span><br><span class="line">obj[s](); // Hello.</span><br></pre></td></tr></table></figure>
+
+<p>遍历 Symbol 成员</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">console.log(Object.getOwnPropertyNames(obj));   // [ &#x27;init&#x27; ]</span><br><span class="line">console.log(Object.getOwnPropertySymbols(obj)); // [ Symbol() ]</span><br><span class="line">console.log(Reflect.ownKeys(obj));              // [ &#x27;init&#x27;, Symbol() ]</span><br></pre></td></tr></table></figure>
+
+<p>Symbol 还可以定义类似枚举类的东西，但它不是重复的，如下例子（来自书中）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">const COLOR_RED    = Symbol();</span><br><span class="line">const COLOR_GREEN  = Symbol();</span><br><span class="line"></span><br><span class="line">function getComplement(color) &#123;</span><br><span class="line">  switch (color) &#123;</span><br><span class="line">    case COLOR_RED:</span><br><span class="line">      return COLOR_GREEN;</span><br><span class="line">    case COLOR_GREEN:</span><br><span class="line">      return COLOR_RED;</span><br><span class="line">    default:</span><br><span class="line">      throw new Error(&#x27;Undefined color&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Symbol-for-方-Symbol-keyFor-方法"><a href="#Symbol-for-方-Symbol-keyFor-方法" class="headerlink" title="Symbol.for 方 Symbol.keyFor() 方法"></a>Symbol.for 方 Symbol.keyFor() 方法</h2><p>Symbol.for 类似一个拷贝函数，可以将某个 Symbol 值重复利用。如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var s1 = Symbol.for(&#x27;foo&#x27;);</span><br><span class="line">var s2 = Symbol.for(&#x27;foo&#x27;);</span><br><span class="line">console.log(s1 === s2); // true</span><br></pre></td></tr></table></figure>
+
+<p>Symbol.for 先检查是否有同 key 的值存在，如果没有就新建，如果有就返回已经有的。如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Symbol.for(&#x27;abc&#x27;) === Symbol.for(&#x27;abc&#x27;); // true</span><br><span class="line">Symbol(&#x27;abc&#x27;) === Symbol(&#x27;abc&#x27;) // false</span><br></pre></td></tr></table></figure>
+
+<p>Symbol() 是没有登记机制的，所以无论你如何调用都会创建一个新的 symbol 值。而 Symbol.for 不同。Symbol.keyFor 方法可以取到 Symbol.for 登记的类型值的 key。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var ss1 = Symbol.for(&#x27;abcdef&#x27;);</span><br><span class="line">console.log(Symbol.keyFor(ss1));  // abcdef</span><br><span class="line"></span><br><span class="line">var ss2 = Symbol(&#x27;abcdefg&#x27;);</span><br><span class="line">console.log(Symbol.keyFor(ss2));  // undefined</span><br></pre></td></tr></table></figure>
+
+<h2 id="内置-Symbol-值"><a href="#内置-Symbol-值" class="headerlink" title="内置 Symbol 值"></a>内置 Symbol 值</h2><p>ES6 内置了很多内置值，我仅举个例子演示一下。更多其他内置方法请参考图书。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// Symbol.replace，在调用 replace 时会被调用。</span><br><span class="line">const x = &#123;&#125;;</span><br><span class="line">x[Symbol.replace] = (...s) =&gt; console.log(s);</span><br><span class="line"></span><br><span class="line">&#x27;Hello&#x27;.replace(x, &#x27;World&#x27;);</span><br><span class="line">// [&#x27;Hello&#x27;, &#x27;World&#x27;]</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-02-24T19:55:17.000Z" itemprop="datePublished">
+              2017-02-24
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/ES6/">ES6</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

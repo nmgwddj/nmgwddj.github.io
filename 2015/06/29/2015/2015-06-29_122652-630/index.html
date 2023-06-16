@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>fork() 函数详解 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>fork() 函数详解</h1>
+    </header>
+
+    <section>
+      <p>fork() 函数是 linux&#x2F;unix 下一种特别的创建子进程的函数，它不同与 Windows，这个函数在执行成功后会有两个返回值，一个返回值&#x3D;&#x3D;0代表创建了子进程，一个返回值大于0代表还是当前程序进程，而这个大于0的值就是创建的子进程的进程PID。这个函数比较抽象，我们来看一下代码并对比一下图片就能知道具体该函数的用途了。</p>
+<span id="more"></span>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    pid_t pid = fork();</span><br><span class="line"></span><br><span class="line">    if (pid == 0)</span><br><span class="line">    &#123;</span><br><span class="line">        // 新创建的子进程</span><br><span class="line">        while (1)</span><br><span class="line">        &#123;</span><br><span class="line">            printf(&quot;child : PID = %d, ParentID = %d\n&quot;, getpid(), getppid());</span><br><span class="line">            sleep(1);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    else if (pid &gt; 0)</span><br><span class="line">    &#123;</span><br><span class="line">        // 当前进程</span><br><span class="line">        while (1)</span><br><span class="line">        &#123;</span><br><span class="line">            printf(&quot;parent: PID = %d, ParentID = %d\n&quot;, getpid(), getppid());</span><br><span class="line">            sleep(1);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该程序运行后，会产生两个分支，一个分支是创建的新子进程所执行的分支，它会不断的打印自身的PID和父进程的PID。 另外一个分支是原有的进程分支，它也同样会不断的打印自身的进程PID和父进程的PID，运行后效果图如下： <a href="/images/2015/06/2015-06-29_121339.png"><img src="/images/2015/06/2015-06-29_121339.png" alt="2015-06-29_121339"></a> 图中可以看出，新创建的子进程 PID &#x3D; 3606，其父进程 PID &#x3D; 3605 也就是我们运行的 fork 程序的 PID，而另外一个分支 fork 程序的 PID &#x3D; 3605，其父进程 PID &#x3D; 2012，就是终端所属的 bash 进程的 PID。这样我们就可以得出结论，我们手动通过终端（PID 2012）调用了 fork 程序 （PID 3605），然后 fork 程序又创建了一个子进程 （PID 3606）。 以上就是  fork 函数的具体功能，它看上去更像是在进程中创建了一个线程，但实际并不是，这是 linux&#x2F;unix 一种特有的创建进程的方式。当子进程创建时，<strong>其复制父进程 0~3G的虚拟地址空间和父进程内核中的PCB（PCB虽然复制但是ID号不同），他们的数据在读取时是共享的，在写时执行复制。</strong> 所谓<strong>“读时共享，写时复制”</strong>到底是怎么样一个概念？我们看一下下面的例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    pid_t pid;</span><br><span class="line">    char *message;</span><br><span class="line">    int n;</span><br><span class="line">    pid = fork();</span><br><span class="line">    if (pid &lt; 0) &#123;</span><br><span class="line">        perror(&quot;fork failed&quot;);</span><br><span class="line">        exit(1);</span><br><span class="line">    &#125;</span><br><span class="line">    if (pid == 0) &#123;</span><br><span class="line">        message = &quot;This is the child\n&quot;;</span><br><span class="line">        n = 6;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        message = &quot;This is the parent\n&quot;;</span><br><span class="line">        n = 3;</span><br><span class="line">    &#125;</span><br><span class="line">    for(; n &gt; 0; n--) &#123;</span><br><span class="line">        printf(&quot;%s&quot;, message);</span><br><span class="line">        sleep(1);</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于代码中的变量 n 来说，在创建了子进程以后，对 n 进行了修改，此时就会复制父进程虚拟地址空间中的信息提供给子进程继续向下执行，两个进程使用完全不同的地址空间，所以父进程最后for循环只会执行3次，而子进程则会执行6次。如下图（因为父进程提前执行完毕，所以没等子进程打印完信息，终端就恢复运行了）： <a href="/images/2015/06/2015-06-29_145823.png"><img src="/images/2015/06/2015-06-29_145823.png" alt="2015-06-29_145823"></a></p>
+<h3 id="【gdb调试相关】"><a href="#【gdb调试相关】" class="headerlink" title="【gdb调试相关】"></a>【gdb调试相关】</h3><p>使用gdb调试的时候，gdb只能跟踪一个进程。可以设置gdb跟踪父进程或者是跟踪子进程。</p>
+<ul>
+<li>set follow-fork-mode child 命令设置gdb在fork之后跟踪子进程。</li>
+<li>set follow-fork-mode parent 设置跟踪父进程。</li>
+<li>默认跟踪父进程。</li>
+</ul>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-29T12:26:52.000Z" itemprop="datePublished">
+              2015-06-29
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

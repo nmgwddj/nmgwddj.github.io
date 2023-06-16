@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Perl 文件操作 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Perl 文件操作</h1>
+    </header>
+
+    <section>
+      <p>perl 语法的变态在下面的代码中体现更甚，一条没头没尾的正则，不知道的还以为是语法错误，实际它是可以正常执行的。</p>
+<span id="more"></span>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">#!perl</span><br><span class="line"></span><br><span class="line">my $sFile = &quot;d:/code/FindWord.pl&quot;;</span><br><span class="line"></span><br><span class="line"># &lt; 代表读，&gt;代表截断写，&gt;&gt;追加写</span><br><span class="line">if (open(READFILE, &quot;&lt;$sFile&quot;)) &#123;</span><br><span class="line">    while (&lt;READFILE&gt;) &#123;</span><br><span class="line">        s/^\s*//;       # 正则这样写就行了，不用指明对谁作用</span><br><span class="line">        print &quot;$_&quot;;     # 内置变量，上面正则相当于对这个内置变量操作</span><br><span class="line">    &#125;</span><br><span class="line">    close(READFILE);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># get 读一个字符</span><br><span class="line"></span><br><span class="line">while ($get = getc READFILE) &#123;</span><br><span class="line">    print $get;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 追加写文件</span><br><span class="line">if (open WRITEFILE, &quot;&gt;&gt;$sFile&quot;) &#123;</span><br><span class="line">    print WRITEFILE (&quot;New Line...\n&quot;);</span><br><span class="line">    close(WRITEFILE);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 拷贝文件</span><br><span class="line">open SRC, &quot;&lt;C:/test.pl&quot;;</span><br><span class="line">open DST, &quot;&gt;C:/test.bak.pl&quot;;</span><br><span class="line"></span><br><span class="line">while (&lt;SRC&gt;) &#123;</span><br><span class="line">    print DST $_;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">close(DST);</span><br><span class="line">close(SRC);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 重命名文件</span><br><span class="line">rename (&quot;C:/test.bak.pl&quot;, &quot;C:/test.bak.pl.rename&quot;);</span><br><span class="line"></span><br><span class="line"># 删除已存在的文件</span><br><span class="line">unlink (&quot;C:/test.bak.pl.rename&quot;);</span><br><span class="line"></span><br><span class="line"># 设置文件指针</span><br><span class="line">open SRC, &quot;&lt;C:/test.pl&quot;;</span><br><span class="line">print (&quot;Before:&quot; . (tell SRC) . &quot;\n&quot;);</span><br><span class="line">for (my $idx = 0; $idx &lt; 10; $idx++) &#123;</span><br><span class="line">    seek SRC, 256, 0;</span><br><span class="line">&#125;</span><br><span class="line">print (&quot;After:&quot; . (tell SRC) . &quot;\n&quot;);</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-04-08T15:57:40.000Z" itemprop="datePublished">
+              2016-04-08
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

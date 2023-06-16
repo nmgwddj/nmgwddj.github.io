@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>VC 实现将程序从任务栏解锁或锁定到任务栏 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>VC 实现将程序从任务栏解锁或锁定到任务栏</h1>
+    </header>
+
+    <section>
+      <p>以前写过一些脚本调用 Shell Object 实现的解锁和锁定程序到任务栏的功能，这几天刚好用到，却不想用脚本实现，由于没有了解过 VC 如何操作 Shell，所以就在 github 上搜索了一下，找到了示例代码，自己修改了一下以后备用。代码有使用方法和注释。</p>
+<span id="more"></span>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line">// TaskbarShortcut.cpp : 定义控制台应用程序的入口点。</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &lt;shlobj.h&gt;</span><br><span class="line"></span><br><span class="line">/************************************************************************/</span><br><span class="line">/* </span><br><span class="line">/* 代码来源：https://github.com/prestocore/browser/blob/8c5977d18f4ed8aea10547829127d52bc612a725/platforms/windows/WindowsShortcut.cpp</span><br><span class="line">/* 函数功能：将程序锁定或从任务栏解锁</span><br><span class="line">/* 函数参数：</span><br><span class="line">/* lpPath：要锁定或解锁文件的路径</span><br><span class="line">/* lpFileName：要锁定或解锁文件的文件名</span><br><span class="line">/* bIsPin：TRUE 为锁定文件到任务栏，FALSE 为从任务栏解锁，默认为 FALSE</span><br><span class="line">/* </span><br><span class="line">/************************************************************************/</span><br><span class="line"></span><br><span class="line">BOOL TaskbarPin(LPTSTR lpPath, LPTSTR lpFileName, BOOL bIsPin = FALSE)</span><br><span class="line">&#123;</span><br><span class="line">    BOOL bRet = FALSE;</span><br><span class="line">    HMENU hmenu = NULL;</span><br><span class="line">    LPSHELLFOLDER pdf = NULL;</span><br><span class="line">    LPSHELLFOLDER psf = NULL;</span><br><span class="line">    LPITEMIDLIST pidl = NULL;</span><br><span class="line">    LPITEMIDLIST pitm = NULL;</span><br><span class="line">    LPCONTEXTMENU pcm = NULL;</span><br><span class="line"></span><br><span class="line">    if (SUCCEEDED(SHGetDesktopFolder(&amp;pdf))</span><br><span class="line">        &amp;&amp; SUCCEEDED(pdf-&gt;ParseDisplayName(NULL, NULL, lpPath, NULL, &amp;pidl,  NULL))</span><br><span class="line">        &amp;&amp; SUCCEEDED(pdf-&gt;BindToObject(pidl, NULL, IID_IShellFolder, (void **)&amp;psf))</span><br><span class="line">        &amp;&amp; SUCCEEDED(psf-&gt;ParseDisplayName(NULL, NULL, lpFileName, NULL, &amp;pitm,  NULL))</span><br><span class="line">        &amp;&amp; SUCCEEDED(psf-&gt;GetUIObjectOf(NULL, 1, (LPCITEMIDLIST *)&amp;pitm, IID_IContextMenu, NULL, (void **)&amp;pcm))</span><br><span class="line">        &amp;&amp; (hmenu = CreatePopupMenu()) != NULL</span><br><span class="line">        &amp;&amp; SUCCEEDED(pcm-&gt;QueryContextMenu(hmenu, 0, 1, INT_MAX, CMF_NORMAL)))</span><br><span class="line">    &#123;</span><br><span class="line">        CMINVOKECOMMANDINFO ici = &#123; sizeof(CMINVOKECOMMANDINFO), 0 &#125;;</span><br><span class="line">        ici.hwnd = NULL;</span><br><span class="line">        ici.lpVerb = bIsPin ? &quot;taskbarpin&quot; : &quot;taskbarunpin&quot;;</span><br><span class="line">        pcm-&gt;InvokeCommand(&amp;ici);</span><br><span class="line">        bRet = TRUE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (hmenu)</span><br><span class="line">        DestroyMenu(hmenu);</span><br><span class="line">    if (pcm)</span><br><span class="line">        pcm-&gt;Release();</span><br><span class="line">    if (pitm)</span><br><span class="line">        CoTaskMemFree(pitm);</span><br><span class="line">    if (psf)</span><br><span class="line">        psf-&gt;Release();</span><br><span class="line">    if (pidl)</span><br><span class="line">        CoTaskMemFree(pidl);</span><br><span class="line">    if (pdf)</span><br><span class="line">        pdf-&gt;Release();</span><br><span class="line"></span><br><span class="line">    return bRet;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    CoInitialize(nullptr);</span><br><span class="line"></span><br><span class="line">    // 将 Win7 默认的 Media Player 快捷方式从任务栏取消固定</span><br><span class="line">    TaskbarPin(</span><br><span class="line">        _T(&quot;C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs&quot;),</span><br><span class="line">        _T(&quot;Windows Media Player.lnk&quot;)</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    // 将 Win7 默认的 IE 快捷方式从任务栏取消固定</span><br><span class="line">    TaskbarPin(</span><br><span class="line">        _T(&quot;C:\\Users\\Administrator\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs&quot;),</span><br><span class="line">        _T(&quot;Internet Explorer.lnk&quot;)</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    CoUninitialize();</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-11-02T10:55:33.000Z" itemprop="datePublished">
+              2016-11-02
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

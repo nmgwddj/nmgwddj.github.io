@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt 注册自定义数据类型提供信号和槽函数传递参数 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt 注册自定义数据类型提供信号和槽函数传递参数</h1>
+    </header>
+
+    <section>
+      <p>Qt 信号和槽函数参数只能是基于 Qt 的基础类型的，比如 QString、int、bool 等，如果想传递自定义类型默认情况下是行不通的。要想在 Qt 的信号和槽函数之间传递自定义类型，可以先将自己的自定义类型注册一下，使用如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Q_DECLARE_METATYPE(nim::DocTransInfo)</span><br></pre></td></tr></table></figure>
+
+<p><code>nim::DocTransInfo</code> 为你的自定义数据结构，我这里是一个结构体。当需要传递这个数据时，不是直接使用，而是用 <code>QVariant</code> 来包装一下，信号和槽函数则直接使用 <code>QVariant</code> 类型的数据作为参数传递。首先我们连接信号和槽：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">connect(this, SIGNAL(AddDocItemSignalNew(QVariant)), this, SLOT(AddDocItemNew(QVariant)), Qt::QueuedConnection);</span><br></pre></td></tr></table></figure>
+
+<p>信号和槽函数的声明如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">signals:</span><br><span class="line">    void AddDocItemSignalNew(QVariant variant);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">private slots:</span><br><span class="line">    void AddDocItemNew(QVariant variant);</span><br></pre></td></tr></table></figure>
+
+<p>当要发起信号的时候，把我们要传递的这个数据包装到 QVariant 中，然后传递给信号函数就可以了。如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">QVariant data;</span><br><span class="line">data.setValue(file_info);</span><br><span class="line">emit AddDocItemSignalNew(data);</span><br></pre></td></tr></table></figure>
+
+<p>槽函数接受到信号时可以像如下方法一样解析参数出来使用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">void MainForm::AddDocItemNew(QVariant variant)</span><br><span class="line">&#123;</span><br><span class="line">    nim::DocTransInfo doc_info = variant.value&lt;nim::DocTransInfo&gt;();</span><br><span class="line">    // ....... 其他代码</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样包装后，我们就可以使用 Qt 的信号和槽功能来传递自定义数据结构了。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2018-11-26T14:25:38.000Z" itemprop="datePublished">
+              2018-11-26
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

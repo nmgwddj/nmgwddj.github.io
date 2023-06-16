@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>阻塞信号 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>阻塞信号</h1>
+    </header>
+
+    <section>
+      <p>所谓阻塞，就是屏蔽掉某信号，让程序在收到某信号以后不做任何事情，包括默认动作也不执行。要实现这个需求，我们首先得了解一下系统对于每一个进程的信号是如何投递的，这个信号的走向流程是怎么样的，才能针对性的下手实现这个需求。</p>
+<span id="more"></span>
+<hr>
+<p>在每一个进程的 PCB 中，分别维护着两个信号集列表，这两个信号集列表分别叫“未决信号集”和“阻塞信号集”，未决信号集维护者所有进程已经投递过来的信号，但是这个信号集列表还并没有投递给进程触发，决定是否让进程触发这些信号要取决于阻塞信号集，当阻塞信号集中某个信号位为1的时候，这个信号状态就是被阻塞了，该信号就无法传递给进程去执行，反之如果信号位为0的时候，则证明没有对该信号进行阻塞，那么信号就可以成功投递到进程。如下图所示： <a href="/images/2015/07/2015-07-01_230057.png"><img src="/images/2015/07/2015-07-01_230057.png" alt="2015-07-01_230057"></a> 在程序中，我们是可以读取未决信号集和设定修改阻塞信号集的，他们都需要一个结构体类型 sigset_t，这个结构体大小是所有信号的两倍（128字节，可使用sizeof查看），这个结构体中维护了未决信号集和阻塞信号集所有位的状态，我们可以通过获取未决信号集列表填充到这个结构体中来查看当前未决信号集中信号状态，也可以设定好一个 sigset_t 结构传递给阻塞信号集让阻塞信号集阻塞某些信号。做这些操作需要下面一系列函数：</p>
+<h5 id="sigprocmask-设定阻塞信号集列表的屏蔽字"><a href="#sigprocmask-设定阻塞信号集列表的屏蔽字" class="headerlink" title="sigprocmask 设定阻塞信号集列表的屏蔽字"></a><strong>sigprocmask 设定阻塞信号集列表的屏蔽字</strong></h5><p>#include &lt;signal.h&gt; int sigprocmask(int how, const sigset_t *set, sigset_t *oset); 返回值：若成功则为0，若出错则为-1 <strong>oset参数含义</strong></p>
+<blockquote>
+<p>如果oset是非空指针，则读取进程的当前信号屏蔽字通过oset参数传出。如果set是非空指针，则更改进程的信号屏蔽字，参数how指示如何更改。如果oset和set都是非空指针，则先将原来的信号屏蔽字备份到oset里，然后根据set和how参数更改信号屏蔽字。假设当前的信号屏蔽字为mask，下表说明了how参数的可选值。</p>
+</blockquote>
+<p><strong>how参数的含义：</strong></p>
+<blockquote>
+<p>SIG_BLOCK set包含了我们希望添加到当前信号屏蔽字的信号，相当于mask&#x3D;maskset SIG_UNBLOCK set包含了我们希望从当前信号屏蔽字中解除阻塞的信号，相当于mask&#x3D;mask&amp;~set SIG_SETMASK 设置当前信号屏蔽字为set所指向的值，相当于mask&#x3D;set</p>
+</blockquote>
+<h5 id="在使用sigprocmask函数时，要对-sigset-t-结构体做一些添加、删除、清空等操作，这需要使用到一些列对-sigset-t-结构体的操作函数："><a href="#在使用sigprocmask函数时，要对-sigset-t-结构体做一些添加、删除、清空等操作，这需要使用到一些列对-sigset-t-结构体的操作函数：" class="headerlink" title="在使用sigprocmask函数时，要对 sigset_t 结构体做一些添加、删除、清空等操作，这需要使用到一些列对 sigset_t 结构体的操作函数："></a>在使用sigprocmask函数时，要对 sigset_t 结构体做一些添加、删除、清空等操作，这需要使用到一些列对 sigset_t 结构体的操作函数：</h5><blockquote>
+<p>int sigemptyset(sigset_t *set); &#x2F;&#x2F; 全部置为0 int sigfillset(sigset_t *set); &#x2F;&#x2F; 全部置为1 int sigaddset(sigset_t *set, int signum); &#x2F;&#x2F; 给某一位置1 int sigdelset(sigset_t *set, int signum); &#x2F;&#x2F; 给某一位置0 int sigismember(const sigset_t *set, int signum); &#x2F;&#x2F; 查看某一位的值</p>
+</blockquote>
+<h5 id="sigpending-获取未决信号集列表"><a href="#sigpending-获取未决信号集列表" class="headerlink" title="sigpending 获取未决信号集列表"></a><strong>sigpending 获取未决信号集列表</strong></h5><p>#include &lt;signal.h&gt; int sigpending(sigset_t *set);</p>
+<blockquote>
+<p>sigpending读取当前进程的未决信号集，通过set参数传出。调用成功则返回0，出错则返回-1。</p>
+</blockquote>
+<hr>
+<h3 id="【实现代码】"><a href="#【实现代码】" class="headerlink" title="【实现代码】"></a>【实现代码】</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;signal.h&gt;<br>#include &lt;unistd.h&gt;</p>
+<p>void printsigpend(void)<br>{<br>int i;<br>sigset_t sigpend;<br>&#x2F;&#x2F; 取到当前未决信号集中的内容<br>sigpending(&amp;sigpend);<br>for (i &#x3D; 1; i &lt; 32; i++)<br>{<br>&#x2F;&#x2F; 判断每一位是否被设定为1<br>if (sigismember(&amp;sigpend, i) &#x3D;&#x3D; 1)<br>printf(“1”);<br>else<br>printf(“0”);<br>}<br>printf(“\n”);<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>sigset_t set, oldset;<br>&#x2F;&#x2F; 将阻塞信号集都置为0<br>sigemptyset(&amp;set);<br>&#x2F;&#x2F; 将SIGINT位置为1<br>sigaddset(&amp;set, SIGINT);<br>sigaddset(&amp;set, SIGQUIT);<br>sigaddset(&amp;set, SIGTSTP);<br>&#x2F;&#x2F; 将自己设定好的信号集应用到系统的信号集<br>sigprocmask(SIG_SETMASK, &amp;set, &amp;oldset);</p>
+<p>while(1)<br>{<br>printsigpend();<br>sleep(1);<br>}<br>return 0;<br>}</p>
+<p>以上代码运行后的效果图如下： <a href="/images/2015/07/2015-07-01_224237.png"><img src="/images/2015/07/2015-07-01_224237.png" alt="2015-07-01_224237"></a> 由于 SIGINT、SIGQUIT、SIGTSTP 三个信号都已经被我们设置阻塞状态了，所以三个信号无论如何给进程发送，进程都不会响应，这就是信号阻塞的具体作用。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-01T23:21:42.000Z" itemprop="datePublished">
+              2015-07-01
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E4%BF%A1%E5%8F%B7/">信号</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

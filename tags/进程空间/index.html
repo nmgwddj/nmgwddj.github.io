@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ 进程空间 }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/04/15/2016/2016-04-15_115203-1590/">重载 new、delete 检测内存泄露</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-04-15T11:52:03.000Z" itemprop="datePublished">
+    2016-04-15
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>内存泄露带来的问题我想我就不必多少了，检测内存泄露有很多种方法，比如使用一些智能指针。但本文介绍的方法有些不同，我们将自己维护一个数组列表，记录下 new 内存时代码所在的文件、行号、以及大小、和是否已经被 delete 信息，将这些信息放到我们维护的数组中，当程序要检查内存泄露或者程序退出时，我们遍历整个堆内存，并把每一个堆内存块在我们维护的数组中遍历，如果发现某些内存并没有被标记为 delete 状态，那么则判定为泄露。</p>
+        
+          <div class="more-link">
+            <a href="/2016/04/15/2016/2016-04-15_115203-1590/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/04/13/2016/2016-04-13_225839-1587/">AWE 内存管理</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-04-13T22:58:39.000Z" itemprop="datePublished">
+    2016-04-13
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>AWE (Address Windows Extension) 可以使用开启 PAE 后普通应用程序无法使用到的内存，这部分内存系统可能无法识别，但通过 AWE 则可以完美访问。操作 AWE 内存的具体步骤如下，大部分内容来自北风网视频教程。 1、开窗 VirtualAlloc + MEM_PHYSICAL，明确告知系统，这段保留的空间未来将存放我自己申请的物理内存。 2、分配物理内存 AllocateUserPhysicalPages，按页面个数来分配，不是按字节分配的，最少一个页面 4K 的物理内存。 3、将申请好的物理内存映射到窗口中（相当于提交）MapUserPhysicalPages。 4、对已经提交的内存读写… 5、释放物理内存页面。</p>
+        
+          <div class="more-link">
+            <a href="/2016/04/13/2016/2016-04-13_225839-1587/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/04/10/2016/2016-04-10_185557-1584/">Windows 堆内存管理</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-04-10T18:55:57.000Z" itemprop="datePublished">
+    2016-04-10
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>Windows 堆内存是性能仅次于虚拟内存的内存管理机制。它不像虚拟内存，每次分配至少是一个页面（4K），它可以灵活的只分配 1 个字节来使用，不浪费内存的空间。但你分配的内存必须由自己维护释放。下面演示了堆内存的使用方法。</p>
+        
+          <div class="more-link">
+            <a href="/2016/04/10/2016/2016-04-10_185557-1584/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/04/06/2016/2016-04-06_230933-1574/">查看虚拟内存信息</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-04-06T23:09:33.000Z" itemprop="datePublished">
+    2016-04-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>以前介绍过 <a target="_blank" rel="noopener" href="http://www.mycode.net.cn/language/ccplusplus/1559.html">VMMap 工具</a>是可以查看一个进程中的虚拟内存信息的，其内部的实现原理就是调用 VirtualQueryEx 函数（支持查看其他进程）得到一个进程的虚拟内存信息。根据学习的视频我也自己实现了一下，但我们用到的是 <code>VirtualQuery</code> 来查看自身进程的内容。</p>
+        
+          <div class="more-link">
+            <a href="/2016/04/06/2016/2016-04-06_230933-1574/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/04/04/2016/2016-04-04_224709-1572/">大页面申请及使用</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-04-04T22:47:09.000Z" itemprop="datePublished">
+    2016-04-04
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>大页面的的应用场景及注意事项如下（出自北风网 VC++ 系列视频教程，请到官网下载尊重版权）：</p>
+<ul>
+<li>大页面的内存是不能换页的，只能常驻于RAM中，不会存在页面文件中 (即大页面不会换页,物理内存紧张时慎用)</li>
+<li>大页面的内存算作进程的私有页面,不会统计在进程工作集中</li>
+<li>因为大页面尺寸远大于小页面尺寸,分配一个大页面必须要有连续的足够大块的物理内存,这可能导致系统进行耗时的内存碎片整理工作</li>
+<li>大页面始终是可读写的,并且是充分利用了高速缓存(TLB)</li>
+<li>大页面的分配不受作业对象对进程工作集大小的限制</li>
+<li>在Intel安腾架构上的WOW64系统不支持32位应用大页面,除非重编译应用为64位的
+        
+          <div class="more-link">
+            <a href="/2016/04/04/2016/2016-04-04_224709-1572/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/04/04/2016/2016-04-04_220721-1565/">利用结构化异常实现动态分配虚拟内存</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-04-04T22:07:21.000Z" itemprop="datePublished">
+    2016-04-04
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>虚拟内存一次保留（MEM_RESERVE 可以理解为申请）最小就是 64K，一次提交（MEM_COMMIT）至少是一个页面 4K。而往往有的时候我们不知道我们到底需要多少虚拟内存才够使用，所以可能需要动态分配，下面例子演示了如何使用结构化异常机制，动态根据需要分配内存给一个不断写入新字符的空间使用。例子来自 MSDN，我只是学习抄写了一份！</p>
+        
+          <div class="more-link">
+            <a href="/2016/04/04/2016/2016-04-04_220721-1565/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/04/03/2016/2016-04-03_003836-1559/">Windows 虚拟内存查看工具 VMMap</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-04-03T00:38:36.000Z" itemprop="datePublished">
+    2016-04-03
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>曾经在杭州一家公司做技术售后的时候，有一个印象深刻的问题，就是腾讯游戏《剑灵》在 Windows 32 位平台上报错的问题：<a target="_blank" rel="noopener" href="http://support.icafe8.com/technologynews/hotfault/4708.html">http://support.icafe8.com/technologynews/hotfault/4708.html</a>。综述原因就是在 32 位平台下虚拟内存地址空间不足（官方给的是这个答复，但真相到底是什么因为当时能力有限没有一探究竟）导致游戏申请不到更多的内存使用而崩溃。那么可以通过 &#x2F;3GB 的手段去拓展用户空间的虚拟内存地址限制。但 Windows 只有一些参数的开关，我不知道开了以后到底这个进程可用的虚拟内存地址空间还有多少。最近在学习 Windows 内存管理时有人介绍了这款工具 VMMap。</p>
+        
+          <div class="more-link">
+            <a href="/2016/04/03/2016/2016-04-03_003836-1559/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/02/15/2016/2016-02-15_191541-1489/">结构体成员在内存中的对齐方式</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-02-15T19:15:41.000Z" itemprop="datePublished">
+    2016-02-15
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>这个话题还是很早以前讨论过，当时并没有好好的理解，最近在复习知识的时候又重新看了一遍资料，自己做一下总结，也希望后面有人需要学习时可以对他有所帮助。以下我会举两个结构体的例子，分别画图的方式表达对齐的原则。</p>
+        
+          <div class="more-link">
+            <a href="/2016/02/15/2016/2016-02-15_191541-1489/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/02/13/2016/2016-02-13_162437-1481/">完成端口实现高性能服务端通信层的关键问题</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-02-13T16:24:37.000Z" itemprop="datePublished">
+    2016-02-13
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BD%91%E7%BB%9C/">网络</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在网络上翻阅过的一份资料，所谈之处皆是痛点，如因处理大量请求可能会导致内存不足的情况、多线程情况下数据包排序紊乱等问题，非常值得参考和学习，其中引入的其他文献有微软官方和非官方文章，附带有非常可靠的代码提供学习，此文非常值得记录。特此分享！</p>
+        
+          <div class="more-link">
+            <a href="/2016/02/13/2016/2016-02-13_162437-1481/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/02/11/2016/2016-02-11_213132-1475/">一个简单的 Windows 下多线程创建 Demo</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-02-11T21:31:32.000Z" itemprop="datePublished">
+    2016-02-11
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>向往了多年，终于静下心来备战 IOCP，对于语言方面不缺少什么东西了，剩下的就是对操作系统和编程技巧的学习了，所以慢慢的开始写一些周边会涉及到的代码，也算是对 C&#x2F;C++ 的复习，本文写的是一个 Windows 下多线程的例子，跟 Linux 下没什么区别，循环创建线程然后用堆上内存传递参数，代码有详细的注释可以参考。</p>
+        
+          <div class="more-link">
+            <a href="/2016/02/11/2016/2016-02-11_213132-1475/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/page/2/">2</a><a class="page-number" href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/page/3/">3</a><a class="extend next" rel="next" href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/page/2/">next »</a>
+    </nav>
+  </section>
+
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

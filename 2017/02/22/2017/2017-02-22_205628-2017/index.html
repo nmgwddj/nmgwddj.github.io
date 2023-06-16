@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>wordpress markdown 书写首航缩进方案 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>wordpress markdown 书写首航缩进方案</h1>
+    </header>
+
+    <section>
+      <p>早已经习惯让自己的文章每个段落首航缩进，这样可以让文章整体段落有序，整洁自然。在写这篇文章之前我使用过很多种方法，比如使用 <code>&amp;emsp;</code> 的方法，或者首行输入两个全角的空格。这样操作非常麻烦，遇到兼容性不好的浏览器，还显示乱码。最终在知乎搜索到这样一句话“段首缩进这件事，应该是 CSS 或者其他排版工具的事情，Markdown 奉行的是样式和内容分开的哲学。”，所以我还是最终打算实施 CSS 的方案。</p>
+<span id="more"></span>
+<h2 id="CSS-方案的优点"><a href="#CSS-方案的优点" class="headerlink" title="CSS 方案的优点"></a>CSS 方案的优点</h2><ul>
+<li>在书写文章的时候不用刻意添加符号表示缩进</li>
+<li>一次设置所有文章全部生效</li>
+<li>几乎没有浏览器兼容性问题</li>
+</ul>
+<h2 id="设置方法"><a href="#设置方法" class="headerlink" title="设置方法"></a>设置方法</h2><p>新版本的 wordpress 中，后台管理页面的 <code>外观-&gt;编辑CSS</code> 可以添加一些自定义的 CSS 样式信息。我们自己添加如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/* 首行缩进 */</span><br><span class="line">p &#123;</span><br><span class="line">    text-indent: 2em;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/* 处理图片也被缩进的问题 */</span><br><span class="line">p a img &#123;</span><br><span class="line">    display: block;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>添加完成后的效果如下： <a href="/images/2017/02/8E443742-7C72-44A8-BAAC-7F2748EDAE11.jpg"><img src="/images/2017/02/8E443742-7C72-44A8-BAAC-7F2748EDAE11.jpg"></a> 此时所有文章的段落都会首行缩进了。</p>
+<h2 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h2><p>CSS 样式添加好了，你会发现跟以前自己写的首航添加两个全角空格或 <code>&amp;emsp;</code> 方式重复了，有的文章首行空出了 4 个字的空格。要解决这个问题我们需要批量替换以下文章中的全角空格和 <code>&amp;emsp;</code> 为空的字符串，这样就不会冲突了。如何替换呢？ 在替换之前我们需要先连接数据库，要具有执行 SQL 语句的权限，如果你是一个技术人员，知道如何在数据库中执行 SQL 语句请跳过此步骤。我的服务器是阿里云的云虚拟主机，登录阿里云后台找到自己的云虚拟机主机，点击管理进入虚拟主机管理界面。我们要做的第一件事就是备份数据库，防止我们执行错了 SQL 语句导致数据丢失。 <a href="/images/2017/02/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-02-22-20.49.48.png"><img src="/images/2017/02/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-02-22-20.49.48.png"></a> 在主机管理页面中点击 <code>工具&amp;服务</code>，然后点击右上角的 <code>备份站点</code> 进行备份。随后切换到数据库信息菜单下，选择管理，随后进入阿里云数据库的管理配置界面，要求你输入用户名和密码： <a href="/images/2017/02/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-02-22-20.51.42.png"><img src="/images/2017/02/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-02-22-20.51.42.png"></a> 登录进数据库管理页面后，点击 <code>wp_post</code> 表，选择 <code>SQL 操作数据</code>： <a href="/images/2017/02/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-02-22-20.53.35.png"><img src="/images/2017/02/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-02-22-20.53.35.png"></a> 然后输入一下两条 SQL 语句分别执行一次就可以了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">update `wp_posts` set post_content = replace(post_content, &#x27;　　&#x27;, &#x27;&#x27;);</span><br><span class="line">update `wp_posts` set post_content = replace(post_content, &#x27;&amp;emsp;&amp;emsp;&#x27;, &#x27;&#x27;);</span><br></pre></td></tr></table></figure>
+
+<p>两条语句分别是讲全角空格和 <code>&amp;emsp;</code> 都替换为空，这样就完美的实现了首行自动缩进了。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-02-22T20:56:28.000Z" itemprop="datePublished">
+              2017-02-22
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/wordpress/">wordpress</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

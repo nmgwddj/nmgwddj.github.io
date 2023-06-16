@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>多路 io 转接模型 select/poll | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>多路 io 转接模型 select/poll</h1>
+    </header>
+
+    <section>
+      <p>多路io转发服务器模型也是为了解决大并发多客户端场景下的问题，比多进程、多线程开销要少。多进程多线程常规情况下都是使用 accept 或 read 函数在阻塞等接收客户端发送过来的数据，而多路io模型则是提供了一个系统函数，该函数负责阻塞判断各路被监控的文件描述符是否有数据读取或写入操作，当有数据读取或写入时再让 accept 或 read 去直接处理从而不会阻塞，系统函数可能会同时返回多个有数据的文件描述符等待后面的代码处理，所以效率上要比多进程和多线程同时只在一个位置阻塞获取数据效率要高一些，下面就介绍一下多路 io 模型 select 和 poll，poll 模型较 select 模型还存在一些优势，在本文后面将介绍。</p>
+<span id="more"></span>
+<hr>
+<h3 id="公共头文件和客户端代码"><a href="#公共头文件和客户端代码" class="headerlink" title="公共头文件和客户端代码"></a>公共头文件和客户端代码</h3><p>&#x2F;* wrap.h *&#x2F;<br>#ifndef __WRAP_H__<br>#define __WRAP_H__</p>
+<p>void perr_exit(const char* s);<br>int Accept(int fd, struct sockaddr* sa, socklen_t* salenptr);<br>void Bind(int fd, const struct sockaddr* sa, socklen_t salen);<br>void Connect(int fd, const struct sockaddr* sa, socklen_t salen);<br>void Listen(int fd, int backlog);<br>int Socket(int family, int type, int protocol);<br>ssize_t Read(int fd, void* ptr, size_t nbytes);<br>ssize_t Write(int fd, const void* ptr, size_t nbytes);<br>void Close(int fd);<br>ssize_t Readn(int fd, void* vptr, size_t n);<br>ssize_t Writen(int fd, const void* vptr, size_t n);<br>static ssize_t my_read(int fd, char* ptr);<br>ssize_t Readline(int fd, void* vptr, size_t maxlen);</p>
+<p>#endif</p>
+<p>#include &lt;stdlib.h&gt;<br>#include &lt;errno.h&gt;<br>#include &lt;sys&#x2F;socket.h&gt;<br>#include &lt;stdio.h&gt;<br>#include &lt;unistd.h&gt;<br>#include “wrap.h”</p>
+<p>void perr_exit(const char* s)<br>{<br>perror(s);<br>exit(1);<br>}</p>
+<p>int Accept(int fd, struct sockaddr* sa, socklen_t* salenptr)<br>{<br>int n;</p>
+<p>again:<br>if ( (n &#x3D; accept(fd, sa, salenptr)) &lt; 0 )<br>{<br>if ((errno &#x3D;&#x3D; ECONNABORTED)  (errno &#x3D;&#x3D; EINTR))<br>{<br>goto again;<br>}<br>else<br>{<br>perr_exit(“accept error”);<br>}<br>}<br>return n;<br>}</p>
+<p>void Bind(int fd, const struct sockaddr* sa, socklen_t salen)<br>{<br>if ( bind(fd, sa, salen) &lt; 0 )<br>{<br>perr_exit(“bind error”);<br>}<br>}</p>
+<p>void Connect(int fd, const struct sockaddr* sa, socklen_t salen)<br>{<br>if ( connect(fd, sa, salen) &lt; 0 )<br>{<br>perr_exit(“connect error”);<br>}<br>}</p>
+<p>void Listen(int fd, int backlog)<br>{<br>if ( listen(fd, backlog) &lt; 0 )<br>{<br>perr_exit(“listen error”);<br>}<br>}</p>
+<p>int Socket(int family, int type, int protocol)<br>{<br>int n &#x3D; socket(family, type, protocol);<br>if ( n &lt; 0 )<br>{<br>perr_exit(“socket error”);<br>}<br>return n;<br>}</p>
+<p>ssize_t Read(int fd, void* ptr, size_t nbytes)<br>{<br>ssize_t n;</p>
+<p>again:<br>if ( (n &#x3D; read(fd, ptr, nbytes)) &#x3D;&#x3D; -1)<br>{<br>if (errno &#x3D;&#x3D; EINTR)<br>{<br>goto again;<br>}<br>else<br>{<br>return -1;<br>}<br>}<br>return n;<br>}</p>
+<p>ssize_t Write(int fd, const void* ptr, size_t nbytes)<br>{<br>ssize_t n;</p>
+<p>again:<br>if ( (n &#x3D; write(fd, ptr, nbytes)) &#x3D;&#x3D; -1)<br>{<br>if (errno &#x3D;&#x3D; EINTR)<br>{<br>goto again;<br>}<br>else<br>{<br>return -1;<br>}<br>}<br>return n;<br>}</p>
+<p>void Close(int fd)<br>{<br>if (close(fd) &#x3D;&#x3D; -1)<br>{<br>perr_exit(“close error”);<br>}<br>}</p>
+<p>ssize_t Readn(int fd, void* vptr, size_t n)<br>{<br>size_t nleft;<br>ssize_t nread;<br>char* ptr;</p>
+<p>ptr &#x3D; vptr;<br>nleft &#x3D; n;<br>while (nleft &gt; 0)<br>{<br>if ( (nread &#x3D; read(fd, ptr, nleft)) &lt; 0 )<br>{<br>if (errno &#x3D;&#x3D; EINTR)<br>{<br>nread &#x3D; 0;<br>}<br>else<br>{<br>return -1;<br>}<br>}<br>else if (nread &#x3D;&#x3D; 0)<br>{<br>break;<br>}</p>
+<p>nleft -&#x3D; nread;<br>ptr +&#x3D; nread;<br>}<br>}</p>
+<p>ssize_t Writen(int fd, const void* vptr, size_t n)<br>{<br>size_t nleft;<br>ssize_t nwritten;<br>const char* ptr;</p>
+<p>ptr &#x3D; vptr;<br>nleft &#x3D; n;<br>while (nleft &gt; 0)<br>{<br>if ( (nwritten &#x3D; write(fd, ptr, nleft)) &lt;&#x3D; 0)<br>{<br>if (nwritten &lt; 0 &amp;&amp; errno &#x3D;&#x3D; EINTR)<br>{<br>nwritten &#x3D; 0;<br>}<br>else<br>{<br>return -1;<br>}<br>}</p>
+<p>nleft -&#x3D; nwritten;<br>ptr +&#x3D; nwritten;<br>}</p>
+<p>return n;<br>}</p>
+<p>static ssize_t my_read(int fd, char* ptr)<br>{<br>static int read_cnt;<br>static char* read_ptr;<br>static char read_buf[100];</p>
+<p>if (read_cnt &lt;&#x3D; 0)<br>{<br>again:<br>if ( (read_cnt &#x3D; read(fd, read_buf, sizeof(read_buf))) &lt; 0 )<br>{<br>if (errno &#x3D;&#x3D; EINTR)<br>{<br>goto again;<br>}<br>return -1;<br>}<br>else if (read_cnt &#x3D;&#x3D; 0)<br>{<br>return 0;<br>}</p>
+<p>read_ptr &#x3D; read_buf;<br>}</p>
+<p>read_cnt–;<br>*ptr &#x3D; *read_ptr++;<br>return 1;<br>}</p>
+<p>ssize_t Readline(int fd, void* vptr, size_t maxlen)<br>{<br>ssize_t n, rc;<br>char c, *ptr;</p>
+<p>ptr &#x3D; vptr;<br>for (n &#x3D; 1; n &lt; maxlen; n++)<br>{<br>if ( (rc &#x3D; my_read(fd, &amp;c)) &#x3D;&#x3D; 1)<br>{<br>*ptr++ &#x3D; c;<br>if (c &#x3D;&#x3D; ‘\n’)<br>{<br>break;<br>}<br>}<br>else if (rc &#x3D;&#x3D; 0)<br>{<br>*ptr &#x3D; 0;<br>return n - 1;<br>}<br>else<br>{<br>return -1;<br>}</p>
+<p>*ptr &#x3D; 0;<br>return n;<br>}<br>}</p>
+<h3 id="公共客户端代码"><a href="#公共客户端代码" class="headerlink" title="公共客户端代码"></a>公共客户端代码</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;string.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;netinet&#x2F;in.h&gt;<br>#include “wrap.h”</p>
+<p>#define MAXLINE 80<br>#define SERV_PORT 8000</p>
+<p>int main(int argc, char *argv[])<br>{<br>struct sockaddr_in servaddr;<br>char buf[MAXLINE];<br>int sockfd, n;<br>sockfd &#x3D; Socket(AF_INET, SOCK_STREAM, 0);<br>bzero(&amp;servaddr, sizeof(servaddr));<br>servaddr.sin_family &#x3D; AF_INET;<br>inet_pton(AF_INET, “127.0.0.1”, &amp;servaddr.sin_addr);<br>servaddr.sin_port &#x3D; htons(SERV_PORT);<br>Connect(sockfd, (struct sockaddr *)&amp;servaddr, sizeof(servaddr));<br>while (fgets(buf, MAXLINE, stdin) !&#x3D; NULL) {<br>Write(sockfd, buf, strlen(buf));<br>n &#x3D; Read(sockfd, buf, MAXLINE);<br>if (n &#x3D;&#x3D; 0)<br>printf(“the other side has been closed.\n”);<br>else<br>Write(STDOUT_FILENO, buf, n);<br>}<br>Close(sockfd);<br>return 0;<br>}</p>
+<h3 id="select-模型服务端代码"><a href="#select-模型服务端代码" class="headerlink" title="select 模型服务端代码"></a>select 模型服务端代码</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include &lt;netinet&#x2F;in.h&gt;<br>#include &lt;arpa&#x2F;inet.h&gt;<br>#include “wrap.h”</p>
+<p>#define MAXLINE 100<br>#define SERV_PORT 8000</p>
+<p>int main(int argc, char* argv[])<br>{<br>int sock;<br>sock &#x3D; Socket(AF_INET, SOCK_STREAM, 0);</p>
+<p>struct sockaddr_in srvaddr;<br>bzero(&amp;srvaddr, sizeof(srvaddr));<br>srvaddr.sin_family&#x3D; AF_INET;<br>srvaddr.sin_addr.s_addr &#x3D; htonl(INADDR_ANY);<br>srvaddr.sin_port&#x3D; htons(SERV_PORT);<br>Bind(sock, (struct sockaddr*)&amp;srvaddr, sizeof(srvaddr));</p>
+<p>Listen(sock, 128);</p>
+<p>&#x2F;&#x2F; 用于保存所有已经连接过的客户端文件描述符<br>int i;<br>int client[FD_SETSIZE];<br>for (i &#x3D; 0; i &lt; FD_SETSIZE; i++)<br>{<br>client[i] &#x3D; -1;<br>}</p>
+<p>&#x2F;&#x2F; 初始化当前最大的文件描述符变量<br>int max_fd &#x3D; sock;<br>&#x2F;&#x2F; 当前已经有多少客户端连接<br>int max_idx &#x3D; -1;</p>
+<p>int ret;<br>fd_set reset, allset;<br>FD_ZERO(&amp;allset);<br>FD_SET(sock, &amp;allset);</p>
+<p>socklen_t cnt_len;<br>struct sockaddr_in cnt_addr;<br>int conn;<br>char ip[INET_ADDRSTRLEN];<br>int port;<br>int read_ret;<br>char buf[MAXLINE];</p>
+<p>for ( ; ; )<br>{<br>reset &#x3D; allset;<br>ret &#x3D; select(max_fd + 1, &amp;reset, NULL, NULL, NULL);<br>if (ret &#x3D;&#x3D; 0)<br>{<br>perr_exit(“select erro”);<br>}</p>
+<p>&#x2F;&#x2F; 如果 sock 文件描述符有数据到来<br>if (FD_ISSET(sock, &amp;reset))<br>{<br>cnt_len &#x3D; sizeof(cnt_addr);<br>conn &#x3D; Accept(sock, (struct sockaddr*)&amp;cnt_addr, &amp;cnt_len);<br>inet_ntop(AF_INET, &amp;cnt_addr.sin_addr, ip, sizeof(ip));<br>port &#x3D; ntohs(cnt_addr.sin_port);</p>
+<p>printf(“received from %s at port %d\n”, ip, port);</p>
+<p>&#x2F;&#x2F; 把新的文件描述符添加到数组里面<br>for (i &#x3D; 0; i &lt; FD_SETSIZE; i++)<br>{<br>if (client[i] &lt; 0)<br>{<br>client[i] &#x3D; conn;<br>break;<br>}<br>}</p>
+<p>&#x2F;&#x2F; 判断是否达到了文件描述符上限<br>if (i &#x3D;&#x3D; FD_SETSIZE)<br>{<br>fputs(“too many clients\n”, stderr);<br>exit(1);<br>}</p>
+<p>&#x2F;&#x2F; 将新来的连接文件描述符添加到监控列表中<br>FD_SET(conn, &amp;allset);<br>&#x2F;&#x2F; 更新最大的文件描述符数量，提供select第一个参数使用<br>if (conn &gt; max_fd)<br>{<br>max_fd &#x3D; conn;<br>}<br>&#x2F;&#x2F; 更新当前已经连接的客户端数量，后面for遍历使用<br>if (i &gt; max_idx)<br>{<br>max_idx &#x3D; i;<br>}<br>&#x2F;&#x2F; 如果select返回值-1&#x3D;&#x3D;0证明已经没有需要处理的数据了<br>if (–ret &#x3D;&#x3D; 0)<br>{<br>continue;<br>}<br>}</p>
+<p>&#x2F;&#x2F; 处理非 acctep 接收的数据<br>for (i &#x3D; 0; i &lt;&#x3D; max_idx; i++)<br>{<br>if (client[i] &lt; 0)<br>{<br>continue;<br>}<br>if (FD_ISSET(client[i], &amp;reset))<br>{<br>if ( (read_ret &#x3D; Read(client[i], buf, MAXLINE)) &#x3D;&#x3D; 0 )<br>{<br>Close(client[i]);<br>FD_CLR(client[i], &amp;reset);<br>client[i] &#x3D; -1;<br>}<br>else<br>{<br>int j;<br>for (j &#x3D; 0; j &lt; read_ret; j++)<br>{<br>buf[j] &#x3D; toupper(buf[j]);<br>}<br>Write(client[i], buf, read_ret);<br>}</p>
+<p>if (–ret &#x3D;&#x3D; 0);<br>{<br>break;<br>}<br>}<br>}<br>}<br>return 0;<br>}</p>
+<h3 id="编译运行测试-select-模型代码"><a href="#编译运行测试-select-模型代码" class="headerlink" title="编译运行测试 select 模型代码"></a>编译运行测试 select 模型代码</h3><p>编译客户端：gcc client.c wrap.c -o client 编译服务端：gcc select_server.c wrap.c -o select_server 运行结果： <a href="/images/2015/07/2015-07-11-113048.png"><img src="/images/2015/07/2015-07-11-113048.png" alt="2015-07-11 11:30:48"></a></p>
+<h3 id="poll-模型服务端代码和说明"><a href="#poll-模型服务端代码和说明" class="headerlink" title="poll 模型服务端代码和说明"></a>poll 模型服务端代码和说明</h3><p>poll 模型较 select 模型的优势：</p>
+<ul>
+<li>poll 在调用时，传入事件和传出事件是分开的，而 select 是在一个参数中实现的传入传出。</li>
+<li>select 模型被限制为最大可连接1024个客户端，这是内核代码写死的，二 poll 则真正的是根据系统 open file 的数量来决定可以连接多少客户端的</li>
+</ul>
+<p>#include &lt;stdio.h&gt;<br>#include &lt;string.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;netinet&#x2F;in.h&gt;<br>#include &lt;arpa&#x2F;inet.h&gt;<br>#include &lt;poll.h&gt;<br>#include &lt;errno.h&gt;<br>#include “wrap.h”</p>
+<p>#define MAXLINE 100<br>#define SERV_PORT 8000<br>#define OPEN_MAX 50000</p>
+<p>int main(int argc, char* argv[])<br>{<br>int sock;<br>sock &#x3D; Socket(AF_INET, SOCK_STREAM, 0);</p>
+<p>struct sockaddr_in srvaddr;<br>memset(&amp;srvaddr, 0, sizeof(srvaddr));<br>srvaddr.sin_family &#x3D; AF_INET;<br>srvaddr.sin_addr.s_addr &#x3D; htonl(INADDR_ANY);<br>srvaddr.sin_port &#x3D; htons(SERV_PORT);<br>socklen_t socklen &#x3D; sizeof(srvaddr);</p>
+<p>Bind(sock, (struct sockaddr*)&amp;srvaddr, socklen);<br>Listen(sock, 128);</p>
+<p>struct pollfd client[OPEN_MAX];<br>client[0].fd &#x3D; sock;<br>client[0].events &#x3D; POLLRDNORM;</p>
+<p>int i;<br>&#x2F;&#x2F; 把整个数组中的文件描述符都初始化为-1<br>for (i &#x3D; 1; i &lt; OPEN_MAX; i++)<br>{<br>client[i].fd &#x3D; -1;<br>}</p>
+<p>int max_idx &#x3D; 0;<br>int ret, read_ret;<br>int conn;<br>struct sockaddr_in cnt_addr;<br>int cnt_len &#x3D; sizeof(cnt_addr);<br>char ip[INET_ADDRSTRLEN];<br>int port;<br>char buf[MAXLINE];</p>
+<p>while (1)<br>{<br>&#x2F;&#x2F; 第一个参数是初始化过的数组<br>&#x2F;&#x2F; 第二个参数是当前监控的最大的文件描述符数量<br>&#x2F;&#x2F; 第三个参数是设定超时时间，-1为一直等待<br>&#x2F;&#x2F; 当 poll 返回时一定是有某一个文件描述符出现了被监控的事件<br>ret &#x3D; poll(client, max_idx + 1, -1);</p>
+<p>&#x2F;&#x2F; 判断是否是有新的客户端连接了<br>if (client[0].revents &amp; POLLRDNORM)<br>{<br>conn &#x3D; Accept(sock, (struct sockaddr*)&amp;cnt_addr, &amp;cnt_len);<br>inet_ntop(conn, &amp;cnt_addr, ip, sizeof(ip));<br>port &#x3D; ntohs(cnt_addr.sin_port);<br>printf(“received from %s at port %d\n”, ip, port);</p>
+<p>&#x2F;&#x2F; 将新来的连接文件描述符添加到数组中<br>for (i &#x3D; 1; i &lt; OPEN_MAX; i++)<br>{<br>if (client[i].fd &lt; 0)<br>{<br>client[i].fd &#x3D; conn;<br>break;<br>}<br>}</p>
+<p>&#x2F;&#x2F; 判断是否超过了最大的连接数量<br>if (i &#x3D;&#x3D; OPEN_MAX)<br>{<br>perr_exit(“too many clients”);<br>}</p>
+<p>&#x2F;&#x2F; 监听新来的连接<br>client[i].events &#x3D; POLLRDNORM;</p>
+<p>&#x2F;&#x2F; 扩大数组下标的数量<br>if (i &gt; max_idx)<br>{<br>max_idx &#x3D; i;<br>}</p>
+<p>if (–ret &lt;&#x3D; 0)<br>{<br>continue;<br>}<br>}</p>
+<p>for (i &#x3D; 1; i &lt;&#x3D; max_idx; i++)<br>{<br>if (client[i].fd &lt; 0)<br>{<br>continue;<br>}<br>if (client[i].revents &amp; (POLLRDNORM  POLLERR))<br>{<br>if ( (read_ret &#x3D; Read(client[i].fd, buf, MAXLINE)) &lt; 0 )<br>{<br>if (errno &#x3D;&#x3D; ECONNRESET)<br>{<br>printf(“client[%d] aborted connection\n”, i);<br>Close(client[i].fd);<br>client[i].fd &#x3D; -1;<br>}<br>else<br>{<br>perr_exit(“read error”);<br>}<br>}<br>else if (read_ret &#x3D;&#x3D; 0)<br>{<br>printf(“client[%d] closed connection\n”, i);<br>Close(client[i].fd);<br>client[i].fd &#x3D; -1;<br>}<br>else<br>{<br>int j;<br>for (j &#x3D; 0; j &lt; read_ret; j++)<br>{<br>buf[j] &#x3D; toupper(buf[j]);<br>}<br>Write(client[i].fd, buf, read_ret);<br>}</p>
+<p>if (–ret &lt;&#x3D; 0)<br>{<br>break;<br>}<br>}<br>}<br>}</p>
+<p>return 0;<br>}</p>
+<h3 id="编译运行测试-poll-模型代码"><a href="#编译运行测试-poll-模型代码" class="headerlink" title="编译运行测试 poll 模型代码"></a>编译运行测试 poll 模型代码</h3><p>编译客户端：gcc client.c wrap.c -o client 编译服务端：gcc poll_server.c wrap.c -o poll_server 运行效果： <a href="/images/2015/07/2015-07-11-113918.png"><img src="/images/2015/07/2015-07-11-113918.png" alt="2015-07-11 11:39:18"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-11T11:43:30.000Z" itemprop="datePublished">
+              2015-07-11
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BD%91%E7%BB%9C/">网络</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

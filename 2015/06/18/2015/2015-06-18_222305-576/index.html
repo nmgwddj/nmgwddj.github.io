@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt 中的数据结构 QVector、QList 使用 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt 中的数据结构 QVector、QList 使用</h1>
+    </header>
+
+    <section>
+      <p>与 stl 和 boost 库中的链表差不多，都有我们常见的属性，如at、push_back、push_front、erase 等等，操作与我们以前学习过的都大相径庭，所以我只贴出代码，有更多需要可以参考 Qt 帮助文档。下面只是 QList 的代码，其实你把里面 QList 的关键字替换成 QVector 就可以切换成数组形式了。这是 Qt 对为了让大家更方便的使用，所以让接口风格装都保持一致性，只不过在遍历时，vector使用at方法要比遍历链表速度快。</p>
+<span id="more"></span>
+<p>#include <QList><br>#include <QString><br>#include <QDebug></p>
+<p>int main()<br>{<br>    QList<QString> list;</p>
+<pre><code>// 追加数据
+list.append(&quot;abc&quot;);
+list.append(&quot;def&quot;);
+list.append(&quot;ghi&quot;);
+
+// 相当于 append
+list &lt;&lt; &quot;jkl&quot;;
+
+// stl风格插入数据
+list.push\_back(&quot;mno&quot;);
+list.push\_front(&quot;pqr&quot;);
+</code></pre>
+<p>#if 0<br>    &#x2F;&#x2F; 删除所有为 abc 的元素<br>    list.removeAll(“abc”);<br>    &#x2F;&#x2F; 删除第一个为 def 的元素<br>    list.removeOne(“def”);<br>    &#x2F;&#x2F; 删除位置为 0 的元素<br>    list.removeAt(0);<br>    &#x2F;&#x2F; 删除首元素<br>    list.removeFirst();<br>    &#x2F;&#x2F; 删除尾元素<br>    list.removeLast();<br>    &#x2F;&#x2F; 全部删除<br>    list.clear();<br>#endif</p>
+<pre><code>// 遍历方式1
+foreach(QString tmp, list)
+&#123;
+    qDebug() &lt;&lt; tmp;
+&#125;
+
+// 遍历方式2，如果要在for中删除数据时，最好将迭代器放到循环中自增，防止删除数据后遍历不准的情况
+for(QList&lt;QString&gt;::iterator it = list.begin();
+    it != list.end();
+    /\*it ++\*/)
+&#123;
+    if (\*it == &quot;abc&quot;)
+    &#123;
+        it = list.erase(it);
+    &#125;
+    else
+    &#123;
+        it++;
+    &#125;
+&#125;
+
+// 遍历方式3，效率最低
+/\*for(int i = 0; i &lt; list.size(); i++)
+&#123;
+    qDebug() &lt;&lt; list.at(i);
+&#125;\*/
+return 0;
+</code></pre>
+<p>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-18T22:23:05.000Z" itemprop="datePublished">
+              2015-06-18
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/STL/">STL</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

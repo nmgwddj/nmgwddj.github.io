@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ 指针 }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/07/2015/2015-05-07_224155-91/">自实现简单atoi功能</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-07T22:41:55.000Z" itemprop="datePublished">
+    2015-05-07
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>atoi这个库函数实在的太强大了，很多细节上的处理是我们无法想象的，不过最近也尝试做了一下这个练习，发现真的不是那么简单，只实现了一部分功能。如将字符串”123”转换为123，”-0123”转换为-123。代码功能比较简陋，还有诸多没有实现的功能，相比库函数atoi还差的很多，仅供参考。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/07/2015/2015-05-07_224155-91/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/07/2015/2015-05-07_223814-88/">练习题目“天生棋局”</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-07T22:38:14.000Z" itemprop="datePublished">
+    2015-05-07
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p><strong>1、传入一个n 在堆空间中产生n*n方格的棋盘</strong> int ** createBoard(int n); int createBoard1(int ***p,int n); <strong>2、N颗棋子随机落在棋盘上&lt;需要防止落在同一位置&gt;</strong> int initBoard(int **p,int n); <strong>3、打印棋盘</strong> int printBoard(int **p,int n); 如果有两颗棋子落同一行或者同一列则输出好棋，否则输出不是好棋。 将棋局中的棋子打印出来空位用O，有旗子的用X表示。随意就行。 <strong>4、销毁棋盘</strong> int destroyBoard(int **p,int n); int destroyBoard1(int ***p,int n);</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/07/2015/2015-05-07_223814-88/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/07/2015/2015-05-07_222742-86/">练习题目“涨工资”</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-07T22:27:42.000Z" itemprop="datePublished">
+    2015-05-07
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>有一个员工文件salary_back.txt，salary_back.txt文件每行 为部门职员的姓名:工资(如tom:20000)，题目要求：</p>
+<ol>
+<li><p>求出该公司有多少人。</p>
+</li>
+<li><p>从工资文件salary_back.txt中读入全部工人，全部增加100元工资后并保存信息到文件salary.txt中。</p>
+</li>
+<li><p>将加工资之后的所有员工按工资进行降序排序，将排序后的结果选出工资最高TOP10在屏幕上输出。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/07/2015/2015-05-07_222742-86/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/07/2015/2015-05-07_221327-84/">求字符串中出现频次最高的字符</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-07T22:13:27.000Z" itemprop="datePublished">
+    2015-05-07
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>题目给出的函数原型如下： char getMostCharFromString(const char *str); 具体要求为，若有多个相同的字符备选,返回其中最早出现的字符，比如字符串”wwwwwwdddaaabbbdddcccc”，w和d都出现过6次，但只返回第一个最早出现的w。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/07/2015/2015-05-07_221327-84/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/07/2015/2015-05-07_080606-78/">计算一个字符串不重复字符个数</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-07T08:06:06.000Z" itemprop="datePublished">
+    2015-05-07
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>题目给出的函数原型如下： int getCountOfString(const char *str); 由于参数是const的，所以字符串本身肯定是不能被修改的，题目大致思路就是备份一份字符串到堆空间中（可修改），然后遍历堆空间将重复的字符串置成\0，最后遍历整个堆上的字符串将去除\0后得到的总数返回。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/07/2015/2015-05-07_080606-78/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/06/2015/2015-05-06_225918-71/">去除字符串中的空白符</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-06T22:59:18.000Z" itemprop="datePublished">
+    2015-05-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>函数提供三个功能，一种是去除左侧空格和TAB、另外一种是去除右侧的空格和TAB，最后一种则是去除所有空格和TAB，适当修改代码也可以去除ASCII中的9~13的其他空白符。具体实现如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/06/2015/2015-05-06_225918-71/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/06/2015/2015-05-06_220005-68/">自定义实现字符串函数</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-06T22:00:05.000Z" itemprop="datePublished">
+    2015-05-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>C语言库函数中strlen、strcmp、strcpy、strcat是我们非常常用的一些字符串处理函数，我们不得不了解一下内部的工作原理，有必要思考如果没有这些库函数我们该如何实现这些函数的功能。以深入的了解字符串内部的处理机制。本文就记录了一些前辈们留下的非常简练的实现。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/06/2015/2015-05-06_220005-68/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/06/2015/2015-05-06_211432-61/">二级指针与指针数组关系</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-06T21:14:32.000Z" itemprop="datePublished">
+    2015-05-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>指针数组我们一般用来存放一组字符串，来进行比较或储存的作用，而操作指针数组可以通过两种方式，一种则是直接使用下标方式，而另外一种，则可以通过二级指针。我们可以通过一个非常简明的例子来了解他们之间的关系。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/06/2015/2015-05-06_211432-61/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/06/2015/2015-05-06_210708-59/">数组指针的推演与理解</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-06T21:07:08.000Z" itemprop="datePublished">
+    2015-05-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>数组指针一般用于函数传参，其他基本很少遇到，其概念相对繁琐，本文将对数组指针做一个从头到尾的透彻分析，如果以后印象模糊了，再回来看看。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/06/2015/2015-05-06_210708-59/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/04/29/2015/2015-04-29_230519-14/">数组与指针的不解之缘</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-04-29T23:05:19.000Z" itemprop="datePublished">
+    2015-04-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>所有数组名都表示数组的首地址，并且这个地址是个常量，是不可以被赋值的。既然是地址常量，从某种角度说，他也是个指针，所以数组名和指针是等同的。那么我们就可以非常灵活的使用指针及数组名来访问数组中的元素。可以注意看代码中最后几行访问数组的方式是多么的怪异，但的确它是可以的。</p>
+        
+          <div class="more-link">
+            <a href="/2015/04/29/2015/2015-04-29_230519-14/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/tags/%E6%8C%87%E9%92%88/">« prev</a><a class="page-number" href="/tags/%E6%8C%87%E9%92%88/">1</a><span class="page-number current">2</span>
+    </nav>
+  </section>
+
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

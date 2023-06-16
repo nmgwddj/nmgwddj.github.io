@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ubuntu 安装微软雅黑和 Consolas 字体 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>ubuntu 安装微软雅黑和 Consolas 字体</h1>
+    </header>
+
+    <section>
+      <p>Consolas 字体用来写代码真的是非常舒服，可惜 ubuntu 系统中默认并没有这个字体，我们需要自己下载安装，本文就介绍了如何自己手动下载并安装如上字体。先来看一下vim下使用 Consolas 字体的效果图吧。</p>
+<span id="more"></span>
+<hr>
+<p><a href="/images/2015/07/2015-07-06_195930.png"><img src="/images/2015/07/2015-07-06_195930.png" alt="2015-07-06_195930"></a></p>
+<h3 id="【字体下载】"><a href="#【字体下载】" class="headerlink" title="【字体下载】"></a>【字体下载】</h3><p><a href="/images/2015/07/YaHeiConsolas.tar.gz">YaHeiConsolas.tar</a></p>
+<h3 id="【字体安装】"><a href="#【字体安装】" class="headerlink" title="【字体安装】"></a>【字体安装】</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">//解压压缩包</span><br><span class="line">tar -zxvf YaHeiConsolas.tar.gz</span><br><span class="line"></span><br><span class="line">//在系统目录下创建自定义字体目录</span><br><span class="line">sudo mkdir -p /usr/share/fonts/vista</span><br><span class="line"></span><br><span class="line">//复制解压出来的字体到刚才创建的目录</span><br><span class="line">sudo cp YaHeiConsolas.ttf /usr/share/fonts/vista/</span><br><span class="line"></span><br><span class="line">//修改字体权限</span><br><span class="line">sudo chmod 644 /usr/share/fonts/vista/*.ttf</span><br><span class="line"></span><br><span class="line">//进入字体目录</span><br><span class="line">cd /usr/share/fonts/vista/</span><br><span class="line"></span><br><span class="line">//刷新并安装字体</span><br><span class="line">sudo mkfontscale &amp;&amp; sudo mkfontdir &amp;&amp; sudo fc-cache -fv</span><br></pre></td></tr></table></figure>
+
+<h3 id="【重新设定系统字体】"><a href="#【重新设定系统字体】" class="headerlink" title="【重新设定系统字体】"></a>【重新设定系统字体】</h3><p>字体安装完毕后重新启动一次系统。然后在 ubuntu 软件中心中搜索 Unity Tweak Tool 这个软件，如下图： <a href="/images/2015/07/2015-07-06-111546.png"><img src="/images/2015/07/2015-07-06-111546.png" alt="2015-07-06 11:15:46"></a> 下载该软件后运行起来，选择字体： <a href="/images/2015/07/2015-07-06-111653.png"><img src="/images/2015/07/2015-07-06-111653.png" alt="2015-07-06 11:16:53"></a> 然后根据需要讲你想改变的字体位置修改为我们新家的 微软雅黑 + Consolas 字体即可： <a href="/images/2015/07/2015-07-06-110636.png"><img src="/images/2015/07/2015-07-06-110636.png" alt="2015-07-06 11:06:36"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-06T11:18:09.000Z" itemprop="datePublished">
+              2015-07-06
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

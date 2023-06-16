@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt 垂直布局及嵌套 layout | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt 垂直布局及嵌套 layout</h1>
+    </header>
+
+    <section>
+      <p>Qt 中垂直布局的 layout 是 QVBoxLayout 类，他的功能用发与 QHBoxLayout 完全一致，你只需将我们上一篇文章中的所有 QHBoxLayout 替换成 QVBoxLayout 就可以正常运行了。只不过一个是水平布局，一个是垂直布局。</p>
+<span id="more"></span>
+<p>本文讨论更多的是如何在一个 layout 中嵌套使用另外一个 layout，比如我们有这样一个需求，我们希望有三个按钮总在窗口的最左上角，无论窗口怎么拉伸或拖拽，按钮的位置都不动。那么我们就需要用到两个 layout 嵌套了。 大致的思路是在一个垂直的 layout 中嵌套一个水平的 layout，在水平的 layout 右侧设置一个弹簧，在垂直的 layout 下方设置一个弹簧，这样按钮就会一直在左上角了，表示图如下： <a href="/images/2015/06/2015-06-17_112530.png"><img src="/images/2015/06/2015-06-17_112530.png" alt="2015-06-17_112530"></a></p>
+<h3 id="【实现代码】"><a href="#【实现代码】" class="headerlink" title="【实现代码】"></a>【实现代码】</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;cwidget.h&quot;</span><br><span class="line">#include &lt;QHBoxLayout&gt;</span><br><span class="line">#include &lt;QVBoxLayout&gt;</span><br><span class="line">#include &lt;QPushButton&gt;</span><br><span class="line"></span><br><span class="line">CWidget::CWidget(QWidget *parent) : QWidget(parent)</span><br><span class="line">&#123;</span><br><span class="line">    // 垂直 Layout</span><br><span class="line">    QVBoxLayout* mainLayout = new QVBoxLayout(this);</span><br><span class="line">    // 水平 Layout</span><br><span class="line">    QHBoxLayout* layout = new QHBoxLayout;</span><br><span class="line"></span><br><span class="line">    // 水平 Layout 增加控件</span><br><span class="line">    layout-&gt;addWidget(new QPushButton(&quot;button1&quot;));</span><br><span class="line">    layout-&gt;addWidget(new QPushButton(&quot;button2&quot;));</span><br><span class="line">    layout-&gt;addWidget(new QPushButton(&quot;button3&quot;));</span><br><span class="line">    // 水平 Layout 增加弹簧</span><br><span class="line">    layout-&gt;addStretch(1);</span><br><span class="line"></span><br><span class="line">    // 将水平 Layout 添加到垂直 Layout</span><br><span class="line">    mainLayout-&gt;addLayout(layout);</span><br><span class="line">    // 设置垂直 Layout 弹簧</span><br><span class="line">    mainLayout-&gt;addStretch(1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-17T11:32:42.000Z" itemprop="datePublished">
+              2015-06-17
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

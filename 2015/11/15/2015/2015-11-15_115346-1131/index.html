@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>客户端 Meteor.call 等待服务端异步函数返回 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>客户端 Meteor.call 等待服务端异步函数返回</h1>
+    </header>
+
+    <section>
+      <p>在 Meteor 项目中，经常会有客户端使用 Meteor.call 方法去调用服务端的一个方法，并等待该方法返回。通常情况下，服务端的方法只需要 return 后，客户端使用回调函数就可以访问到 return 的值了。但如果服务端同样调用了一个异步执行的函数，那么此时就无法判断服务端的异步函数是否已经执行完毕，返回结果就会出现不准确的情况。如下所示：</p>
+<span id="more"></span>
+<p>服务端代码：</p>
+<p>setWechatMenu: function (appId, appSecret, jsonMenu) {<br>console.log(jsonMenu);<br>&#x2F;&#x2F; 创建微信菜单<br>var url &#x3D; “<a target="_blank" rel="noopener" href="https://api.weixin.qq.com/cgi-bin/token">https://api.weixin.qq.com/cgi-bin/token</a>?” +<br>      “grant_type&#x3D;client_credential&amp;appid&#x3D;” +<br>      appId + “&amp;secret&#x3D;” + appSecret;</p>
+<p>Meteor.http.get(url, { timeout: 30000 }, function(err, result) {<br>var jsonContent &#x3D; JSON.parse(result.content);<br>var accessToken &#x3D; jsonContent.access_token;<br>var url &#x3D; “<a target="_blank" rel="noopener" href="https://api.weixin.qq.com/cgi-bin/menu/create?access%5C_token=">https://api.weixin.qq.com/cgi-bin/menu/create?access\_token=</a>“ + accessToken;<br>&#x2F;&#x2F; post 创建菜单<br>var response &#x3D; Meteor.http.post(url, { data: jsonMenu }, function(err, result) {<br>console.log(‘Content: ‘ + result.content);<br>});<br>return response;<br>});<br>}</p>
+<p>客户端代码：</p>
+<p>Meteor.call(“setWechatMenu”, appId, appSecret, json, function(error, result) {<br>if (!error) {<br>console.log(“result :”, result);<br>};<br>});</p>
+<p>上面的例子中，我们在客户端使用 Meteor.call 方法调用了一个服务端的函数，等待服务端的异步函数 http.post 返回内容，但你会发现结果并不是那么理想，客户端在打印 result 的时候结果是 undefined。这是因为服务端 http.get 和 http.post 都使用了异步回调的方式取得返回值，实际这两个函数在调用时立即就返回了。而客户端也是立即就接收到了服务器的返回，并没有真正等到 http.get 和 http.post 执行完毕。 我开始天真的认为，只要在客户端使用同步方法调用 Meteor.call 不就可以了吗？</p>
+<p>var result &#x3D; Meteor.call(“setWechatMenu”, appId, appSecret, json);</p>
+<p>但结果告诉我，这样是不行的，后来在 Meteor 官方查询文档也说到，这样的调用是有不确定性的，也就是跟使用异步回调处理是没什么区别的。而这种同步的方法仅在服务端（On the server）是有效的： <a href="/images/2015/11/2015-11-15_113548.png"><img src="/images/2015/11/2015-11-15_113548.png" alt="2015-11-15_113548"></a> 为了解决这种问题，Meteor 的 github issues 专门有一篇文章是介绍如何解决类似问题的：<a target="_blank" rel="noopener" href="https://gist.github.com/possibilities/3443021">https://gist.github.com/possibilities/3443021</a> 其中最简单的一个方法如下：</p>
+<p>setWechatMenu: function (appId, appSecret, jsonMenu) {<br>&#x2F;&#x2F; 创建一个 future<br>var Future &#x3D; Npm.require(‘fibers&#x2F;future’);<br>var fut &#x3D; new Future();</p>
+<p>console.log(jsonMenu);<br>&#x2F;&#x2F; 创建微信菜单<br>var url &#x3D; “<a target="_blank" rel="noopener" href="https://api.weixin.qq.com/cgi-bin/token">https://api.weixin.qq.com/cgi-bin/token</a>?” +<br>      “grant_type&#x3D;client_credential&amp;appid&#x3D;” +<br>      appId + “&amp;secret&#x3D;” + appSecret;</p>
+<p>Meteor.http.get(url, { timeout: 30000 }, function(err, result) {<br>var jsonContent &#x3D; JSON.parse(result.content);<br>var accessToken &#x3D; jsonContent.access_token;<br>var url &#x3D; “<a target="_blank" rel="noopener" href="https://api.weixin.qq.com/cgi-bin/menu/create?access%5C_token=">https://api.weixin.qq.com/cgi-bin/menu/create?access\_token=</a>“ + accessToken;<br>&#x2F;&#x2F; post 创建菜单<br>var response &#x3D; Meteor.http.post(url, { data: jsonMenu }, function(err, result) {<br>console.log(‘Content: ‘ + result.content);<br>});<br>&#x2F;&#x2F; 将 response 传递给 fut 的成员对象<br>fut.return(response);<br>});<br>&#x2F;&#x2F; 等待 fut 被赋值后再返回<br>return fut.wait();<br>}</p>
+<p>更多的方法可以参考上面 issues 链接。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-11-15T11:53:46.000Z" itemprop="datePublished">
+              2015-11-15
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

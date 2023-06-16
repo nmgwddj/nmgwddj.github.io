@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>react-router 中 IndexRoute、IndexRedirect 的区别介绍 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>react-router 中 IndexRoute、IndexRedirect 的区别介绍</h1>
+    </header>
+
+    <section>
+      <p>本文内容引用了 react-router v3 的文档介绍来举例说明，内容并不重复，我们会以项目开发的角度来分析这两个功能的实际作用，更有助于理解和使用这两个功能。</p>
+<span id="more"></span>
+<h2 id="Index-Routes"><a href="#Index-Routes" class="headerlink" title="Index Routes"></a>Index Routes</h2><p>通常情况下，我们会建立如下情况的路由：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;Router&gt;</span><br><span class="line">  &lt;Route path=&quot;/&quot; component=&#123;App&#125;&gt;</span><br><span class="line">    &lt;Route path=&quot;accounts&quot; component=&#123;Accounts&#125;/&gt;</span><br><span class="line">    &lt;Route path=&quot;statements&quot; component=&#123;Statements&#125;/&gt;</span><br><span class="line">  &lt;/Route&gt;</span><br><span class="line">&lt;/Router&gt;</span><br></pre></td></tr></table></figure>
+
+<p>其中 App 组件一般情况下是一个 layout，比如包含了 header、footer 或者其他内容，其下面的 route 会被嵌入到这个 App 中（它们将成为 App 的 children），但这样配置路由有一个问题，就是我们访问 <code>http://localhost:3000/</code> 这个地址时，你会发现仅渲染了一个 App 的 layout 内容，Accounts 和 Statements 都没有被渲染，这种情况下我们一般会设置一个默认页，当访问 <code>/</code> 这个路由时显示这个默认页。由此就需要用到 <code>IndexRoute</code> 功能，修改一下路由如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;Router&gt;</span><br><span class="line">  &lt;Route path=&quot;/&quot; component=&#123;App&#125;&gt;</span><br><span class="line">    &lt;IndexRoute component=&#123;Home&#125;/&gt;</span><br><span class="line">    &lt;Route path=&quot;accounts&quot; component=&#123;Accounts&#125;/&gt;</span><br><span class="line">    &lt;Route path=&quot;statements&quot; component=&#123;Statements&#125;/&gt;</span><br><span class="line">  &lt;/Route&gt;</span><br><span class="line">&lt;/Router&gt;</span><br></pre></td></tr></table></figure>
+
+<p>如此配置后，我们再次访问 <code>/</code> 路由，你会发现页面渲染了 Home 组件的内容。这就是 IndexRoute 的功能，指定一个路由的默认页。</p>
+<h2 id="Index-Redirects"><a href="#Index-Redirects" class="headerlink" title="Index Redirects"></a>Index Redirects</h2><p>上面这种情况比较常见，还有一种非常常见的方式就是当我们尝试访问 <code>/</code> 这个路由时，我们想让其直接跳转到 ‘&#x2F;Accounts’，直接免去了默认页 Home，这样来的更加直接。由此我们就需要 <code>IndexRedirect</code> 功能。考虑如下路由：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;Router&gt;</span><br><span class="line">  &lt;Route path=&quot;/&quot; component=&#123;App&#125;&gt;</span><br><span class="line">    &lt;IndexRedirect to=&quot;/accounts&quot;/&gt;</span><br><span class="line">    &lt;Route path=&quot;accounts&quot; component=&#123;Accounts&#125;/&gt;</span><br><span class="line">    &lt;Route path=&quot;statements&quot; component=&#123;Statements&#125;/&gt;</span><br><span class="line">  &lt;/Route&gt;</span><br><span class="line">&lt;/Router&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这样设计路由后，我们再次访问 <code>/</code> 时，系统默认会跳转到 <code>/accounts</code> 路由。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上就是 IndexRoute 和 IndexRedirect 的功能介绍，让我们来总结一下他们两个的区别。</p>
+<ul>
+<li>IndexRoute 一般情况下用于设计一个默认页且不改变 URL 地址，而 IndexRedirect 则是跳转默认地址且地址会发生改变。</li>
+<li>IndexRoute 指定一个组件作为默认页，而 IndexRedirect 指定一个路由地址作为跳转地址。</li>
+</ul>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-10-18T17:56:44.000Z" itemprop="datePublished">
+              2017-10-18
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

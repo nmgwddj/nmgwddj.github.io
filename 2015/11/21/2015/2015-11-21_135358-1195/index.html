@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Meteor 组合订阅包 publish-composite 使用 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Meteor 组合订阅包 publish-composite 使用</h1>
+    </header>
+
+    <section>
+      <p>初看这个标题可能有点晕，说的有点过于专业化，但是我也想不到更好的标题了。不过我们用真实的场景来给大家描述，来充分表达我们想表达的内容。熟悉使用 Meteor 发布（publish）和订阅（subcribe）的朋友可能会遇到这样一种情况。在某个列表页面，我们需要的数据分别储存在不同的集合（collection） 中。我们设计了一个查看某用户的所有评论的页面，按常规模式，我们首先可以根据用户的 ID 去评论的集合中查询该用户的所有评论内容，并根据该评论所关联的文章的 ID 查找到这篇文章的标题（Title）信息，用来显示在评论列表页提供用户查看或者访问。你可能会注意到，如果我们想获取到某条评论所关联的文章标题，我们必须要订阅这篇文章的内容，而在这之前我们并不知道这个用户都在哪些文章中有评论，若想订阅就需要把所有文章的结合订阅到客户端来使用，这样无疑是浪费资源和消耗时间的。</p>
+<span id="more"></span>
+<p>因此，组合订阅功能就油然而生了。它可以根据我们的需要，在一个 publish 中返回一组只符合我们需求的数据组合，组合中包含了我们所需的所有的信息，当我们首页需要显示某个用户所有的评论时，应该按如下步骤操作：</p>
+<ul>
+<li>首先在评论的集合中遍历该用户所有的评论内容<ul>
+<li>遍历查询出来的评论集合中所有信息，根据每一条评论关联的文章 Id 查询文章数据<ul>
+<li>查询该文章所有的点赞信息</li>
+<li>查询该文章的作者信息</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>这样操作后我们不会收到我们不关心的无关的数据，要实现上面的操作，首先你要安装 <code>publish-composite</code> 包，使用命令 <code>meteor add reywood:publish-composite</code> 即可添加，添加完成后我们来根据上面的需求组织以下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">Meteor.publishComposite(&quot;userCommentsComposite&quot;, function(userId) &#123;</span><br><span class="line">  return &#123;</span><br><span class="line">    find: function() &#123;</span><br><span class="line">      // 根据用户 Id 查询出该用户所有的评论集合，注意这里是集合</span><br><span class="line">      return Comment.collection.find(&#123;userId: userId&#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    children: [</span><br><span class="line">      &#123;</span><br><span class="line">        find: function(comment) &#123;</span><br><span class="line">          // 遍历查询出来的评论集合中所有信息，根据每一条评论关联的文章 Id 查询文章数据</span><br><span class="line">          console.log(&quot;Get activityId by commantId : commandId =&quot;, comment._id, &quot; commandLinkObjectId =&quot;, comment.linkedObjectId);</span><br><span class="line">          return Activities.find(&#123;_id: comment.linkedObjectId&#125;);</span><br><span class="line">        &#125;,</span><br><span class="line">        children: [</span><br><span class="line">          &#123;</span><br><span class="line">            find: function(activity) &#123;</span><br><span class="line">              // 查询该文章所有的点赞信息</span><br><span class="line">              console.log(&quot;Get like info by activityId :&quot;, activity._id);</span><br><span class="line">              return Like.collection.find(&#123;linkedObjectId: activity._id&#125;);</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;,</span><br><span class="line">          &#123;</span><br><span class="line">            find: function(activity) &#123;</span><br><span class="line">              // 查询该文章的作者信息</span><br><span class="line">              console.log(&quot;Get activity user info by activity.userId :&quot;, activity.userId);</span><br><span class="line">              return Meteor.users.find(&#123;_id: activity.userId&#125;);</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        ]</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>请仔细查看以上代码的注释内容，完全是根据我们的需求一一发布了我们关心的数据，发布后的数据集合名字为 “userCommentsComposite”，客户端只需按原来的方式订阅数据即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">this.route(&#x27;userComments&#x27;, &#123;</span><br><span class="line">  template: &#x27;userComments&#x27;,</span><br><span class="line">  path: &#x27;/user/:_id/comments/&#x27;,</span><br><span class="line">  waitOn: function () &#123;</span><br><span class="line">    Meteor.subscribe(&#x27;images&#x27;);</span><br><span class="line">    Meteor.subscribe(&#x27;user&#x27;, this.params._id);</span><br><span class="line">    return Meteor.subscribe(&#x27;userCommentsComposite&#x27;, this.params._id);</span><br><span class="line">  &#125;,</span><br><span class="line">  data: function() &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      comments: Comment.collection.find(),</span><br><span class="line">      activities: Activities.find(),</span><br><span class="line">      user: Meteor.users.findOne(&#123;_id: this.params._id&#125;),</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>userCommentsComposite</code> 就是我们发布的数据，当我们访问这个路由下的页面时，我们可以根据我们输出的日志查看服务端获取数据的具体过程： <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-21-%E4%B8%8B%E5%8D%881.40.47.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-21-%E4%B8%8B%E5%8D%881.40.47-1024x242.png" alt="屏幕快照 2015-11-21 下午1.40.47"></a> 不出我们所料，服务端根据客户端传递过来的 userId 查询到了该用户所有的评论，这个用户有 4 条评论，随后根据每一条评论的 commandId 获取到了文章的信息，又根据文章的信息获取到了该文章的点赞数和作者等信息。这正是我们想要的。 以上就是一个完整的实例，如果大家还是没有理解或者希望得到更多信息，可以参考这个包的 github 和 atomsphere 地址： github：<a target="_blank" rel="noopener" href="https://github.com/englue/meteor-publish-composite/">https://github.com/englue/meteor-publish-composite/</a> atomsphere：<a target="_blank" rel="noopener" href="https://atmospherejs.com/reywood/publish-composite">https://atmospherejs.com/reywood/publish-composite</a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-11-21T13:53:58.000Z" itemprop="datePublished">
+              2015-11-21
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ 递归 }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/05/30/2018/2018-05-30_174442-2375/">递归删除文件（支持通配符）</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-05-30T17:44:42.000Z" itemprop="datePublished">
+    2018-05-30
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>一直想做一个类似 Windows 命令行中 del 命令删除文件的功能，它支持 <code>环境变量</code>，<code>通配符</code>，<code>可以递归</code>，后来发现自己写这么一个小功能还真的不是一件容易的事情，没办法为了着急使用先临时做了一个小版本。代码有些缺憾。</p>
+<ul>
+<li>不支持环境变量</li>
+<li>不支持固定后缀文件递归删除</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line">// example.cpp : 定义控制台应用程序的入口点。</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &lt;windows.h&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">BOOL DeleteFiles(const std::wstring file_full_path)</span><br><span class="line">&#123;</span><br><span class="line">    BOOL no_error = TRUE;</span><br><span class="line">    WIN32_FIND_DATA win32_find_data = &#123; 0 &#125;;</span><br><span class="line"></span><br><span class="line">    std::wstring dir = file_full_path.substr(0, file_full_path.rfind(_T(&quot;\\&quot;))).c_str();</span><br><span class="line">    std::wstring file = file_full_path.substr(file_full_path.rfind(_T(&quot;\\&quot;)) + 1, file_full_path.length());</span><br><span class="line"></span><br><span class="line">    if (dir.size() == 0  file.size() == 0)</span><br><span class="line">    &#123;</span><br><span class="line">        return FALSE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    HANDLE handle = FindFirstFile(file_full_path.c_str(), &amp;win32_find_data);</span><br><span class="line">    if (INVALID_HANDLE_VALUE == handle)</span><br><span class="line">    &#123;</span><br><span class="line">        return no_error;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    do</span><br><span class="line">    &#123;</span><br><span class="line">        // 如果是目录递归操作</span><br><span class="line">        if (win32_find_data.dwFileAttributes &amp; FILE_ATTRIBUTE_DIRECTORY)</span><br><span class="line">        &#123;</span><br><span class="line">            // 排除 . 和 .. 两个文件夹</span><br><span class="line">            if (_tcsicmp(_T(&quot;.&quot;), win32_find_data.cFileName) != 0 &amp;&amp;</span><br><span class="line">                _tcsicmp(_T(&quot;..&quot;), win32_find_data.cFileName) != 0)</span><br><span class="line">            &#123;</span><br><span class="line">                // 根目录加上搜索出来的目录</span><br><span class="line">                std::wstring new_full_path = dir;</span><br><span class="line">                new_full_path += _T(&quot;\\&quot;);</span><br><span class="line">                new_full_path += win32_find_data.cFileName;</span><br><span class="line"></span><br><span class="line">                // 备份搜索出来的目录完整路径用以删除</span><br><span class="line">                std::wstring new_dir = new_full_path;</span><br><span class="line"></span><br><span class="line">                // 再加上要删除的文件名</span><br><span class="line">                new_full_path += _T(&quot;\\&quot;);</span><br><span class="line">                new_full_path += file;</span><br><span class="line"></span><br><span class="line">                // 开始删除</span><br><span class="line">                if (DeleteFiles(new_full_path))</span><br><span class="line">                &#123;</span><br><span class="line">                    // 删除子文件后删除整个目录</span><br><span class="line">                    RemoveDirectory(new_dir.c_str());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            std::wstring full_file_name = dir;</span><br><span class="line">            full_file_name += _T(&quot;\\&quot;);</span><br><span class="line">            full_file_name += win32_find_data.cFileName;</span><br><span class="line"></span><br><span class="line">            // 去除只读文件的只读属性</span><br><span class="line">            DWORD file_attr = GetFileAttributes(full_file_name.c_str());</span><br><span class="line">            if ((file_attr &amp; FILE_ATTRIBUTE_READONLY) != 0)</span><br><span class="line">            &#123;</span><br><span class="line">                SetFileAttributes(full_file_name.c_str(), file_attr &amp; (~FILE_ATTRIBUTE_READONLY));</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            BOOL del_res = DeleteFiles(full_file_name.c_str());</span><br><span class="line">            if (del_res)</span><br><span class="line">            &#123;</span><br><span class="line">                std::wcout &lt;&lt; full_file_name.c_str() &lt;&lt; std::endl;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            // 如果有一个文件删除失败则返回上层，上层若发现有删除失败的文件则不删除其斧文件夹</span><br><span class="line">            if (del_res == FALSE &amp;&amp; no_error == TRUE)</span><br><span class="line">            &#123;</span><br><span class="line">                no_error = FALSE;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; while (FindNextFile(handle, &amp;win32_find_data) != 0);</span><br><span class="line"></span><br><span class="line">    FindClose(handle);</span><br><span class="line">    return no_error;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    _wsetlocale(LC_ALL, L&quot;chs&quot;);</span><br><span class="line"></span><br><span class="line">    DeleteFiles(_T(R&quot;(C:\Users\ADMINI~1\AppData\Local\Temp\*)&quot;));</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/02/16/2016/2016-02-16_005417-1497/">数据全排列组合</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-02-16T00:54:17.000Z" itemprop="datePublished">
+    2016-02-16
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%A8%A1%E7%89%88/">模版</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>所谓全排列就是将一个数据组合拆开重新排列，比如 abc，可重新排序为 acb、bac、bca、cab、cba，通过算法上实现一般就是递归或一个while循环来实现。最近复习算法方面的内容接触到的新的算法，记录一下思路。</p>
+        
+          <div class="more-link">
+            <a href="/2016/02/16/2016/2016-02-16_005417-1497/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/10/31/2015/2015-10-31_181917-982/">JavaScript arguments.callee 使用方法</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-10-31T18:19:17.000Z" itemprop="datePublished">
+    2015-10-31
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>arguments.callee 的功能是在函数内部调用函数自身，相当于递归的作用，我开始接触它的时候发现，这个东西没有什么实际意义吧，在函数内部调用自身名字就好了，干嘛还要定义这么一个方法？当然存在即是合理，我们看下面的例子。</p>
+        
+          <div class="more-link">
+            <a href="/2015/10/31/2015/2015-10-31_181917-982/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/07/2015/2015-06-07_221146-435/">#号法创建树</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-07T22:11:46.000Z" itemprop="datePublished">
+    2015-06-07
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>前面我们记录下来的文章都是手动创建的树，我们还从未尝试过将一组数据动态的在内存中构建成为一棵树。本文将详细介绍使用#号创建法动态的在内存中创建树的详细步骤。当然动态创建树并非就这么一种办法，我们记录的是最常用而且是最方便的方法。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/07/2015/2015-06-07_221146-435/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/07/2015/2015-06-07_211119-432/">树的非递归遍历</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-07T21:11:19.000Z" itemprop="datePublished">
+    2015-06-07
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/STL/">STL</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>树使用递归遍历非常方便，如果将代码拉伸开来，我们能否是否非递归代码来实现呢？当然是可以的，我们只要把递归的循环步骤修改为while就可以了。但我们需要借用到STL的栈模型来实现这个需求，具体的步骤如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/07/2015/2015-06-07_211119-432/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/06/2015/2015-06-06_231641-429/">求二叉树高度</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-06T23:16:41.000Z" itemprop="datePublished">
+    2015-06-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>二叉树的高度就是从根节点到最深的叶子节点之间的节点数，计算方法使用递归时，判断如果到了树的叶子节点那么就返回0。依次遍历左侧和右侧节点的数量，然后求出最大值再算上当前根节点的数量+1，递归循环返回后得出最终的结果。代码如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/06/2015/2015-06-06_231641-429/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/06/2015/2015-06-06_223444-427/">二叉树的拷贝</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-06T22:34:44.000Z" itemprop="datePublished">
+    2015-06-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>二叉树拷贝也相对简单，我们只需要在遍历的过程中，将每一个有效的节点依次给传递进来的新树的节点衔接起来就可以了。大致的思路我们可以总结一下。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/06/2015/2015-06-06_223444-427/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/06/2015/2015-06-06_221750-425/">求树中叶子节点的个数</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-06T22:17:50.000Z" itemprop="datePublished">
+    2015-06-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>这个题目作为一个小练习，让我们对树的概念进一步的掌握，其实思路非常简单，在遍历树的过程中，计算某个节点如果leftChile和rightChild都指向NULL，那么证明其就是一个叶子节点，我们对引用计数加一就可以了。具体代码如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/06/2015/2015-06-06_221750-425/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/05/2015/2015-06-05_225849-420/">树的三种遍历方式（先序、中序、后序）</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-05T22:58:49.000Z" itemprop="datePublished">
+    2015-06-05
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>树的遍历分很多种，经过前人总结，树的遍历其实一共就有三种方法，一种为先序遍历、一种为中序遍历、最后一种为后续遍历。他们不同的区别就是在遍历过程中查找树的根、左节点、右节点的顺序，同样由于遍历树惯用递归的方式，所以所谓的查找顺序不同就是在递归过程中打印节点数据时的代码位置不同而已，如果这句话你看的比较绕，那么在后面的代码中你将会恍然大悟。不过再看代码之前，你还是要记住下面的顺序。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/05/2015/2015-06-05_225849-420/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/06/2015/2015-05-06_230418-74/">逆置字符串</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-06T23:04:18.000Z" itemprop="datePublished">
+    2015-05-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>逆置字符串是将字符串所有字符前后颠倒，有比较常见的两种思路，第一种是生成两个分别指向头和尾的指针，遍历字符串交换头尾指针，然后对头尾指针向字符串中间移动，最终得出交换结果。另外一种思路则是后续递归的方式。以字符串结束\0为递归终止条件，再调用自身函数后打印每一个字符即可逆置显示一个字符串。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/06/2015/2015-05-06_230418-74/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/tags/%E9%80%92%E5%BD%92/page/2/">2</a><a class="extend next" rel="next" href="/tags/%E9%80%92%E5%BD%92/page/2/">next »</a>
+    </nav>
+  </section>
+
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

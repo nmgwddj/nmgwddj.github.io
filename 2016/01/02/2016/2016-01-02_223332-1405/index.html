@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Mac OS X EI Capitan 自定义本地化文件夹名 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Mac OS X EI Capitan 自定义本地化文件夹名</h1>
+    </header>
+
+    <section>
+      <p>你有没有发现？Mac OS X 在安装好以后，Home 目录下的几个文件夹使用 Finder 去看都是中文，在终端下，则都显示的是英文。而如果我们自己新建一个英文的文件夹，在 Finder 里面也是英文，如何根据我们的需要，也让其在终端下显示为英文而 Finder 中显示中文呢？</p>
+<span id="more"></span>
+<p>其实网络上有很多方法，都是针对 <code>EI Capitan</code> 以下系统的，<code>EI Capitan</code> 在转换系统文件时，会提示没有权限。就因为这个原因，吓退了好多人，包括我。但最近我还是不甘心，所以研究了一下。具体的操作步骤如下：</p>
+<h3 id="关闭系统文件保护"><a href="#关闭系统文件保护" class="headerlink" title="关闭系统文件保护"></a>关闭系统文件保护</h3><p>在一切开始前，首先要先关闭掉系统的文件保护机制，否则无法修改系统文件，参见 - <a target="_blank" rel="noopener" href="http://www.mycode.net.cn/platform/linux-unix/1403.html">http://www.mycode.net.cn/platform/linux-unix/1403.html</a></p>
+<h3 id="添加自定义本地化名称"><a href="#添加自定义本地化名称" class="headerlink" title="添加自定义本地化名称"></a>添加自定义本地化名称</h3><p>系统中有一个文件保存了本地化文件的对应名称的，比如你选择了中文语言，那么 Home 目录下的文件夹名字就是中文，如果你选择了其他国家那么就是其他国家的语言，这些语言配置文件在 <code>/System/Library/CoreServices/SystemFolderLocalizations</code> 目录。我们要修改的就是 <code>zh_cn.lproj</code> （中国本地化目录）下面的 <code>SystemFolderLocalizations.strings</code> 文件。这个文件中就保存了各种英文对应中文的对应关系，这个文件保存是二进制格式的，在修改它之前，你需要先将它转换为 xml 格式，然后添加你需要的名称，最后保存并把文件转回二进制。具体操作步骤如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /System/Library/CoreServices/SystemFolderLocalizations/zh_cn.lproj</span><br><span class="line">sudo plutil -convert xml1 SystemFolderLocalizations.strings</span><br><span class="line">sudo vi SystemFolderLocalizations.strings</span><br></pre></td></tr></table></figure>
+
+<p>我自己添加了一个 Project 的目录，让他在 Finder 中显示为 <code>项目</code> 二字，如下： <a href="/images/2016/01/2016-01-02_222203.png"><img src="/images/2016/01/2016-01-02_222203-300x160.png" alt="2016-01-02_222203"></a> 添加完成后保存文件，然后将文件再次转回为二进制格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo plutil -convert binary1 SystemFolderLocalizations.strings</span><br></pre></td></tr></table></figure>
+
+<h3 id="建立-localized"><a href="#建立-localized" class="headerlink" title="建立 .localized"></a>建立 .localized</h3><p>上面只是添加了一个对应关系，它还起不到任何作用，如果你想让你的 Project 文件夹在 Finder 中显示为中文，你需要在 Project 目录下使用 <code>touch .localized</code> 命令新建一个 <code>.localized</code> 文件，这样才通知系统，这个文件夹为要使用本地化的翻译，Finder 加载时会根据 <code>SystemFolderLocalizations.strings</code> 文件中的对应关系，翻译为对应的中文。如下所示： <a href="/images/2016/01/2016-01-02_222759.png"><img src="/images/2016/01/2016-01-02_222759-300x118.png" alt="2016-01-02_222759"></a> 在新建完这个文件后，是不会立即看到效果的，你需要刷新一下 Finder，使用命令 <code>pkill Finder</code> 重启 Finder 即可看到效果。 <a href="/images/2016/01/2016-01-02_223149.png"><img src="/images/2016/01/2016-01-02_223149-300x205.png" alt="2016-01-02_223149"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-01-02T22:33:32.000Z" itemprop="datePublished">
+              2016-01-02
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Mac-OS-X/">Mac OS X</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

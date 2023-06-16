@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>栈应用代码检测就近匹配 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>栈应用代码检测就近匹配</h1>
+    </header>
+
+    <section>
+      <p>你在使用编辑器写代码的时候是否思考过这个问题：如果少写了一个大括号或中括号，编辑器就会提示错误，这种做法是怎么做到的呢？ 其实这个检测就可以通过栈模型来实现，括号的数量总是匹配出现的，并且都是与最近的一个匹配。我们可以编写代码来实现这个检测的功能。具体实现思路如下：</p>
+<p>从第一个字符开始扫描, 当遇见普通字符时忽略，<br>当遇见左符号时压入栈中<br>当遇见右符号时从栈中弹出栈顶符号，并进行匹配.<br>匹配成功：继续读入下一个字符<br>匹配失败：立即停止，并报错<br>结束.<br>——成功: 所有字符扫描完毕，且栈为空<br>——失败：匹配失败或所有字符扫描完毕但栈非空</p>
+<p>【实现代码】 以下代码需要用到<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/datastruct/334.html">栈模型链式存储的 LinkStack.h 和 LinkStack.c 头文件</a>：</p>
+<p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include “LinkStack.h”</p>
+<p>&#x2F;***************** 算法思路 *****************<br>从第一个字符开始扫描, 当遇见普通字符时忽略，<br>当遇见左符号时压入栈中<br>当遇见右符号时从栈中弹出栈顶符号，并进行匹配.<br>匹配成功：继续读入下一个字符<br>匹配失败：立即停止，并报错<br>结束.<br>——成功: 所有字符扫描完毕，且栈为空<br>——失败：匹配失败或所有字符扫描完毕但栈非空*&#x2F;</p>
+<p>int match(char left, char right)<br>{<br>int ret &#x3D; 0;<br>switch (left)<br>{<br>case ‘&lt;’:&#x2F;&#x2F;左尖括号<br>ret &#x3D; (right &#x3D;&#x3D; ‘&gt;’);<br>break;<br>case ‘(‘:&#x2F;&#x2F;左小括号<br>ret &#x3D; (right &#x3D;&#x3D; ‘)’);<br>break;<br>case ‘[‘:&#x2F;&#x2F;左中括号<br>ret &#x3D; (right &#x3D;&#x3D; ‘]‘);<br>break;<br>case ‘{‘:&#x2F;&#x2F;左大括号<br>ret &#x3D; (right &#x3D;&#x3D; ‘}’);<br>break;<br>case ‘\‘’:&#x2F;&#x2F;左单引号<br>ret &#x3D; (right &#x3D;&#x3D; ‘\‘’);<br>break;<br>case ‘\“‘:&#x2F;&#x2F;左双引号<br>ret &#x3D; (right &#x3D;&#x3D; ‘\“‘);<br>break;<br>default:<br>ret &#x3D; 0;<br>break;<br>}</p>
+<p>&#x2F;&#x2F;匹配成功返回1,不成功返回0<br>return ret;<br>}</p>
+<p>int isRight(char right)<br>{<br>int ret &#x3D; 0;<br>switch (right)<br>{<br>case ‘&gt;’:&#x2F;&#x2F;右尖括号<br>case ‘)’:&#x2F;&#x2F;右小括号<br>case ‘]‘:&#x2F;&#x2F;右中括号<br>case ‘}’:&#x2F;&#x2F;右大括号<br>case ‘\‘’:&#x2F;&#x2F;右单引号<br>case ‘\“‘:&#x2F;&#x2F;右双引号<br>ret &#x3D; 1;&#x2F;&#x2F;是需要检测的符号返回1<br>break;<br>default:<br>ret &#x3D; 0;&#x2F;&#x2F;不是需要检测的符号返回0<br>break;<br>}<br>return ret;<br>}</p>
+<p>int isLeft(char left)<br>{<br>int ret &#x3D; 0;<br>switch (left)<br>{<br>case ‘&lt;’:&#x2F;&#x2F;左尖括号<br>case ‘(‘:&#x2F;&#x2F;左小括号<br>case ‘[‘:&#x2F;&#x2F;左中括号<br>case ‘{‘:&#x2F;&#x2F;左大括号<br>case ‘\‘’:&#x2F;&#x2F;左单引号<br>case ‘\“‘:&#x2F;&#x2F;左双引号<br>ret &#x3D; 1;&#x2F;&#x2F;是需要检测的符号返回1<br>break;<br>default:<br>ret &#x3D; 0;&#x2F;&#x2F;不是需要检测的符号返回0<br>break;<br>}<br>return ret;<br>}</p>
+<p>int read(const char* code)<br>{<br>int i &#x3D; 0;<br>LinkStack* stack &#x3D; LinkStack_Create();</p>
+<p>while (code[i])<br>{<br>&#x2F;&#x2F; 判断是否是左符号<br>if (isLeft(code[i]))<br>{<br>&#x2F;&#x2F; 是的话就压如栈中<br>printf(“push &#x3D; %c\n”, code[i]);<br>LinkStack_Push(stack, (void*)&amp;code[i]);<br>&#x2F;&#x2F;continue;<br>}</p>
+<p>&#x2F;&#x2F; 判断是否是右符号<br>if (isRight(code[i]))<br>{<br>&#x2F;&#x2F; 如果是则取出栈顶的符号与这个右符号对比<br>char left &#x3D; *(char*)LinkStack_Top(stack);<br>if (match(left, code[i]))<br>{<br>&#x2F;&#x2F; 匹配成功，从栈中弹出匹配过的左符号<br>printf(“pop  &#x3D; %c\n”, code[i]);<br>LinkStack_Pop(stack);<br>}<br>else<br>{<br>&#x2F;&#x2F; 匹配失败直接报错并终止循环<br>printf(“数据异常，匹配失败！ left &#x3D; %c, right &#x3D; %c\n”, left, code[i]);<br>break;<br>}<br>}<br>i++;<br>}</p>
+<p>&#x2F;&#x2F; 最后判断栈中是否还有数据，如果还有证明缺少右符号<br>if (!LinkStack_Size(stack))<br>{<br>printf(“匹配成功！\n”);<br>}<br>else<br>{<br>char ch &#x3D; *(char*)LinkStack_Top(stack);<br>printf(“缺少匹配 %c\n”, ch);<br>}<br>&#x2F;&#x2F; 销毁<br>LinkStack_Destroy(stack);<br>return 0;<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>const char* code &#x3D; “#include &lt;stdio.h&gt; int main() { int a[4][4]; int (*p)[4]; p &#x3D; a[0]; return 0;}”;<br>read(code);</p>
+<p>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-29T22:55:22.000Z" itemprop="datePublished">
+              2015-05-29
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

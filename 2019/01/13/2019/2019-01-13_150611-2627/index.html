@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>CEF 文件下载功能实现 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>CEF 文件下载功能实现</h1>
+    </header>
+
+    <section>
+      <p>CEF 下载功能非常容易拓展，它提供了丰富的接口和控制功能，比如对正在下载的文件实现暂停、继续、取消等操作。并且 CEF 还帮我们默认实现了一个另存为的对话框，如果不是必须你甚至都不需要去自己实现这个保存对话框。接下来我们来看 CEF 对于下载功能提供的两个接口（使用 cefclient 项目举例）</p>
+<span id="more"></span>
+<h2 id="继承-CefDownloadHandler"><a href="#继承-CefDownloadHandler" class="headerlink" title="继承 CefDownloadHandler"></a>继承 CefDownloadHandler</h2><p>在一切开始之前，首先你的 ClientHandler 要继承 CefDownloadHandler 类： <a href="/images/2019/01/2019-01-13_14-15-40.png"><img src="/images/2019/01/2019-01-13_14-15-40.png"></a> 该类提供了两个接口，分别是 <code>OnBeforeDownload</code> 和 <code>OnDownloadUpdated</code>，前者是在下载任务开始之前就会被回调的一个接口，你需要根据你的需求在该接口中实现一些预处理操作。后者是任务下载过程中的回调接口，包含了任务的进度、状态以及控制功能。下面分别详细介绍两个接口。</p>
+<h2 id="OnBeforeDownload-接口"><a href="#OnBeforeDownload-接口" class="headerlink" title="OnBeforeDownload 接口"></a>OnBeforeDownload 接口</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">virtual void OnBeforeDownload(</span><br><span class="line">      CefRefPtr&lt;CefBrowser&gt; browser,</span><br><span class="line">      CefRefPtr&lt;CefDownloadItem&gt; download_item,</span><br><span class="line">      const CefString&amp; suggested_name,</span><br><span class="line">      CefRefPtr&lt;CefBeforeDownloadCallback&gt; callback) = 0;</span><br></pre></td></tr></table></figure>
+
+<p>上面介绍到该接口会在文件开始下载前被调用，</p>
+<ul>
+<li>browser 参数表示当前实例</li>
+<li>download_item 中包含了该下载任务的状态信息，可以通过其成员函数 <code>IsInProgress</code>，<code>IsComplete</code>，<code>IsCanceled</code> 等方法判断文件的当前状态，但在下载文件之前去判断这些貌似没有什么意义。</li>
+<li>suggested_name 代表当前 CEF 帮你设定好的建议保存名称，一般会截取文件路径中最后的文件名作为建议名称。</li>
+<li>callback 这个参数比较重要，当你调用了 callback 的 Continue 方法后，任务就开始下载了，该回调第一个参数 <code>download_path</code> 就是保存文件的名称，第二个参数表示是否弹出保存对话框，当把第二个参数设置为 true 时，CEF 会帮我们弹出一个 Save File 的保存对话框。如果你设置为 false 了，那么将不弹出保存对话框，并自动保存文件到第一个参数设定的路径下。</li>
+</ul>
+<p>通过该接口我们可以对任务做一些预处理，比如当你想在界面中创建一个下载任务时，可以通过 <code>download_item</code> 参数获得任务 ID（GetId 方法）交给 UI 去表示任务即将开始。接下来进入下面的下载任务状态更新函数时，再根据任务 Id 去更新界面内容。</p>
+<h2 id="OnDownloadUpdated-接口"><a href="#OnDownloadUpdated-接口" class="headerlink" title="OnDownloadUpdated 接口"></a>OnDownloadUpdated 接口</h2><p>该接口在任务下载过程中被回调，但据我测试，这个接口会优先于 OnBeforeDownload 接口被调用，具体原因还是不太了解，不过无伤大雅，我们只关注这里的任务进度、状态和控制功能就可以了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">virtual void OnDownloadUpdated(CefRefPtr&lt;CefBrowser&gt; browser,</span><br><span class="line">                                 CefRefPtr&lt;CefDownloadItem&gt; download_item,</span><br><span class="line">                                 CefRefPtr&lt;CefDownloadItemCallback&gt; callback) &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>browser 这个不多介绍了</li>
+<li>download_item 与上面介绍的一样，可以获取任务的进度、状态、下载速度、已经下载量等，可以看一下 CefDownloadItem 的接口看一下都有什么控制功能。</li>
+<li>callback 这里的 callback 和上面接口的 callback 是不一样的，这个 callback 可以控制任务的暂停、继续、停止等操作，你可以维护一份当前任务的列表将该 callback 与任务 Id 绑定，当界面传来暂停任务的控制消息时，可以通过任务 Id 到列表中找到这个 callback，调用 callback 的 Pause 方法来暂停任务。当然别忘记在任务完成或者被取消的时候从列表中移除这些 callback 和任务 Id 的绑定关系。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>CEF 提供的下载接口控制功能还是很丰富的，甚至将进度中下载的速度都帮你计算完成你可以直接使用的。如果想配合 UI 实现一些个性化的展示都是可以完成的。大家可以自己试一试，遇到任何技术问题欢迎在下方讨论。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2019-01-13T15:06:11.000Z" itemprop="datePublished">
+              2019-01-13
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/CEF/">CEF</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

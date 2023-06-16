@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Sublime text 3 最新 Meteor 代码提示插件 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Sublime text 3 最新 Meteor 代码提示插件</h1>
+    </header>
+
+    <section>
+      <p>因为 meteor-snippets 的作者一直没有更新 Meteor Snippets for Sublime Text 2&#x2F;3 的插件，我自己 fork 了一下它的代码，做了一下简单的更新，给作者提交了 pull request，还不知道什么时候会合并，作者的插件中，智能提示和代码片段都是老版本 Meteor 的代码，比如 <code>rendered</code> 已经更换为 <code>onRendered</code> 等等类似的问题，为了加快编写代码的速度和质量，我对一些 Meteor 的 API 做了增强。另外以前需要输入 <code>Meteor...</code> 才能看到候选菜单，现在如果你想调用 <code>Meteor.call()</code>，只需要输入 <code>call</code> 就能看到智能提示的候选菜单了。</p>
+<span id="more"></span>
+<h3 id="常用代码片段截图"><a href="#常用代码片段截图" class="headerlink" title="常用代码片段截图"></a>常用代码片段截图</h3><p><a href="/images/2016/01/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2016-01-01-17.17.29.png"><img src="/images/2016/01/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2016-01-01-17.17.29-300x44.png" alt="屏幕快照 2016-01-01 17.17.29"></a> <a href="/images/2016/01/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2016-01-01-17.18.03.png"><img src="/images/2016/01/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2016-01-01-17.18.03-300x85.png" alt="屏幕快照 2016-01-01 17.18.03"></a> <a href="/images/2016/01/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2016-01-01-17.13.51.png"><img src="/images/2016/01/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2016-01-01-17.13.51-801x1024.png" alt="屏幕快照 2016-01-01 17.13.51"></a></p>
+<h3 id="下载地址"><a href="#下载地址" class="headerlink" title="下载地址"></a>下载地址</h3><p>作者 Github 地址：<a target="_blank" rel="noopener" href="https://github.com/mrtnbroder/meteor-snippets">https://github.com/mrtnbroder/meteor-snippets</a> 我修改过的 Github 地址：<a target="_blank" rel="noopener" href="https://github.com/nmgwddj/meteor-snippets">https://github.com/nmgwddj/meteor-snippets</a></p>
+<h3 id="安装方法"><a href="#安装方法" class="headerlink" title="安装方法"></a>安装方法</h3><p>安装方法很简单，其实就是把整个目录直接 clone 到 sublime text 的插件目录下，要注意路径中 sublime text 2&#x2F;3 的版本号。下面代码是针对 sublime text 3 的，如果你使用的是 sublime text 2 的话，要修改一下下面的版本数字才可以。 OS X</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git://github.com/nmgwddj/meteor-snippets.git &quot;~/Library/Application Support/Sublime Text 3/Packages/Meteor Snippets&quot;</span><br></pre></td></tr></table></figure>
+
+<p>Linux</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git://github.com/nmgwddj/meteor-snippets.git &quot;~/.config/sublime-text-3/Packages/Meteor Snippets&quot;</span><br></pre></td></tr></table></figure>
+
+<p>Windows</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git://github.com/nmgwddj/meteor-snippets.git &quot;%userprofile%\AppData\Roaming\Sublime Text 3\Packages\Meteor Snippets&quot;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-01-01T16:55:17.000Z" itemprop="datePublished">
+              2016-01-01
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/sublime-text/">sublime text</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

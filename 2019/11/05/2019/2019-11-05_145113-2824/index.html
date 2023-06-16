@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt Quick QML 中使用自定义字体文件 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt Quick QML 中使用自定义字体文件</h1>
+    </header>
+
+    <section>
+      <p>为了视觉上的统一，有时你需要保持 UI 上的字体与其他端字体一致，但是又不是所有字体所有系统都带有的，所以有时需要加载一个自定义字体来满足需求。本文重点介绍如何加载以及使用自定义字体。</p>
+<h2 id="下载并导入字体"><a href="#下载并导入字体" class="headerlink" title="下载并导入字体"></a>下载并导入字体</h2><p>下载好你需要的字体文件后通过 Qt Creator 将字体文件导入到资源列表（这样字体会加载到执行程序中，执行程序会比较大）： <a href="/images/2019/11/2019-11-05_14-42-39-1.png"><img src="/images/2019/11/2019-11-05_14-42-39-1.png"></a> <a href="/images/2019/11/2019-11-05_14-43-01.png"><img src="/images/2019/11/2019-11-05_14-43-01.png"></a> 在导入完字体文件后，需要执行一下 qmake，在项目名称右键-&gt;执行qmake</p>
+<h2 id="加载字体"><a href="#加载字体" class="headerlink" title="加载字体"></a>加载字体</h2><p>首先复制字体路径： <a href="/images/2019/11/2019-11-05_14-43-24.png"><img src="/images/2019/11/2019-11-05_14-43-24.png"></a> 在 main.qml 中增加如下代码（这样全局都可以访问到）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">FontLoader &#123;</span><br><span class="line">    id: localFont;</span><br><span class="line">    source: &quot;qrc:/fonts/PingFang.ttf&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>字体的 ID 自己随便定义，路径就是上图中拷贝出来的路径，保存后字体就加载成功了。</p>
+<h2 id="使用字体"><a href="#使用字体" class="headerlink" title="使用字体"></a>使用字体</h2><p>在需要使用字体的位置像如下代码一样，使用 localFont.name 属性来获取字体名称：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Text &#123;</span><br><span class="line">    color: &quot;#333333&quot;</span><br><span class="line">    font.family: localFont.name</span><br><span class="line">    font.pixelSize: 14</span><br><span class="line">    textFormat: Text.PlainText</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样这个 Text 就使用了我们加载的 <code>PingFang</code> 字体了。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2019-11-05T14:51:13.000Z" itemprop="datePublished">
+              2019-11-05
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

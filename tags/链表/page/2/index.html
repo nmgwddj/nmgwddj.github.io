@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ 链表 }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/28/2015/2015-05-28_222943-330/">Stack 栈模型的顺序存储实现</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-28T22:29:43.000Z" itemprop="datePublished">
+    2015-05-28
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>栈（Stack）也是数据存储的一种方式，我们可以将其理解为一种线性的表，只不过他是前去后继的关系，他只能在线性表的尾部插入和取出数据，这个尾部所指的就是栈的栈顶，而最先被存入的数据则是栈底。它具有后进先出、先进后出的特性。表示图如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/28/2015/2015-05-28_222943-330/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/28/2015/2015-05-28_215511-323/">双向链表的增删改查</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-28T21:55:11.000Z" itemprop="datePublished">
+    2015-05-28
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>双向链表，我们曾经拿了<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/datastruct/63.html">一幅非常形象的图片</a>来形容他，就像几个人手拉手围成一个圈一样。在我们代码中的呈现就是每个节点都有一个指向下一个节点的指针，同时也有一个指向上一个节点的指针。就因为新增了这个指向上一个节点指针的特性，它解决了单向循环链表的诸多问题，如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/28/2015/2015-05-28_215511-323/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/28/2015/2015-05-28_192450-310/">循环链表解决约瑟夫问题</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-28T19:24:50.000Z" itemprop="datePublished">
+    2015-05-28
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>循环链表的存在很难想象他的应用范围到底是哪里，本文主要介绍的是通过循环链表处理解决约瑟夫问题，让大家更深刻的理解循环链表的使用和应用场景。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/28/2015/2015-05-28_192450-310/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/28/2015/2015-05-28_191233-307/">循环链表的增删改查</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-28T19:12:33.000Z" itemprop="datePublished">
+    2015-05-28
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%9F%A5%E6%89%BE/">查找</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">类型转换</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>循环链表与单向链表十分相似，两者唯一不同之处就是，循环链表的尾节点的next属性指向了链表的首节点（非头节点，头节点是没有数据的，头节点的下一个有数据的节点我们称为首节点）。他的表现形式有常见的两种，如下图：</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/28/2015/2015-05-28_191233-307/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/28/2015/2015-05-28_174813-302/">线性表链式存储</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-28T17:48:13.000Z" itemprop="datePublished">
+    2015-05-28
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%9F%A5%E6%89%BE/">查找</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">类型转换</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>上文中我们介绍了线性表顺序储存的方式，并给大家画了一幅比较详细的图（虽然看着比较凌乱），本文介绍的是数据储存的另外一种方式“链式储存”，这相当于我们之前提到过的<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/datastruct/21.html">单向链表</a>，但是，本文与上一篇文章一样，都将数据的储存和算法进行了分离。这才是我们真正应该晋级了解的东西，如果只是一个单向链表，不足以我们耗费这么多精力。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/28/2015/2015-05-28_174813-302/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/26/2015/2015-05-26_223115-258/">线性表顺序储存</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-26T22:31:15.000Z" itemprop="datePublished">
+    2015-05-26
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%9F%A5%E6%89%BE/">查找</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">类型转换</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>线性表，是一个或多个数据元素的集合，数据之间是连续的一段内存。线性表的特性如下。</p>
+<ol>
+<li>数据元素之间是有顺序的</li>
+<li>数据元素个数是有限的</li>
+<li>数据元素的类型必须相同
+        
+          <div class="more-link">
+            <a href="/2015/05/26/2015/2015-05-26_223115-258/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/25/2015/2015-05-25_161101-248/">STL 常用方法集合</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-25T16:11:01.000Z" itemprop="datePublished">
+    2015-05-25
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%9F%A5%E6%89%BE/">查找</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%A8%A1%E7%89%88/">模版</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/STL/">STL</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>我本想将 STL 中各种容器的实现方法和作用全部写一遍，然后每种容器都发一篇文章，但后来发现这样做的意义不大，在 MSDN 或其他一些帮助文档中，他们比我写的要详细，其实我只需要记住每种容器的常用方法，和在什么场合选择合适的容器。下面这张表是我这里的一些常用方法集合。备用参考。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/25/2015/2015-05-25_161101-248/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/07/2015/2015-05-07_222742-86/">练习题目“涨工资”</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-07T22:27:42.000Z" itemprop="datePublished">
+    2015-05-07
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>有一个员工文件salary_back.txt，salary_back.txt文件每行 为部门职员的姓名:工资(如tom:20000)，题目要求：</p>
+<ol>
+<li><p>求出该公司有多少人。</p>
+</li>
+<li><p>从工资文件salary_back.txt中读入全部工人，全部增加100元工资后并保存信息到文件salary.txt中。</p>
+</li>
+<li><p>将加工资之后的所有员工按工资进行降序排序，将排序后的结果选出工资最高TOP10在屏幕上输出。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/07/2015/2015-05-07_222742-86/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/06/2015/2015-05-06_214619-63/">双向链表创建/插入/删除/排序</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-06T21:46:19.000Z" itemprop="datePublished">
+    2015-05-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%9F%A5%E6%89%BE/">查找</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>双向链表有别于单向链表，对于数据的排列、查找更加方便，但需要付出的小小代价则是在数据结构中增加一个指向上一个节点的指针，除了结构上的变化，对于我们理解也相对复杂了一些。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/06/2015/2015-05-06_214619-63/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/02/2015/2015-05-02_212227-21/">单向链表增删改查排序操作</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-02T21:22:27.000Z" itemprop="datePublished">
+    2015-05-02
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在讨论链表这个概念之前，我觉得有必要说一下为什么会有链表？作为一个新手如果不明白这个问题上来就盲目的写链表的代码没有任何意义，就算你现在背下来了，早晚也会忘掉。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/02/2015/2015-05-02_212227-21/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/tags/%E9%93%BE%E8%A1%A8/">« prev</a><a class="page-number" href="/tags/%E9%93%BE%E8%A1%A8/">1</a><span class="page-number current">2</span>
+    </nav>
+  </section>
+
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

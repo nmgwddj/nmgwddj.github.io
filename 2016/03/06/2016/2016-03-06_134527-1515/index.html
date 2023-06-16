@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>gcc 编译一个应用程序的四个过程 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>gcc 编译一个应用程序的四个过程</h1>
+    </header>
+
+    <section>
+      <p>还是 2015 年学过的知识，这么久不用忘差不多了。本文主要记录一下方便以后查阅并加深印象。gcc 编译一个程序的四个过程分别是 预处理-&gt;汇编-&gt;编译-&gt;链接，预处理一般是导入一些头文件的信息及一些宏的替换等等，汇编是将代码编译为汇编代码，真正到编译过程才是把汇编代码编译为二进制的文件，最后链接是链接一些函数所需的库文件。以下是分布执行对应步骤的命令。</p>
+<span id="more"></span>
+<p><a href="/images/2016/03/2016-03-06_133242.png"><img src="/images/2016/03/2016-03-06_133242.png" alt="2016-03-06_133242"></a></p>
+<h3 id="预处理-E"><a href="#预处理-E" class="headerlink" title="预处理 -E"></a>预处理 -E</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -E main.c -o main.i</span><br></pre></td></tr></table></figure>
+
+<p>使用 -E 命令对代码做预处理以后，代码所包含的头文件和一些宏就已经被替换到源代码中了，vim 看一下预处理后的 mian.i，就是如下状态。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">....................</span><br><span class="line">837 # 2 &quot;main.c&quot; 2</span><br><span class="line">838 </span><br><span class="line">839 int main(int argc, char* argv[])</span><br><span class="line">840 &#123;</span><br><span class="line">841  printf(&quot;Hello main.c\n&quot;);</span><br><span class="line">842  return 0;</span><br><span class="line">843 &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我们可以看到已经有 800 多行代码了，实际是 #include 包含的一些文件的信息也导入了进来。</p>
+<h3 id="汇编-S"><a href="#汇编-S" class="headerlink" title="汇编 -S"></a>汇编 -S</h3><p>汇编的过程是将预处理后的代码转换为汇编代码。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -S main.i -o main.s</span><br></pre></td></tr></table></figure>
+
+<p>使用 -S 参数后，代码就被转换为汇编代码了。如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"> 1     .file   &quot;main.c&quot;</span><br><span class="line"> 2     .section    .rodata</span><br><span class="line"> 3 .LC0:</span><br><span class="line"> 4     .string &quot;Hello main.c&quot;</span><br><span class="line"> 5     .text</span><br><span class="line"> 6     .globl  main</span><br><span class="line"> 7     .type   main, @function</span><br><span class="line"> 8 main:</span><br><span class="line"> 9 .LFB0:</span><br><span class="line">10     .cfi_startproc</span><br><span class="line">11     pushq   %rbp</span><br><span class="line">12     .cfi_def_cfa_offset 16</span><br><span class="line">13     .cfi_offset 6, -16</span><br><span class="line">14     movq    %rsp, %rbp</span><br><span class="line">15     .cfi_def_cfa_register 6</span><br><span class="line">16     subq    $16, %rsp</span><br><span class="line">17     movl    %edi, -4(%rbp)</span><br><span class="line">18     movq    %rsi, -16(%rbp)</span><br><span class="line">19     movl    $.LC0, %edi</span><br><span class="line">20     call    puts</span><br><span class="line">21     movl    $0, %eax</span><br><span class="line">22     leave</span><br><span class="line">23     .cfi_def_cfa 7, 8</span><br><span class="line">24     ret</span><br><span class="line">25     .cfi_endproc</span><br><span class="line">26 .LFE0:</span><br><span class="line">27     .size   main, .-main</span><br><span class="line">28     .ident  &quot;GCC: (Ubuntu 4.8.4-2ubuntu1~14.04.1) 4.8.4&quot;</span><br><span class="line">29     .section    .note.GNU-stack,&quot;&quot;,@progbits</span><br></pre></td></tr></table></figure>
+
+<h3 id="编译-c"><a href="#编译-c" class="headerlink" title="编译 -c"></a>编译 -c</h3><p>编译的过程是将汇编后的代码转换为二进制的代码。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -c main.s -o main.o</span><br></pre></td></tr></table></figure>
+
+<p>这个时候 main.o 里面的内容就已经是纯二进制的结构了，再用 vim 看就没什么意义了，只能看到一堆乱码。</p>
+<h3 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h3><p>最后一步就是将已经编译好的二进制文件链接对应的库，比如我们用到了 printf 函数，那该函数的实现在哪个库里面我们就要去链接，否则程序是无法运行的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc main.o -o main</span><br></pre></td></tr></table></figure>
+
+<p>链接后最终生成的就是可执行文件了。以上就是使用 gcc 编译一个源文件的整体过程。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-03-06T13:45:27.000Z" itemprop="datePublished">
+              2016-03-06
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/gcc/">gcc</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

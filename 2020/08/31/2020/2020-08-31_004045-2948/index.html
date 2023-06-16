@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>基于 git flow + gitlab 协作开发：01 抛出问题 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>基于 git flow + gitlab 协作开发：01 抛出问题</h1>
+    </header>
+
+    <section>
+      <p>很久以来，我一直在寻找一个适合小型团队独立项目的 git 协同工作流。主要原因是实际工作中很难在繁忙的迭代中兼顾真正的协同和代码质量管理。造成的现象就是在一个以月维度发布版本的产品中出现各种各样的分支、hotfix。到底哪个是主线，哪个分支修复了哪些问题、不同的分支是否与主线同步更新都是未知数。如果不叫一个从开始就参与到项目中的人给你做介绍，很难去做维护。</p>
+<span id="more"></span>
+<p>我参与的团队中使用的是内部 gitlab 服务器做代码托管。我调研了 git flow &#x2F; github flow &#x2F; gitlab flow，每种工作流都有各种优势。gitlab 官方大名鼎鼎的 gitlab flow 工作流，可以支撑大部分真正进入敏捷开发的团队和项目组。但在一些观念尚未真正敏捷而敏捷先行的项目组中，gitlab flow 工作流很难“入乡随俗”。而 github flow 的简单粗暴缺又无法满足现有团队的需求。最终我的目光转移到了 git flow。 下面我们将以开发过程中实际遇到的问题为媒介，来介绍从工程管理到代码审查直至 CI&#x2F;CD 在我们的团队中是如何运作的。但本文不会涉及到 git flow 的细节，更多请您参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://nvie.com/posts/a-successful-git-branching-model/">A successful Git branching model</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow">Gitflow Workflow</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/petervanderdoes/gitflow-avh">Gitflow-avh github</a></li>
+</ul>
+<h2 id="混乱的分支管理"><a href="#混乱的分支管理" class="headerlink" title="混乱的分支管理"></a>混乱的分支管理</h2><p>在我历史参与过的项目中，我看到过不同形式的分支命名，诸如 Dev_* &#x2F; dev_* &#x2F; Rel_* &#x2F; Release_* &#x2F; hotfix* 等等不同格式的分支命名规范。每个分支的 Git 路线图看起来错综复杂、犬牙交错！上一个版本与本次开发版本中命名格式不同、分支中出现人名、分支中出现公司名、分支中出现英文介词，这些都见过。而最终这些分支终结于哪里？好像没有一个人能说的特别清楚。 而 git flow 工作流和其工具链（我更喜欢叫它工具链，因为它帮我们完成的是一套命令和合集）则帮我们把这些都预先圈定好，通过固定的指令将分支命名保存为统一的格式。如果你使用默认的初始化参数，那么格式将是下面的样子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">E:\Documents\Repositories\solutions\git-flow (master -&gt; origin)</span><br><span class="line">$ git flow init -d</span><br><span class="line">Using default branch names.</span><br><span class="line">No branches exist yet. Base branches must be created now.</span><br><span class="line">Branch name for production releases: [master]</span><br><span class="line">Branch name for &quot;next release&quot; development: [develop]</span><br><span class="line"></span><br><span class="line">How to name your supporting branch prefixes?</span><br><span class="line">Feature branches? [feature/]</span><br><span class="line">Bugfix branches? [bugfix/]</span><br><span class="line">Release branches? [release/]</span><br><span class="line">Hotfix branches? [hotfix/]</span><br><span class="line">Support branches? [support/]</span><br><span class="line">Version tag prefix? []</span><br><span class="line">Hooks and filters directory? [E:/Documents/Repositories/solutions/git-flow/.git/hooks]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>master 分支，始终最后稳定版本内容的分支，由 release 分支合并养成</li>
+<li>develop 分支，所有新功能开发的基础、开发阶段冒烟修复问题等</li>
+<li>feature&#x2F;* 分支，一切功能开发的子分支，基于 develop，完成后合并到 develop</li>
+<li>bugfix&#x2F;* 分支，用于修复缺陷的分支名前缀。</li>
+<li>release&#x2F;* 分支，保存每一个版本的迭代信息，由 develop 分支生成</li>
+<li>hotfix&#x2F;* 分支，用于线上版本紧急修复的分支</li>
+<li>support&#x2F;* 分支，一般用于特殊功能支持的分支（不合并到主分支）</li>
+</ul>
+<p>通过 git flow 工具链创建的分支，如 <code>git flow hotfix start 1.0.1</code> 会以固定格式进行命名，这样可以清晰的告诉我们哪些分支起源于哪里、用于做什么、终结于哪里。gitlab 中查看到的分支结构也会变得非常清爽。下图是 gitflow 的工作流的示例图： <a href="/images/2020/08/all.svg"><img src="/images/2020/08/all.svg"></a> Vincent Driessen 在 A successful Git branching model 一文中以另一种形式展示了 gitflow 工作流的详情图： <a href="/images/2020/08/git-model@2x.png"><img src="/images/2020/08/git-model@2x.png"></a></p>
+<h2 id="Hotfix-分支内容容易被遗忘"><a href="#Hotfix-分支内容容易被遗忘" class="headerlink" title="Hotfix 分支内容容易被遗忘"></a>Hotfix 分支内容容易被遗忘</h2><p>产品上线后，避免不了会出现一些测试过程中没有发现的边缘问题在客户场景出现，这就需要我们发布 hotfix 来帮助客户解决问题。但往往有些场景因为手动操作开启新的 hotfix 分支后很容易忘记将修改合并到发布分支和开发分支，版本发布比较多以后，会发现有一些 hotfix 分支在项目总仓库中，再加上命名的不规范，最终会不确定这些分支到底有没有合并到主干和开发分支。而 hotfix 有两种不同的场景，分别如下：</p>
+<ul>
+<li>线上最新版本出现问题，需要 hotfix</li>
+<li>线上非最新版本出现问题，需要 hotfix</li>
+</ul>
+<p>两种情况下 hotfix 的流程是不一样的，线上最新版本出现问题，一般修复完成后需要将 hotfix 修改的内容合并到主干分支并且合并到当前开发人员正在开发的分支，确保下一次发布新版本的时候这个修复已经合并过去了。在合并完成后还需要打 tag 来表示本次修复的输出产物。git flow 工具链可以将这一系列操作自动化。当在最新版本中做对应的 hotfix 后，你看到的分支路线图类似于下图： <a href="/images/2020/08/2020-08-31_00-35-21.png"><img src="/images/2020/08/2020-08-31_00-35-21.png"></a> 这些路线图结构清晰，一眼即可看懂。而线上非最新版本出现问题，在修复过程中要根据情况决定是否需要合并的到主干分支和当前开发人员正在开发的分支上。因为有些问题可能在后续版本已经修复而客户因各种原因无法升级到最新版本，所以需要在指定版本中做定制开发，这个可能并不能叫做一个常规的 hotfix，在 gitflow 工作流中，有些人更愿意称呼为 support branch。像下图一样： <a href="/images/2020/08/2020-08-31_00-39-05.png"><img src="/images/2020/08/2020-08-31_00-39-05.png"></a> 其中 1.0.2 和 1.0.3 是针对旧版的一个支持修复，可能这个修复已经在主分支不适用了，但是我们依然是先创建了一个 support 分支，并在这个分支中最具体的 hotfix。这样可能会出现多个分叉，如果你的产品也有很多客户在适用就版本，那可能避免不了会出现这种场景。</p>
+<h2 id="参差不齐的-Git-level"><a href="#参差不齐的-Git-level" class="headerlink" title="参差不齐的 Git level"></a>参差不齐的 Git level</h2><p>我们不能要求每一个从业人员对 Git 的熟悉程度都达到炉火纯青，如果项目组有 1~2 个人并且都 Git 各类场景都非常熟悉，我相信不需要引入什么工作流。但避免不了一个项目中有各类角色参与进来。他们可能在是精通某个领域的技术人才，也可能是架构设计的专家。但他们并不一定对团队协作开发非常熟悉，即使在参与项目前三番五次的传递过，而在没有真正的协作前，永远也不会知道这里面有多少陷阱。git flow 工具链将各类复杂场景简单化，只需要通过一些简单的命令就可以让参与项目的人员一起融入到协作中，如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 开始和完成一个功能</span><br><span class="line">git flow feature start &quot;name of your feature&quot;</span><br><span class="line">git flow feature finish</span><br><span class="line"></span><br><span class="line">// 开始和完成一个版本的发布</span><br><span class="line">git flow release start &quot;version of your release&quot;</span><br><span class="line">git flow release finish</span><br><span class="line"></span><br><span class="line">// 开始和完成一个 hotfix</span><br><span class="line">git flow hotfix start &quot;version of your hotfix&quot;</span><br><span class="line">git flow hotfix finish</span><br></pre></td></tr></table></figure>
+
+<p>但切记，git flow 不是什么教条、更不是什么灵丹妙药，理解他的工作流思维，而不是生搬硬套才能让团队协作更加流畅。这些仅是协作中的一部分，更大的一部分是协作过程中的代码审查，如何在 git flow 模式下工作配合 gitlab 做好代码审查，我将在下一篇文章中详细介绍。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2020-08-31T00:40:45.000Z" itemprop="datePublished">
+              2020-08-31
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

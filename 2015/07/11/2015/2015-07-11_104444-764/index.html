@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>socket 多进程/多线程模型实现 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>socket 多进程/多线程模型实现</h1>
+    </header>
+
+    <section>
+      <p>前文我们实现了一个 socket 最小的实现，它只允许一台终端连接到服务器进行数据通信，但这样的程序对我们来说没有什么意义，所以我们一定要实现多个客户端与一个服务端通信交互数据，这样才能真正派上用场，所以本文主要介绍了两种实现多客户端连接的方案，一种是多进程，一种是多线程，两种性能相差无几，但明显多线程在资源方面明显要比多进程消耗要少的多。</p>
+<span id="more"></span>
+<hr>
+<h3 id="公共头文件"><a href="#公共头文件" class="headerlink" title="公共头文件"></a>公共头文件</h3><p>&#x2F;* wrap.h *&#x2F;<br>#ifndef __WRAP_H__<br>#define __WRAP_H__</p>
+<p>void perr_exit(const char* s);<br>int Accept(int fd, struct sockaddr* sa, socklen_t* salenptr);<br>void Bind(int fd, const struct sockaddr* sa, socklen_t salen);<br>void Connect(int fd, const struct sockaddr* sa, socklen_t salen);<br>void Listen(int fd, int backlog);<br>int Socket(int family, int type, int protocol);<br>ssize_t Read(int fd, void* ptr, size_t nbytes);<br>ssize_t Write(int fd, const void* ptr, size_t nbytes);<br>void Close(int fd);<br>ssize_t Readn(int fd, void* vptr, size_t n);<br>ssize_t Writen(int fd, const void* vptr, size_t n);<br>static ssize_t my_read(int fd, char* ptr);<br>ssize_t Readline(int fd, void* vptr, size_t maxlen);</p>
+<p>#endif</p>
+<p>#include &lt;stdlib.h&gt;<br>#include &lt;errno.h&gt;<br>#include &lt;sys&#x2F;socket.h&gt;<br>#include &lt;stdio.h&gt;<br>#include &lt;unistd.h&gt;<br>#include “wrap.h”</p>
+<p>void perr_exit(const char* s)<br>{<br>perror(s);<br>exit(1);<br>}</p>
+<p>int Accept(int fd, struct sockaddr* sa, socklen_t* salenptr)<br>{<br>int n;</p>
+<p>again:<br>if ( (n &#x3D; accept(fd, sa, salenptr)) &lt; 0 )<br>{<br>if ((errno &#x3D;&#x3D; ECONNABORTED)  (errno &#x3D;&#x3D; EINTR))<br>{<br>goto again;<br>}<br>else<br>{<br>perr_exit(“accept error”);<br>}<br>}<br>return n;<br>}</p>
+<p>void Bind(int fd, const struct sockaddr* sa, socklen_t salen)<br>{<br>if ( bind(fd, sa, salen) &lt; 0 )<br>{<br>perr_exit(“bind error”);<br>}<br>}</p>
+<p>void Connect(int fd, const struct sockaddr* sa, socklen_t salen)<br>{<br>if ( connect(fd, sa, salen) &lt; 0 )<br>{<br>perr_exit(“connect error”);<br>}<br>}</p>
+<p>void Listen(int fd, int backlog)<br>{<br>if ( listen(fd, backlog) &lt; 0 )<br>{<br>perr_exit(“listen error”);<br>}<br>}</p>
+<p>int Socket(int family, int type, int protocol)<br>{<br>int n &#x3D; socket(family, type, protocol);<br>if ( n &lt; 0 )<br>{<br>perr_exit(“socket error”);<br>}<br>return n;<br>}</p>
+<p>ssize_t Read(int fd, void* ptr, size_t nbytes)<br>{<br>ssize_t n;</p>
+<p>again:<br>if ( (n &#x3D; read(fd, ptr, nbytes)) &#x3D;&#x3D; -1)<br>{<br>if (errno &#x3D;&#x3D; EINTR)<br>{<br>goto again;<br>}<br>else<br>{<br>return -1;<br>}<br>}<br>return n;<br>}</p>
+<p>ssize_t Write(int fd, const void* ptr, size_t nbytes)<br>{<br>ssize_t n;</p>
+<p>again:<br>if ( (n &#x3D; write(fd, ptr, nbytes)) &#x3D;&#x3D; -1)<br>{<br>if (errno &#x3D;&#x3D; EINTR)<br>{<br>goto again;<br>}<br>else<br>{<br>return -1;<br>}<br>}<br>return n;<br>}</p>
+<p>void Close(int fd)<br>{<br>if (close(fd) &#x3D;&#x3D; -1)<br>{<br>perr_exit(“close error”);<br>}<br>}</p>
+<p>ssize_t Readn(int fd, void* vptr, size_t n)<br>{<br>size_t nleft;<br>ssize_t nread;<br>char* ptr;</p>
+<p>ptr &#x3D; vptr;<br>nleft &#x3D; n;<br>while (nleft &gt; 0)<br>{<br>if ( (nread &#x3D; read(fd, ptr, nleft)) &lt; 0 )<br>{<br>if (errno &#x3D;&#x3D; EINTR)<br>{<br>nread &#x3D; 0;<br>}<br>else<br>{<br>return -1;<br>}<br>}<br>else if (nread &#x3D;&#x3D; 0)<br>{<br>break;<br>}</p>
+<p>nleft -&#x3D; nread;<br>ptr +&#x3D; nread;<br>}<br>}</p>
+<p>ssize_t Writen(int fd, const void* vptr, size_t n)<br>{<br>size_t nleft;<br>ssize_t nwritten;<br>const char* ptr;</p>
+<p>ptr &#x3D; vptr;<br>nleft &#x3D; n;<br>while (nleft &gt; 0)<br>{<br>if ( (nwritten &#x3D; write(fd, ptr, nleft)) &lt;&#x3D; 0)<br>{<br>if (nwritten &lt; 0 &amp;&amp; errno &#x3D;&#x3D; EINTR)<br>{<br>nwritten &#x3D; 0;<br>}<br>else<br>{<br>return -1;<br>}<br>}</p>
+<p>nleft -&#x3D; nwritten;<br>ptr +&#x3D; nwritten;<br>}</p>
+<p>return n;<br>}</p>
+<p>static ssize_t my_read(int fd, char* ptr)<br>{<br>static int read_cnt;<br>static char* read_ptr;<br>static char read_buf[100];</p>
+<p>if (read_cnt &lt;&#x3D; 0)<br>{<br>again:<br>if ( (read_cnt &#x3D; read(fd, read_buf, sizeof(read_buf))) &lt; 0 )<br>{<br>if (errno &#x3D;&#x3D; EINTR)<br>{<br>goto again;<br>}<br>return -1;<br>}<br>else if (read_cnt &#x3D;&#x3D; 0)<br>{<br>return 0;<br>}</p>
+<p>read_ptr &#x3D; read_buf;<br>}</p>
+<p>read_cnt–;<br>*ptr &#x3D; *read_ptr++;<br>return 1;<br>}</p>
+<p>ssize_t Readline(int fd, void* vptr, size_t maxlen)<br>{<br>ssize_t n, rc;<br>char c, *ptr;</p>
+<p>ptr &#x3D; vptr;<br>for (n &#x3D; 1; n &lt; maxlen; n++)<br>{<br>if ( (rc &#x3D; my_read(fd, &amp;c)) &#x3D;&#x3D; 1)<br>{<br>*ptr++ &#x3D; c;<br>if (c &#x3D;&#x3D; ‘\n’)<br>{<br>break;<br>}<br>}<br>else if (rc &#x3D;&#x3D; 0)<br>{<br>*ptr &#x3D; 0;<br>return n - 1;<br>}<br>else<br>{<br>return -1;<br>}</p>
+<p>*ptr &#x3D; 0;<br>return n;<br>}<br>}</p>
+<h3 id="客户端代码（多进程多线程共用）"><a href="#客户端代码（多进程多线程共用）" class="headerlink" title="客户端代码（多进程多线程共用）"></a>客户端代码（多进程多线程共用）</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;sys&#x2F;socket.h&gt;<br>#include &lt;netinet&#x2F;in.h&gt;<br>#include “wrap.h”</p>
+<p>#define MAXLINE 80<br>#define SRV_PORT 8000</p>
+<p>int main(int argc, char* argv[])<br>{<br>struct sockaddr_in srv_addr;<br>int sock, conn;</p>
+<p>sock &#x3D; Socket(AF_INET, SOCK_STREAM, 0);</p>
+<p>bzero(&amp;srv_addr, sizeof(srv_addr));<br>srv_addr.sin_family &#x3D; AF_INET;<br>inet_pton(AF_INET, “127.0.0.1”, &amp;srv_addr.sin_addr);<br>srv_addr.sin_port &#x3D; htons(SRV_PORT);</p>
+<p>conn &#x3D; Connect(sock, (struct sockaddr*)&amp;srv_addr, sizeof(srv_addr));</p>
+<p>int len;<br>char buf[MAXLINE];<br>while (fgets(buf, sizeof(buf), stdin))<br>{<br>Write(sock, buf, strlen(buf));<br>len &#x3D; Read(sock, buf, sizeof(buf));<br>if (len &#x3D;&#x3D; 0)<br>{<br>printf(“server is closed…\n”);<br>break;<br>}<br>else<br>{<br>Write(STDOUT_FILENO, buf, len);<br>}<br>}</p>
+<p>close(sock);<br>return 0;<br>}</p>
+<h3 id="多进程服务端代码"><a href="#多进程服务端代码" class="headerlink" title="多进程服务端代码"></a>多进程服务端代码</h3><p>#include &lt;string.h&gt;<br>#include &lt;netinet&#x2F;in.h&gt;<br>#include &lt;stdio.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;strings.h&gt;<br>#include &lt;arpa&#x2F;inet.h&gt;<br>#include &lt;ctype.h&gt;<br>#include “wrap.h”</p>
+<p>#define MAXLINE 80<br>#define SRV_PORT 8000</p>
+<p>int main(int argc, char* argv[])<br>{<br>socklen_t cnt_len;<br>struct sockaddr_in srv_addr, cnt_addr;</p>
+<p>int sock, conn;<br>int n, i;<br>pid_t pid;</p>
+<p>char buf[MAXLINE];<br>char str[INET_ADDRSTRLEN];</p>
+<p>&#x2F;&#x2F; 创建socket<br>sock &#x3D; Socket(AF_INET, SOCK_STREAM, 0);<br>bzero(&amp;srv_addr, sizeof(srv_addr));</p>
+<p>srv_addr.sin_family &#x3D; AF_INET;<br>srv_addr.sin_addr.s_addr &#x3D; htonl(INADDR_ANY);<br>srv_addr.sin_port &#x3D; htons(SRV_PORT);</p>
+<p>&#x2F;&#x2F; 绑定ip和端口<br>Bind(sock, (struct sockaddr*)&amp;srv_addr, sizeof(srv_addr));<br>&#x2F;&#x2F; 开始监听<br>Listen(sock, 20);</p>
+<p>printf(“Accepting connections …\n”);<br>while (1)<br>{<br>&#x2F;&#x2F; 等待接收客户端连接<br>cnt_len &#x3D; sizeof(cnt_addr);<br>conn &#x3D; Accept(sock, (struct sockaddr*)&amp;cnt_addr, &amp;cnt_len);<br>printf(“received from %s at PORT %d\n”,<br>inet_ntop(AF_INET, &amp;cnt_addr.sin_addr, str, sizeof(str)),<br>ntohs(cnt_addr.sin_port));</p>
+<p>&#x2F;&#x2F; 有新客户端连接创建子进程<br>pid &#x3D; fork();<br>if (pid &#x3D;&#x3D; 0)<br>{<br>&#x2F;&#x2F; 关闭从父进程继承下来的 socket 文件描述符<br>Close(sock);<br>while (1)<br>{<br>&#x2F;&#x2F; 从客户端连接后产生的新文件描述符中读取数据<br>n &#x3D; Read(conn, buf, MAXLINE);<br>&#x2F;&#x2F; 如果读取返回值为0证明客户端退出了<br>if (n &#x3D;&#x3D; 0)<br>{<br>printf(“client exit…\n”);<br>break;<br>}<br>&#x2F;&#x2F; 打印连接的客户端ip和端口号<br>printf(“%s:%d”,<br>inet_ntop(AF_INET, &amp;cnt_addr.sin_addr, str, sizeof(str)),<br>ntohs(cnt_addr.sin_port));</p>
+<p>&#x2F;&#x2F; 将读取到的buf数据打印到屏幕上<br>Write(STDOUT_FILENO, buf, n);</p>
+<p>&#x2F;&#x2F; 将数据中所有字符转换为大写<br>for(i &#x3D; 0; i &lt; n; i++)<br>{<br>buf[i] &#x3D; toupper(buf[i]);<br>}<br>&#x2F;&#x2F; 重新发送给客户端<br>Write(conn, buf, n);<br>}<br>&#x2F;&#x2F; 关闭与客户端的连接<br>Close(conn);<br>return 0;<br>}<br>&#x2F;&#x2F; 如果是父进程那么关闭新来的连接文件描述符并且后面什么都不做<br>else if (pid &gt; 0)<br>{<br>Close(conn);<br>}<br>else<br>{<br>perr_exit(“fork”);<br>}<br>}</p>
+<p>&#x2F;&#x2F; 最后关闭socket文件描述符<br>Close(sock);<br>return 0;<br>}</p>
+<h3 id="编译多进程程序运行测试"><a href="#编译多进程程序运行测试" class="headerlink" title="编译多进程程序运行测试"></a>编译多进程程序运行测试</h3><p>编译客户端：gcc client.c wrap.c -o client 编译服务端：gcc server_fork.c wrap.c -o server_fork 运行效果： <a href="/images/2015/07/2015-07-11-102115.png"><img src="/images/2015/07/2015-07-11-102115.png" alt="2015-07-11 10:21:15"></a></p>
+<h3 id="多线程服务端代码"><a href="#多线程服务端代码" class="headerlink" title="多线程服务端代码"></a>多线程服务端代码</h3><p>#include &lt;string.h&gt;<br>#include &lt;netinet&#x2F;in.h&gt;<br>#include &lt;stdio.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;strings.h&gt;<br>#include &lt;arpa&#x2F;inet.h&gt;<br>#include &lt;ctype.h&gt;<br>#include &lt;pthread.h&gt;</p>
+<p>#define MAXLINE 80<br>#define SRV_PORT 8000</p>
+<p>struct tag_thread<br>{<br>int conn;<br>struct sockaddr_in sockaddr;<br>};</p>
+<p>void* recv_thread(void* arg)<br>{<br>&#x2F;&#x2F; 将自身线程设置为游离态，无需再次回收<br>pthread_detach(pthread_self());<br>&#x2F;&#x2F; 将参数转换为可识别的结构体<br>struct tag_thread* new_conn &#x3D; (struct tag_thread*)arg;</p>
+<p>char buf[1024];<br>char str[INET_ADDRSTRLEN];<br>int len;<br>int i;</p>
+<p>while (1)<br>{<br>&#x2F;&#x2F; 从传递进来的文件描述符中读取数据<br>len &#x3D; Read(new_conn-&gt;conn, buf, sizeof(buf));<br>if (0 &#x3D;&#x3D; len)<br>{<br>pthread_exit(NULL);<br>}<br>printf(“recv client data %s:%d\n”,<br>inet_ntop(AF_INET, &amp;new_conn-&gt;sockaddr.sin_addr, str, sizeof(str)),<br>ntohs(new_conn-&gt;sockaddr.sin_port));<br>&#x2F;&#x2F; 打印读取到的数据到屏幕<br>Write(STDOUT_FILENO, buf, len);<br>&#x2F;&#x2F; 将读取到的数据转换为大写<br>for (i &#x3D; 0; i &lt; strlen(buf); i++)<br>{<br>buf[i] &#x3D; toupper(buf[i]);<br>}<br>&#x2F;&#x2F; 重新发回给客户端<br>Write(new_conn-&gt;conn, buf, len);<br>}</p>
+<p>return (void*)0;<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>socklen_t cnt_len;<br>struct sockaddr_in srv_addr, cnt_addr;</p>
+<p>int sock, conn;<br>int n, i;<br>pid_t pid;<br>pthread_t tid;</p>
+<p>char buf[MAXLINE];<br>char str[INET_ADDRSTRLEN];</p>
+<p>sock &#x3D; Socket(AF_INET, SOCK_STREAM, 0);<br>bzero(&amp;srv_addr, sizeof(srv_addr));</p>
+<p>srv_addr.sin_family &#x3D; AF_INET;<br>srv_addr.sin_addr.s_addr &#x3D; htonl(INADDR_ANY);<br>srv_addr.sin_port &#x3D; htons(SRV_PORT);</p>
+<p>Bind(sock, (struct sockaddr*)&amp;srv_addr, sizeof(srv_addr));<br>Listen(sock, 20);</p>
+<p>printf(“Accepting connections …\n”);<br>while (1)<br>{<br>struct tag_thread new_conn;<br>cnt_len &#x3D; sizeof(cnt_addr);<br>&#x2F;&#x2F; 阻塞等待新的客户端连接<br>conn &#x3D; Accept(sock, (struct sockaddr*)&amp;cnt_addr, &amp;cnt_len);<br>&#x2F;&#x2F; 打印新来的客户端ip和端口<br>printf(“while received from %s at PORT %d\n”,<br>inet_ntop(AF_INET, &amp;cnt_addr.sin_addr, str, sizeof(str)),<br>ntohs(cnt_addr.sin_port));</p>
+<p>&#x2F;&#x2F; 设置要传递给线程函数的结构体内容<br>new_conn.conn &#x3D; conn;&#x2F;&#x2F; 新连接的文件描述符<br>new_conn.sockaddr &#x3D; cnt_addr;&#x2F;&#x2F; 新连接的属性结构体</p>
+<p>&#x2F;&#x2F; 创建线程<br>pthread_create(&amp;tid, NULL, recv_thread, (void*)&amp;new_conn);<br>}</p>
+<p>Close(sock);<br>return 0;<br>}</p>
+<h3 id="编译多线程程序运行测试"><a href="#编译多线程程序运行测试" class="headerlink" title="编译多线程程序运行测试"></a>编译多线程程序运行测试</h3><p>编译客户端：gcc client.c wrap.c -o client 编译服务端：gcc server_thread.c wrap.c -o server_thread -l pthread 运行效果： <a href="/images/2015/07/2015-07-11-104255.png"><img src="/images/2015/07/2015-07-11-104255.png" alt="2015-07-11 10:42:55"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-11T10:44:44.000Z" itemprop="datePublished">
+              2015-07-11
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BD%91%E7%BB%9C/">网络</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

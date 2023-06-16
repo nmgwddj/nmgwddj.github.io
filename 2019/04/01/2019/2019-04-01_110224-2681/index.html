@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt QSS 属性选择器使用详解 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt QSS 属性选择器使用详解</h1>
+    </header>
+
+    <section>
+      <p>Qt 的属性选择器是其独有的，非常类似 CSS 的类选择器，但是由于 CSS 的类选择器可以设置多个，所以一个标签只要设置多个的 class 就可以实现不同的效果了甚至重叠效果。但是 Qt 的类选择器没有那么强大，他不能给控件设置多个类标识。所以就有了属性选择器这么个东西。</p>
+<span id="more"></span>
+<h2 id="属性选择器要点"><a href="#属性选择器要点" class="headerlink" title="属性选择器要点"></a>属性选择器要点</h2><ul>
+<li>属性选择器应用于同一个类型下不同实现效果（如希望 QPushButton 有两套通用样式）</li>
+<li>属性选择器对象需要先设置 QVariant 支持的类型属性 setProperty(“key”, “value”)</li>
+<li>属性选择器对象设置的属性 key 不能用 class（实测无效）</li>
+</ul>
+<h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Widget::Widget(QWidget *parent) :</span><br><span class="line">    QWidget(parent),</span><br><span class="line">    ui(new Ui::Widget)</span><br><span class="line">&#123;</span><br><span class="line">    ui-&gt;setupUi(this);</span><br><span class="line"></span><br><span class="line">    QHBoxLayout* mainLayout = new QHBoxLayout;</span><br><span class="line"></span><br><span class="line">    QPushButton* confirm = new QPushButton;</span><br><span class="line">    confirm-&gt;setText(&quot;confirm&quot;);</span><br><span class="line">    confirm-&gt;setProperty(&quot;level&quot;, &quot;dangrous&quot;);</span><br><span class="line"></span><br><span class="line">    QPushButton* cancel = new QPushButton;</span><br><span class="line">    cancel-&gt;setText(&quot;cancel&quot;);</span><br><span class="line">    cancel-&gt;setProperty(&quot;level&quot;, &quot;normal&quot;);</span><br><span class="line"></span><br><span class="line">    mainLayout-&gt;addWidget(confirm);</span><br><span class="line">    mainLayout-&gt;addWidget(cancel);</span><br><span class="line"></span><br><span class="line">    cancel-&gt;setProperty(&quot;urgent&quot;, true);</span><br><span class="line"></span><br><span class="line">    setStyleSheet(&quot;QPushButton &#123; color: #FFF; border: 0; height: 30px; width: 100px; &#125;&quot;</span><br><span class="line">                  &quot;QPushButton[level=&#x27;dangrous&#x27;] &#123; background-color: red; &#125;&quot;</span><br><span class="line">                  &quot;QPushButton[level=&#x27;normal&#x27;] &#123; background-color: blue; &#125;&quot;);</span><br><span class="line"></span><br><span class="line">    this-&gt;setLayout(mainLayout);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h2><p><a href="/images/2019/04/2019-04-01_10-57-17.png"><img src="/images/2019/04/2019-04-01_10-57-17.png"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2019-04-01T11:02:24.000Z" itemprop="datePublished">
+              2019-04-01
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

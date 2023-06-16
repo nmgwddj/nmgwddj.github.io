@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>去除字符串中的空白符 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>去除字符串中的空白符</h1>
+    </header>
+
+    <section>
+      <p>函数提供三个功能，一种是去除左侧空格和TAB、另外一种是去除右侧的空格和TAB，最后一种则是去除所有空格和TAB，适当修改代码也可以去除ASCII中的9~13的其他空白符。具体实现如下：</p>
+<span id="more"></span>
+<p>#include &lt;stdio.h&gt;</p>
+<p>int StringStripWS(char* pStr, int type)<br>{<br>char* pStrback &#x3D; pStr;<br>switch (type)<br>{<br>case 1: &#x2F;&#x2F; 去除左侧空白字符<br>if (*pStrback &#x3D;&#x3D; ‘ ‘  *pStrback &#x3D;&#x3D; ‘\t’)<br>{<br>while (*pStrback &#x3D;&#x3D; ‘ ‘  *pStrback &#x3D;&#x3D; ‘\t’) pStrback++;<br>while (*pStr++ &#x3D; *pStrback++);<br>}<br>break;<br>case 2: &#x2F;&#x2F; 去除右侧空白字符<br>while (*pStr) pStr++;<br>pStr–;<br>while (*pStr &#x3D;&#x3D; ‘ ‘  *pStr &#x3D;&#x3D; ‘\t’)<br>{<br>*pStr &#x3D; ‘\0’;<br>pStr–;<br>}<br>break;<br>case 3: &#x2F;&#x2F; 去除所有空白字符<br>while (*pStr)<br>{<br>if (*pStr &#x3D;&#x3D; ‘ ‘  *pStr &#x3D;&#x3D; ‘\t’)<br>{<br>pStr++;<br>continue;<br>}<br>else<br>{<br>*pStrback++ &#x3D; *pStr++;<br>}<br>}<br>*pStrback &#x3D; ‘\0’;<br>break;<br>}<br>return 0;<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>char buf[] &#x3D; “      my     name     is     dengjia      “;<br>printf(“原始字符串内容为 : –%s–\n”, buf);<br>StringStripWS(buf, 1);<br>printf(“去除左侧空白符后 : –%s–\n”, buf);<br>StringStripWS(buf, 2);<br>printf(“去除右侧空白符后 : –%s–\n”, buf);<br>StringStripWS(buf, 3);<br>printf(“去除全部空白符后 : –%s–\n”, buf);<br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-06T22:59:18.000Z" itemprop="datePublished">
+              2015-05-06
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

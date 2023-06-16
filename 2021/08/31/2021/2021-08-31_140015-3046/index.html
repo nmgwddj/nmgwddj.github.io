@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>自定义 npm 包读取外部 npm install 时传入的命令行参数 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>自定义 npm 包读取外部 npm install 时传入的命令行参数</h1>
+    </header>
+
+    <section>
+      <p>正常情况下我们安装一个 npm 包只需要执行 npm install 或者 yarn 就可以了，这基本上都是在发布环境。当我们自定义的 npm 包需要在测试阶段根据环境动态设置一些参数时就显得有些麻烦了。如果能在 npm install 时传递一些参数来提供内部 npm 包读取就会变的比较方便。本文介绍如何通过 npm install 增加的命令行参数和 <code>.npmrc</code> 来动态配置自定义 npm 包的行为。</p>
+<span id="more"></span>
+<h2 id="接管-npm-install-流程"><a href="#接管-npm-install-流程" class="headerlink" title="接管 npm install 流程"></a>接管 npm install 流程</h2><p>当外部项目引入我们的自定义 npm 包时，必须要执行的就是 <code>npm install your_package_name</code> 来安装你的包。如果我们需要在 npm install 时执行一些自定义命令，可以修改 package.json 增加 install 指令来增加一些自定义指令。因为跨平台的环境不同，install 中如果执行一些 bat、shell 脚本可能无法实现不同平台通用。这里介绍微软提供的一个工具包 <code>npm install just-task</code> <a target="_blank" rel="noopener" href="https://github.com/microsoft/just">just-task</a>，包安装后可以修改 install 指令为如下形式：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;scripts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;install&quot;</span><span class="punctuation">:</span> <span class="string">&quot;just install&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br></pre></td></tr></table></figure>
+
+<p>在工程根目录下创建名为 just-task.js 的文件，内部定义一个任务为 install 如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; task, logger &#125; = <span class="built_in">require</span>(<span class="string">&#x27;just-scripts&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="title function_">task</span>(<span class="string">&#x27;install&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  logger.<span class="title function_">info</span>(process.<span class="property">env</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>此时当外部项目引入你的包时，会首先读取 package.json 发现有 install 指令，随后调用 just install 命令（just 为 <code>just-task</code> 包引入的命令），随后 just 命令会到 just-task.js 中寻找 install 任务来执行。最终 <code>logger.info(process.env)</code> 会打印出当前进程的环境变量信息。</p>
+<h2 id="接收环境变量"><a href="#接收环境变量" class="headerlink" title="接收环境变量"></a>接收环境变量</h2><p>准备措施就绪后，我们通过 npm install 时传递参数就可以在 just-task.js 的 install 任务中读取到了，比如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --download-url=https://download.com/file.zip</span><br></pre></td></tr></table></figure>
+
+<p>当我们在 npm install 后面增加了一个 <code>--download-url</code> 参数时，此参数会将参数和值设置到进程的环境变量中，logger.info 再次打印 process.env 时就会打印出此变量： <a href="/images/2021/08/2021-08-31_13-51-29.png"><img src="/images/2021/08/2021-08-31_13-51-29.png"></a> 仔细看会发现，我们加的参数前被增加了 <code>npm_config_</code> 前缀，并且中横线也被替换为下划线。所以读取的时候要注意一下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if (process.env.npm_config_download_url) &#123;</span><br><span class="line">  // ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用-npmrc-配置文件"><a href="#使用-npmrc-配置文件" class="headerlink" title="使用 .npmrc 配置文件"></a>使用 .npmrc 配置文件</h2><p>通过命令行配置是一种方式，但有时我们希望不需要敲繁琐的命令就一直让 download-url 参数为一个固定值，我们也可以在项目根目录下新建一个名为 <code>.npmrc</code> 的配置文件，将变量储存进去：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">download_url=https://download.com/file_new.zip</span><br></pre></td></tr></table></figure>
+
+<p>这样就不需要每次在 npm install 的时候去指定参数了。需要注意的是，<code>.npmrc</code> 配置的优先级要高于命令行参数，所以如果你添加了 <code>.npmrc</code> 又在命令行使用了同样的参数列表，那么始终以 <code>.npmrc</code> 为准。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2021-08-31T14:00:15.000Z" itemprop="datePublished">
+              2021-08-31
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/node/">node</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/npm/">npm</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

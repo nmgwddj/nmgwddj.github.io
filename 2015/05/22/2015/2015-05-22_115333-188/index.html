@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>类之间的类型转换 explicit 使用 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>类之间的类型转换 explicit 使用</h1>
+    </header>
+
+    <section>
+      <p>使用一个不同的类初始化另外一个类，这种情况是要经过类型转换才能完成的，否则语法上就无法通过。同样，类的类型转化也分隐式转换和显式转换。以下代码介绍了隐式转换和显式转换的两种方法。以及 explicit 关键字的使用。</p>
+<span id="more"></span>
+<p>#include <iostream></p>
+<p>using namespace std;</p>
+<p>class Point2D<br>{<br>public:<br>Point2D(int x, int y)<br>:_x(x), _y(y) {}</p>
+<p>friend ostream&amp; operator&lt;&lt;(ostream&amp; os, const Point2D&amp; p)<br>{<br>os &lt;&lt; “(“ &lt;&lt; p._x &lt;&lt; “, “ &lt;&lt; p._y &lt;&lt; “)” &lt;&lt; endl;<br>return os;<br>}</p>
+<p>friend class Point3D;</p>
+<p>private:<br>int _x;<br>int _y;<br>};</p>
+<p>class Point3D<br>{<br>public:<br>Point3D(int x, int y, int z)<br>:_x(x), _y(y), _z(z) {}</p>
+<p>&#x2F;&#x2F; 通过构造器将一个非构造器类型的对象转化为构造器类型对象<br>explicit Point3D(Point2D&amp; p2)<br>{<br>this-&gt;_x &#x3D; p2._x;<br>this-&gt;_y &#x3D; p2._y;<br>this-&gt;_z &#x3D; 0;<br>}</p>
+<p>Point3D operator+(const Point3D &amp;one)<br>{<br>Point3D tmp(0, 0, 0);<br>tmp._x &#x3D; this-&gt;_x + one._x;<br>tmp._y &#x3D; this-&gt;_y + one._y;<br>tmp._z &#x3D; this-&gt;_z + one._z;<br>return tmp;<br>}</p>
+<p>friend ostream&amp; operator&lt;&lt;(ostream&amp; os, const Point3D&amp; p)<br>{<br>os &lt;&lt; “(“ &lt;&lt; p._x &lt;&lt; “, “ &lt;&lt; p._y &lt;&lt; “, “ &lt;&lt; p._z &lt;&lt; “)” &lt;&lt; endl;<br>return os;<br>}</p>
+<p>private:<br>int _x;<br>int _y;<br>int _z;<br>};</p>
+<p>int main(int argc, char* argv[])<br>{<br>Point2D p2(2, 3);<br>cout &lt;&lt; p2;</p>
+<p>Point3D p3(7, 8, 9);<br>cout &lt;&lt; p3;</p>
+<p>&#x2F;&#x2F; 通过构造器将一个非构造器类型的对象转化为构造器类型对象<br>&#x2F;&#x2F; 没加 explicit 关键字时，类似于C语言中的隐式转化<br>&#x2F;&#x2F; Point3D p3a &#x3D; p2;<br>&#x2F;&#x2F; cout &lt;&lt; p3a;</p>
+<p>&#x2F;&#x2F; 加了 explicit 关键字后，显式转换<br>Point3D p3a &#x3D; static_cast<Point3D>(p2);</p>
+<p>&#x2F;&#x2F; 先走类型转换构造器，然后再走+运算符重载<br>Point3D p4a &#x3D; p3 + static_cast<Point3D>(p2);<br>cout &lt;&lt; p4a &lt;&lt; endl;</p>
+<p>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-22T11:53:33.000Z" itemprop="datePublished">
+              2015-05-22
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">类型转换</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

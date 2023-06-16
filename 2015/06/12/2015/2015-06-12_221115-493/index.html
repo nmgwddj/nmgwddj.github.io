@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>vs 下 boost 环境配置 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>vs 下 boost 环境配置</h1>
+    </header>
+
+    <section>
+      <p>Boost库是为C++语言标准库提供扩展的一些C++程序库的总称。Boost库由Boost社区组织开发、维护。提供免费、同行审查的、可移植的程序库。Boost库可以与C++标准库完美共同工作，并且为其提供扩展功能。从某种意义上来讲，Boost库成为具有实践意义的准标准库。</p>
+<span id="more"></span>
+<p>大部分boost库功能的使用只需包括相应头文件即可，少数（如正则表达式库，文件系统库等）需要链接库。里面有许多具有工业强度的库，如graph库。很多Boost中的库功能堪称对语言功能的扩展，其构造用尽精巧的手法，不要贸然的花费时间研读。Boost另外一面，比如Graph这样的库则是具有工业强度，结构良好，非常值得研读的精品代码，并且也可以放心的在产品代码中多多利用。 Boost库的官方网站为 <a target="_blank" rel="noopener" href="http://www.boost.org/">http://www.boost.org/</a> 可从网站中下载所有源码。下载后得到的压缩文件经过解压后，你会看到目录下有一个批处理文件为 bootstrap.bat <a href="/images/2015/06/2015-06-06_194835.png"><img src="/images/2015/06/2015-06-06_194835.png" alt="2015-06-06_194835"></a> 点击开始菜单-》运行-》输入cmd后确定，在命令提示符下，切换到你解压出来的文件夹目录，执行这个 bootstrap.bat 文件，如下图： <a href="/images/2015/06/2015-06-06_195122.png"><img src="/images/2015/06/2015-06-06_195122.png" alt="2015-06-06_195122"></a></p>
+<p>如果这个过程中，命令提示符提示找不到 cl.exe，那是因为你安装VS的时候没有安装完整，需要手动配置一下环境变量。</p>
+<p>打开你VS的安装目录，找到 Microsoft Visual Studio 12.0\VC\bin\amd64_x86 目录，在命令提示符下切换到这个目录下，执行目录下的 vcvarsamd64_x86.bat，执行完成后切记不要关闭这个命令提示符窗口，继续切换到你刚刚解压出来的 boost 目录执行 bootstrap.bat 就可以正常编译了。如下图：</p>
+<p><a href="/images/2015/06/2015-06-06_195145.png"><img src="/images/2015/06/2015-06-06_195145.png" alt="2015-06-06_195145"></a> 暂时不要关闭命令提示符，当批处理执行完毕后，目录下会生成一个 b2.exe 的文件： <a href="/images/2015/06/2015-06-06_195215.png"><img src="/images/2015/06/2015-06-06_195215.png" alt="2015-06-06_195215"></a></p>
+<p>继续在命令提示符下输入 b2.exe –toolset&#x3D;msvc stage</p>
+<p>输入完成后才开始真正的编译，这个过程比较久，主要看你的 CPU 性能，我的大概用了5-7分钟左右就编译完成了。如下图</p>
+<p><a href="/images/2015/06/2015-06-06_195229.png"><img src="/images/2015/06/2015-06-06_195229.png" alt="2015-06-06_195229"></a> <a href="/images/2015/06/2015-06-06_201155.png"><img src="/images/2015/06/2015-06-06_201155.png" alt="2015-06-06_201155"></a> 等待编译完成后，在VS中新建一个项目，然后在项目中点击项目属性： <a href="/images/2015/06/2015-06-06_201647.png"><img src="/images/2015/06/2015-06-06_201647.png" alt="2015-06-06_201647"></a> 在VC++目录-&gt;包含目录中，将你解压出来的 boost 全路径包含进去。当然你也可以在全局设置中添加这个包含目录，但是我们不推荐这样做，boost 库较多，很可能会与你VC项目中其他的库产生冲突。 <a href="/images/2015/06/2015-06-06_201706.png"><img src="/images/2015/06/2015-06-06_201706.png" alt="2015-06-06_201706"></a> 添加完成后，在项目中新建一个源文件，贴上如下代码：</p>
+<p>#include <vector><br>#include <iostream><br>#include &lt;boost&#x2F;foreach.hpp&gt;<br>#include &lt;boost&#x2F;assign.hpp&gt;<br>#include &lt;boost&#x2F;timer.hpp&gt;<br>using namespace std;<br>using namespace boost;<br>int main()<br>{<br>      timer  t;<br>      vector<int> v &#x3D; (assign::list_of(1), 2, 3, 4, 5);<br>      BOOST_FOREACH(int x, v)<br>      {<br>             cout &lt;&lt; x &lt;&lt; “,”;<br>      }<br>      cout &lt;&lt; endl;</p>
+<pre><code>  cout &lt;&lt; t.elapsed() &lt;&lt; &quot;s&quot; &lt;&lt; endl;
+  cout &lt;&lt; &quot;Hello world!&quot; &lt;&lt; endl;
+  system(&quot;pause&quot;);
+  return 0;
+</code></pre>
+<p>}</p>
+<p>如果能成功的编译并运行，那证明你的 boost 环境已经配置成功了。 <a href="/images/2015/06/2015-06-06_202023.png"><img src="/images/2015/06/2015-06-06_202023.png" alt="2015-06-06_202023"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-12T22:11:15.000Z" itemprop="datePublished">
+              2015-06-12
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Boost/">Boost</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

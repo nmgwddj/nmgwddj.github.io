@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>socket 实现最小化组播（多播）程序 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>socket 实现最小化组播（多播）程序</h1>
+    </header>
+
+    <section>
+      <p>组播是在局域网中向一个子网内加入了某个组播组的客户端发送批量发送数据，它类似于广播但并非广播，组播的地址有固定的几种，本案例中使用了239.0.0.2这个组播地址，具体实现代码分客户端和服务端，请参考：</p>
+<span id="more"></span>
+<hr>
+<h3 id="服务端代码"><a href="#服务端代码" class="headerlink" title="服务端代码"></a>服务端代码</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;sys&#x2F;types.h&gt;<br>#include &lt;sys&#x2F;socket.h&gt;<br>#include &lt;string.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;arpa&#x2F;inet.h&gt;<br>#include &lt;net&#x2F;if.h&gt;</p>
+<p>#define SERVER_PORT 8000<br>#define CLIENT_PORT 9000<br>#define MAXLINE1500<br>#define GROUP”239.0.0.2”</p>
+<p>int main(int argc, char* argv[])<br>{<br>int sock &#x3D; socket(AF_INET, SOCK_DGRAM, 0);</p>
+<p>&#x2F;&#x2F; 服务器监听本机所有网卡 8000 端口<br>struct sockaddr_in srvaddr;<br>memset(&amp;srvaddr, 0, sizeof(srvaddr));<br>srvaddr.sin_family&#x3D; AF_INET;<br>srvaddr.sin_addr.s_addr&#x3D; htonl(INADDR_ANY);<br>srvaddr.sin_port&#x3D; htons(SERVER_PORT);<br>bind(sock, (struct sockaddr*)&amp;srvaddr, sizeof(srvaddr));</p>
+<p>&#x2F;&#x2F; 设置组播地址<br>struct ip_mreqn group;<br>inet_pton(AF_INET, GROUP, &amp;group.imr_multiaddr);&#x2F;&#x2F; 组<br>inet_pton(AF_INET, “0.0.0.0”, &amp;group.imr_address);&#x2F;&#x2F; ip<br>group.imr_ifindex &#x3D; if_nametoindex(“eth0”);&#x2F;&#x2F; 网卡索引号<br>&#x2F;&#x2F; 设置发送数据包是组播方式发送<br>setsockopt(sock, IPPROTO_IP, IP_MULTICAST_IF, &amp;group, sizeof(group));</p>
+<p>&#x2F;&#x2F; 构建发送目标结构体<br>struct sockaddr_in cntaddr;<br>memset(&amp;cntaddr, 0, sizeof(cntaddr));<br>cntaddr.sin_family&#x3D; AF_INET;<br>cntaddr.sin_port&#x3D; htons(CLIENT_PORT);&#x2F;&#x2F; 目标端口<br>inet_pton(AF_INET, GROUP, &amp;cntaddr.sin_addr.s_addr);&#x2F;&#x2F; 目标的组地址</p>
+<p>char buf[MAXLINE];<br>while (1)<br>{<br>fgets(buf, sizeof(buf), stdin);<br>sendto(sock, buf, strlen(buf), 0,<br>(struct sockaddr*)&amp;cntaddr, sizeof(cntaddr));<br>sleep(1);<br>}</p>
+<p>close(sock);<br>return 0;<br>}</p>
+<h3 id="客户端代码"><a href="#客户端代码" class="headerlink" title="客户端代码"></a>客户端代码</h3><p>#include &lt;netinet&#x2F;in.h&gt;<br>#include &lt;stdio.h&gt;<br>#include &lt;sys&#x2F;types.h&gt;<br>#include &lt;sys&#x2F;socket.h&gt;<br>#include &lt;string.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;sys&#x2F;stat.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;fcntl.h&gt;<br>#include &lt;net&#x2F;if.h&gt;</p>
+<p>#define SERVER_PORT 8000<br>#define CLIENT_PORT 9000<br>#define MAXLINE4096<br>#define GROUP”239.0.0.2”</p>
+<p>int main(int argc, char* argv[])<br>{<br>int result;<br>int sock &#x3D; socket(AF_INET, SOCK_DGRAM, 0);</p>
+<p>struct sockaddr_in localaddr;<br>memset(&amp;localaddr, 0, sizeof(localaddr));<br>localaddr.sin_family&#x3D; AF_INET;<br>localaddr.sin_port&#x3D; htons(CLIENT_PORT);<br>inet_pton(AF_INET, “0.0.0.0”, &amp;localaddr.sin_addr.s_addr);<br>result &#x3D; bind(sock, (struct sockaddr*)&amp;localaddr, sizeof(localaddr));<br>if (-1 &#x3D;&#x3D; result)<br>{<br>perror(“bind”);<br>}</p>
+<p>struct ip_mreqn group;<br>inet_pton(AF_INET, GROUP, &amp;group.imr_multiaddr);<br>inet_pton(AF_INET, “0.0.0.0”, &amp;group.imr_address);<br>group.imr_ifindex &#x3D; if_nametoindex(“eth0”);</p>
+<p>setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, &amp;group, sizeof(group));</p>
+<p>int ret;<br>char buf[MAXLINE];<br>while (1)<br>{<br>ret &#x3D; recvfrom(sock, buf, sizeof(buf), 0, NULL, 0);<br>write(STDOUT_FILENO, buf, ret);<br>}<br>close(sock);<br>return 0;<br>}</p>
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>编译客户端：gcc multi_client.c -o multi_client 编译服务端：gcc multi_server.c -o multi_server 通讯截图： <a href="/images/2015/07/2015-07-18-212329.png"><img src="/images/2015/07/2015-07-18-212329.png" alt="2015-07-18 21:23:29"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-18T21:24:08.000Z" itemprop="datePublished">
+              2015-07-18
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%BD%91%E7%BB%9C/">网络</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

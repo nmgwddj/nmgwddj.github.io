@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt 制作一个音量回馈样式的进度条效果 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt 制作一个音量回馈样式的进度条效果</h1>
+    </header>
+
+    <section>
+      <p>使用 Qt 默认的进度条样式是传统的效果，但是 Qt 提供了强大的 QSS 引擎，提供我们去设置丰富的控件样式，这次是为了模仿一个音量或者声音回馈效果的进度条样式，类似下面这张图片的效果： <a href="/images/2019/02/rtaimage-eid-ka438000000tzkx-feoid-00n00000008rk2n-refid-0em380000001qi1.png"><img src="/images/2019/02/rtaimage-eid-ka438000000tzkx-feoid-00n00000008rk2n-refid-0em380000001qi1.png"></a></p>
+<span id="more"></span>
+<p>其中可以看到麦克风和扬声器右侧都有一个点状分割的进度效果，来显示麦克风或者扬声器的回馈声音是多大的。开始为了制作这种效果费尽心思想通过渐变来实现，但后面还是放弃了。最终是给 QProgressBar 设置了一个前景图和一个背景图的方法，实现了这种效果。 <a href="/images/2019/02/2019-02-20_12-51-48.png"><img src="/images/2019/02/2019-02-20_12-51-48.png"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/* Progress styles */</span><br><span class="line">QProgressBar &#123;</span><br><span class="line">    border: 0;</span><br><span class="line">    background-image: url(:/images/public/progress/progress_background.png);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">QProgressBar::chunk:enabled &#123;</span><br><span class="line">    background-image: url(:/images/public/progress/progress_foreground.png);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中前景图和背景图分别如下效果，QSS 会自动以 repeat 方式显示图片。 <a href="/images/2019/02/progress_background.png"><img src="/images/2019/02/progress_background.png"></a> <a href="/images/2019/02/progress_foreground.png"><img src="/images/2019/02/progress_foreground.png"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2019-02-21T09:49:45.000Z" itemprop="datePublished">
+              2019-02-21
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

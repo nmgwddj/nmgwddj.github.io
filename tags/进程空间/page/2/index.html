@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ 进程空间 }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/29/2015/2015-06-29_143407-639/">使用 frok() 函数一次创建多个子进程</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-29T14:34:07.000Z" itemprop="datePublished">
+    2015-06-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>前面的文章我们讨论了系统函数 fork() 的应用，他可以在一个进程中再创建另外一个子进程，本文测试使用一个 for 循环创建多个子进程，中间一些注意事项已经全部用注释标注清楚。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/29/2015/2015-06-29_143407-639/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/29/2015/2015-06-29_122652-630/">fork() 函数详解</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-29T12:26:52.000Z" itemprop="datePublished">
+    2015-06-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>fork() 函数是 linux&#x2F;unix 下一种特别的创建子进程的函数，它不同与 Windows，这个函数在执行成功后会有两个返回值，一个返回值&#x3D;&#x3D;0代表创建了子进程，一个返回值大于0代表还是当前程序进程，而这个大于0的值就是创建的子进程的进程PID。这个函数比较抽象，我们来看一下代码并对比一下图片就能知道具体该函数的用途了。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/29/2015/2015-06-29_122652-630/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/29/2015/2015-06-29_113419-627/">系统函数 查看/修改/删除 环境变量</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-29T11:34:19.000Z" itemprop="datePublished">
+    2015-06-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>通过系统提供的函数，我们一样可以查看、修改和删除环境变量的内容，使用使用函数分别时 getenv()、setenv()、unsetenv()，它们的用法如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/29/2015/2015-06-29_113419-627/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/29/2015/2015-06-29_111008-623/">遍历环境变量内容</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-29T11:10:08.000Z" itemprop="datePublished">
+    2015-06-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>所有应用程序则运行后都会有一组环境变量值，它是一组指针数组，每一个指针指向的内容都具有 name&#x3D;value 的结构，其中 name 是环境变量名，value 是环境变量值。在程序中我们可以遍历这组环境变量内容，具体代码如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/29/2015/2015-06-29_111008-623/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/24/2015/2015-06-24_233326-614/">文件描述符详解</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-24T23:33:26.000Z" itemprop="datePublished">
+    2015-06-24
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在 32 位的 linux&#x2F;unix 系统下，每个程序打开一个文件都会有一段 4G 的虚拟地址空间，这部分空间中，有1G是内核地址空间，3G是用户地址空间，这个概念我们在之前的文章中有介绍过，可参考 “<a target="_blank" rel="noopener" href="http://不同位置的变量在内存中的排布/">不同位置的变量在内存中的排布</a>”，其中在内核地址空间中，维护着一个 PCB 进程控制块，其中包含很多进程相关的信息，比如进程ID、用户ID、组ID等等，但本文我们最关注的，是 PCB 进程控制块中维护的一份“文件描述符表”，表的格式抽象成下图的样子。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/24/2015/2015-06-24_233326-614/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/28/2015/2015-05-28_174813-302/">线性表链式存储</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-28T17:48:13.000Z" itemprop="datePublished">
+    2015-05-28
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%9F%A5%E6%89%BE/">查找</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">类型转换</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>上文中我们介绍了线性表顺序储存的方式，并给大家画了一幅比较详细的图（虽然看着比较凌乱），本文介绍的是数据储存的另外一种方式“链式储存”，这相当于我们之前提到过的<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/datastruct/21.html">单向链表</a>，但是，本文与上一篇文章一样，都将数据的储存和算法进行了分离。这才是我们真正应该晋级了解的东西，如果只是一个单向链表，不足以我们耗费这么多精力。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/28/2015/2015-05-28_174813-302/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/22/2015/2015-05-22_203707-192/">智能指针入门 auto_ptr</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-22T20:37:07.000Z" itemprop="datePublished">
+    2015-05-22
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>所谓智能指针，就是可以随便申请而无需管理自动释放，就像 java 或 C# 的垃圾回收机制一样。我们无需关心销毁只管尽情的申请，系统提供了一个 auto_ptr 类可以使用这样的功能。后面我们也会用简单的代码示例介绍 auto_ptr 内部是如何实现的。代码如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/22/2015/2015-05-22_203707-192/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/22/2015/2015-05-22_201314-190/">内存操作符重载（new/delete）</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-22T20:13:14.000Z" itemprop="datePublished">
+    2015-05-22
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%8F%8B%E5%85%83/">友元</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>内存操作符 new 和 delete 系统本身就提供了非常稳固的方法，很少会有情况用到自己重载的 new 和 delete，除非是想实现什么特别的功能，比如在申请内存后自动填入什么数据等等，当然这并不是本文讨论的重点，本文的重点是记录如何重载这两个操作符。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/22/2015/2015-05-22_201314-190/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/12/2015/2015-05-12_215805-121/">C++ new关键字的返回值</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-12T21:58:05.000Z" itemprop="datePublished">
+    2015-05-12
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在C中，我们申请一块内存时，往往会根据malloc的返回值来判断是否为NULL而判定是否申请内存成功，但C++中，new关键字并不像malloc一样是有返回值的。所以以下语法是没有意义的语法。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/12/2015/2015-05-12_215805-121/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/12/2015/2015-05-12_215513-119/">C与C++申请堆内存的不同</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-12T21:55:13.000Z" itemprop="datePublished">
+    2015-05-12
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>C 没有关键字可以申请堆内存，只提供了一些库函数如malloc、calloc、realloc等。而C++提供了一个一系列新的关键字来处理堆内存，那就是new和delete，下面示例代码分别编写了C和C++各种申请内存的方式。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/12/2015/2015-05-12_215513-119/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">« prev</a><a class="page-number" href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">1</a><span class="page-number current">2</span><a class="page-number" href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/page/3/">3</a><a class="extend next" rel="next" href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/page/3/">next »</a>
+    </nav>
+  </section>
+
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

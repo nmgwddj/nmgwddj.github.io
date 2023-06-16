@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>notepad++ 7.4.2 x64 版本无法使用当前目录配置文件 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>notepad++ 7.4.2 x64 版本无法使用当前目录配置文件</h1>
+    </header>
+
+    <section>
+      <p>最近更新一下电脑里的 notepad++ 到最新版本，遇到了一个问题就是新版本的 notepad++ 不再使用当前目录的配置文件了。通过查询资料得知，需要在当前目录新建一个 0 字节的 doLocalConf.xml 的配置文件，这样就会使用当前目录下的配置文件了。可我按照这种方法操作后却发现 notepad++ 依然使用的是 %APPDATA% 下面的配置信息。</p>
+<span id="more"></span>
+<p>随后在 notepad++ 的 github 中，找到了相同的问题：<a target="_blank" rel="noopener" href="https://github.com/notepad-plus-plus/notepad-plus-plus/issues/2108">https://github.com/notepad-plus-plus/notepad-plus-plus/issues/2108</a>，看这位朋友遇到了和我们一样的问题，所以基本上可以判断是新版本的一个 bug。最终我们还是需要使用 %APPDATA% 目录下的配置。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-08-14T11:08:11.000Z" itemprop="datePublished">
+              2017-08-14
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

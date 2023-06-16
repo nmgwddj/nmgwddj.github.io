@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>练习题目“天生棋局” | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>练习题目“天生棋局”</h1>
+    </header>
+
+    <section>
+      <p><strong>1、传入一个n 在堆空间中产生n*n方格的棋盘</strong> int ** createBoard(int n); int createBoard1(int ***p,int n); <strong>2、N颗棋子随机落在棋盘上&lt;需要防止落在同一位置&gt;</strong> int initBoard(int **p,int n); <strong>3、打印棋盘</strong> int printBoard(int **p,int n); 如果有两颗棋子落同一行或者同一列则输出好棋，否则输出不是好棋。 将棋局中的棋子打印出来空位用O，有旗子的用X表示。随意就行。 <strong>4、销毁棋盘</strong> int destroyBoard(int **p,int n); int destroyBoard1(int ***p,int n);</p>
+<span id="more"></span>
+<p><strong>【题目分析】</strong></p>
+<ol>
+<li>首先要根据输入的n大小生成一个n*n的二维空间。</li>
+<li>初始化棋盘并不难，只需要生成行与列的随即值，判断某行某列上是否已经被设置为非0值，如果没有设置便落子（修改为非0值）。</li>
+<li>打印和遍历、销毁没有什么可说的。</li>
+</ol>
+<p><strong>【题目代码】</strong> 6这段代码在ubuntu下编译看着效果要好一些，打印棋牌上的内容是用的中文的一些字符，在Windows下编译看着有点不对称。不过可以自己修改一下落子的样式。</p>
+<p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include &lt;time.h&gt;<br> <br>int createBoard(int ***p, int n)<br>{<br>*p &#x3D; (int**)malloc(sizeof(int*) * n);<br>if (NULL &#x3D;&#x3D; *p)<br>{<br>return -1;<br>}<br>for (int i &#x3D; 0; i &lt; n; i++)<br>{<br>(*p)[i] &#x3D; (int*)malloc(sizeof(int) * n);<br>if (NULL &#x3D;&#x3D; (*p)[i])<br>{<br>return -1;<br>}<br>memset((*p)[i], 0, sizeof(int) * n);<br>}<br>return 0;<br>}<br> <br>int initBoard(int **p, int n, int nCount)<br>{<br>for (int i &#x3D; 0; i &lt; nCount; i++)<br>{<br>int x &#x3D; 0;<br>int y &#x3D; 0;<br>srand(time(NULL));<br>do<br>{<br>x &#x3D; rand() % n;<br>y &#x3D; rand() % n;<br>} while (p[x][y] !&#x3D; 0);<br>if (nCount &gt; 5)<br>p[x][y] &#x3D; 1;<br>else<br>p[x][y] &#x3D; 2;<br>}<br>return 0;<br>}<br> <br>int displayBoard(int **p, int n)<br>{<br>int row &#x3D; 0;<br>int column &#x3D; 0;<br>for (int i &#x3D; 0; i &lt; n; i++)<br>{<br>for (int j &#x3D; 0; j &lt; n; j++)<br>{<br>if (p[i][j] &#x3D;&#x3D; 0)<br>{<br>printf(“＋ “);<br>}<br>else<br>{<br>if (p[i][j] &#x3D;&#x3D; 1)<br>printf(“●  “);<br>else<br>printf(“○  “);<br>row +&#x3D; 1;<br>}<br>}<br>if (row &gt;&#x3D; 2)<br>printf(“★ “);<br>else<br>printf(“－ “);<br>row &#x3D; 0;<br>putchar(10);<br>}<br> <br>for (int i &#x3D; 0; i &lt; n; i++)<br>{<br>for (int j &#x3D; 0; j &lt; n; j++)<br>{<br>if (p[j][i] &#x3D;&#x3D; 1)<br>column +&#x3D; 1;<br>}<br>if (column &gt;&#x3D; 2)<br>printf(“★ “);<br>else<br>printf(“－ “);<br>column &#x3D; 0;<br>}<br> <br>putchar(10);<br>return 0;<br>}<br> <br>int destoryBoard(int ***p, int n)<br>{<br>for (int i &#x3D; 0; i &lt; n; i++)<br>{<br>free((*p)[i]);<br>}<br>free(*p);<br>}<br> <br>int main(int argc, char *argv[])<br>{<br>int **p;<br>createBoard(&amp;p, 20);<br>initBoard(p, 20, 6);<br>initBoard(p, 20, 5);<br>displayBoard(p, 20);<br>destoryBoard(&amp;p, 20);<br>return 0;</p>
+<p>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-07T22:38:14.000Z" itemprop="datePublished">
+              2015-05-07
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

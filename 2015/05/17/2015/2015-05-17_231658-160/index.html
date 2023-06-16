@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>运算符重载 += 操作符 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>运算符重载 += 操作符</h1>
+    </header>
+
+    <section>
+      <p>上几篇文章我们介绍了加号运算符的重载，实现了两个类之间相加得出我们想要的结果，本文将介绍+&#x3D;操作符的重载，使两个类的对象可以使用+&#x3D;运算符来进行运算。其中要注意的是返回值为引用（&amp;）的重要性。</p>
+<span id="more"></span>
+<p>要实现上面的需求，我们只需重载 operatpr+&#x3D; 操作符即可，下面就是一个简单的示例，可以实现 c1+&#x3D;c2的需求。</p>
+<p>#include <iostream></p>
+<p>using namespace std;</p>
+<p>class Complex<br>{<br>public:<br>Complex(float x, float y)<br>:_x(x), _y(y)<br>{<br>cout &lt;&lt; “Complex contructor” &lt;&lt; endl;<br>}</p>
+<p>void display()<br>{<br>cout &lt;&lt; “(x &#x3D; “ &lt;&lt; _x &lt;&lt; “, y &#x3D; “ &lt;&lt; _y &lt;&lt; “)” &lt;&lt; endl;<br>}</p>
+<p>void operator+&#x3D;(Complex another)<br>{<br>this-&gt;_x +&#x3D; another._x;<br>this-&gt;_y +&#x3D; another._y;<br>}</p>
+<p>private:<br>float _x;<br>float _y;<br>};</p>
+<p>int main(int argc, char* argv[])<br>{<br>Complex c1(10.0, 15.0);<br>Complex c2(20.0, 25.0);<br>c1.display();<br>c2.display();</p>
+<p>c1 +&#x3D; c2;<br>c1.display();</p>
+<p>return 0;<br>}</p>
+<p>运算的结果如下：</p>
+<p>(x &#x3D; 10, y &#x3D; 15) &#x2F;&#x2F; c1<br>(x &#x3D; 20, y &#x3D; 25) &#x2F;&#x2F; c2<br>(x &#x3D; 30, y &#x3D; 40) &#x2F;&#x2F; c1 + c2</p>
+<p>上面的代码实现了我们的简单+&#x3D;需求，还有很多细节的地方没有考虑到，并且程序的运行效率也是有待优化的。首先我们先考虑以下情况。 C++关键字int类型创建的对象可以实现连等的操作，比如下面的例子；</p>
+<p>int a &#x3D; 10, b &#x3D; 20, c &#x3D; 30;<br>a +&#x3D; b +&#x3D; c;<br>cout &lt;&lt; a &lt;&lt; endl;<br>cout &lt;&lt; b &lt;&lt; endl;<br>cout &lt;&lt; c &lt;&lt; endl;</p>
+<p>最终结果</p>
+<p>60<br>50<br>30</p>
+<p>该表达式是从右向左依次执行的，首先计算 b+&#x3D;c，结果b&#x3D;50，c没有变动。然后计算a+&#x3D;b，a&#x3D;60，b&#x3D;50。 如果我们要让类实现这样的功能，使用上面我们写好的代码可以成功吗？我们不妨测试一下，将main函数中的代码修改为如下的样子：</p>
+<p>int main(int argc, char* argv[])<br>{<br>Complex c1(10, 0);<br>Complex c2(20, 0);<br>Complex c3(30, 0);</p>
+<p>c1 +&#x3D; c2 +&#x3D; c3;</p>
+<p>c1.display();<br>c2.display();<br>c3.display();</p>
+<p>return 0;<br>}</p>
+<p>此时再编译程序，你会发现出现了错误： <a href="/images/2015/05/2015-05-17_224406.png"><img src="/images/2015/05/2015-05-17_224406.png" alt="2015-05-17_224406"></a> 二进制“+&#x3D;”: 没有找到接受“void”类型的右操作数的运算符(或没有可接受的转换)，这句话是什么意思呢？我们分析一下程序的运算过程，一样是从右向左，相当于</p>
+<p>c1.operator+&#x3D;(c2.operator+&#x3D;(c3))</p>
+<p>首先是c2+&#x3D;c3，在函数内部，我们给分别修改了 this-&gt;_x 和 this-&gt;_y的值，但此时你会发现，处理函数并没有返回任何值，这让接下来的 c1 与谁相加呢？这种情况下我们是不是要返回一个 Complex 的对象，才能使 c1 正常的与其相加，再次相加的过程会重复进入 operator+&#x3D; 的重载函数中。所以，重载函数应该修改为如下的样子。</p>
+<p>&#x2F;&#x2F; 修改返回值为 Complex 对象<br>Complex operator+&#x3D;(Complex another)<br>{<br>this-&gt;_x +&#x3D; another._x;<br>this-&gt;_y +&#x3D; another._y;<br>&#x2F;&#x2F; 将 this 指针解引用后返回<br>return *this;<br>}</p>
+<p>如上修改后，代码成功的运行了，我们得到了想要的结果：</p>
+<p>(x &#x3D; 60, y &#x3D; 0) &#x2F;&#x2F; c1.operator(c2.operator(c3))<br>(x &#x3D; 50, y &#x3D; 0) &#x2F;&#x2F; c2.operator(c3)<br>(x &#x3D; 30, y &#x3D; 0) &#x2F;&#x2F; c3</p>
+<p>解决这个问题，我们只修改了函数的返回值，并在函数内部返回了解引用后的*this对象。这样就实现了连等的操作。接下来，我们继续考虑这样的情况。 在基础数据类型中，是允许出现这样的表达式的：</p>
+<p>int a &#x3D; 10, b &#x3D; 20, c &#x3D; 30;<br>(a +&#x3D; b) +&#x3D; c;</p>
+<p>cout &lt;&lt; a &lt;&lt; endl;<br>cout &lt;&lt; b &lt;&lt; endl;<br>cout &lt;&lt; c &lt;&lt; endl;</p>
+<p>运算的过程是，a首先与b结合，得到结果a&#x3D;30，b未改变。随后得出的结果再与c结合，a+&#x3D;c，结果a&#x3D;60，c未改变。同样的案例，我们再次应用到我们自己重载的函数中试一下。将程序修改为如下的所示：</p>
+<p>Complex c1(10, 0);<br>Complex c2(20, 0);<br>Complex c3(30, 0);</p>
+<p>(c1 +&#x3D; c2) +&#x3D; c3;</p>
+<p>c1.display();<br>c2.display();<br>c3.display();</p>
+<p>运算后得出的结果是：</p>
+<p>(x &#x3D; 30, y &#x3D; 0) &#x2F;&#x2F; c1<br>(x &#x3D; 20, y &#x3D; 0) &#x2F;&#x2F; c2<br>(x &#x3D; 30, y &#x3D; 0) &#x2F;&#x2F; c3</p>
+<p>这与上面基础数据类型运算出来的结果不一样啊，应该是 60 20 30 啊，怎么会变成这样的数据呢？我们细心来分析一下上面的案例，首先c1与c2先结合，c1+&#x3D;c2后我们返回了*this，但返回值大家请注意，返回值并不是*this的引用，而是一份临时的对象与c3做了相加操作，最后临时对象销毁，而c1自身并没有参与到运算当中。所以最终得出的结果就是 30 20 30。那么想解决这个问题也非常简单，只需将返回值修改为Complex的引用即可，这样在c1与c2结合后得出的对象才是真正的c1，再与c3结合得出最终结果。</p>
+<p>&#x2F;&#x2F; 修改返回值为 Complex 对象的引用<br>Complex&amp; operator+&#x3D;(Complex another)<br>{<br>this-&gt;_x +&#x3D; another._x;<br>this-&gt;_y +&#x3D; another._y;<br>&#x2F;&#x2F; 将 this 指针解引用后返回<br>return *this;<br>}</p>
+<p>运算结果：</p>
+<p>(x &#x3D; 60, y &#x3D; 0) &#x2F;&#x2F;(c1 +&#x3D; c2) +&#x3D; c3<br>(x &#x3D; 20, y &#x3D; 0) &#x2F;&#x2F;c2<br>(x &#x3D; 30, y &#x3D; 0) &#x2F;&#x2F;c3</p>
+<p>至此，+&#x3D;运算符的重载我们就实现完毕了，几乎所有基本数据类型能实现的需求我们都实现了一遍，像-&#x3D; *&#x3D; &#x2F;&#x3D;运算符都与其类似。只需要按部就班的一步一步测试下来即可实现。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-17T23:16:58.000Z" itemprop="datePublished">
+              2015-05-17
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

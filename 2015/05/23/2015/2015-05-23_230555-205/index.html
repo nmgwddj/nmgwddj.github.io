@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>派生类的实始化、初始化顺序 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>派生类的实始化、初始化顺序</h1>
+    </header>
+
+    <section>
+      <p>1、先实始化父类成员，调用父类的构造函数，有多个基类的从左向右按声明顺序实始化。 2、内嵌对象实始化，内嵌对像的构造器。如果父类或是内嵌对象，有无参构造器的话，可以不用显示的调用。如无无参且未调用则会报错。 3、派生类的构造器。</p>
+<span id="more"></span>
+<p>构造器的调用过程是，基类-&gt;成员-&gt;子类，而且析构器我们基本上不用去管理，因为析构器没有参数，而析构器的调用过程是，子类-&gt;成员-&gt;基类。 示例代码如下：</p>
+<p>#include <iostream></p>
+<p>using namespace std;</p>
+<p>class A<br>{<br>public:<br>A(int iA){}<br>};</p>
+<p>class B : public A<br>{<br>public:<br>B(int iA, int iB)<br>:A(iA){}&#x2F;&#x2F; 子类要给父类有参构造函数传参初始化<br>};</p>
+<p>class C : public B<br>{<br>public:<br>C(int iC, int iB, int iA)<br>:B(iA, iB){} &#x2F;&#x2F; 子类要给父类有参构造函数传参初始化<br>};</p>
+<p>int main(int argc, char* argv[])<br>{<br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-23T23:05:55.000Z" itemprop="datePublished">
+              2015-05-23
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

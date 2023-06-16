@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt 模拟 HTTP 表单提交文字或文件到服务器 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt 模拟 HTTP 表单提交文字或文件到服务器</h1>
+    </header>
+
+    <section>
+      <p>传统通过 HTTP 表单的方式来上传文件在 Web 中实现是非常简单的，一个表单中加几个域填写上对应的内容提交就可以了，但如果通过 Qt 来实现就相对麻烦一点，不过我都总结好了代码，直接使用就可以了。</p>
+<h2 id="需要用到的模块"><a href="#需要用到的模块" class="headerlink" title="需要用到的模块"></a>需要用到的模块</h2><ul>
+<li>QNetworkAccessManager 用来发起 GET&#x2F;POST 请求</li>
+<li>QNetworkReply 用来描述响应信息</li>
+<li>QHttpMultiPart 用来模拟表单域</li>
+<li>QNetworkRequest 用来构建请求地址等信息<span id="more"></span></li>
+</ul>
+<h2 id="Qt-官方简单例子"><a href="#Qt-官方简单例子" class="headerlink" title="Qt 官方简单例子"></a>Qt 官方简单例子</h2><p>Qt 官方基于 <code>QHttpMultiPart</code> 的简单例子：<a target="_blank" rel="noopener" href="https://doc.qt.io/archives/qt-4.8/qhttpmultipart.html">https://doc.qt.io/archives/qt-4.8/qhttpmultipart.html</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);</span><br><span class="line"></span><br><span class="line">QHttpPart textPart;</span><br><span class="line">textPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant(&quot;form-data; name=\&quot;text\&quot;&quot;));</span><br><span class="line">textPart.setBody(&quot;my text&quot;);</span><br><span class="line"></span><br><span class="line">QHttpPart imagePart;</span><br><span class="line">imagePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant(&quot;image/jpeg&quot;));</span><br><span class="line">imagePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant(&quot;form-data; name=\&quot;image\&quot;&quot;));</span><br><span class="line">QFile *file = new QFile(&quot;image.jpg&quot;);</span><br><span class="line">file-&gt;open(QIODevice::ReadOnly);</span><br><span class="line">imagePart.setBodyDevice(file);</span><br><span class="line">file-&gt;setParent(multiPart); // we cannot delete the file now, so delete it with the multiPart</span><br><span class="line"></span><br><span class="line">multiPart-&gt;append(textPart);</span><br><span class="line">multiPart-&gt;append(imagePart);</span><br><span class="line"></span><br><span class="line">QUrl url(&quot;http://my.server.tld&quot;);</span><br><span class="line">QNetworkRequest request(url);</span><br><span class="line"></span><br><span class="line">QNetworkAccessManager manager;</span><br><span class="line">QNetworkReply *reply = manager.post(request, multiPart);</span><br><span class="line">multiPart-&gt;setParent(reply); // delete the multiPart with the reply</span><br><span class="line">// here connect signals etc.</span><br></pre></td></tr></table></figure>
+
+<h2 id="封装后的类"><a href="#封装后的类" class="headerlink" title="封装后的类"></a>封装后的类</h2><p>头文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">#ifndef HTTPUP_LOADER_H</span><br><span class="line">#define HTTPUP_LOADER_H</span><br><span class="line">#include &lt;QObject&gt;</span><br><span class="line">#include &lt;QString&gt;</span><br><span class="line">#include &lt;QByteArray&gt;</span><br><span class="line">#include &lt;QtNetwork/QHttpPart&gt;</span><br><span class="line">#include &lt;QtNetwork/QHttpMultiPart&gt;</span><br><span class="line">#include &lt;QtNetwork/QNetworkReply&gt;</span><br><span class="line">#include &lt;QtNetwork/QNetworkRequest&gt;</span><br><span class="line">#include &lt;QtNetwork/QNetworkAccessManager&gt;</span><br><span class="line"></span><br><span class="line">class HttpUploader : public QObject</span><br><span class="line">&#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">    HttpUploader(const QString&amp; url, QObject* receiver);</span><br><span class="line">    ~HttpUploader();</span><br><span class="line"></span><br><span class="line">    void SetPostURL(const QString&amp; url) &#123; url_ = url; &#125;</span><br><span class="line">    QString GetPostURL() &#123; return url_; &#125;</span><br><span class="line"></span><br><span class="line">    bool AddTextField(const QString&amp; key, const QByteArray&amp; value);</span><br><span class="line">    bool AddFileField(const QString&amp; key, const QString&amp; file_path);</span><br><span class="line">    bool PostRequest();</span><br><span class="line">    QNetworkAccessManager* GetNetworkManager() &#123; return net_manager_; &#125;</span><br><span class="line"></span><br><span class="line">signals:</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">    QObject* receiver_;</span><br><span class="line">    QString url_;</span><br><span class="line">    QByteArray post_content_;</span><br><span class="line"></span><br><span class="line">    // http upload</span><br><span class="line">    QNetworkAccessManager*  net_manager_ = nullptr;</span><br><span class="line">    QNetworkReply*          net_reply_ = nullptr;</span><br><span class="line"></span><br><span class="line">    QHttpMultiPart*         multi_part_ = nullptr;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">#endif // HTTPUP_LOADER_H</span><br></pre></td></tr></table></figure>
+
+<p>实现文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;QFile&gt;</span><br><span class="line">#include &lt;QUuid&gt;</span><br><span class="line">#include &lt;QFileInfo&gt;</span><br><span class="line"></span><br><span class="line">#include &quot;http_uploader.h&quot;</span><br><span class="line"></span><br><span class="line">HttpUploader::HttpUploader(const QString&amp; url, QObject* receiver)</span><br><span class="line">    : receiver_(receiver)</span><br><span class="line">    , url_(url)</span><br><span class="line">    , post_content_(QByteArray())</span><br><span class="line">&#123;</span><br><span class="line">    multi_part_ = new QHttpMultiPart(QHttpMultiPart::FormDataType);</span><br><span class="line">    net_manager_ = new QNetworkAccessManager(this);</span><br><span class="line">    connect(net_manager_, SIGNAL(finished(QNetworkReply*)), receiver, SLOT(onNetworkFinished(QNetworkReply*)));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">HttpUploader::~HttpUploader()</span><br><span class="line">&#123;</span><br><span class="line">    if (multi_part_ != nullptr)</span><br><span class="line">    &#123;</span><br><span class="line">        delete multi_part_;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (net_manager_ != nullptr)</span><br><span class="line">    &#123;</span><br><span class="line">        delete net_manager_;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bool HttpUploader::AddTextField(const QString &amp;key, const QByteArray &amp;value)</span><br><span class="line">&#123;</span><br><span class="line">    QHttpPart text_part;</span><br><span class="line">    text_part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant(&quot;form-data; name=\&quot;&quot; + key + &quot;\&quot;&quot;));</span><br><span class="line">    text_part.setBody(value);</span><br><span class="line"></span><br><span class="line">    multi_part_-&gt;append(text_part);</span><br><span class="line"></span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bool HttpUploader::AddFileField(const QString &amp;key, const QString&amp; file_path)</span><br><span class="line">&#123;</span><br><span class="line">    QHttpPart file_part;</span><br><span class="line">    QFileInfo upload_file_info(file_path);</span><br><span class="line">    file_part.setHeader(QNetworkRequest::ContentTypeHeader, QVariant(&quot;application/octet-stream&quot;));</span><br><span class="line">    file_part.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant(&quot;form-data; name=\&quot;&quot; + key + &quot;\&quot;; filename=\&quot;&quot; + upload_file_info.fileName() + &quot;\&quot;&quot;));</span><br><span class="line"></span><br><span class="line">    QFile *file = new QFile(file_path);</span><br><span class="line">    file-&gt;open(QIODevice::ReadOnly);</span><br><span class="line">    file-&gt;setParent(multi_part_);</span><br><span class="line">    file_part.setBodyDevice(file);</span><br><span class="line"></span><br><span class="line">    multi_part_-&gt;append(file_part);</span><br><span class="line"></span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bool HttpUploader::PostRequest()</span><br><span class="line">&#123;</span><br><span class="line">    QNetworkRequest request = QNetworkRequest(QUrl(url_));</span><br><span class="line">    net_reply_ = net_manager_-&gt;post(request, multi_part_);</span><br><span class="line">    multi_part_-&gt;setParent(net_reply_); // delete the multiPart with the reply</span><br><span class="line">    connect(net_reply_, SIGNAL(finished()), receiver_, SLOT(onReplyFinished()));</span><br><span class="line">    connect(net_reply_, SIGNAL(uploadProgress(qint64, qint64)), receiver_, SLOT(onUploadProgress(qint64, qint64)));</span><br><span class="line"></span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>外部调用时，像下面这样调用就可以了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">HttpUploader* uploader_ = new HttpUploader(report_url_, this);</span><br><span class="line">uploader_-&gt;AddTextField(&quot;userId&quot;, report_id_.toUtf8());</span><br><span class="line">uploader_-&gt;AddTextField(&quot;reportContent&quot;, comment_.toUtf8());</span><br><span class="line">uploader_-&gt;AddFileField(&quot;logFile&quot;, report_zip_file_);</span><br><span class="line">...</span><br><span class="line">uploader_-&gt;PostRequest();</span><br></pre></td></tr></table></figure>
+
+<p>在 new 上传对象的指针时，第二个传递的参数是当前类的一个指针，你需要实现 <code>onNetworkFinished</code>，<code>onReplyFinished</code>，<code>onUploadProgress</code>，来监视上传任务的进度和完成信息，当然你可以自己封装一下，上传对象仅仅提供信号，需要时在外部 connect 就可以了。onNetworkFinished 和 onReplyFinished 的区别是，onReplyFinished 槽函数对应 QNetworkReply 的 finished 信号，他仅仅通知完成了，不会携带任何参数。但是你可以通过 QNetworkReply 的实例对象来获取各种返回值信息。而 onNetworkFinished 槽函数对应的是 QNetworkAccessManager 的 finished 信号，其会携带一个 QNetworkReply 对象指针，你只需要在这里处理返回的对应错误码就可以了。</p>
+<h2 id="返回值处理"><a href="#返回值处理" class="headerlink" title="返回值处理"></a>返回值处理</h2><p>我使用 QNetworkAccessManager 的 finished 信号来接收完成事件，在 onNetworkFinished 函数中，我们接收到的信息是一个 reply 对象。你可以通过 reply 对象获取 HTTP 返回值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">QVariant variant = reply-&gt;attribute(QNetworkRequest::HttpStatusCodeAttribute);</span><br><span class="line">QDebug() &lt;&lt; variant.toInt();</span><br></pre></td></tr></table></figure>
+
+<p>也可以打印 Qt 自由的一套返错误代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">qDebug() &lt;&lt; reply-&gt;error();</span><br><span class="line">qDebug() &lt;&lt; reply-&gt;errorString();</span><br></pre></td></tr></table></figure>
+
+<p>如果没有错误的情况下，你可以使用 reply 对象获取返回的内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qDebug() &lt;&lt; reply-&gt;readAll();</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2019-05-05T10:35:42.000Z" itemprop="datePublished">
+              2019-05-05
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

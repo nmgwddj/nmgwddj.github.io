@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>实现getSize()函数 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>实现getSize()函数</h1>
+    </header>
+
+    <section>
+      <p>在前面介绍fseek和ftell两个函数的时候就做过这样的一个例子，本文不但有fseek和ftell的实现，还有一个使用了fgets实现的方法。这个例子是一个题目，题目提供了函数原型：</p>
+<span id="more"></span>
+<p>int getSize(const char* filename, unsigned int* size);</p>
+<p>完成要求：</p>
+<p>1、getSize函数获取参数filename文件的尺寸（文件大小） 2、返回值设定 a、文件若不存在函数返回值返回-1 b、文件若存在，其他错误返回-2 c、函数运行正常返回0 3、若函数正确获得文件的大小，通过size指针将数值写回 4、提交的源码应当可以运行，放可不扣分</p>
+<p>#define _CRT_SECURE_NO_WARNINGS<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br> <br>int getSize(const char *szFileName, unsigned int* size);<br>int getSize2(const char *szFileName, unsigned int* size);<br> <br>int main(int argc, char* argv[])<br>{<br>unsigned int size &#x3D; 0;<br>&#x2F;&#x2F; 方法1，使用fgets方式<br>getSize(“0505_01.vcxproj”, &amp;size);<br>&#x2F;&#x2F; 方法2，使用ftell方式<br>getSize2(“0505_01.vcxproj”, &amp;size);<br>printf(“%d\n”, size);<br>system(“pause”);<br>return 0;<br>}<br> <br>int getSize2(const char *szFileName, unsigned int* size)<br>{<br>FILE *pFile &#x3D; fopen(szFileName, “r”);<br>&#x2F;&#x2F; 文件打开失败，或文件不存在<br>if (NULL &#x3D;&#x3D; pFile) return -1;<br>&#x2F;&#x2F; 将指针移动到文件末尾<br>fseek(pFile, 0, SEEK_END);<br>&#x2F;&#x2F; 获取指针位置<br>*size &#x3D; ftell(pFile);<br>&#x2F;&#x2F; 关闭文件<br>fclose(pFile);<br>return 0;<br>}<br> <br>int getSize(const char *szFileName, unsigned int* size)<br>{<br>FILE *pFile &#x3D; fopen(szFileName, “r”);<br>&#x2F;&#x2F; 文件打开失败，或文件不存在<br>if (NULL &#x3D;&#x3D; pFile) return -1;<br> <br>char buf[1024];<br>int nLen &#x3D; 0;<br>while (fgets(buf, 1024, pFile) !&#x3D; NULL)<br>{<br>&#x2F;&#x2F; 计算读取出来的字符长度<br>nLen &#x3D; strlen(buf);<br>&#x2F;&#x2F; 如果读取出来的内容最后一个字符是\n那么加1<br>&#x2F;&#x2F; 否则就是读到了最后一行且没有\n，所以不加1<br>if (buf[strlen(buf) - 1] &#x3D;&#x3D; ‘\n’)<br>*size +&#x3D; (nLen + 1);<br>else<br>*size +&#x3D; nLen;<br>}<br> <br>fclose(pFile);<br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-07T07:53:01.000Z" itemprop="datePublished">
+              2015-05-07
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

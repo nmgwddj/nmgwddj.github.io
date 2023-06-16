@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>多线程互斥锁解决哲学家就餐问题 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>多线程互斥锁解决哲学家就餐问题</h1>
+    </header>
+
+    <section>
+      <p>哲学家就餐问题是一个了解和练习线程间同步的非常好的小例子，题为 5 个哲学家（线程）围成一桌就餐，但是只有 5 只筷子（锁），一个人想要吃饭就必须要拥有左侧的筷子（锁1）和右侧的筷子（锁2）才能吃饭。每一个哲学家刚进桌前都持有了自己左侧的筷子，这样所有人只有一只筷子都无法就餐，所以就要想办法去拿右侧的筷子，而因为右侧的筷子被别人持有，所以无法拿到，这个时间就成了死锁状态。所以必须要有一个解锁的条件，那就是在哲学家尝试去拿右侧筷子的时候，如果失败了，那么将自己左手边的筷子放下，此时这个哲学家左侧人就可以持有他原来左手边的筷子来就餐了。实现的具体步骤和代码如下：</p>
+<span id="more"></span>
+<hr>
+<h3 id="【代码实现】"><a href="#【代码实现】" class="headerlink" title="【代码实现】"></a>【代码实现】</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;pthread.h&gt;<br>#include &lt;unistd.h&gt;</p>
+<p>#define THREAD_COUNT 5<br>pthread_mutex_t mutex[THREAD_COUNT];</p>
+<p>&#x2F;&#x2F; 用以给线程传递数据用的结构体<br>struct tag_thread_arg<br>{<br>int pthread_idx;&#x2F;&#x2F; 线程的编号，对应哲学家编号<br>pthread_mutex_t left;&#x2F;&#x2F; 左侧筷子<br>pthread_mutex_t right;&#x2F;&#x2F; 右侧筷子<br>};</p>
+<p>void* pthreadFunc(void* arg)<br>{<br>&#x2F;&#x2F; 得到传递进来的结构体<br>struct tag_thread_arg* local &#x3D;<br>(struct tag_thread_arg*)arg;</p>
+<p>while (1)<br>{<br>&#x2F;&#x2F; 左侧筷子锁，循环拿左侧的锁，拿到以后再向下走<br>while (pthread_mutex_trylock(&amp;local-&gt;left) !&#x3D; 0);<br>&#x2F;&#x2F; 判断右侧筷子是否可以锁定<br>if (pthread_mutex_trylock(&amp;local-&gt;right) &#x3D;&#x3D; 0)<br>{<br>&#x2F;&#x2F; 可以锁定则吃饭<br>int sec &#x3D; rand() % 5 + 1;<br>sleep(sec);<br>printf(“thread %d mixi %ds\n”, local-&gt;pthread_idx, sec);<br>&#x2F;&#x2F; 吃完把两把锁都释放<br>pthread_mutex_unlock(&amp;local-&gt;right);<br>pthread_mutex_unlock(&amp;local-&gt;left);<br>}<br>else<br>{<br>&#x2F;&#x2F; 如果不能锁定右侧筷子，则把自己左侧筷子放开，让别人先吃<br>pthread_mutex_unlock(&amp;local-&gt;left);<br>}<br>}<br>return (void*)0;<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>srand(time(NULL));<br>pthread_t pid[5];<br>int i;</p>
+<p>&#x2F;&#x2F; 初始化5个互斥量<br>for (i &#x3D; 0; i &lt; THREAD_COUNT; i++)<br>{<br>pthread_mutex_init(&amp;mutex[i], NULL);<br>}</p>
+<p>&#x2F;&#x2F; 定义5个结构体用来给线程传递数据<br>struct tag_thread_arg arg[5];<br>&#x2F;&#x2F; 创建5个线程，并把结构体内容初始化后传递进去<br>for (i &#x3D; 0; i &lt; THREAD_COUNT; i++)<br>{<br>arg[i].pthread_idx &#x3D; i;&#x2F;&#x2F;线程ID，对应哲学家编号<br>arg[i].left &#x3D; mutex[i];&#x2F;&#x2F;锁1，对应哲学家左侧筷子<br>arg[i].right &#x3D; mutex[(i + 1) % THREAD_COUNT];&#x2F;&#x2F;锁2，对应哲学家右侧筷子<br>pthread_create(&amp;pid[i], NULL, pthreadFunc, (void*)&amp;arg[i]);&#x2F;&#x2F; 创建线程<br>}</p>
+<p>&#x2F;&#x2F; 等待所有线程结束<br>for (i &#x3D; 0; i &lt; 5; i++)<br>{<br>pthread_join(pid[i], NULL);<br>}</p>
+<p>&#x2F;&#x2F; 回收互斥量资源<br>for (i &#x3D; 0; i &lt; THREAD_COUNT; i++)<br>{<br>pthread_mutex_destroy(&amp;mutex[i]);<br>}</p>
+<p>return 0;<br>}</p>
+<p>程序运行后结果如下图，每个哲学家都可以正常的就餐了： <a href="/images/2015/07/2015-07-05_173820.png"><img src="/images/2015/07/2015-07-05_173820.png" alt="2015-07-05_173820"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-05T17:38:28.000Z" itemprop="datePublished">
+              2015-07-05
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

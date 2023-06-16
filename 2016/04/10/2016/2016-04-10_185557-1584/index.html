@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Windows 堆内存管理 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Windows 堆内存管理</h1>
+    </header>
+
+    <section>
+      <p>Windows 堆内存是性能仅次于虚拟内存的内存管理机制。它不像虚拟内存，每次分配至少是一个页面（4K），它可以灵活的只分配 1 个字节来使用，不浪费内存的空间。但你分配的内存必须由自己维护释放。下面演示了堆内存的使用方法。</p>
+<span id="more"></span>
+<h2 id="最简单的堆使用"><a href="#最简单的堆使用" class="headerlink" title="最简单的堆使用"></a>最简单的堆使用</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;Windows.h&gt;</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    // 使用系统给每个进程提供的默认堆</span><br><span class="line">    HANDLE hHeap = GetProcessHeap();</span><br><span class="line">    float* fArray = (float*)HeapAlloc(hHeap, HEAP_ZERO_MEMORY, 1000 * sizeof(float));</span><br><span class="line">    for (int i = 0; i &lt; 1000; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        fArray[i] = 1.0f * rand();</span><br><span class="line">    &#125;</span><br><span class="line">    HeapFree(hHeap, 0, fArray);</span><br><span class="line"></span><br><span class="line">    // 创建一个私有堆</span><br><span class="line">    hHeap = HeapCreate(HEAP_GENERATE_EXCEPTIONS, 0, 0);</span><br><span class="line">    fArray = (float*)HeapAlloc(hHeap, HEAP_ZERO_MEMORY, 1000 * sizeof(float));</span><br><span class="line">    for (int i = 0; i &lt; 1000; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        fArray[i] = 1.0f * rand();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 类似 C 语言库函数的 realloc 函数</span><br><span class="line">    fArray = (float*)HeapReAlloc(hHeap, HEAP_ZERO_MEMORY, fArray, 2 * 1000 * sizeof(float));</span><br><span class="line">    for (int i = 0; i &lt; 2 * 1000; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        fArray[i] = 1.0f * rand();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    HeapFree(hHeap, 0, fArray);</span><br><span class="line">    // 销毁堆</span><br><span class="line">    HeapDestroy(hHeap);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="查询进程中堆内存的详细使用信息"><a href="#查询进程中堆内存的详细使用信息" class="headerlink" title="查询进程中堆内存的详细使用信息"></a>查询进程中堆内存的详细使用信息</h2><p>同虚拟内存一样，堆内存也可以遍历得到每一块堆内存的使用情况，主要用到的就是 <code>HeapWalk</code> 函数，下面的图片介绍了不同堆类型的不同属性值，图片下面是代码实现，参考者图看代码更容易理解。 <a href="/images/2016/04/2016-04-10_185012.png"><img src="/images/2016/04/2016-04-10_185012.png" alt="2016-04-10_185012"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;tchar.h&gt;</span><br><span class="line">#include &lt;windows.h&gt;</span><br><span class="line">#include &lt;time.h&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line"></span><br><span class="line">void DisplayHeapsInfo(std::ostream&amp; out = std::cout);</span><br><span class="line"></span><br><span class="line">int _tmain()</span><br><span class="line">&#123;</span><br><span class="line">    DisplayHeapsInfo();</span><br><span class="line">    _tsystem(_T(&quot;pause&quot;));</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void DisplayHeapsInfo(std::ostream&amp; out /*= std::cout*/)</span><br><span class="line">&#123;</span><br><span class="line">    // 得到有多少个堆内存块</span><br><span class="line">    // 初始化，设定最大元素为 GetProcessHeaps 返回的值，防止数组动态增长分配不必要的内存</span><br><span class="line">    std::vector&lt;HANDLE&gt; heaps(GetProcessHeaps(0, NULL));</span><br><span class="line">    // 得到首个堆的地址</span><br><span class="line">    GetProcessHeaps(heaps.size(), &amp;heaps[0]);</span><br><span class="line"></span><br><span class="line">    DWORD totalBytes = 0;</span><br><span class="line">    for (DWORD i = 0; i &lt; heaps.size(); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        // 依次遍历</span><br><span class="line">        out &lt;&lt; &quot;Heap handle: 0x&quot; &lt;&lt; heaps[i] &lt;&lt; &#x27;\n&#x27;;</span><br><span class="line">        PROCESS_HEAP_ENTRY phi = &#123; 0 &#125;;</span><br><span class="line">        while (HeapWalk(heaps[i], &amp;phi))</span><br><span class="line">        &#123;</span><br><span class="line">            out &lt;&lt; &quot;Block Start Address: 0x&quot; &lt;&lt; phi.lpData &lt;&lt; &#x27;\n&#x27;;</span><br><span class="line">            out &lt;&lt; &quot;\tSize: &quot; &lt;&lt; phi.cbData &lt;&lt; &quot; - Overhead: &quot; </span><br><span class="line">                &lt;&lt; static_cast&lt;DWORD&gt;(phi.cbOverhead);</span><br><span class="line">            out &lt;&lt; &quot;\tBlock is a&quot;;</span><br><span class="line"></span><br><span class="line">            // 已提交的堆虚拟内存区域</span><br><span class="line">            if (phi.wFlags &amp; PROCESS_HEAP_REGION)</span><br><span class="line">            &#123;</span><br><span class="line">                out &lt;&lt; &quot; VMem region:\n&quot;;</span><br><span class="line">                out &lt;&lt; &quot;\tCommitted size: &quot; &lt;&lt; phi.Region.dwCommittedSize &lt;&lt; &#x27;\n&#x27;;</span><br><span class="line">                out &lt;&lt; &quot;\tUnCommitted size: &quot; &lt;&lt; phi.Region.dwUnCommittedSize &lt;&lt; &#x27;\n&#x27;;</span><br><span class="line">                out &lt;&lt; &quot;\tFirst block: 0x&quot; &lt;&lt; phi.Region.lpFirstBlock &lt;&lt; &#x27;\n&#x27;;</span><br><span class="line">                out &lt;&lt; &quot;\tLast block: 0x&quot; &lt;&lt; phi.Region.lpLastBlock &lt;&lt; &#x27;\n&#x27;;</span><br><span class="line">            &#125;</span><br><span class="line">            else</span><br><span class="line">            &#123;</span><br><span class="line">                // 未提交的堆虚拟内存区域</span><br><span class="line">                if (phi.wFlags &amp; PROCESS_HEAP_UNCOMMITTED_RANGE)</span><br><span class="line">                &#123;</span><br><span class="line">                    out &lt;&lt; &quot;n uncommitted range\n&quot;;</span><br><span class="line">                &#125;</span><br><span class="line">                // 已经被分配的堆内存区域</span><br><span class="line">                else if (phi.wFlags &amp; PROCESS_HEAP_ENTRY_BUSY)</span><br><span class="line">                &#123;</span><br><span class="line">                    totalBytes += phi.cbData;</span><br><span class="line">                    out &lt;&lt; &quot;n Allocated range: Region index - &quot;</span><br><span class="line">                        &lt;&lt; static_cast&lt;unsigned&gt;(phi.iRegionIndex) &lt;&lt; &#x27;\n&#x27;;</span><br><span class="line">                    if (phi.wFlags &amp; PROCESS_HEAP_ENTRY_MOVEABLE)</span><br><span class="line">                    &#123;</span><br><span class="line">                        out &lt;&lt; &quot;\tMoable: Handle is 0x&quot; &lt;&lt; phi.Block.hMem &lt;&lt; &#x27;\n&#x27;;</span><br><span class="line">                    &#125;</span><br><span class="line">                    else if (phi.wFlags &amp; PROCESS_HEAP_ENTRY_DDESHARE)</span><br><span class="line">                    &#123;</span><br><span class="line">                        out &lt;&lt; &quot;\tDDE Sharable\n&quot;;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                else</span><br><span class="line">                &#123;</span><br><span class="line">                    out &lt;&lt; &quot; block, no other flags specified\n&quot;;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            out &lt;&lt; std::endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    out &lt;&lt; &quot;End of report - total of &quot; &lt;&lt; std::dec &lt;&lt; totalBytes &lt;&lt; &quot; allocated&quot; &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="低碎块堆"><a href="#低碎块堆" class="headerlink" title="低碎块堆"></a>低碎块堆</h2><p>所谓低碎块堆实际就是增加了内存对齐的机制，对齐后内存最小颗粒度为 8 个字节，分配内存时，比如指定了 10 个字节，那么实际也会分配 16 （8的最小整数倍）个字节。这样做目的是为了减少内存碎块化严重而导致缺少很多连续的内存地址空间。降低了因需要合并内存碎块而造成的额外开销，从而提升了性能。以下是具体实现代码。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;tchar.h&gt;</span><br><span class="line">#include &lt;windows.h&gt;</span><br><span class="line"></span><br><span class="line">int _tmain()</span><br><span class="line">&#123;</span><br><span class="line">    HANDLE  hHeap = HeapCreate(HEAP_GENERATE_EXCEPTIONS, 0, 0);</span><br><span class="line">    ULONG   HeapFragValue = 2;</span><br><span class="line">    if (HeapSetInformation(hHeap,</span><br><span class="line">        HeapCompatibilityInformation,</span><br><span class="line">        &amp;HeapFragValue,</span><br><span class="line">        sizeof(HeapFragValue)))</span><br><span class="line">    &#123;</span><br><span class="line">        // LFH Open，低碎块堆已经打开，其他按普通堆正常使用即可。</span><br><span class="line">    &#125;</span><br><span class="line">    HeapDestroy(hHeap);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-04-10T18:55:57.000Z" itemprop="datePublished">
+              2016-04-10
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

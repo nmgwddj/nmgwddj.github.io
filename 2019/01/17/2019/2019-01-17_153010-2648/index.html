@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>git 暂时忽略个别文件的更改 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>git 暂时忽略个别文件的更改</h1>
+    </header>
+
+    <section>
+      <p>最近开始参与到 SDK 的开发工作中，因为上层 Demo 与 SDK 是在同一个 Visual Studio 的解决方案中（.sln），但是项目的目录却不在同一个目录下的，同事直接把 SDK 的路径设置为 Demo 的相对路径 ……\SDK 目录下了。如下图： <a href="/images/2019/01/2019-01-17_15-23-59.png"><img src="/images/2019/01/2019-01-17_15-23-59.png"></a></p>
+<span id="more"></span>
+<p>而我的项目 Demo 项目目录是在自己管理的一个统一的存放项目的目录下的，如果按他这个格式需要把 SDK 存放到统一的项目目录的上一层才可以，否则我就要修改 Visual Studio 的解决方案配置，将目录指定到我自己的 SDK 目录下。但这样把代码上传以后到他那边他又因为路径无法正常加载项目了，所以纠结了很久。终于让我找到一个办法就是临时修改这个文件，只在本地暂存，而且提交的时候不会提示该文件被更新了。神奇的 git 就是这么人性化，使用如下命令设置你需要临时忽略的文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git update-index --assume-unchanged project.sln</span><br></pre></td></tr></table></figure>
+
+<p>而当你需要真的修改这个文件的时候，把他从临时忽略列表再拉出来就好了，使用如下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git update-index --no-assume-unchanged project.sln</span><br></pre></td></tr></table></figure>
+
+<p>这样就完美的解决了我们两个之间冲突的问题，当你这样临时忽略一个文件后，在 Windows 下 TortoiseGit 客户端会显示一个灰色的图标以代表这个文件被临时忽略了，与彻底忽略的灰白色图标是有差别的： <a href="/images/2019/01/2019-01-17_15-28-38.png"><img src="/images/2019/01/2019-01-17_15-28-38.png"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2019-01-17T15:30:10.000Z" itemprop="datePublished">
+              2019-01-17
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/git/">git</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

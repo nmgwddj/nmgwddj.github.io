@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>利用 NvAPI 设置数字振动数值 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>利用 NvAPI 设置数字振动数值</h1>
+    </header>
+
+    <section>
+      <p>开始是一位朋友有这个需求，他给了我一个英伟达官网的开发包，名字是：R410-developer.zip（诸位可以自己到英伟达官网下载），里面提供了一些示例，包含自定义分辨率、显示器颜色设置等，但是显示器色彩设置的例子一致没有跑通，而且我也没有找到哪个参数是可以设置数字振动值的，所以憋屈了很多天。但直到看到了一个 <a target="_blank" rel="noopener" href="https://github.com/jNizM/AHK_NVIDIA_NvAPI">AHK 版本实现的设置工具</a>通过代码发现，其实实现方法是通过 nvapi.dll 动态库导出的一个查询函数地址的方法，将指定接口导出来执行具体业务。再加上在 github 上搜索的各类示例，最终实现了这个功能，下面详细介绍实现步骤。</p>
+<span id="more"></span>
+<h2 id="1）需要的方法和结构"><a href="#1）需要的方法和结构" class="headerlink" title="1）需要的方法和结构"></a>1）需要的方法和结构</h2><p>设置数字振动数值需要先通过 <code>nvapi.dll</code> 导出的 NvAPI_QueryInterface_t 方法获取 <code>NvAPI_Initialize_t</code> 方法来初始化 NvAPI。然后依次获取显示器句柄、获取当前显示器数字振动值、设置数字振动值的函数地址，他们的声明分别对应如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 查询在 nvapi.dll 中函数的地址方法函数声明</span><br><span class="line">typedef int*(*NvAPI_QueryInterface_t)(unsigned int offset);</span><br><span class="line">// 初始化 NvAPI 的方法</span><br><span class="line">typedef int(*NvAPI_Initialize_t)();</span><br><span class="line">// 根据 ID 枚举显示器句柄的方法</span><br><span class="line">typedef int(*NvAPI_EnumNvidiaDisplayHandle_t)(int thisEnum, int* pNvDispHandle);</span><br><span class="line">// 获取数字振动当前值</span><br><span class="line">typedef int(*NvAPI_GetDVCInfoEx_t)(int hNvDisplay, int outputId, NV_DISPLAY_DVC_INFO_EX* pDVCInfo);</span><br><span class="line">// 设置数字振动值</span><br><span class="line">typedef int(*NvAPI_SetDVCLevelEx_t)(int hNvDisplay, int outputId, NV_DISPLAY_DVC_INFO_EX* pDVCInfo);</span><br></pre></td></tr></table></figure>
+
+<p>其中设置和获取数字振动值需要一个结构体 <code>NV_DISPLAY_DVC_INFO_EX</code>，其声明如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">typedef struct</span><br><span class="line">&#123;</span><br><span class="line">    unsigned int version;   // 结构体版本</span><br><span class="line">    int currentLevel;       // 当前级别</span><br><span class="line">    int minLevel;           // 最低级别</span><br><span class="line">    int maxLevel;           // 最高级别</span><br><span class="line">    int defaultLevel;       // 默认级别</span><br><span class="line">&#125; NV_DISPLAY_DVC_INFO_EX, *PNV_DISPLAY_DVC_INFO_EX;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2）获取各个接口地址"><a href="#2）获取各个接口地址" class="headerlink" title="2）获取各个接口地址"></a>2）获取各个接口地址</h2><p>我们首先 Load nvapi.dll 然后得到 <code>nvapi_QueryInterface</code> 方法的地址，然后通过 <code>nvapi_QueryInterface</code> 方法查询另外一些接口的地址。如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">bool NvController::Initialize()</span><br><span class="line">&#123;</span><br><span class="line">    hModule = LoadLibraryW(TEXT(&quot;nvapi.dll&quot;));</span><br><span class="line">    if (hModule == nullptr)</span><br><span class="line">    &#123;</span><br><span class="line">        std::cerr &lt;&lt; &quot;Failed to load nvapi.dll.&quot; &lt;&lt; std::endl;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    NvAPI_QueryInterface = (NvAPI_QueryInterface_t)GetProcAddress(hModule, &quot;nvapi_QueryInterface&quot;);</span><br><span class="line">    NvAPI_Initialize = (NvAPI_Initialize_t)(*NvAPI_QueryInterface)(_NvAPI_Initialize);</span><br><span class="line">    NvAPI_EnumNvidiaDisplayHandle = (NvAPI_EnumNvidiaDisplayHandle_t)(*NvAPI_QueryInterface)(_NvAPI_EnumNvidiaDisplayHandle);</span><br><span class="line">    NvAPI_GetDVCInfoEx = (NvAPI_GetDVCInfoEx_t)(*NvAPI_QueryInterface)(_NvAPI_GetDVCInfoEx);</span><br><span class="line">    NvAPI_SetDVCLevelEx = (NvAPI_SetDVCLevelEx_t)(*NvAPI_QueryInterface)(_NvAPI_SetDVCLevelEx);</span><br><span class="line"></span><br><span class="line">    _NvAPI_Status status = (_NvAPI_Status)(*NvAPI_Initialize)();</span><br><span class="line">    if (status != NVAPI_OK)</span><br><span class="line">    &#123;</span><br><span class="line">        std::cerr &lt;&lt; &quot;NvAPI initialization failed.&quot; &lt;&lt; std::endl;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中以下划线开头的枚举名字是每个函数在 dll 中的对应地址，这些是写死的，如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">enum NvAPIs</span><br><span class="line">&#123;</span><br><span class="line">    _NvAPI_Initialize = 0x150E828,</span><br><span class="line">    _NvAPI_EnumNvidiaDisplayHandle = 0x9ABDD40D,</span><br><span class="line">    _NvAPI_GetAssociatedNvidiaDisplayName = 0x22A78B05,</span><br><span class="line">    _NvAPI_GetDVCInfoEx = 0x0E45002D,</span><br><span class="line">    _NvAPI_SetDVCLevelEx = 0x4A82C2B1</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>你可能会问，你怎么知道这些函数地址的？其实我也是搜索到的，也看了以前 NvAPI 老版本提供的代码，可以搜索到相关痕迹。<a target="_blank" rel="noopener" href="https://github.com/verybigbadboy/NVAPI-example/blob/master/3rdparty/nvapi/NvApiDriverSettings.h">点击查看此文件</a>里面有完整的所有函数地址。</p>
+<h2 id="3）获取和设置数字振动"><a href="#3）获取和设置数字振动" class="headerlink" title="3）获取和设置数字振动"></a>3）获取和设置数字振动</h2><p>得到了各个函数的地址，我们就可以设置数字振动值了，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">bool NvController::SetDVCLevelEx(int nDisp, int level)</span><br><span class="line">&#123;</span><br><span class="line">    int NvDispHandle;</span><br><span class="line">    if (EnumNvidiaDisplayHandle(nDisp, &amp;NvDispHandle) != 0)</span><br><span class="line">    &#123;</span><br><span class="line">        NV_DISPLAY_DVC_INFO_EX oldInfo = GetDvcInfoEx(nDisp);</span><br><span class="line"></span><br><span class="line">        NV_DISPLAY_DVC_INFO_EX info;</span><br><span class="line">        info.version = oldInfo.version;</span><br><span class="line">        info.currentLevel = level;</span><br><span class="line">        info.minLevel = oldInfo.minLevel;</span><br><span class="line">        info.maxLevel = oldInfo.maxLevel;</span><br><span class="line">        info.defaultLevel = oldInfo.defaultLevel;</span><br><span class="line"></span><br><span class="line">        _NvAPI_Status status = (_NvAPI_Status)(*NvAPI_SetDVCLevelEx)(NvDispHandle, 0, &amp;info);</span><br><span class="line">        if (status != NVAPI_OK)</span><br><span class="line">        &#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们首先获得用户传入的显示器编号所对应的句柄，然后根据这个句柄获取当前数字振动的数值，然后修改其 <code>currentLevel</code> 成员数值来设置数字振动效果。这样处理后就可以使用了。代码参考地址：<a target="_blank" rel="noopener" href="https://github.com/nmgwddj/nvapi-example">https://github.com/nmgwddj/nvapi-example</a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2018-11-12T17:29:35.000Z" itemprop="datePublished">
+              2018-11-12
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/NVIDIA/">NVIDIA</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

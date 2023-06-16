@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>c语言 linux 下连接 mysql 增删改查 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>c语言 linux 下连接 mysql 增删改查</h1>
+    </header>
+
+    <section>
+      <p>使用 c语言连接处理 oracle 数据库的时候，是使用的 oracle 提供的 proc 方案，而 mysql 则提供了一系列函数，我们需要包含 mysql 的头文件  mysql.h 和连接 mysql 的一些库才能正确的使用他的 api。下面的示例包含了连接、查询、使用游标获取数据、获取结果集列头、错误处理等方法，请参考代码和注释。</p>
+<span id="more"></span>
+<hr>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;mysql.h&gt;</p>
+<p>int main(int argc, char* argv[])<br>{<br>unsigned int err;<br>&#x2F;&#x2F; 初始化 mysql 句柄<br>MYSQL* mysql;<br>mysql &#x3D; mysql_init(NULL);</p>
+<p>if (mysql &#x3D;&#x3D; NULL)<br>{<br>err &#x3D; mysql_errno(mysql);<br>printf(“mysql_init error, code &#x3D; %d\n”, err);<br>return err;<br>}</p>
+<p>&#x2F;&#x2F; 连接服务器，数据库句柄、地址、用户名、密码、数据库名<br>mysql &#x3D; mysql_real_connect(mysql, “127.0.0.1”, “root”, “******“, “mydb61”, 0, NULL, 0);<br>if (NULL &#x3D;&#x3D; mysql)<br>{<br>err &#x3D; mysql_errno(mysql);<br>printf(“mysql_real_connect error, code &#x3D; %d\n”, err);<br>return err;<br>}</p>
+<p>&#x2F;&#x2F; 执行 sql 语句，如果要查询包含二进制数据的，要用 mysql_real_query<br>err &#x3D; mysql_query(mysql, “select * from emp;”);<br>if (err !&#x3D; 0)<br>{<br>err &#x3D; mysql_errno(mysql);<br>printf(“mysql_query error, code &#x3D; %d\n”, err);<br>return err;<br>}</p>
+<p>&#x2F;&#x2F; 获取查询出来的数据有多少个列<br>unsigned int num, i &#x3D; 0;<br>num &#x3D; mysql_field_count(mysql);</p>
+<p>&#x2F;&#x2F; 获取结果集<br>MYSQL_RES* result;<br>result &#x3D; mysql_store_result(mysql);<br>if (NULL &#x3D;&#x3D; result)<br>{<br>err &#x3D; mysql_errno(mysql);<br>printf(“mysql_query error, code &#x3D; %d\n”, err);<br>return err;<br>}</p>
+<p>&#x2F;*<br>与 mysql_field_count() 功能一致，但 mysql_field_count() 是返回上一次执行语句(query)结果列的数目<br>而 mysql_num_fields() 是从结果集中获取返回列数<br>*&#x2F;</p>
+<p>&#x2F;&#x2F; 获取表头内容<br>MYSQL_FIELD *fields;<br>fields &#x3D; mysql_fetch_fields(result);<br>for(i &#x3D; 0; i &lt; num; i++)<br>{<br>   printf(“%8s\t”, fields[i].name);<br>}<br>putchar(10);</p>
+<p>&#x2F;&#x2F; 读取结果集<br>MYSQL_ROW row;<br>while ((row &#x3D; mysql_fetch_row(result)))<br>{<br>for (i &#x3D; 0; i &lt; num; i++)<br>{<br>printf(“%8s\t”, row[i]);<br>}<br>putchar(10);<br>}</p>
+<p>mysql_free_result(result);<br>&#x2F;&#x2F; 关闭 mysql 句柄<br>mysql_close(mysql);<br>return 0;<br>}</p>
+<h3 id="编译程序"><a href="#编译程序" class="headerlink" title="编译程序"></a>编译程序</h3><p>编译程序：gcc 02_mysql_hello.c -o 02_mysql_hello -I &#x2F;usr&#x2F;include&#x2F;mysql -L &#x2F;usr&#x2F;lib64&#x2F;mysql -l mysqlclient -l stdc++ -l pthread -l dl -l rt</p>
+<h3 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h3><p><a href="/images/2015/07/2015-07-27_214742.png"><img src="/images/2015/07/2015-07-27_214742.png" alt="2015-07-27_214742"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-27T21:48:20.000Z" itemprop="datePublished">
+              2015-07-27
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/sql/">sql</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/mysql/">mysql</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

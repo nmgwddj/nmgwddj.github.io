@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>实现一个简单的 mysql 工具 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>实现一个简单的 mysql 工具</h1>
+    </header>
+
+    <section>
+      <p>无论在 windows 下还是 linux 下，我们每次去连接 mysql 的时候都会运行一个叫做 mysql 的命令，本文就模仿制作一个类似的程序，实现可以在里面执行 DML 和 DQL 语句。具体代码的实现请参考程序。</p>
+<span id="more"></span>
+<hr>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;mysql.h&gt;<br>#include &lt;string.h&gt;<br>#include &lt;ctype.h&gt;</p>
+<p>int main(int argc, char* argv[])<br>{<br>unsigned int err;<br>MYSQL* mysql;<br>&#x2F;&#x2F; 初始化 mysql 句柄<br>mysql &#x3D; mysql_init(NULL);<br>if (mysql &#x3D;&#x3D; NULL)<br>{<br>err &#x3D; mysql_errno(mysql);<br>printf(“mysql_init error, code &#x3D; %d\n”, err);<br>return err;<br>}</p>
+<p>&#x2F;&#x2F; 连接服务器<br>mysql &#x3D; mysql_real_connect(mysql, “127.0.0.1”, “root”, “******“, “mydb61”, 0, NULL, 0);<br>if (NULL &#x3D;&#x3D; mysql)<br>{<br>err &#x3D; mysql_errno(mysql);<br>printf(“mysql_real_connect error, code &#x3D; %d\n”, err);<br>return err;<br>}</p>
+<p>char sql[1024];<br>while (1)<br>{<br>printf(“mysql&gt; “);<br>fgets(sql, sizeof(sql), stdin);<br>sql[strlen(sql) - 1] &#x3D; ‘\0’;</p>
+<p>&#x2F;&#x2F; 判断是否是输入了退出指令<br>if (strcmp(sql, “EXIT”) &#x3D;&#x3D; 0  strcmp(sql, “QUIT”) &#x3D;&#x3D; 0<br>strcmp(sql, “exit”) &#x3D;&#x3D; 0  strcmp(sql, “quit”) &#x3D;&#x3D; 0)<br>{<br>break;<br>}<br>&#x2F;&#x2F; 判断是否是执行了 select 或 show 或 desc 开头的命令<br>if (strncmp(sql, “SELECT”, 6) &#x3D;&#x3D; 0  strncmp(sql, “select”, 6) &#x3D;&#x3D; 0<br>strncmp(sql, “SHOW”, 4) &#x3D;&#x3D; 0  strncmp(sql, “show”, 4) &#x3D;&#x3D; 0<br>strncmp(sql, “DESC”, 4) &#x3D;&#x3D; 0  strncmp(sql, “desc”, 4) &#x3D;&#x3D; 0)<br>{<br>&#x2F;&#x2F; 执行 sql 语句，如果要查询包含二进制数据的，要用 mysql_real_query<br>err &#x3D; mysql_query(mysql, sql);<br>if (err !&#x3D; 0)<br>{<br>err &#x3D; mysql_errno(mysql);<br>printf(“mysql_query error, code &#x3D; %d\n”, err);<br>return err;<br>}</p>
+<p>&#x2F;&#x2F; 获取查询出来的数据有多少个列<br>unsigned int num, i &#x3D; 0;<br>num &#x3D; mysql_field_count(mysql);</p>
+<p>&#x2F;&#x2F; 获取结果集<br>MYSQL_RES* result;<br>result &#x3D; mysql_store_result(mysql);<br>if (NULL &#x3D;&#x3D; result)<br>{<br>err &#x3D; mysql_errno(mysql);<br>printf(“mysql_query error, code &#x3D; %d\n”, err);<br>return err;<br>}</p>
+<p>&#x2F;*<br>与 mysql_field_count() 功能一致，但 mysql_field_count() 是返回上一次执行语句(query)结果列的数目<br>而 mysql_num_fields() 是从结果集中获取返回列数<br>*&#x2F;</p>
+<p>&#x2F;&#x2F; 获取表头内容<br>MYSQL_FIELD *fields;<br>fields &#x3D; mysql_fetch_fields(result);<br>for(i &#x3D; 0; i &lt; num; i++)<br>{<br>   printf(“%8s\t”, fields[i].name);<br>}<br>putchar(10);</p>
+<p>&#x2F;&#x2F; 读取结果集<br>MYSQL_ROW row;<br>while ((row &#x3D; mysql_fetch_row(result)))<br>{<br>for (i &#x3D; 0; i &lt; num; i++)<br>{<br>printf(“%8s\t”, row[i]);<br>}<br>putchar(10);<br>}<br>&#x2F;&#x2F; 释放结果集<br>mysql_free_result(result);<br>}<br>else<br>{<br>&#x2F;&#x2F; 执行 DQL 语句<br>err &#x3D; mysql_query(mysql, sql);<br>if (err !&#x3D; 0)<br>{<br>err &#x3D; mysql_errno(mysql);<br>printf(“mysql_query error, code &#x3D; %d\n”, err);<br>return err;<br>}<br>my_ulonglong row &#x3D; mysql_affected_rows(mysql);<br>printf(“Query OK, %d row affected”, row);<br>}<br>putchar(10);<br>}<br>&#x2F;&#x2F; 关闭 mysql 句柄<br>mysql_close(mysql);<br>return 0;<br>}</p>
+<h3 id="编译程序"><a href="#编译程序" class="headerlink" title="编译程序"></a>编译程序</h3><p>编译指令：gcc mysql_tool.c -o mysql_tool -I &#x2F;usr&#x2F;include&#x2F;mysql -L &#x2F;usr&#x2F;lib64&#x2F;mysql -l mysqlclient -l stdc++ -l pthread -l dl -l rt</p>
+<h3 id="执行效果"><a href="#执行效果" class="headerlink" title="执行效果"></a>执行效果</h3><p><a href="/images/2015/07/2015-07-27_220038.png"><img src="/images/2015/07/2015-07-27_220038.png" alt="2015-07-27_220038"></a> 我们分别执行了两个 select 语句，可以正确的得到查询结果，并且执行了一个 update 语句，可以返回有多少行受影响了。这就是我们模仿的一个 mysql 客户端工具。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-27T22:02:31.000Z" itemprop="datePublished">
+              2015-07-27
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/sql/">sql</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/mysql/">mysql</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

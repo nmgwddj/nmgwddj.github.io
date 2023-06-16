@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>React 项目中使用 highstocks | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>React 项目中使用 highstocks</h1>
+    </header>
+
+    <section>
+      <p>highstocks 是一个功能强大且丰富的股票资讯类图表的库，其具有代表意义的项目还有 highcharts 和 highmaps。我最近在做一个股票资讯类的项目，所以需要用到这个图表库，由此篇文章开张记录下使用该库的各种问题和小技巧。方便以后他人遇到问题及时解决。首先我们就来谈一谈如何在 react 项目中使用它。</p>
+<span id="more"></span>
+<h2 id="创建-React-项目"><a href="#创建-React-项目" class="headerlink" title="创建 React 项目"></a>创建 React 项目</h2><p>我习惯使用 create-react-app 这个工具来做些 demo 项目的演示，所以大家可以自己安装一个 create-react-app 跟随着我一起学习 highstocks。 创建一个 highstocks-test 的项目。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">➜  Project create-react-app highstocks-test</span><br><span class="line">Creating a new React app in /Users/myCode/Project/highstocks-test.</span><br><span class="line"></span><br><span class="line">Installing packages. This might take a couple minutes.</span><br><span class="line">Installing react, react-dom, and react-scripts...</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装-highstocks-包"><a href="#安装-highstocks-包" class="headerlink" title="安装 highstocks 包"></a>安装 highstocks 包</h2><p>我用 yarn 替代了 npm，当然你也可以用 npm 进行安装。看名字虽然是 react-highcharts，实际股票相关的一些图表功能都在这个包里面。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add react-highcharts --save</span><br></pre></td></tr></table></figure>
+
+<h2 id="寻找股票数据源"><a href="#寻找股票数据源" class="headerlink" title="寻找股票数据源"></a>寻找股票数据源</h2><p>要显示一个股票的烛台图，我们需要有数据的支持，比如开盘价、最高价、最低价、收盘价、交易量、时间等。这些数据我们可以自己模拟（这有点费劲儿），也可以从网络上找现成的数据。知名的数据源有新浪、搜狐、yahoo 等，我再给大家推荐几个获取这些数据的地址。 聚合数据：<a target="_blank" rel="noopener" href="https://www.juhe.cn/">https://www.juhe.cn/</a> lianglee: <a target="_blank" rel="noopener" href="http://www.liangyee.com/apiDetail/a1cc7246-c806-453b-9cbe-022b599360b8">http://www.liangyee.com/apiDetail/a1cc7246-c806-453b-9cbe-022b599360b8</a> 如果大家觉得研究接口麻烦，想先看看效果，那么可以使用 highstocks 官方例子中一些固定的数据地址。比如官方给出的烛台图的数据源：<a target="_blank" rel="noopener" href="https://code.hcharts.cn/highstock/hhhhib%EF%BC%8C%E6%88%91%E4%BB%AC%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0%E9%87%8C%E9%9D%A2%E6%9C%89%E4%B8%80%E6%AE%B5">https://code.hcharts.cn/highstock/hhhhib，我们可以看到里面有一段</a> getJSON 的代码，里面的 URL 就是官方为了演示案例做的一些固定数据。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$.getJSON(&#x27;https://data.jianshukeji.com/jsonp?filename=json/aapl-ohlcv.json&amp;callback=?&#x27;.....</span><br></pre></td></tr></table></figure>
+
+<p>由于官方例子已经很完善了，我就不拿官方的地址举例，我们来找一个 lianglee 的数据源来做烛台图效果。通过官方的 API 接口，我们可以取到指定时间段的某支股票代码的数据。如下图： <a href="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-02-23.34.33.png"><img src="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-02-23.34.33.png"></a> 接下来我们要在测试项目中来访问这个地址并把请求的数据显示出来，用于我们后面给 highstock 提供数据源。</p>
+<h2 id="获取股票数据源"><a href="#获取股票数据源" class="headerlink" title="获取股票数据源"></a>获取股票数据源</h2><p>官方的接口返回的是一个 json 格式的数据，大家可以用各种支持 json 的包来获取这个数据源，我这里使用 d3，d3 在这方面做的还是非常完善的，首先把 d3-request 这个包加入到项目中。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add d3-request --save</span><br></pre></td></tr></table></figure>
+
+<p>然后我们打开项目中已经为我们创建好的 App.js，从 d3-request 包中引入 json 方法。如下图： <a href="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-02-23.39.34.png"><img src="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-02-23.39.34.png"></a> 获取数据我们一般是在 componentWillMount 函数中进行的，所以获取方法就写到这里。同时我也创建了构造函数，方便后面我们用 react 的 state 来储存一些数据： <a href="/images/2017/07/2017-07-02-23.44.30.png"><img src="/images/2017/07/2017-07-02-23.44.30.png"></a> 写到这里我们数据其实已经获取到了，使用 <code>yarn start</code> 启动项目，如果你用的是 npm 那么就用 <code>npm start</code> 启动项目，启动后页面会自动打开。此时打开浏览器的 Console 就能看到打印的信息了。如下图： <a href="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-02-23.43.36.png"><img src="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-02-23.43.36.png"></a> 现在我们所需的数据都有了，但还有一个问题需要我们解决，我们获取的时间是一个字符串格式的时间，要把 <code>2015-01-05</code> 这种时间转换为时间戳（1970-1-1到现在的秒数），还是用 d3 的一些函数来实现。首先我们导入 <code>d3-time-format</code> 包。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add d3-time-format --save</span><br></pre></td></tr></table></figure>
+
+<p>然后项目中从 d3-time-format 导出 timeParse 方法。然后我们定义一个解析的格式，如下图： <a href="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-02-23.56.16.png"><img src="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-02-23.56.16.png"></a> 随后在代码中，我们将时间转换为时间戳格式。并创建两个数组，用来给图表传递数据使用。我们把需要的数据放到这两个数组中。如下图代码： <a href="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-03-00.10.18.png"><img src="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-03-00.10.18.png"></a> 此时我们如果打印两个数组，就可以看到我们重组后的数据格式了，接下来就是显示图表了。</p>
+<h2 id="显示图表"><a href="#显示图表" class="headerlink" title="显示图表"></a>显示图表</h2><p>首先从包中导入图表方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import ReactHighstock from &#x27;react-highcharts/ReactHighstock.src&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>然后在要显示图表的位置，插入如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;ReactHighstock config=&#123;this.state.config&#125;/&gt;</span><br></pre></td></tr></table></figure>
+
+<p>我们看到这里使用了 this.state.config，其实整个图表初始化就使用了一个 config，这个 config 是一个 json 格式的数据。我们首先在构造函数中把这个 config 设置为空的对象。保证代码可以运行起来。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">constructor() &#123;</span><br><span class="line">  super();</span><br><span class="line">  this.state = &#123;</span><br><span class="line">    config: &#123;&#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>随后我们在 componentWillMount 遍历完获取的 result 数据后，使用 this.setState 方法设置 config 的数据。如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">this.setState(&#123;</span><br><span class="line">  config: &#123;</span><br><span class="line">    rangeSelector: &#123;</span><br><span class="line">      selected: 1,</span><br><span class="line">      inputDateFormat: &#x27;%Y-%m-%d&#x27;</span><br><span class="line">    &#125;,</span><br><span class="line">    title: &#123;</span><br><span class="line">      text: &#x27;测试图表&#x27;</span><br><span class="line">    &#125;,</span><br><span class="line">    xAxis: &#123;</span><br><span class="line">      dateTimeLabelFormats: &#123;</span><br><span class="line">        millisecond: &#x27;%H:%M:%S.%L&#x27;,</span><br><span class="line">        second: &#x27;%H:%M:%S&#x27;,</span><br><span class="line">        minute: &#x27;%H:%M&#x27;,</span><br><span class="line">        hour: &#x27;%H:%M&#x27;,</span><br><span class="line">        day: &#x27;%m-%d&#x27;,</span><br><span class="line">        week: &#x27;%m-%d&#x27;,</span><br><span class="line">        month: &#x27;%y-%m&#x27;,</span><br><span class="line">        year: &#x27;%Y&#x27;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    yAxis: [&#123;</span><br><span class="line">      labels: &#123;</span><br><span class="line">        align: &#x27;right&#x27;,</span><br><span class="line">        x: -3</span><br><span class="line">      &#125;,</span><br><span class="line">      title: &#123;</span><br><span class="line">        text: &#x27;股价&#x27;</span><br><span class="line">      &#125;,</span><br><span class="line">      height: &#x27;60%&#x27;,</span><br><span class="line">      lineWidth: 2</span><br><span class="line">    &#125;, &#123;</span><br><span class="line">      labels: &#123;</span><br><span class="line">        align: &#x27;right&#x27;,</span><br><span class="line">        x: -3</span><br><span class="line">      &#125;,</span><br><span class="line">      title: &#123;</span><br><span class="line">        text: &#x27;成交量&#x27;</span><br><span class="line">      &#125;,</span><br><span class="line">      top: &#x27;65%&#x27;,</span><br><span class="line">      height: &#x27;35%&#x27;,</span><br><span class="line">      offset: 0,</span><br><span class="line">      lineWidth: 2</span><br><span class="line">    &#125;],</span><br><span class="line">    series: [&#123;</span><br><span class="line">      type: &#x27;candlestick&#x27;,</span><br><span class="line">      name: &#x27;AAPL&#x27;,</span><br><span class="line">      color: &#x27;green&#x27;,</span><br><span class="line">      lineColor: &#x27;green&#x27;,</span><br><span class="line">      upColor: &#x27;red&#x27;,</span><br><span class="line">      upLineColor: &#x27;red&#x27;,</span><br><span class="line">      tooltip: &#123;</span><br><span class="line">      &#125;,</span><br><span class="line">      data: ohlc,</span><br><span class="line">    &#125;, &#123;</span><br><span class="line">      type: &#x27;column&#x27;,</span><br><span class="line">      name: &#x27;Volume&#x27;,</span><br><span class="line">      data: volume,</span><br><span class="line">      yAxis: 1</span><br><span class="line">    &#125;]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>这个结构第一次看非常复杂，但大家不要慌，你只要关注两个 data，一个是 <code>data: ohlc</code> 一个是 <code>data: volume</code> 这两个数据就是构造整张图表的数据源。我们之前大费周章的处理数据源的时间和其他信息，都是为了给这里传入数据。最终显示图表。当写完这段代码后，我们保存一下，就能看到页面上已经显示烛台图了： <a href="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-03-00.21.17.png"><img src="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-03-00.21.17.png"></a> 这就是最基本的创建一个 highstocks 图表的案例，以下是完整代码（代码中获取数据的 url 地址我屏蔽了一些私人信息，自己用的时候可以修改为自己的 key 信息）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br></pre></td><td class="code"><pre><span class="line">import React, &#123; Component &#125; from &#x27;react&#x27;;</span><br><span class="line">import logo from &#x27;./logo.svg&#x27;;</span><br><span class="line">import &#x27;./App.css&#x27;;</span><br><span class="line"></span><br><span class="line">import &#123; json &#125; from &#x27;d3-request&#x27;;</span><br><span class="line">import &#123; timeParse &#125; from &#x27;d3-time-format&#x27;;</span><br><span class="line">import ReactHighstock from &#x27;react-highcharts/ReactHighstock.src&#x27;;</span><br><span class="line"></span><br><span class="line">const parseTime = timeParse(&quot;%Y-%m-%d&quot;);</span><br><span class="line"></span><br><span class="line">class App extends Component &#123;</span><br><span class="line">  constructor() &#123;</span><br><span class="line">    super();</span><br><span class="line">    this.state = &#123;</span><br><span class="line">      config: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  componentWillMount() &#123;</span><br><span class="line">    const url = &quot;http://stock.liangyee.com/bus-api/stock/freeStockMarketData/getDailyKBar?userKey=5AD6AB8D906A4FACAC15E6CFAAAAAAAA&amp;startDate=2015-01-01&amp;symbol=600300&amp;endDate=2016-02-20&amp;type=0&quot;;</span><br><span class="line"></span><br><span class="line">    json(url, (err, data) =&gt; &#123;</span><br><span class="line">      const result = data.result;</span><br><span class="line">      let ohlc = new Array();</span><br><span class="line">      let volume = new Array();</span><br><span class="line"></span><br><span class="line">      result.forEach((d, i) =&gt; &#123;</span><br><span class="line">        const items = d.split(&quot;,&quot;);</span><br><span class="line">        const date = parseTime(items[0]).getTime();</span><br><span class="line"></span><br><span class="line">        // 用于显示烛台图的数据</span><br><span class="line">        ohlc.push([</span><br><span class="line">          date,      // 转换时间为时间戳格式</span><br><span class="line">          +items[1], // 开盘价</span><br><span class="line">          +items[3], // 最高价</span><br><span class="line">          +items[4], // 最低价</span><br><span class="line">          +items[2], // 收盘价</span><br><span class="line">        ]);</span><br><span class="line"></span><br><span class="line">        // 用于显示成交量的数据</span><br><span class="line">        volume.push(&#123;</span><br><span class="line">          x: date,     // 时间</span><br><span class="line">          y: +items[5], // 成交量</span><br><span class="line">          color: (+items[1]) - (+items[2]) &gt; 0 ? &#x27;green&#x27; : &#x27;red&#x27;</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      this.setState(&#123;</span><br><span class="line">        config: &#123;</span><br><span class="line">          rangeSelector: &#123;</span><br><span class="line">            selected: 1,</span><br><span class="line">            inputDateFormat: &#x27;%Y-%m-%d&#x27;</span><br><span class="line">          &#125;,</span><br><span class="line">          title: &#123;</span><br><span class="line">            text: &#x27;测试图表&#x27;</span><br><span class="line">          &#125;,</span><br><span class="line">          xAxis: &#123;</span><br><span class="line">            dateTimeLabelFormats: &#123;</span><br><span class="line">              millisecond: &#x27;%H:%M:%S.%L&#x27;,</span><br><span class="line">              second: &#x27;%H:%M:%S&#x27;,</span><br><span class="line">              minute: &#x27;%H:%M&#x27;,</span><br><span class="line">              hour: &#x27;%H:%M&#x27;,</span><br><span class="line">              day: &#x27;%m-%d&#x27;,</span><br><span class="line">              week: &#x27;%m-%d&#x27;,</span><br><span class="line">              month: &#x27;%y-%m&#x27;,</span><br><span class="line">              year: &#x27;%Y&#x27;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;,</span><br><span class="line">          yAxis: [&#123;</span><br><span class="line">            labels: &#123;</span><br><span class="line">              align: &#x27;right&#x27;,</span><br><span class="line">              x: -3</span><br><span class="line">            &#125;,</span><br><span class="line">            title: &#123;</span><br><span class="line">              text: &#x27;股价&#x27;</span><br><span class="line">            &#125;,</span><br><span class="line">            height: &#x27;60%&#x27;,</span><br><span class="line">            lineWidth: 2</span><br><span class="line">          &#125;, &#123;</span><br><span class="line">            labels: &#123;</span><br><span class="line">              align: &#x27;right&#x27;,</span><br><span class="line">              x: -3</span><br><span class="line">            &#125;,</span><br><span class="line">            title: &#123;</span><br><span class="line">              text: &#x27;成交量&#x27;</span><br><span class="line">            &#125;,</span><br><span class="line">            top: &#x27;65%&#x27;,</span><br><span class="line">            height: &#x27;35%&#x27;,</span><br><span class="line">            offset: 0,</span><br><span class="line">            lineWidth: 2</span><br><span class="line">          &#125;],</span><br><span class="line">          series: [&#123;</span><br><span class="line">            type: &#x27;candlestick&#x27;,</span><br><span class="line">            name: &#x27;AAPL&#x27;,</span><br><span class="line">            color: &#x27;green&#x27;,</span><br><span class="line">            lineColor: &#x27;green&#x27;,</span><br><span class="line">            upColor: &#x27;red&#x27;,</span><br><span class="line">            upLineColor: &#x27;red&#x27;,</span><br><span class="line">            tooltip: &#123;</span><br><span class="line">            &#125;,</span><br><span class="line">            data: ohlc,</span><br><span class="line">          &#125;, &#123;</span><br><span class="line">            type: &#x27;column&#x27;,</span><br><span class="line">            name: &#x27;Volume&#x27;,</span><br><span class="line">            data: volume,</span><br><span class="line">            yAxis: 1</span><br><span class="line">          &#125;]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;div className=&quot;App&quot;&gt;</span><br><span class="line">        &lt;div className=&quot;App-header&quot;&gt;</span><br><span class="line">          &lt;img src=&#123;logo&#125; className=&quot;App-logo&quot; alt=&quot;logo&quot; /&gt;</span><br><span class="line">          &lt;h2&gt;Welcome to React&lt;/h2&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">        &lt;ReactHighstock config=&#123;this.state.config&#125;/&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default App;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-07-03T00:23:19.000Z" itemprop="datePublished">
+              2017-07-03
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/highcharts/">highcharts</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

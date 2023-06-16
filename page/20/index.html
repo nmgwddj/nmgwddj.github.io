@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/11/21/2015/2015-11-21_184420-1211/">JavaScript DOM 操作 CSS 样式</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-11-21T18:44:20.000Z" itemprop="datePublished">
+    2015-11-21
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/DOM/">DOM</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在 jQuery 中，修改和获取 CSS 样式只需要一个 .css 就可以搞定了。实际内部也是通过 DOM 操作实现。设置 CSS 样式实际就是设定 DOM 的 style 属性，我们可以根据当前 DOM 元素的 style 属性获取其 CSS 样式，也可以修改或追加新的样式。</p>
+        
+          <div class="more-link">
+            <a href="/2015/11/21/2015/2015-11-21_184420-1211/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/11/21/2015/2015-11-21_182651-1209/">JavaScript DOM 节点的拷贝、删除</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-11-21T18:26:51.000Z" itemprop="datePublished">
+    2015-11-21
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/DOM/">DOM</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>拷贝一个节点相当于将一个节点作为对象存放在内存中，这个对象可以被其他的诸如 appendChild 等操作来使用。而节点删除则只能通过一个 removeChild 来实现，所以要删除某个元素，首先要获取这个元素的父节点。我们使用以下方法来实现，参考代码：</p>
+        
+          <div class="more-link">
+            <a href="/2015/11/21/2015/2015-11-21_182651-1209/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/11/21/2015/2015-11-21_174206-1204/">禁用 Visual Studio Code 语义检查（单词检查）</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-11-21T17:42:06.000Z" itemprop="datePublished">
+    2015-11-21
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/VSCode/">VSCode</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>这几天在 Mac 下装了微软的 Visual Studio Code（下面简称 VSCode），用起来感觉非常不错，很多功能在 atom 上需要安装插件才能实现的，在 VSCode 中都是集成好的，比如 JavaScript 的智能提示、高亮显示已选同名单词等。但是有一个功能让我看着很不顺眼，就是它会将一些拼写错误的单词打上一条绿色的波浪线，如果代码里面有很多缩写的单词，就会出现非常多的波浪线，看着非常难看，如下图：</p>
+        
+          <div class="more-link">
+            <a href="/2015/11/21/2015/2015-11-21_174206-1204/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/11/21/2015/2015-11-21_170554-1201/">atom 代码检查插件 linter</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-11-21T17:05:54.000Z" itemprop="datePublished">
+    2015-11-21
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/atom/">atom</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>linter 是一个系列的插件，它可以识别大部分语法，并对你的语法错误进行纠正。linter 只是一个框架，如果要找针对你使用语言的语法纠错插件必须要安装针对你语言的版本，但是 linter 也不能卸载，它是一切的基础。下面是其纠正 js 代码的错误截图。</p>
+        
+          <div class="more-link">
+            <a href="/2015/11/21/2015/2015-11-21_170554-1201/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/11/21/2015/2015-11-21_135358-1195/">Meteor 组合订阅包 publish-composite 使用</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-11-21T13:53:58.000Z" itemprop="datePublished">
+    2015-11-21
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>初看这个标题可能有点晕，说的有点过于专业化，但是我也想不到更好的标题了。不过我们用真实的场景来给大家描述，来充分表达我们想表达的内容。熟悉使用 Meteor 发布（publish）和订阅（subcribe）的朋友可能会遇到这样一种情况。在某个列表页面，我们需要的数据分别储存在不同的集合（collection） 中。我们设计了一个查看某用户的所有评论的页面，按常规模式，我们首先可以根据用户的 ID 去评论的集合中查询该用户的所有评论内容，并根据该评论所关联的文章的 ID 查找到这篇文章的标题（Title）信息，用来显示在评论列表页提供用户查看或者访问。你可能会注意到，如果我们想获取到某条评论所关联的文章标题，我们必须要订阅这篇文章的内容，而在这之前我们并不知道这个用户都在哪些文章中有评论，若想订阅就需要把所有文章的结合订阅到客户端来使用，这样无疑是浪费资源和消耗时间的。</p>
+        
+          <div class="more-link">
+            <a href="/2015/11/21/2015/2015-11-21_135358-1195/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/11/21/2015/2015-11-21_114934-1190/">Meteor Iron.Router 环境下微信 jssdk 报错 config:invalid signature</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-11-21T11:49:34.000Z" itemprop="datePublished">
+    2015-11-21
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>这几天做了微信分享功能的修改，通过微信 jssdk 可以修改微信右上角分享到朋友圈、分享给朋友、分享到QQ这些界面的 Title、Description和 Image，用来让分享更有质量。普通情况下如果你没有使用 jssdk 去配置你分享的 Title 等信息，微信会将分享出来的 Title 设置为你网页的 Title 内容，将 Description 设置为网站的 Url，而图片则取文章中第一幅图片，如果文章中没有图片，那么分享出去的图片就是空白的。</p>
+        
+          <div class="more-link">
+            <a href="/2015/11/21/2015/2015-11-21_114934-1190/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/11/17/2015/2015-11-17_152528-1177/">Meteor 微信公共号开发将客户端日志传递到服务端打印</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-11-17T15:25:28.000Z" itemprop="datePublished">
+    2015-11-17
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>因为在微信客户端环境，我们无法使用 console.log 查看前端显示的一些调试信息，如果需要用到调试，我们一般是使用 Session 方法来给前端一个固定专门显示日志的变量设定属性，这样这个固定的变量会跟随 Session.set 设定的值而变化。后面想了一个比较方便的办法，直接将客户端需要输出的日志信息通过 Meteor.call 发送到服务端打印我们就可以方便的在服务端一起看到server log 和 client log 了。</p>
+        
+          <div class="more-link">
+            <a href="/2015/11/17/2015/2015-11-17_152528-1177/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/11/17/2015/2015-11-17_120727-1162/">ngrok 实现微信公共号开发本地调试</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-11-17T12:07:27.000Z" itemprop="datePublished">
+    2015-11-17
+  </time>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <h2 id="微信开发团队已经提供“微信开发者工具”，本文内容已经落后，请开发者选择“微信开发者工具”。"><a href="#微信开发团队已经提供“微信开发者工具”，本文内容已经落后，请开发者选择“微信开发者工具”。" class="headerlink" title="微信开发团队已经提供“微信开发者工具”，本文内容已经落后，请开发者选择“微信开发者工具”。"></a>微信开发团队已经提供“微信开发者工具”，本文内容已经落后，请开发者选择“微信开发者工具”。</h2><p>你是否遇到过这样的问题？在微信公共号开发过程中，有一些诸如获取用户身份等信息的代码必须要再微信客户端打开连接测试，而且微信后台获取用户信息时必须设置一个安全域名，这个域名指定到一个我们暴露在外网的服务器上才可以正常使用。而我们编写代码的环境<strong>往往是本机</strong>，很少有直接连接服务器用 vi 编写代码的场景，一般情况都是本地修改好代码，把代码通过 FileZilla 等类似的工具把代码传到服务器上，或者把代码提交到 github 上，再到服务器把最新的代码 pull 下来测试。对熟悉微信公共号开发的人来说也许还好，但是对于一个刚刚接触微信公共号开发的人可能这个测试的过程要来回重复十几次才能把代码跑通，而这只是其中一个获取用户身份的功能，调用 JS SDK 等等都需要在服务器环境测试，这个过程是很折磨人的。 类似上面的问题，我想了很多办法，比如用 atom remote sync 插件、自动同步代码到服务器等等思路，最终还是有各种小问题折磨着我。<strong>如果能实现手机微信公共号跳转的页面直接访问的是我们编程环境的电脑，代码修改后只需要等待服务端重新编译，手机端就可以直接测试效果，这样岂不是方便很多？</strong></p>
+        
+          <div class="more-link">
+            <a href="/2015/11/17/2015/2015-11-17_120727-1162/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/11/15/2015/2015-11-15_115346-1131/">客户端 Meteor.call 等待服务端异步函数返回</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-11-15T11:53:46.000Z" itemprop="datePublished">
+    2015-11-15
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在 Meteor 项目中，经常会有客户端使用 Meteor.call 方法去调用服务端的一个方法，并等待该方法返回。通常情况下，服务端的方法只需要 return 后，客户端使用回调函数就可以访问到 return 的值了。但如果服务端同样调用了一个异步执行的函数，那么此时就无法判断服务端的异步函数是否已经执行完毕，返回结果就会出现不准确的情况。如下所示：</p>
+        
+          <div class="more-link">
+            <a href="/2015/11/15/2015/2015-11-15_115346-1131/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/11/08/2015/2015-11-08_215613-1120/">JavaScript DOM 操作创建和追加节点</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-11-08T21:56:13.000Z" itemprop="datePublished">
+    2015-11-08
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/DOM/">DOM</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>jQuery 有一个 append 方法，就是在某个元素基础上追加一些元素，但实际内部实现是需要先创建在追加，下面代码演示了一个创建 ul 和 li 的过程。注意：如果操作已有节点，那么已有节点会发生物理位置移动的现象。</p>
+        
+          <div class="more-link">
+            <a href="/2015/11/08/2015/2015-11-08_215613-1120/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/19/">« prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><a class="page-number" href="/page/22/">22</a><span class="space">&hellip;</span><a class="page-number" href="/page/40/">40</a><a class="extend next" rel="next" href="/page/21/">next »</a>
+    </nav>
+  </section>
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ CEF }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2019/12/05/2019/2019-12-05_172233-2867/">解决 CEF 76+ 内核默认禁用 Flash 插件提示 “右键点击即可运行 Adobe Flash Player”</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2019-12-05T17:22:33.000Z" itemprop="datePublished">
+    2019-12-05
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/CEF/">CEF</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>CEF 76+ 内核在编译后即使增加了 <code>ppapi-flash-path</code> 和 <code>ppapi-flash-version</code> 也无法在页面中使用 Flash，在命令行参数中确定两个参数是生效的，如图： <a href="/images/2019/12/2019-12-05_17-16-37.png"><img src="/images/2019/12/2019-12-05_17-16-37.png"></a></p>
+        
+          <div class="more-link">
+            <a href="/2019/12/05/2019/2019-12-05_172233-2867/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2019/01/14/2019/2019-01-14_143427-2636/">CEF 设置页面缩放级别</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2019-01-14T14:34:27.000Z" itemprop="datePublished">
+    2019-01-14
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/CEF/">CEF</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>现在很多高分屏在笔记本和家用市场逐步扩大，普通应用大小在一个 2K 或者 4K 屏幕下就像一个便利签一样贴在屏幕上面，看着很小。于是操作系统提供了对分辨率进行缩放的功能，比如我可以设置当前分辨率放大到 125%，这样就可以让字体或者窗口看着更大一些。同样基于 CEF 制作的客户端程序也会随之放大到 125%，但是内嵌的网页呢？当然也需要根据系统设置放大缩小，CEF 给我们提供了 SetZoomLevel 方法让我们来设置页面的缩放比例。</p>
+        
+          <div class="more-link">
+            <a href="/2019/01/14/2019/2019-01-14_143427-2636/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2019/01/14/2019/2019-01-14_130223-2631/">CEF 拦截打开超链接事件</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2019-01-14T13:02:23.000Z" itemprop="datePublished">
+    2019-01-14
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/CEF/">CEF</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>使用 CEF 加载指定页面后，如果你希望控制页面在打开超链接时根据自己预定义的一些行为来操作，比如在自己的 UI 框架中新建一个 Tab 页又或者阻止打开新的页面等。我们就需要通过 CEF 提供的两个接口来实现这个功能了，分别是 OnBeforeBrowser 和 OnBeforePopup，两个接口各有各的用处，下面分别来详细介绍两个接口的作用。</p>
+        
+          <div class="more-link">
+            <a href="/2019/01/14/2019/2019-01-14_130223-2631/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2019/01/13/2019/2019-01-13_150611-2627/">CEF 文件下载功能实现</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2019-01-13T15:06:11.000Z" itemprop="datePublished">
+    2019-01-13
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/CEF/">CEF</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>CEF 下载功能非常容易拓展，它提供了丰富的接口和控制功能，比如对正在下载的文件实现暂停、继续、取消等操作。并且 CEF 还帮我们默认实现了一个另存为的对话框，如果不是必须你甚至都不需要去自己实现这个保存对话框。接下来我们来看 CEF 对于下载功能提供的两个接口（使用 cefclient 项目举例）</p>
+        
+          <div class="more-link">
+            <a href="/2019/01/13/2019/2019-01-13_150611-2627/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2019/01/09/2019/2019-01-09_100302-2618/">利用 WM_NCHITTEST 消息自定义窗口可拖动区域</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2019-01-09T10:03:02.000Z" itemprop="datePublished">
+    2019-01-09
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/CEF/">CEF</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>最近接到一个比较个性化的需求，原来团队基于 Electron 开发的项目由于不支持 XP 系统，想完全移植到基于 CEF 2623 版本的空壳中，以此来兼容 XP 系统。而程序的界面则完全交由前端来处理了，比如标题栏、最小化、最大化等功能按钮。这其中就涉及到一些原生应用的功能比如拖动窗口的功能是需要原生窗口提供的，微软提供拖动窗口的机制如此文章所描述：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/GnagWang/archive/2010/09/12/1824394.html">https://www.cnblogs.com/GnagWang/archive/2010/09/12/1824394.html</a>。为了保证内容不丢失，我特意截图保留一份。</p>
+        
+          <div class="more-link">
+            <a href="/2019/01/09/2019/2019-01-09_100302-2618/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/12/29/2018/2018-12-29_143626-2606/">VS2017 打开并编译 cef client 项目进行调试</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-12-29T14:36:26.000Z" itemprop="datePublished">
+    2018-12-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/CEF/">CEF</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>最近接触 cef 非常多，有些功能没有做过就去 cef 官网的 cef_client demo 中查找示例，所以第一步是先把他给编译通过，网络上看过一些方法和例子需要单独下载 CMake，其实 VS2017 自带了这个功能。在你安装 VS2017 的时候默认勾选了 CMake 工具集。我们直接使用 CMake 工具打开项目就可以了，如下所示： <a href="/images/2018/12/cmake-install.png"><img src="/images/2018/12/cmake-install.png"></a> 微软官方的教程：<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/cpp/ide/cmake-tools-for-visual-cpp?view=vs-2017">https://docs.microsoft.com/zh-cn/cpp/ide/cmake-tools-for-visual-cpp?view=vs-2017</a></p>
+<h2 id="用-VS2017-打开-CMakeLists-txt-文件"><a href="#用-VS2017-打开-CMakeLists-txt-文件" class="headerlink" title="用 VS2017 打开 CMakeLists.txt 文件"></a>用 VS2017 打开 CMakeLists.txt 文件</h2><p><a href="/images/2018/12/2018-12-29_14-28-42.png"><img src="/images/2018/12/2018-12-29_14-28-42.png"></a> 然后选择 cef_client 的客户端 CMakeLists.txt 文件： <a href="/images/2018/12/2018-12-29_14-29-33.png"><img src="/images/2018/12/2018-12-29_14-29-33.png"></a> 随后项目会进行初始化： <a href="/images/2018/12/2018-12-29_13-47-32.png"><img src="/images/2018/12/2018-12-29_13-47-32.png"></a> 点击上方生成的类型下拉框点击管理配置，在弹出的窗口中选择 x86 Debug <a href="/images/2018/12/2018-12-29_14-32-28.png"><img src="/images/2018/12/2018-12-29_14-32-28.png"></a> <a href="/images/2018/12/2018-12-29_14-32-33.png"><img src="/images/2018/12/2018-12-29_14-32-33.png"></a> 选择后 VS 会在 CMakeLists.txt 目录下创建一个 CMakeSettings.json 的配置文件，这个文件保存了项目配置信息以后可以自己手动随时修改。在选择启动项的下拉菜单中选择启动 cef_client 项目： <a href="/images/2018/12/2018-12-29_14-34-41.png"><img src="/images/2018/12/2018-12-29_14-34-41.png"></a> 然后按下 F7 开始编译项目，生成完成后点击上面的绿色启动按钮就可以启动项目了，并且你也可以随时调试项目了。 <a href="/images/2018/12/2018-12-29_14-35-36.png"><img src="/images/2018/12/2018-12-29_14-35-36.png"></a></p>
+
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

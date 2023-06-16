@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Windows Sysinternals 工具自动更新脚本 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Windows Sysinternals 工具自动更新脚本</h1>
+    </header>
+
+    <section>
+      <p>Windows Sysinternals 内包含了很多微软提供的实用工具，经常用到的比如 <code>Process Explorer</code>、<code>Process Monitor</code>、<code>TcpView</code>、<code>Autoruns</code>、<code>DbgView</code> 等等，因为这些工具各司其职，大多是分开的单独的 exe，如果想更新他们，我自己平时都是去 <a target="_blank" rel="noopener" href="https://technet.microsoft.com/en-us/sysinternals/bb795535.aspx">Windows Sysinternals</a> 直接下载覆盖更新，每个文件都去看看版本号对不对，这样很麻烦。后面在网络上搜索到了一个 PowerShell 的脚本，直接运行脚本指定好目录就可以自动下载最新的工具了，非常实用，这里推荐给大家。</p>
+<span id="more"></span>
+<h2 id="运行后的效果"><a href="#运行后的效果" class="headerlink" title="运行后的效果"></a>运行后的效果</h2><p><a href="/images/2016/06/2016-06-06_142518.png"><img src="/images/2016/06/2016-06-06_142518.png" alt="2016-06-06_142518"></a></p>
+<h2 id="PowerShell-代码"><a href="#PowerShell-代码" class="headerlink" title="PowerShell 代码"></a>PowerShell 代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">function Update-SysinternalsHTTP ($ToolsLocalDir = &quot;c:\temp\sys&quot;)  </span><br><span class="line">&#123; </span><br><span class="line">    if (Test-Path $ToolsLocalDir)&#123; </span><br><span class="line">        cd $ToolsLocalDir</span><br><span class="line">        $DebugPreference = &quot;SilentlyContinue&quot;</span><br><span class="line">        $wc = new-object System.Net.WebClient</span><br><span class="line">        $userAgent = &quot;Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2;)&quot;</span><br><span class="line">        $wc.Headers.Add(&quot;user-agent&quot;, $userAgent)</span><br><span class="line">        $ToolsUrl = &quot;http://live.sysinternals.com/tools&quot;</span><br><span class="line">        $toolsBlock=&quot;&lt;pre&gt;.*&lt;/pre&gt;&quot;</span><br><span class="line">        $WebPageCulture = New-Object System.Globalization.CultureInfo(&quot;en-us&quot;)</span><br><span class="line">        $Tools = @&#123;&#125;</span><br><span class="line">        $ToolsPage = $wc.DownloadString($ToolsUrl)</span><br><span class="line">        $matches=[string] $ToolsPage select-string -pattern  &quot;$ToolsBlock&quot; -AllMatches</span><br><span class="line">        foreach($match in $matches.Matches) &#123;   </span><br><span class="line">            $txt = ( ($match.Value  -replace &quot;&lt;/A&gt;&lt;br&gt;&quot;, &quot;`r`n&quot;) -replace  &quot;&lt;[^&gt;]*?&gt;&quot;,&quot;&quot;)</span><br><span class="line">            foreach($lines in $txt.Split(&quot;`r`n&quot;))&#123;</span><br><span class="line">                $line=$linesselect-string  -NotMatch -Pattern &quot;To Parent^$&amp;lt;dir&amp;gt;&quot;</span><br><span class="line">                if ($line -ne $null)&#123;</span><br><span class="line">                    $date=(([string]$line).substring(0,38)).trimstart(&quot; &quot;) -replace &quot;  &quot;,&quot; &quot;</span><br><span class="line">                    $file=([string]$line).substring(52,(([string]$line).length-52))</span><br><span class="line">                    $Tools[&quot;$file&quot;]= [datetime]::ParseExact($date,&quot;f&quot;,$WebPageCulture)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        $Tools.keys</span><br><span class="line">        ForEach-Object &#123;</span><br><span class="line">            $NeedUpdate=$false</span><br><span class="line">            if (Test-Path $_)</span><br><span class="line">            &#123;</span><br><span class="line">                $SubtractSeconds = New-Object System.TimeSpan 0, 0, 0, ((dir $_).lastWriteTime).second, 0</span><br><span class="line">                $LocalFileDate= ( (dir $_).lastWriteTime ).Subtract( $SubtractSeconds )</span><br><span class="line">                $needupdate=(($tools[$_]).touniversaltime() -lt $LocalFileDate.touniversaltime())</span><br><span class="line">            &#125; else &#123;$NeedUpdate=$true&#125;</span><br><span class="line">            if ( $NeedUpdate ) </span><br><span class="line">            &#123;</span><br><span class="line">                Try &#123;</span><br><span class="line">                        $wc.DownloadFile(&quot;$ToolsUrl/$_&quot;,&quot;$ToolsLocalDir\$_&quot; )</span><br><span class="line">                        $f=dir &quot;$ToolsLocalDir\$_&quot;</span><br><span class="line">                        $f.lastWriteTime=($tools[$_])</span><br><span class="line">                        &quot;Updated $_&quot;</span><br><span class="line">                    &#125;</span><br><span class="line">                catch &#123; Write-debug &quot;发生错误: $_&quot; &#125;</span><br><span class="line">            &#125; </span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">cls</span><br><span class="line">&quot;更新开始...&quot;</span><br><span class="line">Update-Sysinternalshttp -ToolsLocalDir &quot;D:\Tools&quot;</span><br><span class="line">&quot;更新结束&quot;</span><br></pre></td></tr></table></figure>
+
+<p>将脚本复制下来保存为 <code>.ps1</code> 后缀的文件，使用 PowerShell 运行即可。注意代码最后的路径 <code>D:\Tools</code> 如果你需要修改为其他路径请在这里修改。代码实际就是去 <a target="_blank" rel="noopener" href="http://live.sysinternals.com/tools">http://live.sysinternals.com/tools</a> 对比文件信息进行更新。有兴趣的可以自己做个脚本来搞定！</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-06-06T14:33:49.000Z" itemprop="datePublished">
+              2016-06-06
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

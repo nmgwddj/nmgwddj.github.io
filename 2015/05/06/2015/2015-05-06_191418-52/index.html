@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>fread、fwrite 制作文件复制程序 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>fread、fwrite 制作文件复制程序</h1>
+    </header>
+
+    <section>
+      <p>通过Windows的CTRL+C、CTRL+V可以非常方便的复制文件，实际内部也一样是通过读写文件来完成的，通过Windows的命令行我们也可以使用copy.exe的相关命令来复制文件。本文就模仿copy.exe程序制作一个文件复制的程序。具体代码如下：</p>
+<span id="more"></span>
+<p>#define _CRT_SECURE_NO_WARNINGS<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;</p>
+<p>int main(int argc, char* argv[])<br>{<br>if (argc &lt; 3)<br>{<br>printf(“file.exe src dest\n”);<br>return -1;<br>}<br>&#x2F;&#x2F; 根据输入进来的文件分别以二进制方式打开文件<br>FILE* src &#x3D; fopen(argv[1], “rb”);<br>if (NULL &#x3D;&#x3D; src) return -2;<br>FILE* dest &#x3D; fopen(argv[2], “wb”);<br>if (NULL &#x3D;&#x3D; dest)<br>{<br>fclose(src);<br>return -2;<br>}</p>
+<p>char buf[1024];<br>int size &#x3D; 0;<br>&#x2F;&#x2F; 读取src文件内容<br>while ((size &#x3D; fread(buf, 1, 1024, src)) &gt; 0)<br>{<br>&#x2F;&#x2F; 将读取到的内容写入到dest中<br>fwrite(buf, size, 1, dest);<br>}</p>
+<p>fclose(src);<br>fclose(dest);<br>system(“pause”);<br>return 0;<br>}</p>
+<p>将程序编译后，在命令行下使用 file.exe src dest 这样的格式，即可赋值src文件为dest文件。Windows和Unix&#x2F;Linux以上代码都可以正常运行。我们使用的是二进制方式打开文件，读取每一个字节再写入到另外文件中。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-06T19:14:18.000Z" itemprop="datePublished">
+              2015-05-06
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

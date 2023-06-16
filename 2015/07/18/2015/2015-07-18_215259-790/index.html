@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Linux/unix下的IPC-UNIX Domain Socket | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Linux/unix下的IPC-UNIX Domain Socket</h1>
+    </header>
+
+    <section>
+      <p>UNIX Domain Socket 是基于socket发展而来的，是linux&#x2F;unix下一种IPC（Inter-Process Communication 进程间通讯）机制，它无需向内核网络协议栈一样拆包打包，只是将数据从一个进程拷贝到另外一个进程。在这种模式下，无论使用 SOCKET_STREAM 还是 SOCKET_DGRAM 都是可以的，因为同一台电脑上基本上不存在数据丢失的情况，下面的案例实现了一个最小化的 domain socket 模型。</p>
+<span id="more"></span>
+<hr>
+<h3 id="公共头文件"><a href="#公共头文件" class="headerlink" title="公共头文件"></a>公共头文件</h3><p>&#x2F;* wrap.h *&#x2F;<br>#ifndef __WRAP_H__<br>#define __WRAP_H__</p>
+<p>void perr_exit(const char* s);<br>int Accept(int fd, struct sockaddr* sa, socklen_t* salenptr);<br>void Bind(int fd, const struct sockaddr* sa, socklen_t salen);<br>void Connect(int fd, const struct sockaddr* sa, socklen_t salen);<br>void Listen(int fd, int backlog);<br>int Socket(int family, int type, int protocol);<br>ssize_t Read(int fd, void* ptr, size_t nbytes);<br>ssize_t Write(int fd, const void* ptr, size_t nbytes);<br>void Close(int fd);<br>ssize_t Readn(int fd, void* vptr, size_t n);<br>ssize_t Writen(int fd, const void* vptr, size_t n);<br>static ssize_t my_read(int fd, char* ptr);<br>ssize_t Readline(int fd, void* vptr, size_t maxlen);</p>
+<p>#endif</p>
+<p>#include &lt;stdlib.h&gt;<br>#include &lt;errno.h&gt;<br>#include &lt;sys&#x2F;socket.h&gt;<br>#include &lt;stdio.h&gt;<br>#include &lt;unistd.h&gt;<br>#include “wrap.h”</p>
+<p>void perr_exit(const char* s)<br>{<br>perror(s);<br>exit(1);<br>}</p>
+<p>int Accept(int fd, struct sockaddr* sa, socklen_t* salenptr)<br>{<br>int n;</p>
+<p>again:<br>if ( (n &#x3D; accept(fd, sa, salenptr)) &lt; 0 )<br>{<br>if ((errno &#x3D;&#x3D; ECONNABORTED)  (errno &#x3D;&#x3D; EINTR))<br>{<br>goto again;<br>}<br>else<br>{<br>perr_exit(“accept error”);<br>}<br>}<br>return n;<br>}</p>
+<p>void Bind(int fd, const struct sockaddr* sa, socklen_t salen)<br>{<br>if ( bind(fd, sa, salen) &lt; 0 )<br>{<br>perr_exit(“bind error”);<br>}<br>}</p>
+<p>void Connect(int fd, const struct sockaddr* sa, socklen_t salen)<br>{<br>if ( connect(fd, sa, salen) &lt; 0 )<br>{<br>perr_exit(“connect error”);<br>}<br>}</p>
+<p>void Listen(int fd, int backlog)<br>{<br>if ( listen(fd, backlog) &lt; 0 )<br>{<br>perr_exit(“listen error”);<br>}<br>}</p>
+<p>int Socket(int family, int type, int protocol)<br>{<br>int n &#x3D; socket(family, type, protocol);<br>if ( n &lt; 0 )<br>{<br>perr_exit(“socket error”);<br>}<br>return n;<br>}</p>
+<p>ssize_t Read(int fd, void* ptr, size_t nbytes)<br>{<br>ssize_t n;</p>
+<p>again:<br>if ( (n &#x3D; read(fd, ptr, nbytes)) &#x3D;&#x3D; -1)<br>{<br>if (errno &#x3D;&#x3D; EINTR)<br>{<br>goto again;<br>}<br>else<br>{<br>return -1;<br>}<br>}<br>return n;<br>}</p>
+<p>ssize_t Write(int fd, const void* ptr, size_t nbytes)<br>{<br>ssize_t n;</p>
+<p>again:<br>if ( (n &#x3D; write(fd, ptr, nbytes)) &#x3D;&#x3D; -1)<br>{<br>if (errno &#x3D;&#x3D; EINTR)<br>{<br>goto again;<br>}<br>else<br>{<br>return -1;<br>}<br>}<br>return n;<br>}</p>
+<p>void Close(int fd)<br>{<br>if (close(fd) &#x3D;&#x3D; -1)<br>{<br>perr_exit(“close error”);<br>}<br>}</p>
+<p>ssize_t Readn(int fd, void* vptr, size_t n)<br>{<br>size_t nleft;<br>ssize_t nread;<br>char* ptr;</p>
+<p>ptr &#x3D; vptr;<br>nleft &#x3D; n;<br>while (nleft &gt; 0)<br>{<br>if ( (nread &#x3D; read(fd, ptr, nleft)) &lt; 0 )<br>{<br>if (errno &#x3D;&#x3D; EINTR)<br>{<br>nread &#x3D; 0;<br>}<br>else<br>{<br>return -1;<br>}<br>}<br>else if (nread &#x3D;&#x3D; 0)<br>{<br>break;<br>}</p>
+<p>nleft -&#x3D; nread;<br>ptr +&#x3D; nread;<br>}<br>}</p>
+<p>ssize_t Writen(int fd, const void* vptr, size_t n)<br>{<br>size_t nleft;<br>ssize_t nwritten;<br>const char* ptr;</p>
+<p>ptr &#x3D; vptr;<br>nleft &#x3D; n;<br>while (nleft &gt; 0)<br>{<br>if ( (nwritten &#x3D; write(fd, ptr, nleft)) &lt;&#x3D; 0)<br>{<br>if (nwritten &lt; 0 &amp;&amp; errno &#x3D;&#x3D; EINTR)<br>{<br>nwritten &#x3D; 0;<br>}<br>else<br>{<br>return -1;<br>}<br>}</p>
+<p>nleft -&#x3D; nwritten;<br>ptr +&#x3D; nwritten;<br>}</p>
+<p>return n;<br>}</p>
+<p>static ssize_t my_read(int fd, char* ptr)<br>{<br>static int read_cnt;<br>static char* read_ptr;<br>static char read_buf[100];</p>
+<p>if (read_cnt &lt;&#x3D; 0)<br>{<br>again:<br>if ( (read_cnt &#x3D; read(fd, read_buf, sizeof(read_buf))) &lt; 0 )<br>{<br>if (errno &#x3D;&#x3D; EINTR)<br>{<br>goto again;<br>}<br>return -1;<br>}<br>else if (read_cnt &#x3D;&#x3D; 0)<br>{<br>return 0;<br>}</p>
+<p>read_ptr &#x3D; read_buf;<br>}</p>
+<p>read_cnt–;<br>*ptr &#x3D; *read_ptr++;<br>return 1;<br>}</p>
+<p>ssize_t Readline(int fd, void* vptr, size_t maxlen)<br>{<br>ssize_t n, rc;<br>char c, *ptr;</p>
+<p>ptr &#x3D; vptr;<br>for (n &#x3D; 1; n &lt; maxlen; n++)<br>{<br>if ( (rc &#x3D; my_read(fd, &amp;c)) &#x3D;&#x3D; 1)<br>{<br>*ptr++ &#x3D; c;<br>if (c &#x3D;&#x3D; ‘\n’)<br>{<br>break;<br>}<br>}<br>else if (rc &#x3D;&#x3D; 0)<br>{<br>*ptr &#x3D; 0;<br>return n - 1;<br>}<br>else<br>{<br>return -1;<br>}</p>
+<p>*ptr &#x3D; 0;<br>return n;<br>}<br>}</p>
+<h3 id="服务端代码"><a href="#服务端代码" class="headerlink" title="服务端代码"></a>服务端代码</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;sys&#x2F;types.h&gt;<br>#include &lt;sys&#x2F;socket.h&gt;<br>#include &lt;string.h&gt;<br>#include &lt;strings.h&gt;<br>#include &lt;ctype.h&gt;<br>#include &lt;arpa&#x2F;inet.h&gt;<br>#include &lt;sys&#x2F;un.h&gt;<br>#include &lt;stddef.h&gt;<br>#include “wrap.h”</p>
+<p>&#x2F;&#x2F; 服务端要绑定的socket套接字文件<br>#define SERV_ADDR “foo.socket”</p>
+<p>int main(int argc, char* argv[])<br>{<br>&#x2F;&#x2F; 创建socket以 AF_UNIX 方式<br>int sock &#x3D; Socket(AF_UNIX, SOCK_STREAM, 0);</p>
+<p>struct sockaddr_un srvaddr;<br>memset(&amp;srvaddr, 0, sizeof(srvaddr));<br>srvaddr.sun_family &#x3D; AF_UNIX;<br>strcpy(srvaddr.sun_path, SERV_ADDR);</p>
+<p>&#x2F;* offsetof 是一个宏，可以计算出第一个参数中的结构体中第二个参数的偏移位置 *&#x2F;<br>int len &#x3D; offsetof(struct sockaddr_un, sun_path) +<br>strlen(srvaddr.sun_path);</p>
+<p>&#x2F;&#x2F; 删除当前目录下的socket文件，防止bind失败<br>unlink(SERV_ADDR);<br>Bind(sock, (struct sockaddr*)&amp;srvaddr, len);<br>Listen(sock, 20);</p>
+<p>printf(“Accept…..\n”);</p>
+<p>struct sockaddr_un cntaddr;<br>int conn;<br>int size;<br>char buf[4096];<br>while (1)<br>{<br>len &#x3D; sizeof(cntaddr);<br>conn &#x3D; Accept(sock, (struct sockaddr*)&amp;cntaddr, &amp;len);<br>len -&#x3D; offsetof(struct sockaddr_un, sun_path);<br>cntaddr.sun_path[len] &#x3D; ‘\0’;<br>printf(“client bind filename %s\n”, cntaddr.sun_path);<br>&#x2F;&#x2F; 接收<br>while ((size &#x3D; read(conn, buf, sizeof(buf))) &gt; 0)<br>{<br>for (int i &#x3D; 0; i &lt; size; i++)<br>{<br>buf[i] &#x3D; toupper(buf[i]);<br>}<br>&#x2F;&#x2F; 发送<br>Write(conn, buf, size);<br>}<br>}<br>return 0;<br>}</p>
+<h3 id="客户端代码"><a href="#客户端代码" class="headerlink" title="客户端代码"></a>客户端代码</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;sys&#x2F;types.h&gt;<br>#include &lt;sys&#x2F;socket.h&gt;<br>#include &lt;string.h&gt;<br>#include &lt;strings.h&gt;<br>#include &lt;ctype.h&gt;<br>#include &lt;arpa&#x2F;inet.h&gt;<br>#include &lt;sys&#x2F;un.h&gt;<br>#include &lt;stddef.h&gt;<br>#include “wrap.h”</p>
+<p>&#x2F;&#x2F; 要连接的服务器socket套接字文件<br>#define SERV_ADDR “foo.socket”<br>&#x2F;&#x2F; 客户端要绑定的socket套接字文件<br>#define CLIENT_ADDR “client.socket”</p>
+<p>int main(int argc, char* argv[])<br>{<br>int len;<br>&#x2F;&#x2F; 同样以 AF_UNIX 方式创建 socket<br>int sock &#x3D; Socket(AF_UNIX, SOCK_STREAM, 0);</p>
+<p>struct sockaddr_un srvaddr, cntaddr;<br>memset(&amp;srvaddr, 0, sizeof(srvaddr));<br>memset(&amp;cntaddr, 0, sizeof(cntaddr));</p>
+<p>&#x2F;&#x2F; 构建客户端的结构体<br>cntaddr.sun_family &#x3D; AF_UNIX;<br>strcpy(cntaddr.sun_path, CLIENT_ADDR);<br>len &#x3D; offsetof(struct sockaddr_un, sun_path) +<br>strlen(cntaddr.sun_path);</p>
+<p>&#x2F;&#x2F; 绑定客户端socket套接字文件<br>unlink(CLIENT_ADDR);<br>Bind(sock, (struct sockaddr*)&amp;cntaddr, len);</p>
+<p>&#x2F;&#x2F; 构建要连接的服务端结构体<br>srvaddr.sun_family &#x3D; AF_UNIX;<br>strcpy(srvaddr.sun_path, SERV_ADDR);</p>
+<p>len &#x3D; offsetof(struct sockaddr_un, sun_path) +<br>strlen(srvaddr.sun_path);</p>
+<p>&#x2F;&#x2F; 连接服务端<br>Connect(sock, (struct sockaddr*)&amp;srvaddr, len);</p>
+<p>char buf[4096];<br>while (fgets(buf, sizeof(buf), stdin) !&#x3D; NULL)<br>{<br>&#x2F;&#x2F; 写<br>Write(sock, buf, strlen(buf));<br>&#x2F;&#x2F; 读<br>len &#x3D; read(sock, buf, sizeof(buf));<br>&#x2F;&#x2F; 输出到屏幕<br>Write(STDOUT_FILENO, buf, len);<br>}</p>
+<p>Close(sock);<br>return 0;<br>}</p>
+<h3 id="编译测试"><a href="#编译测试" class="headerlink" title="编译测试"></a>编译测试</h3><p>编译客户端：gcc domian_client.c wrap.c -o domain_client 编译服务端：gcc domain_server.c wrap.c -o domain_server -std&#x3D;c99 测试效果： <a href="/images/2015/07/2015-07-18-214541.png"><img src="/images/2015/07/2015-07-18-214541.png" alt="2015-07-18 21:45:41"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-18T21:52:59.000Z" itemprop="datePublished">
+              2015-07-18
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%BD%91%E7%BB%9C/">网络</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

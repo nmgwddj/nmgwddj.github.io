@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>主流编辑器、IDE 开启 clang-format 自动格式化能力 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>主流编辑器、IDE 开启 clang-format 自动格式化能力</h1>
+    </header>
+
+    <section>
+      <p>clang-format 是 LLVM 下的一款代码风格格式化工具，它支持多种代码格式化风格，如：Visual Studio, LLVM, Google, Chromium, Mozilla, WebKit。团队中也可以根据配置定义自己的代码格式化风格保存到 .clang-format 配置文件中并放在项目工程目录下提供所有项目参与者使用，但如何让 .clang-format 工作起来呢？本文将讨论各类主流编辑器、IDE 是如何让 .clang-format 配置工作并且在代码粘贴或保存时自动进行格式化。</p>
+<span id="more"></span>
+<h2 id="Visual-Studio-Code"><a href="#Visual-Studio-Code" class="headerlink" title="Visual Studio Code"></a>Visual Studio Code</h2><p>Visual Studio Code 简称 VSCode，是目前为止从前端到客户端最通用的编辑器，他可以通过各类插件组合成为一个比个别 IDE 都强大的开发工具。VSCode 使用使用 .clang-format 配置只需要安装一个名为 <code>C/C++ Extension Pack</code> 的插件即可，里面包含了必备的 CMake、C++ Tools 等插件。 <a href="/images/2021/09/2021-09-02_18-32-06.png"><img src="/images/2021/09/2021-09-02_18-32-06.png"></a> 随后打开 VSCode，点击左上角 File-&gt;Preference-&gt;Settings： <a href="/images/2021/09/2021-09-02_18-49-18.png"><img src="/images/2021/09/2021-09-02_18-49-18.png"></a> 搜索 <code>Format On Save</code> 关键字，将其勾选起来： <a href="/images/2021/09/2021-09-02_18-50-58.png"><img src="/images/2021/09/2021-09-02_18-50-58.png"></a> 这样当我们打开一个带有 .clang-format 配置的工程时，会自动根据当前工程中的配置文件在编写代码保存时自动格式化代码，效果如下： <a href="/images/2021/09/clang-format.gif"><img src="/images/2021/09/clang-format.gif"></a> 你不需要单独安装 clang-format，因为 VSCode 在安装 C++ Tools 插件的时候会自动安装 LLVM 的 clang-format： <a href="/images/2021/09/2021-09-02_18-36-25.png"><img src="/images/2021/09/2021-09-02_18-36-25.png"></a> 并且在设置中搜索 clang-format 相关设置时你可以看到，VSCode 查找 clang-format 的顺序如下：</p>
+<ol>
+<li>你输入的绝对路径</li>
+<li>在环境变量中查找 clang-format</li>
+<li>使用默认自带的 clang-format</li>
+</ol>
+<p>所以 VSCode 是有兜底的，无论你是否指定了绝对路径或环境变量中是否有 clang-format。 另外如果你希望项目中所有人都使用相同的配置，可以将 User 相关的配置切换到 Workspace 中，选择 <code>Format On Save</code> 后会自动创建一个 settings.json 的配置文件在项目工程下的 .vscode 文件夹，你可以将这个目录上传到 git 仓库，让大家 clone 下来的代码都带有该配置。Workspace 的优先级高于 User。</p>
+<h2 id="Visual-Studio"><a href="#Visual-Studio" class="headerlink" title="Visual Studio"></a>Visual Studio</h2><p>Visual Studio IDE 简称 VS，在安装了 2017 以上版本的 IDE 以后会自动安装 LLVM 工具链中的 clang-format 工具。你只需要在选项设置中将自动格式化打开即可。 <a href="/images/2021/09/2021-09-02_19-13-28.png"><img src="/images/2021/09/2021-09-02_19-13-28.png"></a> 这里并没有在保存时自动格式化代码的开关，没办法只能借助第三方插件来实现，在拓展中心中搜索 <code>Format document on Save</code> 安装它就可以在修改代码保存时自动格式化了，效果如下： <a href="/images/2021/09/vs.gif"><img src="/images/2021/09/vs.gif"></a></p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>待补充</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2021-09-02T19:23:56.000Z" itemprop="datePublished">
+              2021-09-02
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

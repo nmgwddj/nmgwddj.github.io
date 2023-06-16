@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Windows 下处理文件路径相关的 API 介绍 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Windows 下处理文件路径相关的 API 介绍</h1>
+    </header>
+
+    <section>
+      <p>处理文件路径信息是经常要用到的字符串处理的手段，应用场景非常的多，不论是 Linux 还是 Windows，在我没接触这一系列函数之前，都是使用一系列字符串处理函数来自己写。而在 Windows 环境下，系统给我们提供了一系列处理路径相关的 API，我们在需要使用的时候直接调用即可，不但可以避免自己使用字符串处理函数处理时可能造成的各种问题，还可以加快我们编程的速度。当然如果你还没有使用字符串处理函数自己处理过路径等信息，我强烈建议你先自己尝试学习一下。轮子可不重复制造，但你必须要清楚轮子的制作工艺，否则在出现故障时就不知道如何处理了。</p>
+<span id="more"></span>
+<h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &lt;Shlwapi.h&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">#ifdef _UNICODE</span><br><span class="line">#define tout wcout</span><br><span class="line">#else</span><br><span class="line">#define tout cout</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">#pragma comment(lib, &quot;Shlwapi.lib&quot;)</span><br><span class="line"></span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    // 获取程序自身的路径</span><br><span class="line">    TCHAR szFilePath[MAX_PATH] = &#123;0&#125;;</span><br><span class="line">    GetModuleFileName(NULL, szFilePath, MAX_PATH);</span><br><span class="line"></span><br><span class="line">    // 打印完整路径</span><br><span class="line">    tout &lt;&lt; szFilePath &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    // 去掉文件名</span><br><span class="line">    PathRemoveFileSpec(szFilePath);</span><br><span class="line">    tout &lt;&lt; szFilePath &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    // 追加一个文件名</span><br><span class="line">    PathAppend(szFilePath, _T(&quot;test.dll&quot;));</span><br><span class="line">    tout &lt;&lt; szFilePath &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    // 获取文件名</span><br><span class="line">    tout &lt;&lt; PathFindFileName(szFilePath) &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    // 获取文件后缀名</span><br><span class="line">    tout &lt;&lt; PathFindExtension(szFilePath) &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    getchar();</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="/images/2017/03/2017-03-25_201903.png"><img src="/images/2017/03/2017-03-25_201903.png"></a> 示例代码中仅仅介绍了一些经常用到的 API，其中还有很多关于路径相关的处理函数。我一时没找到这一系列函数在 MSDN 的页面，大家使用时可以在 VS 中按 F1 跟着找一下其他的函数。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-03-25T20:15:54.000Z" itemprop="datePublished">
+              2017-03-25
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

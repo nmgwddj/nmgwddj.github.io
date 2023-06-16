@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>模版类实现线性表的顺序储存 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>模版类实现线性表的顺序储存</h1>
+    </header>
+
+    <section>
+      <p>使用模版类来实现线性表的顺序储存将会变的非常简单，我们不必像使用C语言一样，将数据和算法分离时使用非常繁琐的类型转换了，而我们直接使用模版中的typename就可以解决这个问题。具体实现的代码如下，都有详细的标注和测试代码：</p>
+<span id="more"></span>
+<p>#pragma once</p>
+<p>template<typename T><br>class SeqList<br>{<br>public:<br>SeqList(int capacity);<br>~SeqList();</p>
+<p>int insert(int pos, T&amp; data);&#x2F;&#x2F; 在某位置插入数据<br>T remove(int pos);&#x2F;&#x2F; 删除某位置数据<br>void clear();&#x2F;&#x2F; 清空线性表<br>T get(int pos);&#x2F;&#x2F; 获取某位置数据<br>int length();&#x2F;&#x2F; 获取线性表有效元素个数<br>int capacity();&#x2F;&#x2F; 获取线性表总长度</p>
+<p>private:<br>&#x2F;&#x2F; 容量<br>int m_capacity;<br>&#x2F;&#x2F; 已有数据长度<br>int m_length;<br>&#x2F;&#x2F; 指针变量，用来动态分配数组<br>T* m_array;</p>
+<p>};</p>
+<p>template<typename T><br>int SeqList<T>::capacity()<br>{<br>&#x2F;&#x2F; 返回总长度<br>return m_capacity;<br>}</p>
+<p>template<typename T><br>int SeqList<T>::length()<br>{<br>&#x2F;&#x2F; 返回有效节点个数<br>return m_length;<br>}</p>
+<p>template<typename T><br>T SeqList<T>::get(int pos)<br>{<br>&#x2F;&#x2F; 返回 pos 位置的数据<br>return m_array[pos];<br>}</p>
+<p>template<typename T><br>void SeqList<T>::clear()<br>{<br>&#x2F;&#x2F; 把有效节点个数置为0<br>m_length &#x3D; 0;<br>}</p>
+<p>template<typename T><br>T SeqList<T>::remove(int pos)<br>{<br>&#x2F;&#x2F; 记录被删除的元素内容<br>T tmp &#x3D; m_array[pos];<br>&#x2F;&#x2F; 循环把被删除位置后面的数据依次向前移动一个<br>for (int i &#x3D; pos + 1; i &lt; m_length; i++)<br>{<br>m_array[i - 1] &#x3D; m_array[i];<br>}<br>&#x2F;&#x2F; 线性表长度–<br>m_length–;<br>&#x2F;&#x2F; 返回被删除的数据<br>return tmp;<br>}</p>
+<p>template<typename T><br>int SeqList<T>::insert(int pos, T&amp; data)<br>{<br>&#x2F;&#x2F; 循环将要插入数据位置后面的数据一次向后移动一次<br>for (int i &#x3D; m_length; i &gt; pos; i–)<br>{<br>m_array[i] &#x3D; m_array[i - 1];<br>}<br>&#x2F;&#x2F; 在空出的pos位置插入数据<br>m_array[pos] &#x3D; data;<br>&#x2F;&#x2F; 有效长度++<br>m_length++;<br>return 0;<br>}</p>
+<p>template<typename T><br>SeqList<T>::~SeqList()<br>{<br>&#x2F;&#x2F; 销毁线性表数组<br>delete[] m_array;<br>}</p>
+<p>template<typename T><br>SeqList<T>::SeqList(int capacity)<br>{<br>&#x2F;&#x2F; 根据capacity长度申请一块空间存放数据<br>m_array &#x3D; new T[capacity];<br>&#x2F;&#x2F; 初始化两个成员变量<br>m_capacity &#x3D; capacity;<br>m_length &#x3D; 0;<br>}</p>
+<p>测试代码：</p>
+<p>#include <iostream><br>#include “seqlist.hpp”</p>
+<p>using namespace std;</p>
+<p>int main(int argc, char* argv[])<br>{<br>SeqList<int> list(10);</p>
+<p>for (int i &#x3D; 0; i &lt; 10; i++)<br>{<br>list.insert(0, i);<br>}</p>
+<p>for (int j &#x3D; 0; j &lt; list.length(); j++)<br>{<br>cout &lt;&lt; list.get(j) &lt;&lt; “ “;<br>}</p>
+<p>cout &lt;&lt; endl &lt;&lt; “delete index 5 value is : “ &lt;&lt; list.remove(5) &lt;&lt; endl;</p>
+<p>for (int j &#x3D; 0; j &lt; list.length(); j++)<br>{<br>cout &lt;&lt; list.get(j) &lt;&lt; “ “;<br>}</p>
+<p>list.clear();</p>
+<p>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-12T16:01:44.000Z" itemprop="datePublished">
+              2015-06-12
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E6%A8%A1%E7%89%88/">模版</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

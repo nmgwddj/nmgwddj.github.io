@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/12/2015/2015-06-12_160144-487/">模版类实现线性表的顺序储存</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-12T16:01:44.000Z" itemprop="datePublished">
+    2015-06-12
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%A8%A1%E7%89%88/">模版</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>使用模版类来实现线性表的顺序储存将会变的非常简单，我们不必像使用C语言一样，将数据和算法分离时使用非常繁琐的类型转换了，而我们直接使用模版中的typename就可以解决这个问题。具体实现的代码如下，都有详细的标注和测试代码：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/12/2015/2015-06-12_160144-487/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/12/2015/2015-06-12_145246-481/">常见排序方式的效率对比</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-12T14:52:46.000Z" itemprop="datePublished">
+    2015-06-12
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>我们之前介绍了多种排序算法，它们到底谁效率较高我们是前文介绍了用事前统计法统计了一下，他们的时间复杂度和空间复杂度情况如下表表示。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/12/2015/2015-06-12_145246-481/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/12/2015/2015-06-12_143128-472/">算法效率的度量</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-12T14:31:28.000Z" itemprop="datePublished">
+    2015-06-12
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>我们已经接触了很多对于数组排序的算法，比如冒泡排序、选择排序、快速排序、插入排序、希尔排序、归并排序等，算法这么多，我们到底该在实际运用中选择哪一个呢？这就涉及到了取舍的问题，当然我们取舍的重点是算法的运行效率。那算法的运行效率到底如何评价呢？有的人说，你写一个测试程序运行一下（事后统计法），看看具体使用了多少时间不就知道了吗？当然这是一种办法，但是它还有很多的缺陷，下面我们就详细介绍一下算法统计的两种方法，一种称为“事后统计法”，另外一种称为“事前分析估算”。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/12/2015/2015-06-12_143128-472/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/12/2015/2015-06-12_120613-467/">数组堆排序</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-12T12:06:13.000Z" itemprop="datePublished">
+    2015-06-12
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>堆排序也是一种空间换时间的做法，速度相对较快，我们需要生成一个动态的临时数组，以二叉堆的格式将数据插入到数组中，表现形式如下图：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/12/2015/2015-06-12_120613-467/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/12/2015/2015-06-12_001138-461/">数组归并排序</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-12T00:11:38.000Z" itemprop="datePublished">
+    2015-06-12
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>（声明：文章全部图片均来自 <a target="_blank" rel="noopener" href="http://www.itcast.cn/">传智播客</a> 教师课件）归并排序是一种空间换时间的做法，排序的速度当然会提高很多，归并排序中会产生一个临时数组，这个临时数组用来把不断拆分到最后的有序数据进行合并，最后再把合并后的数据重新赋值给原数组，这样就实现了排序。主要分为以下三个步骤：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/12/2015/2015-06-12_001138-461/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/08/2015/2015-06-08_221543-458/">数组快速排序再解</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-08T22:15:43.000Z" itemprop="datePublished">
+    2015-06-08
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>我们以前是写过<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/algorithm/29.html">数组快速排序</a>的例子的，当时因为时间问题并没有详细记录快速排序的过程是怎么样的。本文在此对数组快速排序做一个详解，希望对学习者有所帮助。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/08/2015/2015-06-08_221543-458/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/07/2015/2015-06-07_233904-455/">数组希尔排序</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-07T23:39:04.000Z" itemprop="datePublished">
+    2015-06-07
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>希尔排序是建立在插入排序的基础之上的，只不过是将数据中做插入排序之前做了一次分组，他的分组是根据用户输入的一个数字来决定分多少组的，比如有如下数据：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/07/2015/2015-06-07_233904-455/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/07/2015/2015-06-07_232356-450/">数组插入排序</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-07T23:23:56.000Z" itemprop="datePublished">
+    2015-06-07
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>插入排序是一个相对复杂一点的排序算法，但是效率要比我们以前接触过的排序算法快一些，他的思想是将数组分为两组数据（第一次分的时候就是数组第一个元素为一组，后面的所有元素为一组），然后从后面一组数据中抽取第一个元素与前面一组数据依次做对比，按需求将大的或者小的值插入到前面的一组数据中，最终后面一组数据全部插入完毕后，前面一组数据就是有序状态了。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/07/2015/2015-06-07_232356-450/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/07/2015/2015-06-07_224617-446/">数组选择排序</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-07T22:46:17.000Z" itemprop="datePublished">
+    2015-06-07
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>选择排序的规则是让第 i 个元素分别于后边的元素进行比较，记录最小的元素的位置，遍历完成之后，进行交换。将数组中每一个元素进行处理后最终得出有序的数据。其交换步骤图如下（摘自 <a target="_blank" rel="noopener" href="http://www.itcast.cn/">传智播客</a> 教师课件）：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/07/2015/2015-06-07_224617-446/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/07/2015/2015-06-07_221146-435/">#号法创建树</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-07T22:11:46.000Z" itemprop="datePublished">
+    2015-06-07
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>前面我们记录下来的文章都是手动创建的树，我们还从未尝试过将一组数据动态的在内存中构建成为一棵树。本文将详细介绍使用#号创建法动态的在内存中创建树的详细步骤。当然动态创建树并非就这么一种办法，我们记录的是最常用而且是最方便的方法。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/07/2015/2015-06-07_221146-435/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/29/">« prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="page-number" href="/page/29/">29</a><span class="page-number current">30</span><a class="page-number" href="/page/31/">31</a><a class="page-number" href="/page/32/">32</a><span class="space">&hellip;</span><a class="page-number" href="/page/40/">40</a><a class="extend next" rel="next" href="/page/31/">next »</a>
+    </nav>
+  </section>
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

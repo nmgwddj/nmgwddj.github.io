@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>gdb 调试基础 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>gdb 调试基础</h1>
+    </header>
+
+    <section>
+      <p>程序运行过程中，会产生各种各样的错误和异常信息，这些信息我们可以通过打印日志、输出文字等方式来判断和检测问题，但有的时候程序是在运行态出现故障，使用打印日志等手段没办法精准的定位问题。如果使用gdb来调试，这种问题就可以迎刃而解了。gdb 可以完全操控程序运行，让程序走就走，让程序暂停就暂停，还可以随时查看程序运行时内部变量的值等信息。</p>
+<span id="more"></span>
+<p>使用 gdb 调试程序必须保证符合以下两个条件。</p>
+<ol>
+<li>程序可以正常编译通过</li>
+<li>程序编译时，必须用 -g 选项</li>
+</ol>
+<p>&#x2F;&#x2F; 加入 -g 选项时程序可以被调试<br>gcc main.c -o main -g</p>
+<p>【开始调试】 要调试一个程序，你只需要输入命令 “gdb 被调试程序名” 就可以了，如 gdb main 【调试中列出源码】 当进入 gdb 调试状态后，程序会等待你输入调试的命令，此时，你可以输入 list 命令（也可以使用简写 l），列出程序的源码，来决定对哪一个逻辑进行调试。每执行一次 list 都只打印 10 行代码，可以多输入几次输出完整的信息。也可以使用 “list 函数名” 来直接跳转到某个函数上。如下：</p>
+<p>(gdb) list<br>1#include &lt;stdio.h&gt;<br>2#include &lt;unistd.h&gt;<br>3<br>4int main(int argc, char* argv[])<br>5{<br>6pid_t pid &#x3D; fork();<br>7<br>8if (pid &#x3D;&#x3D; 0)<br>9{<br>10&#x2F;&#x2F; 新创建的子进程<br>(gdb) list<br>11while (1)<br>12{<br>13printf(“child : PID &#x3D; %d, ParentID &#x3D; %d\n”, getpid(), getppid());<br>14sleep(1);<br>15}<br>16}<br>17else if (pid &gt; 0)<br>18{<br>19&#x2F;&#x2F; 当前进程<br>20while (1)<br>(gdb) list<br>21{<br>22printf(“parent: PID &#x3D; %d, ParentID &#x3D; %d\n”, getpid(), getppid());<br>23sleep(1);<br>24}<br>25}<br>26<br>27return 0;<br>28}</p>
+<p>【设置断点】 如果你想让程序在运行时，在第 11 行停止等待，你可以在 11 行使用 break 命令设置断点（也可以使用简拼 b 11），如下：</p>
+<p>(gdb) break 11<br>Breakpoint 1 at 0x80484fb: file fork.c, line 11.</p>
+<p>【查看断点信息】 如果你设置了多个断点，你可以使用 info break 命令查看断点，如下：</p>
+<p>(gdb) info break<br>Num     Type           Disp Enb Address    What<br>1       breakpoint     keep y   0x080484fb in main at fork.c:11</p>
+<p>它显示我在 fork.c 的第 11 行设置了一个断点，编号是1、类型是断点、当前是启用状态，它的地址是什么。 【设置条件断点】 除了上面简单的断点外，也可以设定条件断点，比如我希望在第8行设定一个断点，并且当 pid &#x3D;&#x3D; 0 的时候该断点才生效。那么可以使用 break 8 if pid &#x3D; 0，添加完成后再次使用 info break 查看断点信息如下：</p>
+<p>(gdb) info break<br>Num     Type           Disp Enb Address    What<br>1       breakpoint     keep y   0x080484fb in main at fork.c:11<br>2       breakpoint     keep y   0x080484f5 in main at fork.c:8<br>stop only if pid &#x3D; 0</p>
+<p>【启用&#x2F;禁用某断点】 使用 info break 命令我们可以看到每一个断点的 Num 号，我们可以对这些断点进行启用和禁用，使用命令 “disable 断点编号”即可禁用某个断点，如下“</p>
+<p>(gdb) disable 1<br>(gdb) info break<br>Num     Type           Disp Enb Address    What<br>1       breakpoint     keep n   0x080484fb in main at fork.c:11<br>2       breakpoint     keep y   0x080484f5 in main at fork.c:8<br>stop only if pid &#x3D; 0</p>
+<p>禁用后，Num 为 1 的断点 Enb 就变成了 n，相反如果想再次启用就使用 enable 【删除断点】 删除断点使用 delete 就可以。比如 delete 2，那么第2个断点就被删除了。</p>
+<p>(gdb) delete 2<br>(gdb) info break<br>Num     Type           Disp Enb Address    What<br>1       breakpoint     keep n   0x080484fb in main at fork.c:11</p>
+<p>【运行被调试程序】 当你已经设定好断点等信息后，可以通过命令 run 来运行程序，程序会自动在你设定的断点位置停止。</p>
+<p>(gdb) run<br>Starting program: &#x2F;home&#x2F;mycode&#x2F;0629&#x2F;fork </p>
+<p>Breakpoint 1, main (argc&#x3D;1, argv&#x3D;0xbffff174) at fork.c:6<br>6pid_t pid &#x3D; fork();</p>
+<p>【单步执行】 当卡在某断点位置时，你希望程序一步一步的向下指向，就输入 next 命令，相当于 VS 的 F10。 【单步跳入】 当程序执行到某个函数时，你希望跟踪这个函数内部的执行步骤，你可以使用 step 命令，，相当于 VS 的 F11。 【跳出】 当你希望跳出函数时，可以使用 finish 命令，相当于 VS 的 SHIFT+F11 【其他更多命令】 <a href="/images/2015/06/2015-06-29_160425.png"><img src="/images/2015/06/2015-06-29_160425.png" alt="2015-06-29_160425"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-29T16:04:46.000Z" itemprop="datePublished">
+              2015-06-29
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>select 进阶查询语句 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>select 进阶查询语句</h1>
+    </header>
+
+    <section>
+      <p>普通的 select…from 很明显不能满足我们的更细化的查询需求，它除了基本语法外，还可以拓展使用一些判断语法和过滤、分组语法。本文介绍一些 select 的进阶查询语法。其中包括等值连接、不等值连接、外连接（左外连接、右外连接）自连接、层次查询、子查询（相关子查询）等语法。本文所操作的均是 oracle 下 scott 用户下的表。大家可参考查阅。</p>
+<span id="more"></span>
+<hr>
+<h3 id="等值连接"><a href="#等值连接" class="headerlink" title="等值连接"></a>等值连接</h3><p>条件判断中使用&#x3D;判断</p>
+<p>select e.empno, e.ename, e.sal, d.dname<br>from emp e, dept d<br>where e.deptno &#x3D; d.deptno<br>order by dname asc</p>
+<h3 id="不等值连接"><a href="#不等值连接" class="headerlink" title="不等值连接"></a>不等值连接</h3><p>条件判断中不使用&#x3D;判断</p>
+<p>select e.ename, e.empno, e.sal, s.grade<br>from emp e, salgrade s<br>where e.sal between s.losal and s.hisal;</p>
+<h3 id="外连接"><a href="#外连接" class="headerlink" title="外连接"></a>外连接</h3><p>希望在最后结果中，对于 where 条件来说不成立的记录，左外连接就是在表达式右侧增加(+)，相反，右外连接是在表达式左侧增加(+)。 左外连接：</p>
+<p>select d.deptno, d.dname, count(e.ename)<br>from emp e, dept d<br>where d.deptno &#x3D; e.deptno(+)<br>group by d.deptno, d.dname</p>
+<p>右外连接：</p>
+<p>select d.deptno, d.dname, count(e.ename)<br>from emp e, dept d<br>where e.deptno(+) &#x3D; d.deptno<br>group by d.deptno, d.dname</p>
+<h3 id="自连接"><a href="#自连接" class="headerlink" title="自连接"></a>自连接</h3><p>将一张表通过别名的方式视为多张表来查询</p>
+<p>select e.ename  ‘的老板是’  b.ename<br>from emp e, emp b<br>where e.mgr &#x3D; b.empno</p>
+<h3 id="层次查询"><a href="#层次查询" class="headerlink" title="层次查询"></a>层次查询</h3><p>用来解决处理比较大的数据时自连接导致笛卡尔集比较大的问题，应用场景比较多的就是树状结构的数据，比如城市地区列表等。</p>
+<p>select level, empno, ename, mgr<br>from emp<br>connect by prior empno &#x3D; mgr<br>start with mgr is null<br>order by 1;</p>
+<h3 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h3><p>子查询其实就是嵌套 select 语句查询，嵌套的 select 要用小括号括起来，子查询可以写在 select 后面，也可以写在 from 后面，也可以写在 where 后面，但是写在不同的位置都有不同的规则，在 oracle 中子查询是非常需要得到重视的，所以子查询有如下十条规则。 1、合理的书写风格，该换行的地方换行，该缩进的地方缩进 2、小括号 3、主查询和子查询可以是不同的表，只要子查询出来的结果主查询可用就行了 4、可以在主查询的 where、selcet、having、from 后面都可以放子查询 5、group by 后面不能放子查询 6、from后面放置的子查询（***），from后面放置的是一个集合（表，查询结果） 7、一般情况下先进行子查询（内查询），再进行主查询（外查询）但是相关子查询除外 8、一般情况下不在子查询中使用order by（排序没有太大意义）Top-N必须使用 order by 9、单行子查询只能使用单行操作符，多行子查询只能使用多行操作符 10、子查询中null值 <strong>单行子查询案例：</strong></p>
+<p>select * from emp where sal &gt; (select sal from emp where ename &#x3D; ‘SCOTT’);</p>
+<p><strong>多行子查询案例：</strong> 查询部门名称为SALES和ACCOUNTING的员工信息，<strong>其中 in 语法表示等于条件中的任意一个都成立</strong></p>
+<p>select * from emp<br>where deptno in<br>   (<br>           select deptno<br>           from dept<br>           where dname &#x3D; ‘SALES’<br>           or dname &#x3D; ‘ACCOUNTING’<br>   );</p>
+<p>查询比30号部门任意一个员工公司高的员工，<strong>其中 any 语法表示和集合中的任意一个值比较符合条件就可以</strong></p>
+<p>select * from emp<br>where sal &gt; any<br>   (<br>           select sal<br>           from emp<br>           where deptno &#x3D; 30<br>   );</p>
+<p>查询比30号部门所有人工资都高的人，<strong>其中 all 语法表示和集合内的所有值比较符合条件才可以</strong></p>
+<p>select * from emp<br>where sal &gt; all<br>   (<br>           select sal<br>           from emp<br>           where deptno &#x3D; 30<br>   )</p>
+<h3 id="相关子查询"><a href="#相关子查询" class="headerlink" title="相关子查询"></a>相关子查询</h3><p>相关子查询就是主查询将某个值作为参数传递给子查询，请参考后面练习题第二题。</p>
+<h3 id="Oracle-分页"><a href="#Oracle-分页" class="headerlink" title="Oracle 分页"></a>Oracle 分页</h3><p>在 web 应用中，经常会对数据库有分页的需求，Oracle 不像其他数据库，有非常简单的分页函数，只能通过其提供的一个伪列 rownum 来实现。看如下例子。</p>
+<p>select * from<br>   (<br>           select rownum r, empno, ename, sal from emp<br>   )<br>where r &gt;&#x3D; 5 and r &lt;&#x3D; 10</p>
+<h3 id="习题"><a href="#习题" class="headerlink" title="习题"></a>习题</h3><p>1、求员工中所有人工资排前3名的人员</p>
+<p>select * from<br>   (<br>           select rownum, empno, ename, sal<br>           from emp<br>           order by sal desc<br>   )<br>where rownum &lt;&#x3D; 3</p>
+<p><a href="/images/2015/07/2015-07-20_201732.png"><img src="/images/2015/07/2015-07-20_201732.png" alt="2015-07-20_201732"></a> 2、查找员工表中薪水大于本部平均薪水的员工 方法1：</p>
+<p>select empno, ename, sal, s.avgsal<br>from emp, (select deptno, avg(sal) avgsal<br>from emp<br>group by deptno) s<br>where s.deptno &#x3D; emp.deptno<br>and emp.sal &gt; s.avgsal</p>
+<p>方法2，使用相关子查询</p>
+<p>select empno, ename, sal,<br>(<br>select avg(sal)<br>from emp<br>where deptno&#x3D;e.deptno<br>) avgsal<br>from emp e<br>where sal &gt;<br>(<br>select avg(sal)<br>from emp<br>where deptno&#x3D;e.deptno<br>)</p>
+<p><a href="/images/2015/07/2015-07-20_200826.png"><img src="/images/2015/07/2015-07-20_200826.png" alt="2015-07-20_200826"></a> 查询每年入职员工人数</p>
+<p>select  count(*) Total,<br>   sum(decode(to_char(hiredate, ‘yyyy’), ‘1980’, 1, 0)) as “1980”,<br>   sum(decode(to_char(hiredate, ‘yyyy’), ‘1981’, 1, 0)) as “1981”,<br>   sum(decode(to_char(hiredate, ‘yyyy’), ‘1982’, 1, 0)) as “1982”,<br>   sum(decode(to_char(hiredate, ‘yyyy’), ‘1987’, 1, 0)) as “1987”<br>from emp</p>
+<p><a href="/images/2015/07/2015-07-20_200846.png"><img src="/images/2015/07/2015-07-20_200846.png" alt="2015-07-20_200846"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-20T20:05:53.000Z" itemprop="datePublished">
+              2015-07-20
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/oracle/">oracle</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/sql/">sql</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

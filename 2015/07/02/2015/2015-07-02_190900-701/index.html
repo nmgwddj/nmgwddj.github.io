@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>信号捕捉（拦截） | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>信号捕捉（拦截）</h1>
+    </header>
+
+    <section>
+      <p>在一个程序收到某些信号后，程序都会自动去执行默认的操作，但大多的操作都会导致程序异常退出，除了前文我们介绍的阻塞信号以外，我们还可以对信号进行捕获（拦截）处理，让被捕获的信号去执行我们已经编写好的函数中，这样可以帮我们处理太多的问题。</p>
+<span id="more"></span>
+<hr>
+<p>C语言库函数中，提供了一个信号捕获函数，如下：</p>
+<p>typedef void (*sighandler_t)(int)<br>sighandler_t signal(int signum, sighandler_t handler</p>
+<p>该函数的第一个参数是我们要发送的信号，第二个参数是让我们提供一个函数指针，这个函数指针的原型就是上面 typedef 的原型，我们根据原型定义一个函数，然后将函数名传递到第二个参数，就可以成功调用这个函数了。当函数执行成功，会将第一个参数中的信号捕获并让其指向我们自己编写的处理函数。具体代码如下：</p>
+<p>#include &lt;signal.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;stdio.h&gt;</p>
+<p>&#x2F;&#x2F; 自定义的信号处理函数<br>void mySigAction(int num)<br>{<br>printf(“recv sig number %d, mySigAction function…\n”, num);<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>&#x2F;&#x2F; 将 SIGINT 信号捕获，让程序接受到该信号后转到 mySigAction 函数<br>signal(SIGINT, mySigAction);</p>
+<p>while (1)<br>{<br>printf(“mian printf…\n”);<br>sleep(1);<br>}<br>return 0;<br>}</p>
+<p>以上代码执行的效果如下： <a href="/images/2015/07/2015-07-02_185950.png"><img src="/images/2015/07/2015-07-02_185950.png" alt="2015-07-02_185950"></a> 这是 C 语言库函数提供给我们的方法，除了这个方法外，我们还可以使用 linux&#x2F;unix 系统提供给我们的系统函数来实现如上功能：</p>
+<p>#include &lt;stdio.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;signal.h&gt;</p>
+<p>void dosig(int num)<br>{<br>printf(“num &#x3D; %d\n”, num);<br>printf(“Hello itcast\n”);<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>struct sigaction act, oldact;<br>&#x2F;&#x2F; 设定处理函数<br>act.sa_handler &#x3D; dosig;<br>&#x2F;&#x2F; 如果不需要对新的阻塞列表进行修改，那么将这个掩码列表全部置零<br>sigemptyset(&amp;act.sa_mask);<br>&#x2F;&#x2F; 设定捕获信号的处理方式为 sa_handler 方式<br>act.sa_flags &#x3D; 0;<br>&#x2F;&#x2F; 捕获信号，并传递捕获后执行的操作结构体<br>sigaction(SIGINT, &amp;act, &amp;oldact);<br>while (1)<br>{<br>printf(“************\n”);<br>sleep(1);<br>}<br>return 0;<br>}</p>
+<p><a href="/images/2015/07/2015-07-02_190601.png"><img src="/images/2015/07/2015-07-02_190601.png" alt="2015-07-02_190601"></a> 与 C 语言库函数一样，我们实现了同样的功能，但是系统函数的功能更加强大，他允许我们保存原有的信号处理过程的状态（sigaction第三个参数），如果需要恢复的时候，可以使用这个保存下来的结构体恢复到原来的信号处理过程。 除了这种处理方式以外，还有另外一种信号处理方式，这种方式允许我们接收发送信号进程的一些信息和传递数据，请参考：<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/platform/689.html">使用信号实现进程同步（踢皮球游戏）</a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-02T19:09:00.000Z" itemprop="datePublished">
+              2015-07-02
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E4%BF%A1%E5%8F%B7/">信号</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

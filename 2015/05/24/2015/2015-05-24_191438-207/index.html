@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>多继承案例及常见问题 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>多继承案例及常见问题</h1>
+    </header>
+
+    <section>
+      <p>多继承，是希望一个子类可以继承多个父类的资源，使自己的功能更加强大，有一个床类、一个沙发类，我们希望将两个类的功能整合到一起，成为一个“沙发床”的类，即可以睡觉、又可以做。这就是多继承的应用。当然我们说的有一些抽象，下面代码演示了多继承的案例。</p>
+<span id="more"></span>
+<p>#include <iostream></p>
+<p>using namespace std;</p>
+<p>class Bed<br>{<br>public:<br>void sleep()<br>{<br>cout &lt;&lt; “Bed Sleep ~~” &lt;&lt; endl;<br>}<br>};</p>
+<p>class Sofa<br>{<br>public:<br>void sit()<br>{<br>cout &lt;&lt; “Sofa sit ~~” &lt;&lt; endl;<br>}<br>};</p>
+<p>&#x2F;&#x2F; 继承多个父类<br>class Derive : public Bed, public Sofa<br>{<br>public:<br>Derive()<br>:Bed(), Sofa() {}<br>};</p>
+<p>int main(int argc, char* argv[])<br>{<br>Derive SofaBed;<br>SofaBed.sleep();<br>SofaBed.sit();<br>return 0;<br>}</p>
+<p>上面代码演示了如何让一个子类继承多个父类并调用父类的公有接口。当然上面简单的例子是最理想化的继承，试想，如果子类继承的两个父类都有一个同名的成员变量或成员函数怎么办呢？如下：</p>
+<p>#include <iostream></p>
+<p>using namespace std;</p>
+<p>class Bed<br>{<br>public:<br>void sleep()<br>{<br>cout &lt;&lt; “Bed Sleep ~~” &lt;&lt; endl;<br>}<br>protected:<br>int data;<br>};</p>
+<p>class Sofa<br>{<br>public:<br>void sit()<br>{<br>cout &lt;&lt; “Sofa sit ~~” &lt;&lt; endl;<br>}<br>protected:<br>int data;<br>};</p>
+<p>&#x2F;&#x2F; 继承多个父类<br>class Derive : public Bed, public Sofa<br>{<br>public:<br>Derive()<br>:Bed(), Sofa() {}</p>
+<p>void display()<br>{<br>cout &lt;&lt; data &lt;&lt; endl;<br>}<br>};</p>
+<p>int main(int argc, char* argv[])<br>{<br>Derive SofaBed;<br>SofaBed.sleep();<br>SofaBed.sit();<br>return 0;<br>}</p>
+<p>以上代码编译后，会提示 data 不明确，这也就造成了二义性问题，子类不知道该选择哪一个了。如下图： <a href="/images/2015/05/2015-05-24_191201.png"><img src="/images/2015/05/2015-05-24_191201.png" alt="2015-05-24_191201"></a> 当然，如果在子类自身中声明一个同名的 data 变量，再调用时则不会报错。如下所示：</p>
+<p>class Derive : public Bed, public Sofa<br>{<br>public:<br>Derive()<br>:Bed(), Sofa() {}</p>
+<p>void display()<br>{<br>cout &lt;&lt; data &lt;&lt; endl;<br>}<br>private:<br>int data;<br>};</p>
+<p>但如果我们必须要使用父类的这个 data 成员变量要怎么办呢？这个话题我们在下一篇文章中介绍。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-24T19:14:38.000Z" itemprop="datePublished">
+              2015-05-24
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

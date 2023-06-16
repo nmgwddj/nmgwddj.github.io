@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>在 .js/.jsx 文件中使用 emmet 快捷键快速编写 html 代码 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>在 .js/.jsx 文件中使用 emmet 快捷键快速编写 html 代码</h1>
+    </header>
+
+    <section>
+      <p>emmet 是一个非常强大的 html 代码编写助力插件在项目开发的时候非常实用，需要手写几行的代码用 emmet 一行就搞定了。emmet 的具体用法就不做本文介绍，有兴趣的可以自己去 <a target="_blank" rel="noopener" href="https://docs.emmet.io/">emmet 官网</a>看看介绍。由于它仅在 .html 文件中可以使用，而 React 等前端框架都是在 .js 或 .jsx 文件内写 html 代码。所以有些时候就不奏效了。本文就是介绍如何做 .js&#x2F;.jsx 文件中使用 emmet 编写 html 代码。</p>
+<span id="more"></span>
+<h2 id="来源地址"><a href="#来源地址" class="headerlink" title="来源地址"></a>来源地址</h2><p><a target="_blank" rel="noopener" href="https://gist.github.com/mxstbr/361ddb22057f0a01762240be209321f0">https://gist.github.com/mxstbr/361ddb22057f0a01762240be209321f0</a></p>
+<h2 id="演示效果"><a href="#演示效果" class="headerlink" title="演示效果"></a>演示效果</h2><p><a href="/images/2017/05/2017-05-05-15.59.481.gif"><img src="/images/2017/05/2017-05-05-15.59.481.gif"></a></p>
+<h2 id="实现方法"><a href="#实现方法" class="headerlink" title="实现方法"></a>实现方法</h2><ul>
+<li>点击 atom 左上角 Atom-&gt;keymap 菜单，此时会打开 keymap.cson 文件。</li>
+<li>添加如下代码到 keymap.cson 的文件末尾。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x27;atom-text-editor[data-grammar~=&quot;jsx&quot;]:not([mini])&#x27;:</span><br><span class="line">  &#x27;tab&#x27;: &#x27;emmet:expand-abbreviation-with-tab&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>保存文件后重新开打 .js&#x2F;.jsx 文件，再试试就可以用 emmet 的方式编写 html 代码了。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-05-05T16:03:04.000Z" itemprop="datePublished">
+              2017-05-05
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

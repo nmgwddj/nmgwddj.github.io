@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>结构体成员在内存中的对齐方式 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>结构体成员在内存中的对齐方式</h1>
+    </header>
+
+    <section>
+      <p>这个话题还是很早以前讨论过，当时并没有好好的理解，最近在复习知识的时候又重新看了一遍资料，自己做一下总结，也希望后面有人需要学习时可以对他有所帮助。以下我会举两个结构体的例子，分别画图的方式表达对齐的原则。</p>
+<span id="more"></span>
+<h3 id="结构体对齐的公式"><a href="#结构体对齐的公式" class="headerlink" title="结构体对齐的公式"></a>结构体对齐的公式</h3><p>记住以下这些规则，把结构体往里面套就可以了。结构体对齐的原则就是牺牲空间的方式来减少时间的消耗，空间用完还可以复用，而时间过去了就再也不会回来了。</p>
+<ul>
+<li>以 #pragma pack(x) 中 x 的大小和结构中占用空间最大的成员做比较，取小值为 n（外对齐依据）</li>
+<li>以 n 值和结构体每个成员比较，得出结果列表为 m[x]</li>
+<li>根据每个成员的大小依次向内存中填充数据，要求填充 <code>成员的起始地址</code> 减去 <code>构体起始地址</code> 的差都可以整除 m[x] ，如不能整除则向后移动，直到可以整除再填充成员到内存（内对齐依据）</li>
+<li>当全部成员填充完毕后所占用的字节若不能整除 n，则扩充内存到可以整除 n 为止。</li>
+</ul>
+<h3 id="案例一"><a href="#案例一" class="headerlink" title="案例一"></a>案例一</h3><p>我们来看一个简单的案例，#pragma pack(4) 为 4，结构体中有 char、short、int 3个成员，其对齐的方式如下图表示： <a href="/images/2016/02/2016-02-15_190135.png"><img src="/images/2016/02/2016-02-15_190135.png" alt="2016-02-15_190135"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">#pragma pack(4)</span><br><span class="line"></span><br><span class="line">typedef struct data</span><br><span class="line">&#123;</span><br><span class="line">    char a;</span><br><span class="line">    short b;</span><br><span class="line">    int c;</span><br><span class="line">&#125; DATA, *PDATA;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    printf(&quot;sizeof(DATA) = %lu\n&quot;, sizeof(DATA));</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上代码运行后，得到如下结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mycode@vmware:~/Desktop$ gcc struct.c -o struct_size</span><br><span class="line">mycode@vmware:~/Desktop$ ./struct</span><br><span class="line">sizeof(DATA) = 8</span><br></pre></td></tr></table></figure>
+
+<h3 id="案例二"><a href="#案例二" class="headerlink" title="案例二"></a>案例二</h3><p>这个案例中，我们把 #pragma pack(8) 设定为 8，结构体中有三个成员 char、double、int，其对齐方式如下图： <a href="/images/2016/02/2016-02-15_190143-1.png"><img src="/images/2016/02/2016-02-15_190143-1.png" alt="2016-02-15_190143"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">#pragma pack(8)</span><br><span class="line"></span><br><span class="line">typedef struct data</span><br><span class="line">&#123;</span><br><span class="line">    char a;</span><br><span class="line">    double b;</span><br><span class="line">    int c;</span><br><span class="line">&#125; DATA, *PDATA;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    printf(&quot;sizeof(DATA) = %lu\n&quot;, sizeof(DATA));</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>是不是有点毁三观啊？以上代码运行后的结果，的确就是 24。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mycode@vmware:~/Desktop$ gcc struct_size.c -o struct_size</span><br><span class="line">mycode@vmware:~/Desktop$ ./struct_size </span><br><span class="line">sizeof(DATA) = 24</span><br></pre></td></tr></table></figure>
+
+<p>要注意的是，如果你把这个案例中 int 和 double 成员颠倒个位置，再编译代码你会发现其占用空间变成了 16，按上面的规则推断一下，很明显，首先是第二个成员 int 在内存的第 4 号位置就可以驻留了，第三个成员 double，在第 8 号位置也同样可以驻留。最终大小会变成 16 个字节。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-02-15T19:15:41.000Z" itemprop="datePublished">
+              2016-02-15
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

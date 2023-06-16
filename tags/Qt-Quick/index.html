@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ Qt Quick }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2023/04/26/2023/2023-04-26_100852-3189/">Qt6 QML 中渲染自定义视频帧的改进 2023-05-30 更新</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2023-04-26T10:08:52.000Z" itemprop="datePublished">
+    2023-04-26
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/Qt-Quick/">Qt Quick</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>最近在升级音视频的项目 Qt 版本，从 5.15.0 升级到 6.4.3（6.5 也一样），除了一些 QML 中删除了一些 Qt Quick Controls 1 的控件以外，最重要的就是自定义视频渲染的改进。</p>
+        
+          <div class="more-link">
+            <a href="/2023/04/26/2023/2023-04-26_100852-3189/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2020/07/11/2020/2020-07-11_151932-2941/">Qt Quick 5.15.0 Connections 新语法</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2020-07-11T15:19:32.000Z" itemprop="datePublished">
+    2020-07-11
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Qt-Quick/">Qt Quick</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/QML/">QML</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>过去的 Connection 连接某个对象的信号时是这样写的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Connections &#123;</span><br><span class="line">    target: authManager</span><br><span class="line">    onError: &#123;</span><br><span class="line">        busyContainer.visible = false</span><br><span class="line">        buttonJoin.enabled = Qt.binding(function () &#123;</span><br><span class="line">            return textMeetingId.length &gt;= 11 &amp;&amp; textNickname.length &gt; 0</span><br><span class="line">        &#125;)</span><br><span class="line">        message.error(result.msg)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>新的语法中可以这样写：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Connections &#123;</span><br><span class="line">    target: authManager</span><br><span class="line">    function onError(resCode, result) &#123;</span><br><span class="line">        busyContainer.visible = false</span><br><span class="line">        buttonJoin.enabled = Qt.binding(function () &#123;</span><br><span class="line">            return textMeetingId.length &gt;= 11 &amp;&amp; textNickname.length &gt; 0</span><br><span class="line">        &#125;)</span><br><span class="line">        message.error(result.msg)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于日常开发中，新的写法有助于我们定义槽函数的形参个数和实际作用。代码看起来更容易读懂。另外 Qt 官方文档中也介绍了一些其他好处，见：<a target="_blank" rel="noopener" href="https://doc.qt.io/qt-5/qml-qtqml-connections.html">Qt官方文档</a> 如果你使用 Qt 15.5.0 版本打开了一个旧的工程并使用的是旧的写法，那么会收到一个警告：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qrc:/qml/AnonJoinPage.qml:54:5: QML Connections: Implicitly defined onFoo properties in Connections are deprecated. Use this syntax instead: function onFoo(&lt;arguments&gt;) &#123; ... &#125;</span><br></pre></td></tr></table></figure>
+
+<p>既然是个警告，则不影响代码继续执行。但这样的警告不得不让你重写这部分代码来适配新的语法。</p>
+
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2020/02/13/2020/2020-02-13_181930-2912/">Qt QML qtquickcontrols2.conf 使用系统未安装的自定义字体</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2020-02-13T18:19:30.000Z" itemprop="datePublished">
+    2020-02-13
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/Qt-Quick/">Qt Quick</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/QML/">QML</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/QML/">QML</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>现在很多视觉设计最终给出的字体可能并不是所有系统都安装过的，所以项目中可能需要单独把字体文件打包进去在程序运行的时候加载。Qt QML 有多种方式加载一个自定义字体，本文将介绍所有我知道的方式，大家根据自己的需要选择使用任意一种即可。</p>
+        
+          <div class="more-link">
+            <a href="/2020/02/13/2020/2020-02-13_181930-2912/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>oracle 下一些零散的命令和 sql 语句 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>oracle 下一些零散的命令和 sql 语句</h1>
+    </header>
+
+    <section>
+      <p>以前学过一些数据库相关的知识，回想起来刚入门还是看了传智播客的视频，杨忠科老师的sql语句教程。现在已经好多年了，中间自己也不断的在用，但是一直没有提高，只是会简单增删改查，今天学的 cast..then..等等都没怎么用过，所以记录一下没有学到过的内容，以后备用。</p>
+<span id="more"></span>
+<hr>
+<p>  <strong>&#x2F;&#x2F; 查看所有表</strong></p>
+<p>select * from tab;</p>
+<p><strong>&#x2F;&#x2F; 查看表字段</strong></p>
+<p>desc emp;</p>
+<p><strong>&#x2F;&#x2F; 清屏</strong></p>
+<p>host cls</p>
+<p><strong>&#x2F;&#x2F; 执行上一次执行过的语句</strong></p>
+<p>&#x2F;</p>
+<p><strong>&#x2F;&#x2F; 修改列宽度</strong> col 列名 for a20（字符串） col 列名 for 99999（数字）</p>
+<p><strong>&#x2F;&#x2F; 修改错误的sql语句</strong> 跳转到指定错误行 1 修改指定数据 <strong>c</strong> &#x2F;form&#x2F;from 使用<strong>ed</strong>命令，弹出系统默认的编辑器 <strong>&#x2F;&#x2F; 去重</strong> select <strong>distinct</strong> job from emp;</p>
+<p><strong>&#x2F;&#x2F; 表达式中使用可能为NULL值的处理办法</strong> 在表达式中如果使用了带有NULL的操作数，那么整个表达式的结果也是NULL，如果想避免这种情况，可以使用如下函数 <strong>nvl(comm, 0)</strong> 意思就是如果comm是NULL的情况下，那么给其返回0</p>
+<p><strong>&#x2F;&#x2F; 连接两个字符串和伪表 dual</strong> select ‘hello ‘ ‘world’ as “hello” from dual; select <strong>concat</strong>(‘hello ‘, ‘world’) as “hello” from dual;</p>
+<p><strong>&#x2F;&#x2F; 查询1250到3000之间的数据,包含1250和3000</strong> between 1250 and 3000</p>
+<p><strong>&#x2F;&#x2F; 查询 10 或者 20 的数据</strong> select * from emp where <strong>deptno</strong> &#x3D; 10 or <strong>deptno</strong> &#x3D; 20;select * from emp where deptno in (10, 20);select * from emp where deptno not in (10, 20);select * from emp where comm in (300, 500, NULL) select * from emp where comm not in (300, 500, NULL)     <strong>&#x2F;&#x2F; 不允许的</strong> <strong>&#x2F;&#x2F; 查询带有下划线的字段</strong> select * from emp where ename like ‘%<strong>\_</strong>%’ <strong>escape ‘\‘</strong>     &#x2F;&#x2F; 重要的是escape告诉sql语句是用\转义 <strong>&#x2F;&#x2F; sql语句解析方式，自右向左解析，一般把and右侧的写比较容易出错的条件，这样右侧出错后就不用再判断左侧了，or也是同样道理</strong> <strong>&#x2F;&#x2F; order by 可以根据字段序号排列</strong> select ename, deptno, sal, sal * 12 from emp order by 2 desc <strong>&#x2F;&#x2F; order by 可以同时作用多个列</strong> select ename, deptno, sal, sal * 12 from emp order by 2 desc, sal desc <strong>&#x2F;&#x2F; order by 对 null 的处理</strong> select ename, deptno, sal, sal * 12, comm from emp order by comm desc nulls last <strong>&#x2F;&#x2F; 日期格式化</strong> select to_char(sysdate + 1, ‘yyyy-mm-dd hh24:mi:ss’) from dual; select round((sysdate - hiredate) &#x2F; 365) from emp; <strong>*不允许日期相加*</strong> <strong>&#x2F;&#x2F; 两个日期相差的月数</strong> select ename, hiredate, <strong>months_between</strong>(sysdate, hiredate) &#x2F; 12 from emp; <strong>&#x2F;&#x2F; 在某日期上加上多少个月</strong> select to_char(<strong>add_months</strong>(sysdate, 95), ‘yyyy-mm-dd hh24:mi:ss’) from dual; <strong>&#x2F;&#x2F; 日期所在月的最后一天</strong> select to_char(<strong>last_day</strong>(sysdate), ‘yyyy-mm-dd hh24:mi:ss’) from dual; <strong>&#x2F;&#x2F; 返回指定的下一个日期</strong> select to_char(<strong>next_day</strong>(sysdate, ‘星期日’), ‘yyyy-mm-dd hh24:mi:ss’) from dual; <strong>&#x2F;&#x2F; 转换函数</strong> date-&gt;char,number-&gt;char to_char char-&gt;date to_date char-&gt;number to_number <strong>&#x2F;&#x2F; 时间转换练习</strong> select to_char(sysdate, ‘yyyy-mm-dd hh24:mi:ss’) ‘ 今天是 ‘ to_char(sysdate, ‘day’) from dual; select to_char(sysdate, ‘yyyy-mm-dd hh24:mi:ss “今天是” day’) from dual; select to_date(‘2015-07-19 16:50:50 今天是 星期日’, ‘yyyy-mm-dd hh24:mi:ss “今天是” day’) from dual; <strong>&#x2F;&#x2F; 使用转换函数时一些代替值</strong> 9     数字 0     零 $     美元 L     本地货币符号 .     小数点 ,     千位符</p>
+<p>select to_char(sal, ‘<strong>L99,999.99</strong>‘) as “sal” from emp;</p>
+<p>返回结果</p>
+<p>sal ——————– ￥2,850.00</p>
+<p><strong>&#x2F;&#x2F; case when 语法</strong> select ename, job, sal as “张前薪水”, <strong>case</strong> job <strong>when</strong> ‘PRESIDENT’ then sal + 1000 <strong>when</strong> ‘MANAGER’ then sal + 800 <strong>else</strong> sal + 400 <strong>end</strong> as “涨后薪水” from emp order by “涨后薪水” desc; <strong>&#x2F;&#x2F; decode 函数，第一个和最后一个参数以外，中间的都是过滤条件</strong> select ename, job, sal as “张前薪水”, <strong>decode</strong>(job, ‘PRESIDENT’, sal + 1000, ‘MANAGER’, sal + 800, sal + 400) as “涨后薪水” from emp order by “涨后薪水” desc;</p>
+<p><strong>&#x2F;&#x2F; 字符串转小写</strong></p>
+<p>select lower(‘HELLO’) from dual;</p>
+<p>结果：hello</p>
+<p><strong>&#x2F;&#x2F; 字符串转大写</strong></p>
+<p>select <strong>upper</strong>(‘hello’) from dual;</p>
+<p>结果：HELLO</p>
+<p><strong>&#x2F;&#x2F; 首字母大写</strong></p>
+<p>select <strong>initcap</strong>(‘what is your name’) from dual;</p>
+<p>结果：What Is Your Name</p>
+<p><strong>&#x2F;&#x2F; 字符串连接函数</strong></p>
+<p>select <strong>concat</strong>(‘hello’, ‘ world’) from dual;</p>
+<p>结果：hello world</p>
+<p><strong>&#x2F;&#x2F; 截取字符串部分内容</strong></p>
+<p>select <strong>substr</strong>(‘hello world’, 3) from dual;          &#x2F;&#x2F; 从第3位开始一直到字符串最后</p>
+<p>结果：llo world</p>
+<p>select <strong>substr</strong>(‘hello world’, 3, 5) from dual;      &#x2F;&#x2F; 从第3位开始截取5个字符</p>
+<p>结果：llo w</p>
+<p><strong>&#x2F;&#x2F; 获取字符串长度和所用字节数</strong></p>
+<p>select <strong>length</strong>(‘hello world’) from dual;</p>
+<p>结果：11</p>
+<p>select <strong>lengths</strong>(‘hello world’) from dual;</p>
+<p>结果：8</p>
+<p><strong>&#x2F;&#x2F; 查找一个字符串中是否包含一个子串</strong></p>
+<p>select <strong>instr</strong>(‘hello world’, ‘wor’) from dual;</p>
+<p>结果：7（子串第一个字母的位置）</p>
+<p>没找到返回0</p>
+<p><strong>&#x2F;&#x2F; 填充字符串</strong></p>
+<p>select <strong>lpad</strong>(‘hello’, 20, ‘*‘) from dual;</p>
+<p>结果：***************hello          &#x2F;&#x2F; 最后结果字节数是第二个参数指定的数字</p>
+<p>select <strong>rpad</strong>(‘hello’, 20, ‘^’) from dual;</p>
+<p>结果：hello^^^^^^^^^^^^^^^     &#x2F;&#x2F; 同上</p>
+<p><strong>&#x2F;&#x2F; 删除字符串开头和末尾的内容</strong></p>
+<p>select <strong>trim</strong>(‘H’ from ‘HellHo worldHH’) from dual;</p>
+<p>结果：ellHo world          &#x2F;&#x2F; 注意中间的是不删除的</p>
+<p><strong>&#x2F;&#x2F; 替换字符串内容</strong></p>
+<p>select <strong>replace</strong>(‘hello world’, ‘l’, ‘*‘) from dual;</p>
+<p>结果：he**o wor*d</p>
+<p><strong>&#x2F;&#x2F; 四舍五入</strong></p>
+<p>select <strong>round</strong>(45.29, 1) from dual;</p>
+<p>结果：45.3</p>
+<p>select <strong>round</strong>(45.29) from dual;</p>
+<p>结果：45</p>
+<p>select <strong>round</strong>(45.29, -1) from dual; 结果：50</p>
+<p><strong>&#x2F;&#x2F; 截断</strong></p>
+<p>select <strong>trunc</strong>(15.789, 2) from dual;</p>
+<p>结果：15.78</p>
+<p>select <strong>trunc</strong>(15.789, 1) from dual;</p>
+<p>结果：15.7</p>
+<p>select <strong>trunc</strong>(15.789) from dual;</p>
+<p>结果：15</p>
+<p>select <strong>trunc</strong>(15.789, -1) from dual;</p>
+<p>结果：10</p>
+<p><strong>&#x2F;&#x2F; 求余</strong></p>
+<p>select <strong>mod</strong>(100, 30) from dual;</p>
+<p>结果：10</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-19T20:16:34.000Z" itemprop="datePublished">
+              2015-07-19
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/oracle/">oracle</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

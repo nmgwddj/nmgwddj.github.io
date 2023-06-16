@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt Quick QML MouseArea 事件穿透 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt Quick QML MouseArea 事件穿透</h1>
+    </header>
+
+    <section>
+      <p><code>MouseArea</code> 是 QML 中一个不可见的鼠标操作区域，可响应所有鼠标事件。一般情况下在自定义按钮、自定义需要鼠标交互的区域时使用。有时你只需要它的 hover 通知来做一些事情，而另外的点击等操作需要传递给其下层的控件，这时你就需要忽略其自身的鼠标按下释放等操作让其消息传递到下层了。</p>
+<span id="more"></span>
+<h2 id="开启事件传递"><a href="#开启事件传递" class="headerlink" title="开启事件传递"></a>开启事件传递</h2><p>MouseArea 有一个属性为 <code>propagateComposedEvents</code>，默认为 false，当设置为 true 时，就可以将事件传递给重叠的其他鼠标区域了（包括控件），见 Qt 官方文档：<a target="_blank" rel="noopener" href="https://doc.qt.io/qt-5/qml-qtquick-mousearea.html#propagateComposedEvents-prop">https://doc.qt.io/qt-5/qml-qtquick-mousearea.html#propagateComposedEvents-prop</a>，示例代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">MouseArea &#123;</span><br><span class="line">    anchors.fill: parent</span><br><span class="line">    propagateComposedEvents: true</span><br><span class="line">    onClicked: &#123;</span><br><span class="line">        console.log(&quot;clicked blue&quot;)</span><br><span class="line">        mouse.accepted = false</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上代码中开启了 <code>propagateComposedEvents</code> 属性，并且将 <code>onClicked</code> 中 <code>mouse.accepted</code> 重置为 false 了，这样 onClicked 事件就会顺利的传递到下层控件中。如果你希望所有点击和释放操作都传递到下层，可以将 onPressed、onReleased 都重写掉，设置 accepted 为 false，如下示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">MouseArea &#123;</span><br><span class="line">    anchors.fill: parent</span><br><span class="line">    propagateComposedEvents: true</span><br><span class="line">    onClicked: &#123;</span><br><span class="line">        mouse.accepted = false</span><br><span class="line">    &#125;</span><br><span class="line">    onPressed: &#123;</span><br><span class="line">        mouse.accepted = false</span><br><span class="line">    &#125;</span><br><span class="line">    onReleased: &#123;</span><br><span class="line">        mouse.accepted = false</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样实现后，这个 MouseArea 的所有点击、按下、释放操作都会传递到下层，而且如果你开启了 <code>hoverEnabled</code> 属性，还不影响 <code>onPositionChanged</code>（鼠标移动）的事件响应，完美的实现了一个鼠标区域只响应鼠标移动但又可以传递点击等事件到下层控件的需求。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2019-11-05T16:50:45.000Z" itemprop="datePublished">
+              2019-11-05
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

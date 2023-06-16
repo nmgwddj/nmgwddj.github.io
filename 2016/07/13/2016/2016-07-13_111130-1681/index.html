@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Windows VS2015 编译 libssh2 1.7.0 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Windows VS2015 编译 libssh2 1.7.0</h1>
+    </header>
+
+    <section>
+      <p>最近公司要求做一个小工具，要求是通过程序连接 Linux 服务器，对服务器传送文件和执行命令。多次搜索后找到了比较适合的 <a target="_blank" rel="noopener" href="https://www.libssh2.org/">libssh2</a> 开源项目。但因为缺乏文档，一直没有编译成功。但最终经过多方搜索，还是成功在 VS2015 中将项目编译成功。特此写下详细步骤，希望能帮助各位。</p>
+<span id="more"></span>
+<h2 id="下载安装-OpenSSL"><a href="#下载安装-OpenSSL" class="headerlink" title="下载安装 OpenSSL"></a>下载安装 OpenSSL</h2><p>要编译 libssh2，必须先编译好 OpenSSL 的静态库（我们要用静态库），幸运的是，我们不用自己编译（网上有很多自己编译的文章，问题多多、步骤繁琐且版本较老。），直接从 <a target="_blank" rel="noopener" href="http://slproweb.com/products/Win32OpenSSL.html">http://slproweb.com/products/Win32OpenSSL.html</a> 下载已经编译好的包含 lib 和 include 文件的安装包即可。访问该网站点击下载完整的安装包，注意，不要下载 light 版本，因为 light 版本不带 lib 和 include。如下图： <a href="/images/2016/07/2016-07-13_102013.png"><img src="/images/2016/07/2016-07-13_102013.png" alt="2016-07-13_102013"></a> 下载完成后直接安装，我这里安装到 D:\OpenSSL-Win32 目录： <a href="/images/2016/07/2016-07-13_104341.png"><img src="/images/2016/07/2016-07-13_104341.png" alt="2016-07-13_104341"></a> OpenSSL 就这样安装完毕了，如果你按网上自己编译的方法去自己编译，恐怕要耗上你至少半天的时间。我们来看看他的目录结构。 <a href="/images/2016/07/2016-07-13_104504.png"><img src="/images/2016/07/2016-07-13_104504.png" alt="2016-07-13_104504"></a></p>
+<h2 id="开始编译-libssh2"><a href="#开始编译-libssh2" class="headerlink" title="开始编译 libssh2"></a>开始编译 libssh2</h2><p>从 <a target="_blank" rel="noopener" href="https://www.libssh2.org/snapshots/">https://www.libssh2.org/snapshots/</a> 下载最新版本的源码包，解压出来后，用 VS2015 打开 <code>libssh2-1.7.0\win32\libssh2.dsw</code>（其实你可以用任何版本）。 <a href="/images/2016/07/2016-07-13_093950.png"><img src="/images/2016/07/2016-07-13_093950.png" alt="2016-07-13_093950"></a> 此时会提示升级项目，点击确定升级即可： <a href="/images/2016/07/2016-07-13_094116.png"><img src="/images/2016/07/2016-07-13_094116.png" alt="2016-07-13_094116"></a> 升级完成后，项目成功加载，里面有两个工程，一个是 libssh2，一个是 tests。tests 是一个测试的项目，我们不用管，我们重点关注的就是 libssh2 项目。 打开 libssh2 的属性管理器，可以看到该项目被官方配置好了已经有很多编译方式： <a href="/images/2016/07/2016-07-13_094232.png"><img src="/images/2016/07/2016-07-13_094232.png" alt="2016-07-13_094232"></a> 因为我们要用 OpenSSL lib 的方式编译，且要 Release 版本的，所以我只用这个做演示，大家自己需要什么版本自己编译即可。首先双击 <code>OpenSSL LIB Release Win32</code>，编辑该项目属性，在 <code>C/C++ -&gt; 常规 -&gt; 附加包含目录</code> 中，添加 OpenSSL 的 include 路径 <code>D:\OpenSSL-Win32\include</code>，如下图： <a href="/images/2016/07/2016-07-13_094333.png"><img src="/images/2016/07/2016-07-13_094333.png" alt="2016-07-13_094333"></a> 接下来，添加 OpenSSL 的库路径和库文件到项目中。</p>
+<ul>
+<li>选择项目属性中的 <code>库管理器 -&gt; 常规 -&gt; 附加库目录</code>，添加 OpenSSL 的 Lib 库路径 <code>D:\OpenSSL-Win32\lib\VC</code></li>
+<li>选择项目属性中的 <code>库管理器 -&gt; 常规 -&gt; 附加依赖库</code>，添加 OpenSSL 的 Lib 文件 <code>libeay32MT.lib</code> <code>ssleay32MT.lib</code></li>
+</ul>
+<p>这里大家可能注意到了，libeay32.lib 和 ssleay32.lib 分好多个版本，有 MD、MDd、MT、MTd 等，我们到底要选择哪个那？这要取决你编译这个库要使用的 <code>运行库</code>。选择该项目属性中的 <code>C/C++ -&gt; 代码生成 -&gt; 运行库</code>，根据你要调用 libssh2 的项目属性。 <a href="/images/2016/07/2016-07-13_094533.png"><img src="/images/2016/07/2016-07-13_094533.png" alt="2016-07-13_094533"></a> 修改这里的属性，因为我要调用 libssh2 的项目使用的是 <code>多线程MT</code>，所以这里我也选择了 <code>多线程MT</code>，同时，你选择 libeay32.lib 和 ssleay32.lib 的时候，就根据这里的属性选择即可。 至此全部配置完毕了，编译一下项目，遇到了一个其他问题，编译器提示 <code>snprintf 宏重定义</code>： <a href="/images/2016/07/2016-07-13_094917.png"><img src="/images/2016/07/2016-07-13_094917.png" alt="2016-07-13_094917"></a> 这是因为在 libssh2_config.h 中重复定义了 snprintf 宏，只需要将 libssh2_config.h 中的定义注释即可： <a href="/images/2016/07/2016-07-13_095252.png"><img src="/images/2016/07/2016-07-13_095252.png" alt="2016-07-13_095252"></a> 当然，这不是最终解决方案，在 libssh2 的 github 中，有人曾提出了这个问题，并且目前 github 最新的代码已经解决了这个问题，其解决的办法是判断 VC 库的版本决定是否定义 snprintf 宏。参见：<a target="_blank" rel="noopener" href="https://github.com/libssh2/libssh2/commit/ded55537acbfda9756667e054c22972842633cf4">https://github.com/libssh2/libssh2/commit/ded55537acbfda9756667e054c22972842633cf4</a> 注释掉冲突的代码后，再次重新编译项目，这次就可以编译通过了，后面有两条警告，无需理会，不影响我们使用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">1&gt;------ 已启动生成: 项目: libssh2, 配置: OpenSSL LIB Release Win32 ------</span><br><span class="line">1&gt;  agent.c</span><br><span class="line">1&gt;  channel.c</span><br><span class="line">1&gt;  comp.c</span><br><span class="line">1&gt;  crypt.c</span><br><span class="line">1&gt;  global.c</span><br><span class="line">1&gt;  hostkey.c</span><br><span class="line">1&gt;  keepalive.c</span><br><span class="line">1&gt;  kex.c</span><br><span class="line">1&gt;  knownhost.c</span><br><span class="line">1&gt;  mac.c</span><br><span class="line">1&gt;  misc.c</span><br><span class="line">1&gt;  openssl.c</span><br><span class="line">1&gt;  packet.c</span><br><span class="line">1&gt;  pem.c</span><br><span class="line">1&gt;  publickey.c</span><br><span class="line">1&gt;  scp.c</span><br><span class="line">1&gt;  session.c</span><br><span class="line">1&gt;  sftp.c</span><br><span class="line">1&gt;  transport.c</span><br><span class="line">1&gt;  userauth.c</span><br><span class="line">1&gt;  正在生成代码...</span><br><span class="line">1&gt;  正在编译...</span><br><span class="line">1&gt;  version.c</span><br><span class="line">1&gt;  wincng.c</span><br><span class="line">1&gt;  正在生成代码...</span><br><span class="line">1&gt;ssleay32MT.lib(SSLEAY32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR 已在 libeay32MT.lib(LIBEAY32.dll) 中定义；已忽略第二个定义</span><br><span class="line">1&gt;ssleay32MT.lib(SSLEAY32.dll) : warning LNK4221: 此对象文件未定义任何之前未定义的公共符号，因此任何耗用此库的链接操作都不会使用此文件</span><br><span class="line">1&gt;  libssh2.vcxproj -&gt; D:\libssh2-1.7.0\win32\.\Release_lib\libssh2.lib</span><br><span class="line">========== 生成: 成功 1 个，失败 0 个，最新 0 个，跳过 0 个 ==========</span><br></pre></td></tr></table></figure>
+
+<p>以下是我调试通过的 VS2015 的项目目录，用 VS2015 打开可以直接编译通过的，下载后打开 win32 目录，用 VS2015 打开 libssh2.sln 编译即可：<a href="/images/2016/07/libssh2-1.7.0.zip">点击下载 libssh2-1.7.0</a></p>
+<h2 id="测试-libssh2"><a href="#测试-libssh2" class="headerlink" title="测试 libssh2"></a>测试 libssh2</h2><p>接下来我们新建一个 Win32 控制台的空项目，新建一个 cpp 文件。 <a href="/images/2016/07/2016-07-13_132708.png"><img src="/images/2016/07/2016-07-13_132708.png" alt="2016-07-13_132708"></a> 然后复制我们刚刚编译好的 libssh2 的库文件和所需的头文件。</p>
+<ul>
+<li>在新建的 Win32 项目目录下新建两个目录，一个叫 <code>include</code>，一个叫 <code>lib</code>。</li>
+<li>复制我们刚才生成好的 <code>libssh2-1.7.0\win32\Release_lib\libssh2.lib</code> 到新建 Win32 项目的 <code>lib</code> 目录下。</li>
+<li>复制 <code>libssh2-1.7.0\include</code> 目录下所有文件到新建的 Win32 项目的 <code>include</code> 目录下。</li>
+<li>复制 <code>libssh2-1.7.0\win32\libssh2_config.h</code> 文件到新建的 Win32 项目的 <code>include</code> 目录下。</li>
+</ul>
+<p>复制完成后的目录结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">│  libssh2_example.vcxproj</span><br><span class="line">│  libssh2_example.vcxproj.filters</span><br><span class="line">│  main.cpp</span><br><span class="line">│</span><br><span class="line">├─include</span><br><span class="line">│      libssh2.h</span><br><span class="line">│      libssh2_config.h</span><br><span class="line">│      libssh2_publickey.h</span><br><span class="line">│      libssh2_sftp.h</span><br><span class="line">│</span><br><span class="line">└─lib</span><br><span class="line">        libssh2.lib</span><br></pre></td></tr></table></figure>
+
+<p>将测试项目的解决方案配置改为 Release，将 include 目录添加到项目的“附加包含目录”中。 <a href="/images/2016/07/2016-07-13_133857.png"><img src="/images/2016/07/2016-07-13_133857.png" alt="2016-07-13_133857"></a> 将 lib 目录添加到项目的“附加库目录”中。 <a href="/images/2016/07/2016-07-13_133930.png"><img src="/images/2016/07/2016-07-13_133930.png" alt="2016-07-13_133930"></a> 添加 libssh2.lib 到“附加依赖库”中。 <a href="/images/2016/07/2016-07-13_133955.png"><img src="/images/2016/07/2016-07-13_133955.png" alt="2016-07-13_133955"></a> 这里项目属性就配置好了，我们到官网找一个测试代码，拷贝到我们的项目里试一下。打开 <a target="_blank" rel="noopener" href="https://www.libssh2.org/examples">https://www.libssh2.org/examples</a>，随便找一个例子，我这里找的是 ssh2_exec.c 的列子，选择 ssh2_exec.c 例子，将里面所有的代码复制出来到我们测试项目的 main.cpp 中，然后修改一下例子中连接服务器的 IP 地址、用户名口令等信息。 <a href="/images/2016/07/2016-07-13_135146.png"><img src="/images/2016/07/2016-07-13_135146.png" alt="2016-07-13_135146"></a> 编译项目，提示了如下错误： <a href="/images/2016/07/2016-07-13_134516.png"><img src="/images/2016/07/2016-07-13_134516.png" alt="2016-07-13_134516"></a> 在代码的第一行（注意一定是第一行，所有 include 的前面）加上一句 <code>#define _WINSOCK_DEPRECATED_NO_WARNINGS</code>，禁用这个警告。 <a href="/images/2016/07/2016-07-13_134628.png"><img src="/images/2016/07/2016-07-13_134628.png" alt="2016-07-13_134628"></a> 再次编译，提示找不到很多符号的错误： <a href="/images/2016/07/2016-07-13_134715.png"><img src="/images/2016/07/2016-07-13_134715.png" alt="2016-07-13_134715"></a> 这是因为我们使用了 Windows socket 库里面的函数，要包含一下 <code>ws2_32.lib</code> 库文件，一样在附加依赖库中，增加 <code>ws2_32.lib</code>。 <a href="/images/2016/07/2016-07-13_134926.png"><img src="/images/2016/07/2016-07-13_134926.png" alt="2016-07-13_134926"></a> 再次编译，这次编译成功了。 <a href="/images/2016/07/2016-07-13_134959.png"><img src="/images/2016/07/2016-07-13_134959.png" alt="2016-07-13_134959"></a> CTRL+F5 运行一下测试项目，就可以看到执行命令的结果输出了。 <a href="/images/2016/07/2016-07-13_135131.png"><img src="/images/2016/07/2016-07-13_135131.png" alt="2016-07-13_135131"></a> 至此，libssh2 的从编译到使用就全部记录完毕了，希望这篇文章能帮助在此碰壁的人。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-07-13T11:11:30.000Z" itemprop="datePublished">
+              2016-07-13
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

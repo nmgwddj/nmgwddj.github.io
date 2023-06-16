@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ MFC }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/04/01/2016/2016-04-01_225127-1556/">Visual Assist 快速查找 MFC 函数实现</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-04-01T22:51:27.000Z" itemprop="datePublished">
+    2016-04-01
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/MFC/">MFC</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在使用 MFC 框架编写代码时，总会遇到一个问题就是需要看一下 MFC 框架中某个函数是如何实现的，但当你 F12 跟踪到某个函数声明的时候，再继续跟踪你会发现无法继续跟踪下去了，因为函数实现的代码并不在工程项目管理范围内，IDE 不知道到哪去找这个函数的实现。以往的一些方法都是在 MFC 文件夹目录下直接搜索 <code>类名::函数名</code> 这种方式。不但繁琐，而且准确度不高。所以 Visual Assist 出场了。</p>
+        
+          <div class="more-link">
+            <a href="/2016/04/01/2016/2016-04-01_225127-1556/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/01/24/2016/2016-01-24_181447-1450/">简单的 Windows 服务枚举、启动、停止操作</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-01-24T18:14:47.000Z" itemprop="datePublished">
+    2016-01-24
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/MFC/">MFC</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>最近开始复习 C&#x2F;C++，就拿自己熟悉的 Windows 开始下手，准备把各种小工具写上一遍，第一个就是这个 Windows 服务管理小工具了，不过只实现了简单的枚举（EnumServiceHandle）、启动和停止的操作（OpenService、ControlService）。后面有机会再继续完善。</p>
+        
+          <div class="more-link">
+            <a href="/2016/01/24/2016/2016-01-24_181447-1450/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/07/31/2015/2015-07-31_192557-887/">mfc 创建模态对话框与非模态对话框</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-07-31T19:25:57.000Z" itemprop="datePublished">
+    2015-07-31
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/MFC/">MFC</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>所谓模态对话框就是该对话框被创建后，其父窗口不能响应任何消息，无法操作，只有在关闭了新创建出来的窗口后才能继续操作其后面的父窗口。而非模态对话框则不会有这种情况，非模态对话框创建完成后不影响父窗口的操作，两个窗口可以同时响应消息。</p>
+        
+          <div class="more-link">
+            <a href="/2015/07/31/2015/2015-07-31_192557-887/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/07/30/2015/2015-07-30_164405-884/">mfc 中利用设备描述表(dc)绘制图案</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-07-30T16:44:05.000Z" itemprop="datePublished">
+    2015-07-30
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/MFC/">MFC</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>DC（Device Context）在程序中，可以形象的理解为就是一块画布，在画画之前，你要选择好画笔，给画笔蘸上颜色，决定要写字还是画画等等，这些形象的比喻在 mfc 中都有对应的类去实现，大家可以参考下面两篇文章，本文只记录一些特殊的方法，方便以后翻阅查询：</p>
+        
+          <div class="more-link">
+            <a href="/2015/07/30/2015/2015-07-30_164405-884/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

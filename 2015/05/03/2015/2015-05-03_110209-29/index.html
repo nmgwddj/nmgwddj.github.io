@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>数组快速排序 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>数组快速排序</h1>
+    </header>
+
+    <section>
+      <p>快速排序是在数据源中抽取一份数据作为样本，与所有需要排列的数据进行对比，根据需要把比样本小的数据放置到数据源的左侧位置，比样本大的数据放置到数据源的右侧位置。以此来对数据进行排序。具体实现如下：</p>
+<span id="more"></span>
+<p>&#x2F;&#x2F; 抽取一个元素与所有元素对比，比样本小的置左，比样本大的置右<br>int findPos(int *arr, int low, int high)<br>{<br>&#x2F;&#x2F; 抽取第一个元素<br>int nIndex &#x3D; arr[low];<br>&#x2F;&#x2F; 判断low务必小于high才执行操作<br>while (low &lt; high)<br>{<br>&#x2F;&#x2F; 从最后一个元素比较，如果大于样本数则向前移动，并且low一定要小于high<br>&#x2F;&#x2F; 当条件不成立时跳出while，证明这个元素小于样本数<br>while (arr[high] &gt;&#x3D; nIndex &amp;&amp; low &lt; high)<br>high–;<br>&#x2F;&#x2F; 跳出后将小于样本的元素赋给第一个元素空出来的位置<br>arr[low] &#x3D; arr[high];<br>&#x2F;&#x2F; 从第一个元素比较，如果小于样本数则向后移动，并且low一定要小于high<br>&#x2F;&#x2F; 当条件不成立时退出while，证明这个元素大于样本数<br>while (arr[low] &lt;&#x3D; nIndex &amp;&amp; low &lt; high)<br>low++;<br>&#x2F;&#x2F; 跳出后将大于样本的元素赋给之前赋值给第一个元素后空出来的高位位置<br>arr[high] &#x3D; arr[low];<br>}<br>&#x2F;&#x2F; 如果以上循环结束，则low与high一定相等。<br>&#x2F;&#x2F; 此时low与high处于小数和大数中间，将数组第low个元素赋值为样本数即可<br>arr[low] &#x3D; nIndex;<br>return low;<br>}<br> <br>void quickSort(int *arr, int low, int high)<br>{<br>&#x2F;&#x2F; 判断low必须小于high<br>if (low &lt; high)<br>{<br>&#x2F;&#x2F; 记录第一次抽取样本数后样本数的位置<br>int pos &#x3D; findPos(arr, low, high);<br>&#x2F;&#x2F; 将样本数左侧的数字再次比较，持续递归<br>quickSort(arr, low, pos - 1);<br>&#x2F;&#x2F; 将样本数右侧的数组再次比较，持续递归<br>quickSort(arr, pos + 1, high);<br>}<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-03T11:02:09.000Z" itemprop="datePublished">
+              2015-05-03
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ language }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/04/17/2018/2018-04-17_162218-2353/">当漏 - 针对技术人员的软件下载站</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-04-17T16:22:18.000Z" itemprop="datePublished">
+    2018-04-17
+  </time>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>你有没有遇到过这样的一些场景，在某些时候你需要给一个新系统部署一些自己需要的软件和运行环境，而系统磁盘中有这个软件曾经下载的多个安装包副本，不知道安装哪个最好，每次都要从网络上重新下载。还有一些时候更换了自己不熟悉的环境，自己电脑又不在身边，想找一个自己习惯使用的软件到处搜索都搜索不到，不是版本不对就是下载地址失效了。因为以上种种情况和一些其他的重要原因，我打算开发一个自己使用的软件下载站，由自己更新和维护里面的软件，确保软件只有一份，只保留最新（但可以看到历史版本），需要的时候去下载安装就好，不怕病毒、不怕下载地址失效、不怕找不到某个软件。我想每个人都需要一个这样属于自己的下载站，所以就产生了“当漏”。与此同时，我也希望能帮助一些不愿意或者不熟悉软件更新流程的人，提供一个安全、稳定的下载站点。</p>
+<h2 id="站点地址"><a href="#站点地址" class="headerlink" title="站点地址"></a>站点地址</h2><p>当漏：<a target="_blank" rel="noopener" href="https://download.mycode.net.cn/">https://download.mycode.net.cn/</a></p>
+<h2 id="使用资源"><a href="#使用资源" class="headerlink" title="使用资源"></a>使用资源</h2><p>因为需要一个稳定的下载服务器资源，同时该服务器要支持我们上传文件，国内无疑就只有阿里云 OSS、七牛对象储存等类似这些资源了，因为七牛有成熟的 SDK 封装（<a target="_blank" rel="noopener" href="https://github.com/lsxiao/qiniu4js">qiniu4js</a>）和每个月免费的流量，所以我选择了七牛作为资源管理服务器。不用为资源丢失等情况烦心了。</p>
+<h2 id="站点截图"><a href="#站点截图" class="headerlink" title="站点截图"></a>站点截图</h2><p><a href="/images/2018/04/package_list.png"><img src="/images/2018/04/package_list.png"></a> <a href="/images/2018/04/package_add.png"><img src="/images/2018/04/package_add.png"></a></p>
+<h2 id="站点功能"><a href="#站点功能" class="headerlink" title="站点功能"></a>站点功能</h2><p>目前站点已经开发完成了基本的上传和下载功能，但部分功能还不完善，计划中我将实现以下功能来丰富和完善这个下载站：</p>
+<ul>
+<li>周边社交功能（软件评论、分享等）</li>
+<li>管理员后台管理功能（用户管理、软件添加更新等）</li>
+<li>历史版本功能</li>
+<li>用户积分系统</li>
+</ul>
+<h2 id="代码托管"><a href="#代码托管" class="headerlink" title="代码托管"></a>代码托管</h2><p>该下载站所有代码均托管在 <a target="_blank" rel="noopener" href="https://github.com/nmgwddj/download-site">github</a> 上，代码完全开放，也希望有志之士能与我们一起参与到开发的队伍中，完善这个下载站。</p>
+
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/01/20/2018/2018-01-20_144301-2256/">Meteor 1.6.x + Ant Design Table + recompose 实现数据分页效果</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-01-20T14:43:01.000Z" itemprop="datePublished">
+    2018-01-20
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>本文介绍了基于 Meteor 1.6.x + Ant Design Table + recompose + react-router-dom v4 实现分页的整个流程，从项目创建到最终实现完分页效果每个步骤都非常详细，同时也提供了 git 提交记录，用来让大家学习和分析每一步代码的变化。项目地址：<a target="_blank" rel="noopener" href="https://github.com/nmgwddj/meteor-pagination">https://github.com/nmgwddj/meteor-pagination</a></p>
+<h2 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h2><p><a href="/images/2018/01/2018-01-20-14.50.33.gif"><img src="/images/2018/01/2018-01-20-14.50.33.gif"></a></p>
+        
+          <div class="more-link">
+            <a href="/2018/01/20/2018/2018-01-20_144301-2256/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2017/10/19/2017/2017-10-19_104013-2204/">react-router 环境使用锚点的方法</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2017-10-19T10:40:13.000Z" itemprop="datePublished">
+    2017-10-19
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>锚点是通过在界面中增加一些特征（比如 id），然后在 URL 地址后面加上 #id 就可以访问到指定页面的指定位置，这样可以让我们快速跳转到页面的某个位置，但是在 react-router 中这种方法遇到了问题，因为 react-router 会把 # 当做是 hash 来处理。导致即使跳转到指定页面后，# 后面的锚点也不生效。针对这个问题，在 <a target="_blank" rel="noopener" href="https://github.com/ReactTraining/react-router/issues/394">react-router 的一个 issue 中</a>大家也展开了激烈的讨论。以下是我看过以后整理的几种解决办法。</p>
+        
+          <div class="more-link">
+            <a href="/2017/10/19/2017/2017-10-19_104013-2204/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2017/10/18/2017/2017-10-18_175644-2198/">react-router 中 IndexRoute、IndexRedirect 的区别介绍</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2017-10-18T17:56:44.000Z" itemprop="datePublished">
+    2017-10-18
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>本文内容引用了 react-router v3 的文档介绍来举例说明，内容并不重复，我们会以项目开发的角度来分析这两个功能的实际作用，更有助于理解和使用这两个功能。</p>
+        
+          <div class="more-link">
+            <a href="/2017/10/18/2017/2017-10-18_175644-2198/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2017/10/18/2017/2017-10-18_163046-2194/">在 react-router 环境下使用 antd-mobile tabbar</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2017-10-18T16:30:46.000Z" itemprop="datePublished">
+    2017-10-18
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>本文阐述了如何在一个使用了 react-router 的 react 项目中合理的使用 antd-mobile tabbar 功能。在 <a target="_blank" rel="noopener" href="http://beta.mobile.ant.design/components/tab-bar-cn/">antd-mobile 官方的例子中</a>可以看到，只需要将不同的组件放置到每个 <code>TabBar.Item</code> 里面就可以了，这样就可以实现简单的切换效果，但是存在几个问题。 一个是切换过程中，路由是不会跟着切换的。比如我们想分享一个地址，当其他人打开这个地址时自动就跳转到第二个 tab 上。如果按上面的方法做是无法实现的。 另外一个问题是这样的设计不太符合大型项目的框架设计，我们往往会制作一些 layouts，给不同的组件匹配不同的 layout。如果按上面介绍的方法做，也是不好实现的。 综合以上两点问题，再加上 Google 了一些资料后，写下本文，以帮助更多遇到类似问题的人。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>首先定义四个路由分别指定不同的 component，要注意的是这四个路由都统一使用一个 layout，这也就解决了一些大型项目中分多种 layout 的问题。如下代码所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;Router history=&#123;browserHistory&#125;&gt;</span><br><span class="line">  &#123;/* MainLayout 中包含了 antd-mobile tabbar */&#125;</span><br><span class="line">  &lt;Route path=&#x27;/&#x27; component=&#123;MainLayout&#125;&gt;</span><br><span class="line">    &#123;/* 默认跳转到 questions 页面 */&#125;</span><br><span class="line">    &lt;IndexRedirect to=&#x27;/questions&#x27; /&gt;</span><br><span class="line">    &lt;Route path=&#x27;/questions&#x27; component=&#123;Questions&#125; /&gt;</span><br><span class="line">    &lt;Route path=&#x27;/activities&#x27; component=&#123;Activities&#125; /&gt;</span><br><span class="line">    &lt;Route path=&#x27;/videos&#x27; component=&#123;Videos&#125; /&gt;</span><br><span class="line">    &lt;Route path=&#x27;/mine&#x27; component=&#123;Mine&#125; /&gt;</span><br><span class="line">  &lt;/Route&gt;</span><br><span class="line">&lt;/Router&gt;</span><br></pre></td></tr></table></figure>
+
+<p>随后我们看一下 mainLayout 的代码:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">const MainLayout = (&#123;children&#125;) =&gt; &#123;</span><br><span class="line">  const pathname = children.props.location.pathname</span><br><span class="line"></span><br><span class="line">  return (</span><br><span class="line">    &lt;TabBar</span><br><span class="line">      unselectedTintColor=&#x27;#949494&#x27;</span><br><span class="line">      tintColor=&#x27;#33A3F4&#x27;</span><br><span class="line">      barTintColor=&#x27;white&#x27;</span><br><span class="line">    &gt;</span><br><span class="line">      &lt;TabBar.Item</span><br><span class="line">        title=&#x27;问答&#x27;</span><br><span class="line">        key=&#x27;questions&#x27;</span><br><span class="line">        icon=&#123;&lt;div className=&#x27;questions-icon&#x27; /&gt;&#125;</span><br><span class="line">        selectedIcon=&#123;&lt;div className=&#x27;questions-selected-icon&#x27; /&gt;&#125;</span><br><span class="line">        selected=&#123;pathname === &#x27;/questions&#x27;&#125;</span><br><span class="line">        onPress=&#123;() =&gt; &#123;</span><br><span class="line">          browserHistory.push(&#x27;/questions&#x27;)</span><br><span class="line">        &#125;&#125;</span><br><span class="line">      &gt;</span><br><span class="line">        &#123; pathname === &#x27;/questions&#x27; ? children : null &#125;</span><br><span class="line">      &lt;/TabBar.Item&gt;</span><br><span class="line">      &lt;TabBar.Item</span><br><span class="line">        title=&#x27;活动&#x27;</span><br><span class="line">        key=&#x27;activities&#x27;</span><br><span class="line">        icon=&#123;&lt;div className=&#x27;activities-icon&#x27; /&gt;&#125;</span><br><span class="line">        selectedIcon=&#123;&lt;div className=&#x27;activities-selected-icon&#x27; /&gt;&#125;</span><br><span class="line">        selected=&#123;pathname === &#x27;/activities&#x27;&#125;</span><br><span class="line">        onPress=&#123;() =&gt; &#123;</span><br><span class="line">          browserHistory.push(&#x27;/activities&#x27;)</span><br><span class="line">        &#125;&#125;</span><br><span class="line">      &gt;</span><br><span class="line">        &#123; pathname === &#x27;/activities&#x27; ? children : null &#125;</span><br><span class="line">      &lt;/TabBar.Item&gt;</span><br><span class="line">      &lt;TabBar.Item</span><br><span class="line">        title=&#x27;视频&#x27;</span><br><span class="line">        key=&#x27;videos&#x27;</span><br><span class="line">        icon=&#123;&lt;div className=&#x27;videos-icon&#x27; /&gt;&#125;</span><br><span class="line">        selectedIcon=&#123;&lt;div className=&#x27;videos-selected-icon&#x27; /&gt;&#125;</span><br><span class="line">        selected=&#123;pathname === &#x27;/videos&#x27;&#125;</span><br><span class="line">        onPress=&#123;() =&gt; &#123;</span><br><span class="line">          browserHistory.push(&#x27;/videos&#x27;)</span><br><span class="line">        &#125;&#125;</span><br><span class="line">      &gt;</span><br><span class="line">        &#123; pathname === &#x27;/videos&#x27; ? children : null &#125;</span><br><span class="line">      &lt;/TabBar.Item&gt;</span><br><span class="line">      &lt;TabBar.Item</span><br><span class="line">        title=&#x27;我的&#x27;</span><br><span class="line">        key=&#x27;mine&#x27;</span><br><span class="line">        icon=&#123;&lt;div className=&#x27;mine-icon&#x27; /&gt;&#125;</span><br><span class="line">        selectedIcon=&#123;&lt;div className=&#x27;mine-selected-icon&#x27; /&gt;&#125;</span><br><span class="line">        selected=&#123;pathname === &#x27;/mine&#x27;&#125;</span><br><span class="line">        onPress=&#123;() =&gt; &#123;</span><br><span class="line">          browserHistory.push(&#x27;/mine&#x27;)</span><br><span class="line">        &#125;&#125;</span><br><span class="line">      &gt;</span><br><span class="line">        &#123; pathname === &#x27;/mine&#x27; ? children : null &#125;</span><br><span class="line">      &lt;/TabBar.Item&gt;</span><br><span class="line">    &lt;/TabBar&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里重点的代码就是 <code>pathname === &#39;/questions&#39; ? children : null</code>，根据当前路由判断加载不同的 component，并且在点击任何一个按钮的时候，自动跳转到指定的路由上。其中 selected 属性也根据路由动态的变换样式。路由传递给 mainLayout 是一个 children，这个 children 中就包含了组件的信息，我们根据路由的不同加载即可。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这样处理后无论我们直接访问 URL 还是点击 tabbar 下面的任意按钮，不但可以切换页面，路由也会随之变动。最重要的是我们套用了 layout，让项目看起来更加合理。</p>
+
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2017/09/21/2017/2017-09-21_121738-2183/">Meteor mongodb 查询某个数据是否在 Collection 的某个 Array 字段中</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2017-09-21T12:17:38.000Z" itemprop="datePublished">
+    2017-09-21
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Database/">Database</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>我们通常会用一个 Array 字段来储存一组用户 ID 列表或者一组文章 ID 列表。当我们需要查询某个用户是否在这个 Collection 的某个 Array 字段时就会用到本文中提到的方法。</p>
+        
+          <div class="more-link">
+            <a href="/2017/09/21/2017/2017-09-21_121738-2183/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2017/09/04/2017/2017-09-04_120728-2175/">JavaScript Standard 编码规范</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2017-09-04T12:07:28.000Z" itemprop="datePublished">
+    2017-09-04
+  </time>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在远程工作中，并不是所有项目都是从头开始的，有很多项目是已经做了一部分，或者需要按着其要求来创建项目和编码的。所以这其中就有一些公司或者团队会使用一些代码规范，以保证无论是公司内部还是远程工作的同事都可以保持一致的代码规范，让代码不会过于凌乱。</p>
+        
+          <div class="more-link">
+            <a href="/2017/09/04/2017/2017-09-04_120728-2175/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2017/07/19/2017/2017-07-19_174056-2151/">使用 Fontawesome 的 React 组件</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2017-07-19T17:40:56.000Z" itemprop="datePublished">
+    2017-07-19
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>Fontawesome 是一套图表字体库框架，我们经常在项目中用到它的各式各样的图标，本文介绍的是如何使用其 React 组件形式的包应用到项目中。</p>
+        
+          <div class="more-link">
+            <a href="/2017/07/19/2017/2017-07-19_174056-2151/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2017/07/19/2017/2017-07-19_001450-2142/">webpack fetch 提示错误 No &#39;Access-Control-Allow-Origin&#39; header is present on the requested resource.</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2017-07-19T00:14:50.000Z" itemprop="datePublished">
+    2017-07-19
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p><a href="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-19-00.17.17.png"><img src="/images/2017/07/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2017-07-19-00.17.17.png"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Fetch API cannot load http://v.juhe.cn/toutiao/index?type=&amp;key=9ac9a526985bbd20fa150784********. No &#x27;Access-Control-Allow-Origin&#x27; header is present on the requested resource. Origin &#x27;http://localhost:8080&#x27; is therefore not allowed access. If an opaque response serves your needs, set the request&#x27;s mode to &#x27;no-cors&#x27; to fetch the resource with CORS disabled.</span><br></pre></td></tr></table></figure>
+
+<p>这个错误困扰了我很久，导致无法从网络获取数据，现在很多接口都是 json 或 jsonp 的方式，如果不能用 fetch 或者一些网络请求的方法，简直太受罪了，有些朋友的解决方法是把数据放到自己的服务器上来处理，这莫名的是给自己增加工作量，直到我看到了这篇文章，终于将这个难题解决：<a target="_blank" rel="noopener" href="http://www.jianshu.com/p/19a6aefca350">http://www.jianshu.com/p/19a6aefca350</a></p>
+        
+          <div class="more-link">
+            <a href="/2017/07/19/2017/2017-07-19_001450-2142/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2017/07/03/2017/2017-07-03_002319-2126/">React 项目中使用 highstocks</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2017-07-03T00:23:19.000Z" itemprop="datePublished">
+    2017-07-03
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/React/">React</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/highcharts/">highcharts</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>highstocks 是一个功能强大且丰富的股票资讯类图表的库，其具有代表意义的项目还有 highcharts 和 highmaps。我最近在做一个股票资讯类的项目，所以需要用到这个图表库，由此篇文章开张记录下使用该库的各种问题和小技巧。方便以后他人遇到问题及时解决。首先我们就来谈一谈如何在 react 项目中使用它。</p>
+        
+          <div class="more-link">
+            <a href="/2017/07/03/2017/2017-07-03_002319-2126/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/categories/language/page/5/">« prev</a><a class="page-number" href="/categories/language/">1</a><span class="space">&hellip;</span><a class="page-number" href="/categories/language/page/4/">4</a><a class="page-number" href="/categories/language/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/categories/language/page/7/">7</a><a class="page-number" href="/categories/language/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/categories/language/page/23/">23</a><a class="extend next" rel="next" href="/categories/language/page/7/">next »</a>
+    </nav>
+  </section>
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ 字符串 }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2019/04/06/2019/2019-04-06_162639-2698/">7z 自解压读取 config.txt 配置的代码实现</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2019-04-06T16:26:39.000Z" itemprop="datePublished">
+    2019-04-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>7z 自解压功能，实际是将三个文件连接在一起，第一个文件是 7z 的自解压模块（实际是一个通用的包含了界面界面的应用程序）+ config.txt（配置文件）+ 实际要解压的 7z 压缩包文件。三个文件通过 Windows 的 copy 命令拼接在一起，你也可以自己实现代码，将三个文件拼接在一起，因为第一个文件的首地址 PE 结构不变，所以当程序运行时相当于运行了 7z 的自解压模块。他们的组成如下图： <a href="/images/2019/04/2019-04-06_16-19-30.png"><img src="/images/2019/04/2019-04-06_16-19-30.png"></a> 图中可以看的出来，使用 <code>copy /b</code> 将三个文件连接在了一起，我们需要在自解压的模块程序 <code>7z_sfx.exe</code> 中实现读取查找 <code>config.txt</code> 文件的位置和内容，从而也就可以得到自解压文件的起始位置。这样在解压文件的时候将包装在我们程序中的自解压程序起始地址传递进去就可以了。</p>
+<h2 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h2><p>首先要在代码中找到被追加进自己程序的 config.txt 文件内容，config.txt 必须要有一个标识来记录文件的开头和结束，这样我们才知道这个文件中间的内容，参考 7z 自解压模块的代码，其在 config.txt 头部和尾部分别设计了两个标识，如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">;!@Install@!UTF-8!</span><br><span class="line">Title=&quot;SOFTWARE v1.0.0.0&quot;</span><br><span class="line">BeginPrompt=&quot;Do you want to install SOFTWARE v1.0.0.0?&quot;</span><br><span class="line">RunProgram=&quot;setup.exe&quot;</span><br><span class="line">;!@InstallEnd@!</span><br></pre></td></tr></table></figure>
+
+<p>在程序中只要将程序一块一块的读取到内存，对比每一个字节如果存在 <code>;!@Install@!UTF-8!</code> 就是 config 文件的开头，存在 <code>;!@InstallEnd@!</code> 就是 config 文件的结尾。这样中间的内容也就确定了，文件结尾的位置就是 7z 压缩包文件的开头。</p>
+<h2 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码"></a>实现代码</h2><p>代码实现起来要考虑的内容还是比较多的，我参考了 7z 的代码从头实现了一遍，对每一个变量都做了作用注释，因为 7z 官方的代码一个注释都没有，看起来很难懂，索性就参考他的思路一点一点重写了一遍。调用 <code>FindSignature</code> 方法就可以查找到 config.txt 中的内容了，用 <code>strOutput</code> 参数将内容传出。 程序编译完成后，使用 copy &#x2F;b 程序名 + 带有标记的 config.txt 就可以测试出效果，自己再加上解压的代码你就可以实现一个属于自己的自解压模块了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;fstream&gt;</span><br><span class="line">#include &lt;windows.h&gt;</span><br><span class="line"></span><br><span class="line">static char kBeginSignature[] = &#123; &#x27;;&#x27;,&#x27;!&#x27;,&#x27;@&#x27;,&#x27;I&#x27;,&#x27;n&#x27;,&#x27;s&#x27;,&#x27;t&#x27;,&#x27;a&#x27;,&#x27;l&#x27;,&#x27;l&#x27;,&#x27;@&#x27;,&#x27;!&#x27;,&#x27;U&#x27;,&#x27;T&#x27;,&#x27;F&#x27;,&#x27;-&#x27;,&#x27;8&#x27;,&#x27;!&#x27;, 0 &#125;;</span><br><span class="line">static char kEndSignature[] = &#123; &#x27;;&#x27;,&#x27;!&#x27;,&#x27;@&#x27;,&#x27;I&#x27;,&#x27;n&#x27;,&#x27;s&#x27;,&#x27;t&#x27;,&#x27;a&#x27;,&#x27;l&#x27;,&#x27;l&#x27;,&#x27;E&#x27;,&#x27;n&#x27;,&#x27;d&#x27;,&#x27;@&#x27;,&#x27;!&#x27;, 0 &#125;;</span><br><span class="line"></span><br><span class="line">bool FindSignature(const std::string&amp; strBeginSignature, const std::string&amp; strEndSignature, std::string&amp; strOutput)</span><br><span class="line">&#123;</span><br><span class="line">    const size_t nFixedBufferSize = (1 &lt;&lt; 12);</span><br><span class="line">    char szApplication[MAX_PATH] = &#123; 0 &#125;;</span><br><span class="line">    GetModuleFileNameA(NULL, szApplication, MAX_PATH);</span><br><span class="line"></span><br><span class="line">    FILE* hFile = NULL;</span><br><span class="line">    fopen_s(&amp;hFile, szApplication, &quot;rb&quot;);</span><br><span class="line"></span><br><span class="line">    // 标记是否找到头部</span><br><span class="line">    bool bFoundBegin = false;</span><br><span class="line"></span><br><span class="line">    // 记录需要跳过多少个字节（上一次读取长度不足的内容会被填充到当前 buffer 中）</span><br><span class="line">    size_t nBytesPrev = 0;</span><br><span class="line"></span><br><span class="line">    BYTE szBuffer[nFixedBufferSize] = &#123; 0 &#125;;</span><br><span class="line"></span><br><span class="line">    for (;;)</span><br><span class="line">    &#123;</span><br><span class="line">        size_t nReadSize = nFixedBufferSize - nBytesPrev;</span><br><span class="line">        size_t nProcessedSize = fread(szBuffer + nBytesPrev, 1, nReadSize, hFile);</span><br><span class="line">        if (nProcessedSize == 0)</span><br><span class="line">            return false;</span><br><span class="line"></span><br><span class="line">        // 上一次读取剩余的字节 + 本次读取到的字节总数</span><br><span class="line">        size_t nTotalSize = nBytesPrev + nProcessedSize;</span><br><span class="line"></span><br><span class="line">        // 标记读取出来的内存块中已经对比的数据位置</span><br><span class="line">        size_t nPos = 0;</span><br><span class="line"></span><br><span class="line">        for (;;)</span><br><span class="line">        &#123;</span><br><span class="line">            if (!bFoundBegin)</span><br><span class="line">            &#123;</span><br><span class="line">                // 剩余长度不足头部内容，直接跳出</span><br><span class="line">                if (nPos &gt; nTotalSize - strBeginSignature.size())</span><br><span class="line">                    break;</span><br><span class="line"></span><br><span class="line">                // 标记已经找到头部，找到头部后将读取指针移动到头部关键字末尾</span><br><span class="line">                if (memcmp(szBuffer + nPos, strBeginSignature.c_str(), strBeginSignature.size()) == 0)</span><br><span class="line">                &#123;</span><br><span class="line">                    bFoundBegin = true;</span><br><span class="line">                    nPos += strBeginSignature.size();</span><br><span class="line">                &#125;</span><br><span class="line">                else</span><br><span class="line">                &#123;</span><br><span class="line">                    nPos++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            else</span><br><span class="line">            &#123;</span><br><span class="line">                // 剩余长度不足尾部内容，直接跳出</span><br><span class="line">                if (nPos &gt; nTotalSize - strEndSignature.size())</span><br><span class="line">                    break;</span><br><span class="line"></span><br><span class="line">                // 如果找到末尾则直接返回</span><br><span class="line">                if (memcmp(szBuffer + nPos, strEndSignature.c_str(), strEndSignature.size()) == 0)</span><br><span class="line">                    return true;</span><br><span class="line"></span><br><span class="line">                // 将不是末尾标记的数据追加给传出参数</span><br><span class="line">                BYTE pByte = szBuffer[nPos];</span><br><span class="line"></span><br><span class="line">                // 程序中常量字符串末尾是 0，但文件中不是 0，如果读到 0 证明是程序中的常量，而不是文件中的</span><br><span class="line">                if (pByte == 0)</span><br><span class="line">                &#123;</span><br><span class="line">                    bFoundBegin = false;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">                strOutput += pByte;</span><br><span class="line"></span><br><span class="line">                // 向后步进</span><br><span class="line">                nPos++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 记录下次需要跳过的字节数量</span><br><span class="line">        nBytesPrev = nTotalSize - nPos;</span><br><span class="line"></span><br><span class="line">        // 将不足以对比的剩余内容拷贝到 buffer 的首位，下次读取的新数据衔接在该数据后面</span><br><span class="line">        memmove(szBuffer, szBuffer + nPos, nBytesPrev);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (hFile)</span><br><span class="line">    &#123;</span><br><span class="line">        fclose(hFile);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return false;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    std::string strOutput;</span><br><span class="line">    if (FindSignature(kBeginSignature, kEndSignature, strOutput))</span><br><span class="line">        std::cout &lt;&lt; strOutput.c_str() &lt;&lt; std::endl;</span><br><span class="line">    else</span><br><span class="line">        std::cout &lt;&lt; &quot;Not found...&quot; &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/03/30/2016/2016-03-30_125202-1548/">Windows 内核实现复制文件</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-03-30T12:52:02.000Z" itemprop="datePublished">
+    2016-03-30
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>Windows 内核编程并没有提供像 Ring3 层的 CopyFile 这样的 API，看了看书中的例子自己写了一份 MyCopyFile，以后用来备用。</p>
+        
+          <div class="more-link">
+            <a href="/2016/03/30/2016/2016-03-30_125202-1548/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/03/29/2016/2016-03-29_182932-1543/">Windows 内核驱动字符串操作</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-03-29T18:29:32.000Z" itemprop="datePublished">
+    2016-03-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/Drivers/">Drivers</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在 Windows 内核开发中，字符串并非像 C 中使用的是一个 <code>\0</code> 结尾的字符数组，取而代之的是一个结构体，该结构体储存了指向字符的指针和字符的长度。因为没有了 <code>\0</code>，很多 C 语言库函数也无法使用了，但不用担心，Windows 提供了很多操作这种字符串的函数。见如下示例：</p>
+        
+          <div class="more-link">
+            <a href="/2016/03/29/2016/2016-03-29_182932-1543/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/02/16/2016/2016-02-16_005417-1497/">数据全排列组合</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-02-16T00:54:17.000Z" itemprop="datePublished">
+    2016-02-16
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%A8%A1%E7%89%88/">模版</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>所谓全排列就是将一个数据组合拆开重新排列，比如 abc，可重新排序为 acb、bac、bca、cab、cba，通过算法上实现一般就是递归或一个while循环来实现。最近复习算法方面的内容接触到的新的算法，记录一下思路。</p>
+        
+          <div class="more-link">
+            <a href="/2016/02/16/2016/2016-02-16_005417-1497/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/22/2015/2015-06-22_192734-584/">Qt 中 QString 和 QByteArray</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-22T19:27:34.000Z" itemprop="datePublished">
+    2015-06-22
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">类型转换</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%87%8D%E8%BD%BD/">重载</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>QString 是 Qt 内部的一种字符串数据类型，QString 支持多字节编码（unicode）的一个字符串类。在程序和网络之间传输数据时，其他的程序和网络另一端的程序是不能识别他这种数据类型的。所以要想将 QString 类型的数据保存到文件或发送到网络，需要转换成 QByteArray 类型才可以。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/22/2015/2015-06-22_192734-584/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/14/2015/2015-06-14_235455-510/">boost 库中 filesystem::path 功能</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-14T23:54:55.000Z" itemprop="datePublished">
+    2015-06-14
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/Boost/">Boost</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>boost filesystem::path 是对文件目录路径做处理的一个小的类，他把我们平时处理文件路径的繁琐功能简化到不能再简化，比如我们想获取一个路径中的文件名，只需要调用 object.filename().string() 就可以了，如果是C语言或者C++中提供的系统库中，我们是找不到这么方便的方法的。更多的一些功能见下面代码。你也可以查看 boost 帮助文档，查找更多的功能。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/14/2015/2015-06-14_235455-510/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/29/2015/2015-05-29_225522-355/">栈应用代码检测就近匹配</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-29T22:55:22.000Z" itemprop="datePublished">
+    2015-05-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>你在使用编辑器写代码的时候是否思考过这个问题：如果少写了一个大括号或中括号，编辑器就会提示错误，这种做法是怎么做到的呢？ 其实这个检测就可以通过栈模型来实现，括号的数量总是匹配出现的，并且都是与最近的一个匹配。我们可以编写代码来实现这个检测的功能。具体实现思路如下：</p>
+<p>从第一个字符开始扫描, 当遇见普通字符时忽略，<br>当遇见左符号时压入栈中<br>当遇见右符号时从栈中弹出栈顶符号，并进行匹配.<br>匹配成功：继续读入下一个字符<br>匹配失败：立即停止，并报错<br>结束.<br>——成功: 所有字符扫描完毕，且栈为空<br>——失败：匹配失败或所有字符扫描完毕但栈非空</p>
+<p>【实现代码】 以下代码需要用到<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/datastruct/334.html">栈模型链式存储的 LinkStack.h 和 LinkStack.c 头文件</a>：</p>
+<p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include “LinkStack.h”</p>
+<p>&#x2F;***************** 算法思路 *****************<br>从第一个字符开始扫描, 当遇见普通字符时忽略，<br>当遇见左符号时压入栈中<br>当遇见右符号时从栈中弹出栈顶符号，并进行匹配.<br>匹配成功：继续读入下一个字符<br>匹配失败：立即停止，并报错<br>结束.<br>——成功: 所有字符扫描完毕，且栈为空<br>——失败：匹配失败或所有字符扫描完毕但栈非空*&#x2F;</p>
+<p>int match(char left, char right)<br>{<br>int ret &#x3D; 0;<br>switch (left)<br>{<br>case ‘&lt;’:&#x2F;&#x2F;左尖括号<br>ret &#x3D; (right &#x3D;&#x3D; ‘&gt;’);<br>break;<br>case ‘(‘:&#x2F;&#x2F;左小括号<br>ret &#x3D; (right &#x3D;&#x3D; ‘)’);<br>break;<br>case ‘[‘:&#x2F;&#x2F;左中括号<br>ret &#x3D; (right &#x3D;&#x3D; ‘]‘);<br>break;<br>case ‘{‘:&#x2F;&#x2F;左大括号<br>ret &#x3D; (right &#x3D;&#x3D; ‘}’);<br>break;<br>case ‘\‘’:&#x2F;&#x2F;左单引号<br>ret &#x3D; (right &#x3D;&#x3D; ‘\‘’);<br>break;<br>case ‘\“‘:&#x2F;&#x2F;左双引号<br>ret &#x3D; (right &#x3D;&#x3D; ‘\“‘);<br>break;<br>default:<br>ret &#x3D; 0;<br>break;<br>}</p>
+<p>&#x2F;&#x2F;匹配成功返回1,不成功返回0<br>return ret;<br>}</p>
+<p>int isRight(char right)<br>{<br>int ret &#x3D; 0;<br>switch (right)<br>{<br>case ‘&gt;’:&#x2F;&#x2F;右尖括号<br>case ‘)’:&#x2F;&#x2F;右小括号<br>case ‘]‘:&#x2F;&#x2F;右中括号<br>case ‘}’:&#x2F;&#x2F;右大括号<br>case ‘\‘’:&#x2F;&#x2F;右单引号<br>case ‘\“‘:&#x2F;&#x2F;右双引号<br>ret &#x3D; 1;&#x2F;&#x2F;是需要检测的符号返回1<br>break;<br>default:<br>ret &#x3D; 0;&#x2F;&#x2F;不是需要检测的符号返回0<br>break;<br>}<br>return ret;<br>}</p>
+<p>int isLeft(char left)<br>{<br>int ret &#x3D; 0;<br>switch (left)<br>{<br>case ‘&lt;’:&#x2F;&#x2F;左尖括号<br>case ‘(‘:&#x2F;&#x2F;左小括号<br>case ‘[‘:&#x2F;&#x2F;左中括号<br>case ‘{‘:&#x2F;&#x2F;左大括号<br>case ‘\‘’:&#x2F;&#x2F;左单引号<br>case ‘\“‘:&#x2F;&#x2F;左双引号<br>ret &#x3D; 1;&#x2F;&#x2F;是需要检测的符号返回1<br>break;<br>default:<br>ret &#x3D; 0;&#x2F;&#x2F;不是需要检测的符号返回0<br>break;<br>}<br>return ret;<br>}</p>
+<p>int read(const char* code)<br>{<br>int i &#x3D; 0;<br>LinkStack* stack &#x3D; LinkStack_Create();</p>
+<p>while (code[i])<br>{<br>&#x2F;&#x2F; 判断是否是左符号<br>if (isLeft(code[i]))<br>{<br>&#x2F;&#x2F; 是的话就压如栈中<br>printf(“push &#x3D; %c\n”, code[i]);<br>LinkStack_Push(stack, (void*)&amp;code[i]);<br>&#x2F;&#x2F;continue;<br>}</p>
+<p>&#x2F;&#x2F; 判断是否是右符号<br>if (isRight(code[i]))<br>{<br>&#x2F;&#x2F; 如果是则取出栈顶的符号与这个右符号对比<br>char left &#x3D; *(char*)LinkStack_Top(stack);<br>if (match(left, code[i]))<br>{<br>&#x2F;&#x2F; 匹配成功，从栈中弹出匹配过的左符号<br>printf(“pop  &#x3D; %c\n”, code[i]);<br>LinkStack_Pop(stack);<br>}<br>else<br>{<br>&#x2F;&#x2F; 匹配失败直接报错并终止循环<br>printf(“数据异常，匹配失败！ left &#x3D; %c, right &#x3D; %c\n”, left, code[i]);<br>break;<br>}<br>}<br>i++;<br>}</p>
+<p>&#x2F;&#x2F; 最后判断栈中是否还有数据，如果还有证明缺少右符号<br>if (!LinkStack_Size(stack))<br>{<br>printf(“匹配成功！\n”);<br>}<br>else<br>{<br>char ch &#x3D; *(char*)LinkStack_Top(stack);<br>printf(“缺少匹配 %c\n”, ch);<br>}<br>&#x2F;&#x2F; 销毁<br>LinkStack_Destroy(stack);<br>return 0;<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>const char* code &#x3D; “#include &lt;stdio.h&gt; int main() { int a[4][4]; int (*p)[4]; p &#x3D; a[0]; return 0;}”;<br>read(code);</p>
+<p>return 0;<br>}</p>
+
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/25/2015/2015-05-25_161101-248/">STL 常用方法集合</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-25T16:11:01.000Z" itemprop="datePublished">
+    2015-05-25
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%9F%A5%E6%89%BE/">查找</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%A8%A1%E7%89%88/">模版</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/STL/">STL</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>我本想将 STL 中各种容器的实现方法和作用全部写一遍，然后每种容器都发一篇文章，但后来发现这样做的意义不大，在 MSDN 或其他一些帮助文档中，他们比我写的要详细，其实我只需要记住每种容器的常用方法，和在什么场合选择合适的容器。下面这张表是我这里的一些常用方法集合。备用参考。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/25/2015/2015-05-25_161101-248/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/07/2015/2015-05-07_224155-91/">自实现简单atoi功能</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-07T22:41:55.000Z" itemprop="datePublished">
+    2015-05-07
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>atoi这个库函数实在的太强大了，很多细节上的处理是我们无法想象的，不过最近也尝试做了一下这个练习，发现真的不是那么简单，只实现了一部分功能。如将字符串”123”转换为123，”-0123”转换为-123。代码功能比较简陋，还有诸多没有实现的功能，相比库函数atoi还差的很多，仅供参考。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/07/2015/2015-05-07_224155-91/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/07/2015/2015-05-07_222742-86/">练习题目“涨工资”</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-07T22:27:42.000Z" itemprop="datePublished">
+    2015-05-07
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>有一个员工文件salary_back.txt，salary_back.txt文件每行 为部门职员的姓名:工资(如tom:20000)，题目要求：</p>
+<ol>
+<li><p>求出该公司有多少人。</p>
+</li>
+<li><p>从工资文件salary_back.txt中读入全部工人，全部增加100元工资后并保存信息到文件salary.txt中。</p>
+</li>
+<li><p>将加工资之后的所有员工按工资进行降序排序，将排序后的结果选出工资最高TOP10在屏幕上输出。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/07/2015/2015-05-07_222742-86/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/page/2/">2</a><a class="extend next" rel="next" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/page/2/">next »</a>
+    </nav>
+  </section>
+
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

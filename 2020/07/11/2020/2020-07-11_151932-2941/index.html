@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt Quick 5.15.0 Connections 新语法 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt Quick 5.15.0 Connections 新语法</h1>
+    </header>
+
+    <section>
+      <p>过去的 Connection 连接某个对象的信号时是这样写的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Connections &#123;</span><br><span class="line">    target: authManager</span><br><span class="line">    onError: &#123;</span><br><span class="line">        busyContainer.visible = false</span><br><span class="line">        buttonJoin.enabled = Qt.binding(function () &#123;</span><br><span class="line">            return textMeetingId.length &gt;= 11 &amp;&amp; textNickname.length &gt; 0</span><br><span class="line">        &#125;)</span><br><span class="line">        message.error(result.msg)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>新的语法中可以这样写：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Connections &#123;</span><br><span class="line">    target: authManager</span><br><span class="line">    function onError(resCode, result) &#123;</span><br><span class="line">        busyContainer.visible = false</span><br><span class="line">        buttonJoin.enabled = Qt.binding(function () &#123;</span><br><span class="line">            return textMeetingId.length &gt;= 11 &amp;&amp; textNickname.length &gt; 0</span><br><span class="line">        &#125;)</span><br><span class="line">        message.error(result.msg)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于日常开发中，新的写法有助于我们定义槽函数的形参个数和实际作用。代码看起来更容易读懂。另外 Qt 官方文档中也介绍了一些其他好处，见：<a target="_blank" rel="noopener" href="https://doc.qt.io/qt-5/qml-qtqml-connections.html">Qt官方文档</a> 如果你使用 Qt 15.5.0 版本打开了一个旧的工程并使用的是旧的写法，那么会收到一个警告：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qrc:/qml/AnonJoinPage.qml:54:5: QML Connections: Implicitly defined onFoo properties in Connections are deprecated. Use this syntax instead: function onFoo(&lt;arguments&gt;) &#123; ... &#125;</span><br></pre></td></tr></table></figure>
+
+<p>既然是个警告，则不影响代码继续执行。但这样的警告不得不让你重写这部分代码来适配新的语法。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2020-07-11T15:19:32.000Z" itemprop="datePublished">
+              2020-07-11
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt-Quick/">Qt Quick</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

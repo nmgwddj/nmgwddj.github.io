@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>守护进程编写标准和实现 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>守护进程编写标准和实现</h1>
+    </header>
+
+    <section>
+      <p>Daemon(精灵)进程,是Linux中的后台服务进程,生存期较长的进程，通常独立于控制终端并且周期性地执行某种任务或等待处理某些发生的事件。类似于Windows下的服务程序。通常的 linux 程序在我们通过终端运行挂起后，再关闭终端，这些程序的运行进程也会随着终端一起关闭，这是因为他们属于同一<strong>会话</strong>。如果不想程序随着终端关闭而关闭，那么就要让程序脱离终端的会话组，那么就需要使用到setsid()函数了。一个正确的守护进程编写过程如下：</p>
+<span id="more"></span>
+<hr>
+<p><strong>1. 创建子进程，父进程退出</strong> 所有工作在子进程中进行 形式上脱离了控制终端 <strong>2. 在子进程中创建新会话</strong> setsid()函数 使子进程完全独立出来，脱离控制 <strong>3. 改变当前目录为根目录</strong> chdir()函数 防止占用可卸载的文件系统 也可以换成其它路径 <strong>4. 重设文件权限掩码</strong> umask()函数 防止继承的文件创建屏蔽字拒绝某些权限 增加守护进程灵活性 <strong>5. 关闭文件描述符</strong> 继承的打开文件不会用到，浪费系统资源，无法卸载 <strong>6. 开始执行守护进程核心工作</strong> <strong>7. 守护进程退出处理</strong></p>
+<hr>
+<h3 id="【代码实现】"><a href="#【代码实现】" class="headerlink" title="【代码实现】"></a>【代码实现】</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;fcntl.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;sys&#x2F;types.h&gt;<br>#include &lt;sys&#x2F;stat.h&gt;</p>
+<p>void daemonize(void)<br>{<br>pid_t pid;<br>&#x2F;&#x2F;创建子进程<br>if ((pid &#x3D; fork()) &lt; 0)<br>{<br>perror(“fork”);<br>exit(1);<br>}<br>&#x2F;&#x2F; 父进程直接退出<br>else if (pid !&#x3D; 0)<br>{<br>exit(1);<br>}<br>&#x2F;&#x2F; 子进程开始工作<br>&#x2F;&#x2F; 设置会话ID，使其彻底脱落终端工作<br>setsid();</p>
+<p>&#x2F;&#x2F; 改变当前工作目录到主目录<br>if (chdir(“&#x2F;“) &lt; 0)<br>{<br>perror(“chdir”);<br>exit(1);<br>}<br>&#x2F;&#x2F; 设置掩码<br>umask(0);<br>&#x2F;&#x2F; 重定向 0 1 2 文件描述符到 &#x2F;dev&#x2F;null<br>&#x2F;&#x2F; 因为已经脱离终端，在操作没有意义<br>close(0);<br>open(“&#x2F;dev&#x2F;null”, O_RDWR);<br>dup2(0, 1);<br>dup2(0, 2);<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>daemonize();<br>while (1)<br>{<br>sleep(1);<br>&#x2F;&#x2F; 此处执行守护进程的核心任务<br>}<br>return 0;<br>}</p>
+<hr>
+<h3 id="【效果图】"><a href="#【效果图】" class="headerlink" title="【效果图】"></a>【效果图】</h3><p><a href="/images/2015/07/2015-07-05_162728.png"><img src="/images/2015/07/2015-07-05_162728.png" alt="2015-07-05_162728"></a> 该程序运行后，即使马上退出终端，程序也不会随着终端的退出而退出了。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-05T16:36:44.000Z" itemprop="datePublished">
+              2015-07-05
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

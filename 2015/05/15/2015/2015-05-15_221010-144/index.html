@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>友元类的实现 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>友元类的实现</h1>
+    </header>
+
+    <section>
+      <p>在将一个类中的成员函数作为另一个类的友元函数的案例中我们看到，为了一个其他类的函数可以访问本类中的私有成员，将 distance 函数声明成了 friend 函数。其实我们也完全可以将整个 ManagerPoint 类声明为 Point 类的友元类。代码如下：</p>
+<span id="more"></span>
+<p>#include<iostream><br> <br>using namespace std;<br> <br>class Point;<br> <br>class ManagerPoint<br>{<br>public:<br>int distance(Point&amp; a, Point&amp; b);<br>};<br> <br>class Point<br>{<br>public:<br>Point(int xx, int yy)<br>{<br>_x &#x3D; xx;<br>_y &#x3D; yy;<br>}<br> <br>void display()<br>{<br>cout &lt;&lt; “(“ &lt;&lt; _x &lt;&lt; “,” &lt;&lt; _y &lt;&lt; “)” &lt;&lt; endl;<br>}<br> <br>&#x2F;&#x2F; 将整个 ManagerPoint 类声明为 Point 的友元类<br>friend class ManagerPoint;<br> <br>private:<br>int _x;<br>int _y;<br>};<br> <br>int ManagerPoint::distance(Point&amp; a, Point&amp; b)<br>{<br>int dx &#x3D; a._x - b._x;<br>int dy &#x3D; a._y - b._y;<br>return sqrt(dx * dx + dy * dy);<br>}<br> <br>int main(int argc, char* argv[])<br>{<br>Point p1(3, 4), p2(6, 8);<br>p1.display();<br>p2.display();<br>ManagerPoint mp;<br>int d &#x3D; mp.distance(p1,p2);<br>cout &lt;&lt; “Distance is : “ &lt;&lt; d &lt;&lt; endl;<br> <br>getchar();<br>return 0;<br>}</p>
+<p>这样，ManagerPoint 类中的所有成员函数都可以访问 Point 类中的私有成员了。通过几篇文章的记载，我们一共见到了三种友元的方式。一种是全局友元函数、一种是某类的成员函数做友元函数，最后一种则是将整个类作为某类的友元类。</p>
+<p>class A<br>{<br>public:<br>&#x2F;&#x2F; 全局友元函数<br>friend void func(A &amp;a);<br>&#x2F;&#x2F; 类成员函数做友元函数<br>friend void B::func(A &amp;a);<br>&#x2F;&#x2F; 完整的类做友元类<br>friend class B;<br>};</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-15T22:10:10.000Z" itemprop="datePublished">
+              2015-05-15
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%8F%8B%E5%85%83/">友元</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

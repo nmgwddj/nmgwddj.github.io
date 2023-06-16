@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt 中 QString 和 QByteArray | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt 中 QString 和 QByteArray</h1>
+    </header>
+
+    <section>
+      <p>QString 是 Qt 内部的一种字符串数据类型，QString 支持多字节编码（unicode）的一个字符串类。在程序和网络之间传输数据时，其他的程序和网络另一端的程序是不能识别他这种数据类型的。所以要想将 QString 类型的数据保存到文件或发送到网络，需要转换成 QByteArray 类型才可以。</p>
+<span id="more"></span>
+<p>QString 像 MFC 中的 CString 一样，具备很多处理字符串的成员函数，比如 mid()、size()、isEmpty()、toFloat()、toInt()等功能，具体可以参见 Qt 帮助文档。 下面代码演示了一些比较常用的字符串处理的成员函数：</p>
+<p>#include <QString><br>#include <QByteArray><br>#include <QDebug></p>
+<p>int main()<br>{<br>    &#x2F;&#x2F; 以 UTF-8 编码<br>    QString str &#x3D; “中国好美”;<br>    qDebug() &lt;&lt; str &lt;&lt; “size &#x3D;” &lt;&lt; str.size();<br>    QByteArray buf &#x3D; str.toUtf8();<br>    qDebug() &lt;&lt; str.toUtf8() &lt;&lt; “QByteArray size &#x3D;” &lt;&lt; buf.size();</p>
+<pre><code>// 整数和字符串转换
+str = QString::number(1.6); // number 是一个静态成员函数
+// 字符串转换为整数或浮点数
+str.toFloat();
+str.toInt();
+
+// 字符串格式化方式1
+QString str2 = QString().sprintf(&quot;%d, %d&quot;, 1, 3);
+qDebug() &lt;&lt; &quot;sprintf format =&quot; &lt;&lt; str2;
+
+// 字符串格式化方式2
+QString str3 = QString(&quot;%2 this %3 is %1&quot;).arg(1.5).arg(2).arg(&quot;abc&quot;);
+qDebug() &lt;&lt; &quot;arg format =&quot; &lt;&lt; str3;
+// 如果参数类型一样，也可以在一个arg中填写
+QString str4 = QString(&quot;%2 this %3 is %1&quot;).arg(&quot;abc&quot;, str2, &quot;def&quot;);
+qDebug() &lt;&lt; &quot;arg format =&quot; &lt;&lt; str4;
+
+// 重载了+操作符
+str4 += &quot;hello&quot;;
+
+// 判断是否为空
+str4.isEmpty();
+str4.isNull();
+str4.size();
+
+// 把所有空白符、换行 \\t \\n 多个空格等都换成一个空格
+str4 = &quot;\\t adsf asdflkjahsdkjf sd    sdkjf hakjshdfkjh  \\nasdf  asdfasd a&quot;;
+qDebug() &lt;&lt; str4.simplified();
+
+return 0;
+</code></pre>
+<p>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-22T19:27:34.000Z" itemprop="datePublished">
+              2015-06-22
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">类型转换</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%87%8D%E8%BD%BD/">重载</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

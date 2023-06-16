@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>JavaScript DOM 操作节点属性信息 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>JavaScript DOM 操作节点属性信息</h1>
+    </header>
+
+    <section>
+      <p>什么是节点属性？比如一个 Input 元素，它有一些 class、id、name、value 等信息。这些信息就被称作为节点的属性，我们可以通过 DOM 获取和设定这些信息。</p>
+<span id="more"></span>
+<h2 id="HTML-信息"><a href="#HTML-信息" class="headerlink" title="HTML 信息"></a>HTML 信息</h2><p><a href="/images/2015/11/Screen-Shot-2015-11-08-at-8.59.34-PM.png"><img src="/images/2015/11/Screen-Shot-2015-11-08-at-8.59.34-PM-1024x306.png" alt="Screen Shot 2015-11-08 at 8.59.34 PM"></a></p>
+<h3 id="JavaScript-代码"><a href="#JavaScript-代码" class="headerlink" title="JavaScript 代码"></a>JavaScript 代码</h3><p>&#x2F;&#x2F; 获取节点属性<br>  var objInput &#x3D; document.getElementsByTagName(“input”)[0];<br>  console.log(objInput.type);<br>  console.log(objInput.id);<br>  console.log(objInput.name);<br>  console.log(objInput.value);<br>  console.log(objInput.className);  &#x2F;&#x2F; class 是 js 关键字，所以需要用 className<br>  console.log(objInput.weight);     &#x2F;&#x2F; 非 W3C 属性，不能使用 .运算符获取<br>  console.log(objInput.getAttribute(“weight”)); &#x2F;&#x2F; 可以使用 getAttribute 方法</p>
+<p>  &#x2F;&#x2F; 设置节点属性<br>  objInput.value &#x3D; “Hello JavaScript”;<br>  objInput.className &#x3D; “newClass”;<br>  &#x2F;&#x2F; objInput.setAttribute(“class”, “setAttribute newClass”);<br>  objInput.setAttribute(“weight”, “200”);</p>
+<p>  &#x2F;&#x2F; 获取属性节点列表，attr 将是一个<br>  var attr &#x3D; objInput.attributes;<br>  console.log(attr);<br>  console.log(attr.value);</p>
+<h3 id="作用效果"><a href="#作用效果" class="headerlink" title="作用效果"></a>作用效果</h3><p><a href="/images/2015/11/Screen-Shot-2015-11-08-at-9.02.19-PM.png"><img src="/images/2015/11/Screen-Shot-2015-11-08-at-9.02.19-PM-1024x497.png" alt="Screen Shot 2015-11-08 at 9.02.19 PM"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-11-08T21:02:52.000Z" itemprop="datePublished">
+              2015-11-08
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/DOM/">DOM</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

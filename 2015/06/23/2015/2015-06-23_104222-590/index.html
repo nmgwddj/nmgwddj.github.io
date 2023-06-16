@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt 键盘和定时器消息 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt 键盘和定时器消息</h1>
+    </header>
+
+    <section>
+      <p>键盘消息和鼠标消息没有什么差异，用法和覆写方法都差不多，可以通过传递的参数判断按下了哪些键，下面代码中有比较详细的示例。其中也介绍了一下定时器消息，当覆写一个定时器消息时，你需要调用 QWidget 的成员函数 startTimer 来启动定时器，它的参数是定时器多长时间运行一次，并且如果有多个定时器时，你还需要知道每个定时器的 ID 是多少，定时器消息因为哪个定时器触发了而运行。这些都在例子中有所体现。</p>
+<span id="more"></span>
+<h3 id="【实现代码】"><a href="#【实现代码】" class="headerlink" title="【实现代码】"></a>【实现代码】</h3><p>代码分三个文件，分别为（参考 <a target="_blank" rel="noopener" href="http://www.mycode.net.cn/library/515.html">使用 Qt 构建一个简单的窗体程序</a> ）：</p>
+<ul>
+<li>main.c：创建应用程序框架，调用 CWidget 窗口的入口函数。</li>
+<li>CWidget.h：继承 QWidget 类。</li>
+<li>CWidget.cpp：覆写键盘、定时器等消息函数的实现</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;QApplication&gt;</span><br><span class="line">#include &quot;cwidget.h&quot;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    QApplication app(argc, argv);</span><br><span class="line"></span><br><span class="line">    CWidget w;</span><br><span class="line">    w.show();</span><br><span class="line"></span><br><span class="line">    return app.exec();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">#ifndef CWIDGET_H</span><br><span class="line">#define CWIDGET_H</span><br><span class="line"></span><br><span class="line">#include &lt;QWidget&gt;</span><br><span class="line">#include &lt;QKeyEvent&gt;</span><br><span class="line">#include &lt;QDebug&gt;</span><br><span class="line">#include &lt;QTimerEvent&gt;</span><br><span class="line"></span><br><span class="line">class CWidget : public QWidget</span><br><span class="line">&#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line">public:</span><br><span class="line">    explicit CWidget(QWidget *parent = 0);</span><br><span class="line"></span><br><span class="line">    void keyPressEvent(QKeyEvent *);</span><br><span class="line">    void keyReleaseEvent(QKeyEvent *);</span><br><span class="line"></span><br><span class="line">    // 定时器消息，需要 startTimer 才会触发</span><br><span class="line">    // 在需要的地方调用 startTimer 即可触发 timerEvent 消息</span><br><span class="line">    void timerEvent(QTimerEvent *);</span><br><span class="line"></span><br><span class="line">    int timerId_1;</span><br><span class="line">    int timerId_2;</span><br><span class="line"></span><br><span class="line">signals:</span><br><span class="line"></span><br><span class="line">public slots:</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">#endif // CWIDGET_H</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;cwidget.h&quot;</span><br><span class="line"></span><br><span class="line">CWidget::CWidget(QWidget *parent) : QWidget(parent)</span><br><span class="line">&#123;</span><br><span class="line">    // 让定时器开始运行，并记录定时器的id</span><br><span class="line">    timerId_1 = startTimer(1000);</span><br><span class="line">    timerId_2 = startTimer(1000);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void CWidget::keyPressEvent(QKeyEvent *ev)</span><br><span class="line">&#123;</span><br><span class="line">    int ret = ev-&gt;key();</span><br><span class="line">    qDebug() &lt;&lt; ret &lt;&lt; (char)ret &lt;&lt; &quot;is down...&quot;;</span><br><span class="line"></span><br><span class="line">    if (ev-&gt;modifiers() == Qt::AltModifier)</span><br><span class="line">    &#123;</span><br><span class="line">        qDebug() &lt;&lt; &quot;alt is down...&quot;;</span><br><span class="line">        // 按下alt后，根据 timerId 关闭一个定时器</span><br><span class="line">        killTimer(timerId_1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void CWidget::keyReleaseEvent(QKeyEvent *ev)</span><br><span class="line">&#123;</span><br><span class="line">    int ret = ev-&gt;key();</span><br><span class="line">    qDebug() &lt;&lt; ret &lt;&lt; (char)ret &lt;&lt; &quot;is up...&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void CWidget::timerEvent(QTimerEvent *ev)</span><br><span class="line">&#123;</span><br><span class="line">    if (ev-&gt;timerId() == timerId_1)</span><br><span class="line">    &#123;</span><br><span class="line">        qDebug() &lt;&lt; &quot;timerId 1 is running&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    else if (ev-&gt;timerId() == timerId_2)</span><br><span class="line">    &#123;</span><br><span class="line">        qDebug() &lt;&lt; &quot;timerId 2 is running&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-23T10:42:22.000Z" itemprop="datePublished">
+              2015-06-23
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

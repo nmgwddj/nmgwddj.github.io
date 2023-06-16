@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>栈的应用中缀转后缀表达式 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>栈的应用中缀转后缀表达式</h1>
+    </header>
+
+    <section>
+      <p>后缀表达式，由波兰科学家在20世纪50年代提出，将运算符放在数字后面，更便于计算机去计算，而我们平常看到的 1 + 2、5 * 10 等，都是中缀表达式，这种方式，符合人类的思考方式。举几个例子：</p>
+<span id="more"></span>
+<ol>
+<li>5 + 4 &#x3D;&gt; 5 4 +</li>
+<li>1 + 2 * 3 &#x3D;&gt; 1 2 3 * +</li>
+<li>8 + ( 3 – 1 ) * 5 &#x3D;&gt; 8 3 1 – 5 * +</li>
+</ol>
+<p>左侧为中缀表达式，右侧为后缀表达式。那这种转换的规则和方法是什么呢？首先我们来看一下规则： 【后缀表达式转换规则】</p>
+<p>对于数字：直接输出<br>对于符号：<br>左括号：进栈<br>运算符号：与栈顶符号进行优先级比较<br>若栈顶符号优先级低：此符号进栈<br>（默认栈顶若是左括号，左括号优先级最低）<br>若栈顶符号优先级不低：将栈顶符号弹出并输出，之后进栈<br>右括号：将栈顶符号弹出并输出，直到匹配左括号</p>
+<p>【使用栈模型实现以上功能】 注意，以下代码需要用到<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/datastruct/334.html">栈模型链式储存的实现头文件 LinkStack.h 和 LinkStack.c</a>：</p>
+<p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include “LinkStack.h”</p>
+<p>&#x2F;&#x2F; 判断是不是数字<br>int is_num(char ch)<br>{<br>return ch &gt;&#x3D; ‘0’ &amp;&amp; ch &lt;&#x3D; ‘9’;<br>}</p>
+<p>&#x2F;&#x2F; 判断是不是左括号<br>int is_left(char ch)<br>{<br>return ch &#x3D;&#x3D; ‘(‘;<br>}</p>
+<p>&#x2F;&#x2F; 判断是不是右括号<br>int is_right(char ch)<br>{<br>return ch &#x3D;&#x3D; ‘)’;<br>}</p>
+<p>&#x2F;&#x2F; 判断是不是操作符<br>int is_operator(char ch)<br>{<br>return ch &#x3D;&#x3D; ‘+’  ch &#x3D;&#x3D; ‘-‘  ch &#x3D;&#x3D; ‘*‘  ch &#x3D;&#x3D; ‘&#x2F;‘;<br>}</p>
+<p>&#x2F;&#x2F; 判断优先级<br>int priority(char ch)<br>{<br>int result &#x3D; 0;</p>
+<p>if (ch &#x3D;&#x3D; ‘+’  ch &#x3D;&#x3D; ‘-‘)<br>result &#x3D; 1;<br>else if (ch &#x3D;&#x3D; ‘*‘  ch &#x3D;&#x3D; ‘&#x2F;‘)<br>result &#x3D; 2;</p>
+<p>return result;<br>}</p>
+<p>void output(char c)<br>{<br>&#x2F;&#x2F;字符不为0便输出<br>if (c !&#x3D; ‘\0’)<br>{<br>printf(“%c”, c);<br>}<br>}</p>
+<p>void process(char* code)<br>{<br>LinkStack* stack &#x3D; LinkStack_Create();<br>int i &#x3D; 0;<br>while (code[i] !&#x3D; ‘\0’)<br>{<br>&#x2F;&#x2F; 如果是数字直接输出<br>if (is_num(code[i]))<br>{<br>output(code[i]);<br>}<br>&#x2F;&#x2F; 判断是不是操作符<br>if (is_operator(code[i]))<br>{<br>&#x2F;&#x2F; 若栈顶符号优先级低：此符号进栈<br>&#x2F;&#x2F;（默认栈顶若是左括号，左括号优先级最低）<br>&#x2F;&#x2F; 若栈顶符号优先级不低：将栈顶符号弹出并输出<br>while (priority(code[i]) &lt;&#x3D; priority((char)(int)LinkStack_Top(stack)))<br>{<br>&#x2F;&#x2F; 弹出并输出<br>output((char)(int)LinkStack_Pop(stack));<br>}<br>&#x2F;&#x2F; 之后压栈<br>LinkStack_Push(stack, (void*)(int)code[i]);<br>}<br>&#x2F;&#x2F; 判断是不是左括号<br>if (is_left(code[i]))<br>{<br>LinkStack_Push(stack, (void*)(int)code[i]);<br>}<br>&#x2F;&#x2F; 判断是不是右括号，如果是与栈内左括号匹配<br>if (is_right(code[i]))<br>{<br>&#x2F;&#x2F; 循环判断是不是左括号，不是则弹出栈顶元素，循环弹出直至遇到左括号为止<br>while (!is_left((char)(int)LinkStack_Top(stack)))<br>{<br>&#x2F;&#x2F; 弹出并输出栈顶内容<br>output((char)(int)LinkStack_Pop(stack));<br>}<br>&#x2F;&#x2F; 此时弹出的一定是左括号<br>LinkStack_Pop(stack);<br>}<br>&#x2F;&#x2F; 下标++<br>i++;<br>}</p>
+<p>while (LinkStack_Size(stack))<br>{<br>&#x2F;&#x2F; 输出栈中内容<br>output((char)(int)LinkStack_Pop(stack));<br>}</p>
+<p>&#x2F;&#x2F; 销毁栈<br>LinkStack_Destroy(stack);<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>char* code &#x3D; “8+(3-1)*5”;<br>process(code);<br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-31T16:27:17.000Z" itemprop="datePublished">
+              2015-05-31
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

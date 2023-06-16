@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>JavaScript Standard 编码规范 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>JavaScript Standard 编码规范</h1>
+    </header>
+
+    <section>
+      <p>在远程工作中，并不是所有项目都是从头开始的，有很多项目是已经做了一部分，或者需要按着其要求来创建项目和编码的。所以这其中就有一些公司或者团队会使用一些代码规范，以保证无论是公司内部还是远程工作的同事都可以保持一致的代码规范，让代码不会过于凌乱。</p>
+<span id="more"></span>
+<p>JavaScript 不像 C&#x2F;C++，C&#x2F;C++ 有些语法特性制约了编码的规范，比如编译器要求每行代码末尾必须要有分号，而 JavaScript 则不然，有没有分号都可以正常通过，这就是一些很明显的差异。今天介绍的是 JavaScript Standard 编码规范。</p>
+<h2 id="JavaScript-Standard-Style-官网："><a href="#JavaScript-Standard-Style-官网：" class="headerlink" title="JavaScript Standard Style 官网："></a>JavaScript Standard Style 官网：</h2><p><a target="_blank" rel="noopener" href="https://standardjs.com/readme-zhcn.html">https://standardjs.com/readme-zhcn.html</a></p>
+<h2 id="一些细则"><a href="#一些细则" class="headerlink" title="一些细则"></a>一些细则</h2><ul>
+<li>使用两个空格 – 进行缩进</li>
+<li>字符串使用单引号 – 需要转义的地方除外</li>
+<li>不再有冗余的变量 – 这是导致 大量 bug 的源头!</li>
+<li>无分号 – 这没什么不好。不骗你！</li>
+<li>行首不要以 (, [, or ` 开头<ul>
+<li>这是省略分号时唯一会造成问题的地方 – 工具里已加了自动检测！</li>
+<li><a target="_blank" rel="noopener" href="https://standardjs.com/rules-zhcn.html#semicolons">详情</a></li>
+</ul>
+</li>
+<li>关键字后加空格 if (condition) { … }</li>
+<li>函数名后加空格 function name (arg) { … }</li>
+<li>坚持使用全等 &#x3D;&#x3D;&#x3D; 摒弃 &#x3D;&#x3D; 一但在需要检查 null undefined 时可以使用 obj &#x3D;&#x3D; null。</li>
+<li>一定要处理 Node.js 中错误回调传递进来的 err 参数。</li>
+<li>使用浏览器全局变量时加上 window 前缀 – document 和 navigator 除外</li>
+<li>避免无意中使用到了这些命名看上去很普通的全局变量， open, length, event 还有 name。</li>
+<li>查看更多 – 为何不试试 <a target="_blank" rel="noopener" href="https://standardjs.com/rules-zhcn.html#javascript-standard-style">standard 规范</a>呢！</li>
+</ul>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-09-04T12:07:28.000Z" itemprop="datePublished">
+              2017-09-04
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

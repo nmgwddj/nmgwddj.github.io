@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>事件对象的作用和案例 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>事件对象的作用和案例</h1>
+    </header>
+
+    <section>
+      <p>事件对象，就是在响应某些事件的处理函数内部第一个传递进来的参数。不同的事件，参数的内容也不同，我们可以根据每一个事件对象能用的功能来实现特殊的需求，下面就是几个案例。</p>
+<span id="more"></span>
+<h3 id="获得鼠标坐标信息"><a href="#获得鼠标坐标信息" class="headerlink" title="获得鼠标坐标信息"></a>获得鼠标坐标信息</h3><p>通过事件流对象可以获取到鼠标在浏览器中得各种信息，比如坐标等，可以使用 <code>console.log(event)</code> 打印一下 <code>onclick</code> 事件都有哪些成员。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">    var hh = document.getElementsByTagName(&quot;h2&quot;)[0];</span><br><span class="line">    hh.onclick = function (event) &#123;</span><br><span class="line">        console.log(event.clientX + &quot;--------&quot; + event.clientY);  // 相对DOM区域坐标</span><br><span class="line">        console.log(event.pageX + &quot;--------&quot; + event.pageY);      // 相对DOM区域坐标（包含滚动条距离）</span><br><span class="line">        console.log(event.screenX + &quot;--------&quot; + event.screenY);  // 相对屏幕的坐标</span><br><span class="line">    &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="键盘的按键监听"><a href="#键盘的按键监听" class="headerlink" title="键盘的按键监听"></a>键盘的按键监听</h3><p>假设一个表单，你想即时获取用户输入的内容，那么就可以通过事件对象来实现。 下面的例子当你在 <code>input</code> 中输入内容的时候，<code>console.log</code> 就会打印你按下按键的 ASCII 码。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">    &lt;head&gt;</span><br><span class="line">        &lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">        &lt;link rel=&quot;stylesheet&quot; href=&quot;http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css&quot;&gt;</span><br><span class="line">        &lt;title&gt;js lesson&lt;/title&gt;</span><br><span class="line">    &lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;h2&gt;事件对象&lt;/h2&gt;</span><br><span class="line">    &lt;input type=&quot;text&quot;&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">    var put = document.getElementsByTagName(&quot;input&quot;)[0];</span><br><span class="line"></span><br><span class="line">    put.onkeydown = function(event) &#123;</span><br><span class="line">        console.log(event);</span><br><span class="line">        console.log(event.keyCode);</span><br><span class="line">    &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="阻止事件流产生"><a href="#阻止事件流产生" class="headerlink" title="阻止事件流产生"></a>阻止事件流产生</h3><p>关于事件流的描述，请参考：<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/language/javascript/1224.html">http://www.mycode.net.cn/language/javascript/1224.html</a> 如果想禁用事件流，可以通过事件对象的 stopPropagation 方法来阻止事件向下传递。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">    &lt;head&gt;</span><br><span class="line">        &lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">        &lt;link rel=&quot;stylesheet&quot; href=&quot;http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css&quot;&gt;</span><br><span class="line">        &lt;title&gt;js lesson&lt;/title&gt;</span><br><span class="line">        &lt;style&gt;</span><br><span class="line">            div &#123;</span><br><span class="line">                width: 400px;</span><br><span class="line">                height: 300px;</span><br><span class="line">                background-color: pink;</span><br><span class="line">            &#125;</span><br><span class="line">            p &#123;</span><br><span class="line">                width: 300px;</span><br><span class="line">                height: 200px;</span><br><span class="line">                background-color: lightsteelblue;</span><br><span class="line">            &#125;</span><br><span class="line">            span &#123;</span><br><span class="line">                font-size: 22px;</span><br><span class="line">                background-color: darkslategray;</span><br><span class="line">                color: #FFF;</span><br><span class="line">            &#125;</span><br><span class="line">        &lt;/style&gt;</span><br><span class="line">    &lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;h2&gt;DOM 操作&lt;/h2&gt;</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">        &lt;p&gt;&lt;span&gt;Today is Sunday&lt;/span&gt;&lt;/p&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">    var sp = document.getElementsByTagName(&quot;span&quot;)[0];</span><br><span class="line">    var pt = document.getElementsByTagName(&quot;p&quot;)[0];</span><br><span class="line">    var dv = document.getElementsByTagName(&quot;div&quot;)[0];</span><br><span class="line"></span><br><span class="line">    sp.addEventListener(&quot;click&quot;, function(event) &#123;</span><br><span class="line">        console.log(&quot;This is span tag&quot;);</span><br><span class="line">        event.stopPropagation();</span><br><span class="line">    &#125;);</span><br><span class="line">    pt.addEventListener(&quot;click&quot;, function(event) &#123;</span><br><span class="line">        console.log(&quot;This is p tag&quot;);</span><br><span class="line">        event.stopPropagation();</span><br><span class="line">    &#125;);</span><br><span class="line">    dv.addEventListener(&quot;click&quot;, function(event) &#123;</span><br><span class="line">        console.log(&quot;This is div tag&quot;);</span><br><span class="line">        event.stopPropagation();</span><br><span class="line">    &#125;);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="阻止浏览器默认动作"><a href="#阻止浏览器默认动作" class="headerlink" title="阻止浏览器默认动作"></a>阻止浏览器默认动作</h3><p>在表单的 submit 按钮被点击时，有可能用户输入的信息不满足要求，如果继续提交表单， 那么页面会被跳转，到后台才发现信息不对，再弹回输入页面让用户重新输入。 这种情况在十年前简直就太常见了，如果你想有更好的用户体验，那么就在表单提交前就验证信息是否正确吧。 这里我们就可以实现如果用户输入信息错误，那么阻止浏览器默认的提交动作并让用户重新输入。 同样，主流浏览器和IE6&#x2F;IE7&#x2F;IE8有不同区别，主流浏览器使用 <code>event.preventDefault();</code>，IE6&#x2F;IE7&#x2F;IE8 使用 <code>event.returnValue = false;</code> 我们也可以直接返回一个 false 告诉浏览器提交失败了，但这只在 dom 一级事件响应函数中有效，dom 二级只能通过上面的函数实现。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">    &lt;head&gt;</span><br><span class="line">        &lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">        &lt;link rel=&quot;stylesheet&quot; href=&quot;http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css&quot;&gt;</span><br><span class="line">        &lt;title&gt;js lesson&lt;/title&gt;</span><br><span class="line">    &lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;h2&gt;事件对象&lt;/h2&gt;</span><br><span class="line">    &lt;form action=&quot;/register.php&quot;&gt;</span><br><span class="line">        &lt;input type=&quot;text&quot;&gt;</span><br><span class="line">        &lt;input id=&quot;submit&quot; type=&quot;submit&quot;&gt;</span><br><span class="line">    &lt;/form&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">    var form = document.getElementsByTagName(&quot;form&quot;)[0];</span><br><span class="line">    /*----------- dom 一级方式阻止默认动作 -----------*/</span><br><span class="line"></span><br><span class="line">    // form.onsubmit = function() &#123;</span><br><span class="line">    //   console.log(&quot;提交被阻止了。&quot;)</span><br><span class="line">    //   return false;</span><br><span class="line">    // &#125;</span><br><span class="line"></span><br><span class="line">    /*----------- dom 二级方式阻止默认动作 -----------*/</span><br><span class="line"></span><br><span class="line">    /* IE6/IE7/IE8*/</span><br><span class="line">    // form.attachEvent(&quot;onsubmit&quot;, function(event) &#123;</span><br><span class="line">    //   console.log(&quot;提交被阻止了。&quot;)</span><br><span class="line">    //   event.returnValue = false;</span><br><span class="line">    // &#125;);</span><br><span class="line"></span><br><span class="line">    /* 主流浏览器 */</span><br><span class="line">    form.addEventListener(&quot;submit&quot;, function(event) &#123;</span><br><span class="line">        console.log(&quot;提交被阻止了。&quot;)</span><br><span class="line">        event.preventDefault();</span><br><span class="line">    &#125;);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-11-22T15:53:52.000Z" itemprop="datePublished">
+              2015-11-22
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Event/">Event</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

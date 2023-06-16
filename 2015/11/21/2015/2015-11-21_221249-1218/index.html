@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>JavaScript DOM 操作给元素添加、删除事件 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>JavaScript DOM 操作给元素添加、删除事件</h1>
+    </header>
+
+    <section>
+      <p>借用传智播客教师课件中得一句话，“通过鼠标、键盘对浏览器页面所做的动作就是事件”，比如鼠标点击、鼠标移入、鼠标移除、键盘按下、键盘抬起等等，都称之为事件，这些事件有如下几种。</p>
+<span id="more"></span>
+<h3 id="事件的类型"><a href="#事件的类型" class="headerlink" title="事件的类型"></a>事件的类型</h3><p>事件</p>
+<p>作用</p>
+<p>onclick</p>
+<p>鼠标点击</p>
+<p>onmouseover</p>
+<p>鼠标移入</p>
+<p>onmouseout</p>
+<p>鼠标移出</p>
+<p>onkeyup</p>
+<p>键盘按下并抬起</p>
+<p>onkeydown</p>
+<p>键盘按下</p>
+<p>onchange</p>
+<p>内容发生改变</p>
+<p>onblur</p>
+<p>失去焦点</p>
+<p>onfocus</p>
+<p>获得焦点</p>
+<p>onsubmit</p>
+<p>表单提交</p>
+<h3 id="事件的绑定"><a href="#事件的绑定" class="headerlink" title="事件的绑定"></a>事件的绑定</h3><p>事件的绑定有多种方式，不过大体都可以分为两大类，一种是在元素写内联代码（DOM一级），一种则是使用绑定事件函数来对某个元素进行事件绑定（DOM二级）。我们主要介绍后面一种，涉及到的主要两个方法一个是添加 <code>addEventListener</code> 另外一个是删除 <code>removeEventListener</code> 另外值得注意的是，微软 IE6&#x2F;IE7&#x2F;IE8 浏览器添加事件的函数于主流浏览器并不太一样，如果是 IE6&#x2F;IE7&#x2F;IE8 则使用 <code>attachEvent</code> 和 <code>detachEvent</code></p>
+<h3 id="参考代码"><a href="#参考代码" class="headerlink" title="参考代码"></a>参考代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">    &lt;link rel=&quot;stylesheet&quot; href=&quot;http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css&quot;&gt;</span><br><span class="line">    &lt;title&gt;js lesson&lt;/title&gt;</span><br><span class="line">    &lt;style&gt;</span><br><span class="line">      h2 &#123;</span><br><span class="line">        height: 40px;</span><br><span class="line">        width: auto;</span><br><span class="line">        background-color: #017ACC;</span><br><span class="line">        color: #FFFFFF;</span><br><span class="line">        text-align: center;</span><br><span class="line">        line-height: 40px;</span><br><span class="line">      &#125;</span><br><span class="line">    &lt;/style&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;h2&gt;DOM 操作&lt;/h2&gt;</span><br><span class="line">    &lt;div class=&quot;container&quot;&gt;</span><br><span class="line">      &lt;div class=&quot;row&quot;&gt;</span><br><span class="line">        &lt;div class=&quot;col-xs-12 text-center&quot;&gt;</span><br><span class="line">          &lt;button class=&quot;btn btn-primary&quot; onclick=&quot;cancel()&quot;&gt;取消事件绑定&lt;/button&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">  var hh = document.getElementsByTagName(&quot;h2&quot;)[0];</span><br><span class="line">  // 给 h2 添加事件</span><br><span class="line">  hh.addEventListener(&quot;mouseover&quot;, function() &#123;</span><br><span class="line">    // this 代表 DOM 对象本身</span><br><span class="line">    this.style.backgroundColor = &quot;#CCCCCC&quot;;</span><br><span class="line">  &#125;);</span><br><span class="line">  hh.addEventListener(&quot;mouseout&quot;, function() &#123;</span><br><span class="line">    // this 代表 DOM 对象本身</span><br><span class="line">    this.style.backgroundColor = &quot;#017ACC&quot;;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  function clickFunc1() &#123;</span><br><span class="line">    console.log(&quot;clieckFunc1&quot;);</span><br><span class="line">  &#125;;</span><br><span class="line">  function clickFunc2() &#123;</span><br><span class="line">    console.log(&quot;clieckFunc2&quot;);</span><br><span class="line">  &#125;;</span><br><span class="line">  function clickFunc3() &#123;</span><br><span class="line">    console.log(&quot;clieckFunc3&quot;);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  // 添加鼠标点击事件，支持一个DOM元素绑定多个相同事件，触发时三个事件同时响应</span><br><span class="line">  hh.addEventListener(&quot;click&quot;, clickFunc1);</span><br><span class="line">  hh.addEventListener(&quot;click&quot;, clickFunc2);</span><br><span class="line">  hh.addEventListener(&quot;click&quot;, clickFunc3);</span><br><span class="line"></span><br><span class="line">  // 取消指定事件</span><br><span class="line">  function cancel() &#123;</span><br><span class="line">    // 可取消的事件必须是有名函数为参数的事件，</span><br><span class="line">    hh.removeEventListener(&quot;click&quot;, clickFunc1);</span><br><span class="line">    hh.removeEventListener(&quot;click&quot;, clickFunc3);</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-11-21T22:12:49.000Z" itemprop="datePublished">
+              2015-11-21
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/DOM/">DOM</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/Event/">Event</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

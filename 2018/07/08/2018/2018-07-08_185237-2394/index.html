@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>一步一步教你自己来编译 wxsqlite3 静态库 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>一步一步教你自己来编译 wxsqlite3 静态库</h1>
+    </header>
+
+    <section>
+      <p>wxsqlite3 相比普通的 sqlite3 的好处就是可以对数据库进行加密，但这个 wxsqlite3 的编译过程真的是非常曲折，我自己也是折腾了几个小时才真正编译出来一个可用的 wxsqlite3 的静态库文件。那么接下来废话不多说开始准备环境。</p>
+<span id="more"></span>
+<h2 id="安装-wxWidgets"><a href="#安装-wxWidgets" class="headerlink" title="安装 wxWidgets"></a>安装 wxWidgets</h2><p>访问 <a target="_blank" rel="noopener" href="https://www.wxwidgets.org/">https://www.wxwidgets.org/</a>，在首页点击 Download now 按钮。 <a href="/images/2018/07/2018-07-08_18-06-39.png"><img src="/images/2018/07/2018-07-08_18-06-39.png"></a> 下载 Windows Installer 安装包 <a href="/images/2018/07/2018-07-08_18-07-16.png"><img src="/images/2018/07/2018-07-08_18-07-16.png"></a> 下载完成后安装我就不多说了，默认下一步下一步就可以了，我这里安装到默认的 C 盘： <a href="/images/2018/07/2018-07-08_18-13-08.png"><img src="/images/2018/07/2018-07-08_18-13-08.png"></a> 接下来打开 <code>C:\wxWidgets-3.1.1\build\msw</code> 目录，根据你的 VS 版本打开对应的解决方案，我使用的是 VS2013，所以打开 <code>wx_vc12.sln</code>。点击生成下面的皮生成菜单，全选所有点击生成： <a href="/images/2018/07/2018-07-08_18-43-26.png"><img src="/images/2018/07/2018-07-08_18-43-26.png"></a> 这个过程主要是会在 <code>C:\wxWidgets-3.1.1\lib\vc_lib\mswu\wx</code> 生成一个 setup.h 和其他依赖文件，这个文件在我们后面编译 wxsqlite3 的时候会用到。</p>
+<h2 id="编译-wxsqlite3-代码"><a href="#编译-wxsqlite3-代码" class="headerlink" title="编译 wxsqlite3 代码"></a>编译 wxsqlite3 代码</h2><p>首先命令行执行如下命令，将最新的 wxqlite3 的代码 clone 下来。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/utelle/wxsqlite3.git</span><br></pre></td></tr></table></figure>
+
+<p>打开 wxsqlite3 目录下的 build31 文件夹，一样根据你本地 VS 的版本选择对应的解决方案文件（.sln）打开。我依然使用的是 VS2013 的解决方案。 <a href="/images/2018/07/2018-07-08_18-25-41.png"><img src="/images/2018/07/2018-07-08_18-25-41.png"></a> 接下来要配置一下项目，右键 wxsqlite3 项目-&gt;属性，在打开的属性页中，选择所有配置和所有平台： <a href="/images/2018/07/2018-07-08_18-29-53.png"><img src="/images/2018/07/2018-07-08_18-29-53.png"></a> 在 VC目录-&gt;包含目录 中，添加 <code>C:\wxWidgets-3.1.1\include\msvc</code> 文件夹和 <code>C:\wxWidgets-3.1.1\include</code> 文件夹 <a href="/images/2018/07/2018-07-08_18-40-51.png"><img src="/images/2018/07/2018-07-08_18-40-51.png"></a> 在 通用属性-&gt;引用 中，将 libsqlite3 设置为依赖库： <a href="/images/2018/07/2018-07-08_18-32-08.png"><img src="/images/2018/07/2018-07-08_18-32-08.png"></a> 接下来，将 libsqlite3 项目和 wxsqlite3 项目的所有 Debug 版本的运行库修改为 &#x2F;MTD，将所有 Release 版本的运行库都修改为 &#x2F;MT，注意如果你需要用 64 位的 wxsqlite3 的话，Win64 的属性也要修改。 <a href="/images/2018/07/2018-07-08_18-34-23.png"><img src="/images/2018/07/2018-07-08_18-34-23.png"></a> <a href="/images/2018/07/2018-07-08_18-34-46.png"><img src="/images/2018/07/2018-07-08_18-34-46.png"></a> <a href="/images/2018/07/2018-07-08_18-35-25.png"><img src="/images/2018/07/2018-07-08_18-35-25.png"></a> <a href="/images/2018/07/2018-07-08_18-35-56.png"><img src="/images/2018/07/2018-07-08_18-35-56.png"></a> 接下来还是一样点击 生成-&gt;批生成 菜单，选择你要生成的类型，我需要 32&#x2F;64 位的 Debug 版本和 32&#x2F;64 的 Release 版本，所以我只选择了 Debug、Debug Win64、Release、Release Win64 四个版本。然后点击生成。（图片由于上面看不到，就没圈起来） <a href="/images/2018/07/2018-07-08_18-38-50.png"><img src="/images/2018/07/2018-07-08_18-38-50.png"></a> 不出意外的话，将会生成 wxsqlite3 的静态库到上级目录下的 lib\vc120_lib 目录下。 <a href="/images/2018/07/2018-07-08_18-47-59.png"><img src="/images/2018/07/2018-07-08_18-47-59.png"></a> 这里大家看到只有两个，是因为 Debug Win64 和 Debug 生成的路径和文件名是一样的，被覆盖了，Release 也是一样，你修改一下生成后的目录或者文件名就可以了。这样生成出来的 wxsqlite3.lib 文件你就可以引入到你自己的项目中使用了。使用时需要包含 wxsqlite3\include 目录下的头文件。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>接下来总结一下步骤，防止第一次编译的同学神经错乱。。。</p>
+<ul>
+<li>安装 wxWidgets</li>
+<li>批量生成所有项目（主要为了生成 setup.h 文件）</li>
+<li>克隆 wxsqlite3 项目并根据自己的需要打开对应解决方案</li>
+<li>配置两个依赖目录</li>
+<li>配置项目的运行库（主要为了与你 exe 的运行库匹配一致）</li>
+<li>设置 libsqlite3 为依赖项</li>
+<li>批量根据自己的需要生成静态库</li>
+</ul>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2018-07-08T18:52:37.000Z" itemprop="datePublished">
+              2018-07-08
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/sqlite/">sqlite</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

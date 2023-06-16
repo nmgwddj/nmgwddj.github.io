@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>delete 和 truncate 的具体区别 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>delete 和 truncate 的具体区别</h1>
+    </header>
+
+    <section>
+      <p>我们知道，delete 和 truncate 都可以对一张表执行清空操作，比如 delete from table1，或者 truncate table table1。但他们之间存在着本质上的区别。具体区别如下。</p>
+<span id="more"></span>
+<hr>
+<h3 id="delete-和-truncate-区别"><a href="#delete-和-truncate-区别" class="headerlink" title="delete 和 truncate 区别"></a>delete 和 truncate 区别</h3><ol>
+<li><strong>delete 逐条删除表“内容”，truncate 先摧毁表再重建。</strong> (由于delete使用频繁，Oracle对delete优化后delete快于truncate)</li>
+<li><strong>delete 是DML语句，truncate 是DDL语句。</strong> DML语句可以闪回(flashback)，DDL语句不可以闪回。（闪回： 做错了一个操作并且commit了，对应的撤销行为。了解）</li>
+<li><strong>由于delete是逐条操作数据，所以delete会产生碎片，truncate不会产生碎片。</strong> 同样是由于Oracle对delete进行了优化，让delete不产生碎片。</li>
+<li><strong>delete不会释放空间，truncate 会释放空间</strong> 用delete删除一张10M的表，空间不会释放。而truncate会。所以当确定表不再使用，应truncate</li>
+<li><strong>delete可以回滚rollback， truncate不可以回滚</strong></li>
+</ol>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-22T20:01:01.000Z" itemprop="datePublished">
+              2015-07-22
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/oracle/">oracle</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/sql/">sql</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

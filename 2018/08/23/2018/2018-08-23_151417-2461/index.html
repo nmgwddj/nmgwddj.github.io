@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt 5.11.1 静态编译 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt 5.11.1 静态编译</h1>
+    </header>
+
+    <section>
+      <h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p>离线安装包：<a target="_blank" rel="noopener" href="http://download.qt.io/archive/qt/5.11/5.11.1/">http://download.qt.io/archive/qt/5.11/5.11.1/</a> <a href="/images/2018/08/2018-08-23_14-58-19.png"><img src="/images/2018/08/2018-08-23_14-58-19.png"></a></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>安装过程中设置好路径，安装选项中记得勾选 Source 和 MinGW 5.3.0 32bit。 <a href="/images/2018/08/2018-08-23_14-59-27.png"><img src="/images/2018/08/2018-08-23_14-59-27.png"></a> <a href="/images/2018/08/2018-08-23_14-59-51.png"><img src="/images/2018/08/2018-08-23_14-59-51.png"></a></p>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p>用终端（Windows 下 cmd）进入你安装的 <code>Qt\Qt5.11.1\5.11.1\Src</code> 目录下，执行如下命令。请注意 <code>-prefix &quot;D:\Documents\Qt\Qt5.11.1_MinGW_Static&quot;</code> 参数，这里指定了最终生成的静态编译文件的位置，最后一步 <code>mingw32-make install</code> 的时候会复制文件到这个目录下。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Configure.bat -confirm-license -opensource -platform win32-g++ -mp -debug-and-release -static -prefix &quot;D:\Documents\Qt\Qt5.11.1_MinGW_Static&quot; -qt-sqlite -qt-zlib -qt-libpng -qt-libjpeg -opengl desktop -qt-freetype -no-qml-debug -no-angle -nomake tests -nomake examples</span><br></pre></td></tr></table></figure>
+
+<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><p>执行如下命令开始编译，<code>-j8</code> 代表使用 8 个线程，根据你 CPU 的情况而定。大概编译时间 2 - 3 小时。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mingw32-make -j8</span><br></pre></td></tr></table></figure>
+
+<p><a href="/images/2018/08/2018-08-15_11-00-06.png"><img src="/images/2018/08/2018-08-15_11-00-06.png"></a></p>
+<h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><p>会复制到你之前设置的 <code>-prefix &quot;D:\Documents\Qt\Qt5.11.1_MinGW_Static&quot;</code> 目录下。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mingw32-make install</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置-Qt"><a href="#配置-Qt" class="headerlink" title="配置 Qt"></a>配置 Qt</h2><p>打开 Qt Creator 增加静态库配置，打开工具-&gt;选项菜单，进入构建和运行-&gt;Qt Versions 选项卡。添加你刚才编译好的静态库目录下的 qmake.exe。 <a href="/images/2018/08/2018-08-23_15-09-50.png"><img src="/images/2018/08/2018-08-23_15-09-50.png"></a> 添加完成后切换到构建和套件选项卡，接着添加一个构建套件，注意调试器、编译器什么的都要选择好，不然无法使用： <a href="/images/2018/08/2018-08-23_15-11-01.png"><img src="/images/2018/08/2018-08-23_15-11-01.png"></a></p>
+<h2 id="静态编译项目"><a href="#静态编译项目" class="headerlink" title="静态编译项目"></a>静态编译项目</h2><p>打开你的项目在项目设置中就能看到可以使用的静态构建套件了。 <a href="/images/2018/08/2018-08-23_15-13-04.png"><img src="/images/2018/08/2018-08-23_15-13-04.png"></a> 配置好静态编译的构建套件后，项目下方就可以选择这个套件来生成项目了。 <a href="/images/2018/08/2018-08-23_15-12-31.png"><img src="/images/2018/08/2018-08-23_15-12-31.png"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2018-08-23T15:14:17.000Z" itemprop="datePublished">
+              2018-08-23
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

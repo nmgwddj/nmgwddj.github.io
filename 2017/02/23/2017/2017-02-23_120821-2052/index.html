@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ES6 学习笔记之对象的拓展 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>ES6 学习笔记之对象的拓展</h1>
+    </header>
+
+    <section>
+      <h2 id="属性的简洁表示法"><a href="#属性的简洁表示法" class="headerlink" title="属性的简洁表示法"></a>属性的简洁表示法</h2><p>可以直接使用一个变量来初始化对象，变量名即属性名，变量值即属性值。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var foo = &#x27;bar&#x27;;</span><br><span class="line">var baz = &#123;foo&#125;;</span><br><span class="line">console.log(baz);</span><br><span class="line">// &#123; foo: &#x27;bar&#x27; &#125;</span><br><span class="line"></span><br><span class="line">// 等同于</span><br><span class="line">var baz = &#123;foo: foo&#125;;</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<p>另外一个例子</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function f_es5(x, y) &#123;</span><br><span class="line">  return &#123; x: x, y: y &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function f_es6(x, y) &#123;</span><br><span class="line">  return &#123; x, y &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(f_es5(1, 2));</span><br><span class="line">// &#123; x: 1, y: 2 &#125;</span><br><span class="line">console.log(f_es5(3, 4));</span><br><span class="line">// &#123; x: 3, y: 4 &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="方法的简洁表示法"><a href="#方法的简洁表示法" class="headerlink" title="方法的简洁表示法"></a>方法的简洁表示法</h2><p>ES6 简洁方法后与一些面向对象的高级语言（如C++）差不多，函数名+参数+花括号。另外注意简洁写法的属性名是按字符串解析的。方法的属性名可以是一些关键字，由于是按字符串来解析的，所以不会产生歧义。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var obj_es5 = &#123;</span><br><span class="line">  &#x27;method&#x27;: function () &#123;</span><br><span class="line">    return &#x27;Hello ES5 style.&#x27;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var obj_es6 = &#123;</span><br><span class="line">  method() &#123;</span><br><span class="line">    return &#x27;Hello ES6 style.&#x27;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(obj_es5.method());</span><br><span class="line">console.log(obj_es6.method());</span><br></pre></td></tr></table></figure>
+
+<h2 id="用表达式定义属性名和方法名"><a href="#用表达式定义属性名和方法名" class="headerlink" title="用表达式定义属性名和方法名"></a>用表达式定义属性名和方法名</h2><p>ES5 中仅允许使用字面常量来定义属性名和方法名，而 ES6 中允许使用表达式。比如两个字符串拼接成一个方法名，如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">var attrKey  = &#x27;foo&#x27;;</span><br><span class="line">var funcName = &#x27;show&#x27;</span><br><span class="line"></span><br><span class="line">var obj = &#123;</span><br><span class="line">  [attrKey]: true,</span><br><span class="line">  [&#x27;get&#x27; + &#x27;Name&#x27;]: &#x27;Pency&#x27;,</span><br><span class="line">  [&#x27;print&#x27; + &#x27;Hello&#x27;] () &#123; console.log(&#x27;Hello!&#x27;); &#125;,</span><br><span class="line">  [`$&#123;funcName&#125;Message`] () &#123; console.log(&#x27;Hi, this is a ES6 style function.&#x27;); &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(obj.foo, obj.getName);</span><br><span class="line">// true &#x27;Pency&#x27;</span><br><span class="line">obj.printHello();</span><br><span class="line">// Hello!</span><br><span class="line">obj.showMessage();</span><br><span class="line">// Hi, this is a ES6 function.</span><br></pre></td></tr></table></figure>
+
+<h2 id="Object-is-方法"><a href="#Object-is-方法" class="headerlink" title="Object.is() 方法"></a>Object.is() 方法</h2><p>该方法用来弥补 &#x3D;&#x3D; 和 &#x3D;&#x3D;&#x3D; 的缺陷，可以严格对比两个对象是否相等。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">console.log(Object.is(&#x27;foo&#x27;, &#x27;foo&#x27;));</span><br><span class="line">// true</span><br><span class="line">console.log(Object.is(&#123;&#125;, &#123;&#125;));</span><br><span class="line">// false</span><br><span class="line">console.log(+0 === -0);</span><br><span class="line">// true</span><br><span class="line">console.log(NaN === NaN);</span><br><span class="line">// false</span><br><span class="line">console.log(Object.is(+0, -0));</span><br><span class="line">// false</span><br><span class="line">console.log(Object.is(NaN, NaN));</span><br><span class="line">// true</span><br></pre></td></tr></table></figure>
+
+<p>从书中复制过来的 ES5 实现 Object.is 的实现</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Object.defineProperty(Object, &#x27;is&#x27;, &#123;</span><br><span class="line">  value: function(x, y) &#123;</span><br><span class="line">    if (x === y) &#123;</span><br><span class="line">      // 针对+0 不等于 -0的情况</span><br><span class="line">      return x !== 0  1 / x === 1 / y;</span><br><span class="line">    &#125;</span><br><span class="line">    // 针对NaN的情况</span><br><span class="line">    return x !== x &amp;&amp; y !== y;</span><br><span class="line">  &#125;,</span><br><span class="line">  configurable: true,</span><br><span class="line">  enumerable: false,</span><br><span class="line">  writable: true</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="Object-assign-方法"><a href="#Object-assign-方法" class="headerlink" title="Object.assign() 方法"></a>Object.assign() 方法</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var target = &#123; a: 1, b: 1 &#125;;</span><br><span class="line">var source1 = &#123; b: 2, c: 2 &#125;;</span><br><span class="line">var source2 = &#123; c: 3 &#125;;</span><br><span class="line"></span><br><span class="line">Object.assign(target, source1, source2);</span><br><span class="line">console.log(target);</span><br><span class="line">// &#123; a: 1, b: 2, c: 3 &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Object.assign</code> 常见的用法在书中也列举了很多，我觉得非常实用，所以自己手抄一下给大家分享，更多请参考原著。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 给对象添加属性</span><br><span class="line">class Point &#123;</span><br><span class="line">  constructor(x, y) &#123;</span><br><span class="line">    Object.assign(this, &#123; x, y &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(new Point(10, 20));</span><br><span class="line">// Point &#123; x: 10, y: 20 &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// 给对象添加方法</span><br><span class="line">Object.assign(SomeClass.prototype, &#123;</span><br><span class="line">  someMethod(arg1, arg2) &#123;</span><br><span class="line">    // ...</span><br><span class="line">  &#125;,</span><br><span class="line">  anotherMethod() &#123;</span><br><span class="line">    // ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">// 等同于下面的方式</span><br><span class="line"></span><br><span class="line">SomeClass.prototype.someMethod = function (arg1, arg2) &#123; /* ... */ &#125;;</span><br><span class="line">SomeClass.prototype.anotherMethod = function () &#123; /* ... */ &#125;;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-02-23T12:08:21.000Z" itemprop="datePublished">
+              2017-02-23
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/ES6/">ES6</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>FIELD_OFFSET 宏详解 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>FIELD_OFFSET 宏详解</h1>
+    </header>
+
+    <section>
+      <p>在日常开发过程中，我们常常用如下这种形式的结构体来传递数据。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">typedef struct  _PATH_INFO &#123;</span><br><span class="line">    HANDLE  hPPid;              // 父进程 PID</span><br><span class="line">    HANDLE  hPid;               // 子进程 PID</span><br><span class="line">    ULONG   PathLength;         // 子进程路径长度</span><br><span class="line">    TCHAR   Path[1];            // 用于存储子进程路径</span><br><span class="line">&#125; PATH_INFO, *PPATH_INFO;</span><br></pre></td></tr></table></figure>
+
+<p>其中前三个成员用来描述一个进程的父进程PID和自身进程的PID以及路径长度信息，而最后一个成员来描述该路径的实际内容，由于路径长度是不定的，我们为了节省内存，加了一个 PathLength 的成员来描述路径长度，不会将实际储存路径的成员设置成固定的 512 大小或者 1024 大小，这样会非常浪费内存，在使用过程中，我们会想如下这种方式来给结构体分配内存和填充数据。</p>
+<span id="more"></span>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line"></span><br><span class="line">// 一个用于传递数据的结构体</span><br><span class="line">typedef struct  _PATH_INFO &#123;</span><br><span class="line">    HANDLE  hPPid;              // 父进程 PID</span><br><span class="line">    HANDLE  hPid;               // 子进程 PID</span><br><span class="line">    ULONG   PathLength;         // 子进程路径长度</span><br><span class="line">    TCHAR   Path[1];            // 用于存储子进程路径</span><br><span class="line">&#125; PATH_INFO, *PPATH_INFO;</span><br><span class="line"></span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    PPATH_INFO pPathInfo = NULL;</span><br><span class="line">    TCHAR szPath[] = _T(&quot;C:\\Windows\\notepad.exe&quot;);</span><br><span class="line">    ULONG ulLength = sizeof(PATH_INFO) + sizeof(szPath);</span><br><span class="line"></span><br><span class="line">    pPathInfo = (PPATH_INFO)malloc(ulLength);</span><br><span class="line"></span><br><span class="line">    // 两个 HANDLE + 一个 ULONG + 实际路径占用的空间</span><br><span class="line">    cout &lt;&lt; &quot;应该分配内存：&quot; &lt;&lt; sizeof(HANDLE) * 2 + sizeof(ULONG) + sizeof(szPath) &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; &quot;实际分配内存：&quot; &lt;&lt; ulLength &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    pPathInfo-&gt;hPPid = (HANDLE)8273;</span><br><span class="line">    pPathInfo-&gt;hPid = (HANDLE)188;</span><br><span class="line">    pPathInfo-&gt;PathLength = sizeof(szPath);</span><br><span class="line">    memcpy(pPathInfo-&gt;Path, szPath, sizeof(szPath));</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; &quot;PPID = &quot; &lt;&lt; pPathInfo-&gt;hPPid &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; &quot;PID  = &quot; &lt;&lt; pPathInfo-&gt;hPid &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; &quot;Length = &quot; &lt;&lt; pPathInfo-&gt;PathLength &lt;&lt; endl;</span><br><span class="line">    wcout &lt;&lt; &quot;Path = &quot; &lt;&lt; pPathInfo-&gt;Path &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    free(pPathInfo);</span><br><span class="line">    getchar();</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上代码打印的结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">应该分配内存：58</span><br><span class="line">实际分配内存：62</span><br><span class="line">PPID = 00002051</span><br><span class="line">PID  = 000000BC</span><br><span class="line">Length = 46</span><br><span class="line">Path = C:\Windows\notepad.exe</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，我们手动计算了两个 HANDLE + 一个 ULONG + 实际路径占用长度后得出的数值是 58，但实际分配内存的时候却分配了 62 个字节的内存。后面我们拷贝数据到分配的内存中以后，有 4 个字节的空间没有使用而被浪费。那为什么 <code>sizeof(PATH_INFO)</code> 会比我们自己计算的长度多出来 4 个字节呢？这涉及到对结构体内存对齐的知识的了解了，请看本站曾经写过的一篇关于结构体内存对齐的非常详细的文章（图文，非常易懂）：<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/language/cpp/1489.html">http://www.mycode.net.cn/language/cpp/1489.html</a> 在看完上面介绍的结构体内存对齐的文章后，我想你应该已经知道了为什么会比我们预计的多出 4 个字节。接下来就是如何解决这样的问题了，以实现不浪费一丝空间。那么本文的主角 <code>FIELD_OFFSET</code> 宏闪亮登场了。如果我上来就讲这个宏是干什么用的，大家可能也就一看，顶多自己敲敲代码测试一下，很难理解它到底有什么作用。而在我们上面碰到问题的背景下再来简述一下这个宏的作用就非常容易理解且难再忘记它。 <code>FIELD_OFFSET</code> 计算一个结构体成员在结构体内部的字节偏移位置，需要给其传递两个参数，一个是结构体的类型名称，一个是你要计算偏移量的成员名称。怎么理解呢？看如下图描述： <a href="/images/2016/09/2016-09-25_103740.png"><img src="/images/2016/09/2016-09-25_103740.png" alt="2016-09-25_103740"></a> 当我们传递结构体名 PATH_INFO 和结构体成员 Path 给该宏以后，它会帮我们计算出这个成员在结构体中的起始位置，换个角度说就是计算出了这个成员前的所有成员的大小！以这个大小再加上我们最后一个成员的长度即可得出实际我们需要的空间，而不会因为内存对齐的问题导致计算错误。使用这个宏修正我们的代码后效果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line"></span><br><span class="line">// 一个用于传递数据的结构体</span><br><span class="line">typedef struct  _PATH_INFO &#123;</span><br><span class="line">    HANDLE  hPPid;              // 父进程 PID</span><br><span class="line">    HANDLE  hPid;               // 子进程 PID</span><br><span class="line">    ULONG   PathLength;         // 子进程路径长度</span><br><span class="line">    TCHAR   Path[1];            // 用于存储子进程路径</span><br><span class="line">&#125; PATH_INFO, *PPATH_INFO;</span><br><span class="line"></span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    PPATH_INFO pPathInfo = NULL;</span><br><span class="line">    TCHAR szPath[] = _T(&quot;C:\\Windows\\notepad.exe&quot;);</span><br><span class="line">    ULONG ulLength = FIELD_OFFSET(PATH_INFO, Path) + sizeof(szPath);</span><br><span class="line"></span><br><span class="line">    pPathInfo = (PPATH_INFO)malloc(ulLength);</span><br><span class="line"></span><br><span class="line">    // 两个 HANDLE + 一个 ULONG + 实际路径占用的空间</span><br><span class="line">    cout &lt;&lt; &quot;应该分配内存：&quot; &lt;&lt; sizeof(HANDLE) * 2 + sizeof(ULONG) + sizeof(szPath) &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; &quot;实际分配内存：&quot; &lt;&lt; ulLength &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    pPathInfo-&gt;hPPid = (HANDLE)8273;</span><br><span class="line">    pPathInfo-&gt;hPid = (HANDLE)188;</span><br><span class="line">    pPathInfo-&gt;PathLength = sizeof(szPath);</span><br><span class="line">    memcpy(pPathInfo-&gt;Path, szPath, sizeof(szPath));</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; &quot;PPID = &quot; &lt;&lt; pPathInfo-&gt;hPPid &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; &quot;PID  = &quot; &lt;&lt; pPathInfo-&gt;hPid &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; &quot;Length = &quot; &lt;&lt; pPathInfo-&gt;PathLength &lt;&lt; endl;</span><br><span class="line">    wcout &lt;&lt; &quot;Path = &quot; &lt;&lt; pPathInfo-&gt;Path &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    free(pPathInfo);</span><br><span class="line">    getchar();</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最终打印的结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">应该分配内存：58</span><br><span class="line">实际分配内存：58</span><br><span class="line">PPID = 00002051</span><br><span class="line">PID  = 000000BC</span><br><span class="line">Length = 46</span><br><span class="line">Path = C:\Windows\notepad.exe</span><br></pre></td></tr></table></figure>
+
+<p>可以看到和我们预计的长度一模一样，不会有浪费空间的情况出现了。接下来我们再来看 FIELD_OFFSET 宏的实现，你会发现原来这么简单啊。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define FIELD_OFFSET(type, field)    ((LONG)(LONG_PTR)&amp;(((type *)0)-&gt;field))</span><br></pre></td></tr></table></figure>
+
+<p>内部实现其实就是将 0 这个地址强制转换为结构体类型，然后使用强转后的结构体类型去访问其 Path 成员，访问到这个成员以后取该成员的地址，由于整个结构体的起始地址是从 0 转换而来的，所以取这个成员的地址时也是从 0 计算的。这样就得出了该成员在整个结构体中的位置。 最后总结下，<code>FIELD_OFFSET</code> 宏是为了计算一个结构体成员的精确偏移位置，我们可以利用此宏介绍很多的空间浪费的情况。再实际编写代码过程中，会使代码业务逻辑严谨不易出错。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-09-25T10:47:16.000Z" itemprop="datePublished">
+              2016-09-25
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/">结构体</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

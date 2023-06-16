@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>添加 Visual Studio Code 命令行到 Mac OS X 环境变量 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>添加 Visual Studio Code 命令行到 Mac OS X 环境变量</h1>
+    </header>
+
+    <section>
+      <p>我使用过一些编辑器，可以在命令行下很方便的启动它，比如我想在一个代码的目录直接启动 atom，那么我可以使用 <code>atom .</code> 来启动并加载当前目录下的代码到 atom 中。sublime text 也有类似功能，而本文谈到的是如何把 Visual Studio Code 的环境变量添加到命令行中，微软官方给出了具体的回答。</p>
+<span id="more"></span>
+<p><strong>code.visualstudio.com</strong> : <a target="_blank" rel="noopener" href="https://code.visualstudio.com/Docs/editor/setup">https://code.visualstudio.com/Docs/editor/setup</a> 为了安全起见，我还是把这个过程做个截图并自己记录一下，因为微软的网站“病的太重”可能某一天就访问不了了，至少我不是第一次遇到这种情况了。 <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-21-%E4%B8%8B%E5%8D%889.07.14.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-21-%E4%B8%8B%E5%8D%889.07.14-1024x673.png" alt="屏幕快照 2015-11-21 下午9.07.14"></a> 文中提到，你需要将以下代码追加到你的个人用户配置文件下 <code>~/bash_profile</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">code () &#123; VSCODE_CWD=&quot;$PWD&quot; open -n -b &quot;com.microsoft.VSCode&quot; --args $* ;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我使用的是 OS X EI Caption，默认情况下，<code>~/.bash_profile</code> 是不存在的，你需要自己创建它，<code>vi ~/.bash_profile</code> 如下图： <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-21-%E4%B8%8B%E5%8D%889.11.55.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-21-%E4%B8%8B%E5%8D%889.11.55-1024x636.png" alt="屏幕快照 2015-11-21 下午9.11.55"></a> 添加完成后，使用如下命令刷新用户配置文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source ~/.bash_profile</span><br></pre></td></tr></table></figure>
+
+<p>刷新完成后，你就可以使用命令 <code>code .</code> 在终端下启动 VSCode 并加载当前目录下的文件列表了。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-11-21T21:14:03.000Z" itemprop="datePublished">
+              2015-11-21
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/VSCode/">VSCode</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

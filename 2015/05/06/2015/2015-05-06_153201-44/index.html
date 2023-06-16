@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>fgets 一次读取一行数据 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>fgets 一次读取一行数据</h1>
+    </header>
+
+    <section>
+      <p>上一篇文章我们介绍过一次性读取一个字符，这样读取更加精确，但有不同的需求，比如需要一次读取一行或一段。本文将介绍如何一次读取一行内容，提供了两个函数，并分析了两个函数的区别。</p>
+<span id="more"></span>
+<p>示例文件：</p>
+<p>Open file<br>Opens the file whose name is specified in the parameter filename and associates it with a stream that can be identified in future operations by the FILE pointer returned.</p>
+<p>The operations that are allowed on the stream and how these are performed are defined by the mode parameter.</p>
+<p>The returned stream is fully buffered by default if it is known to not refer to an interactive device (see setbuf).</p>
+<p>The returned pointer can be disassociated from the file by calling fclose or freopen. All opened files are automatically closed on normal program termination.</p>
+<p>The running environment supports at least FOPEN_MAX files open simultaneously.</p>
+<p>方法一，也是使用最多的方法：</p>
+<p>int readFile(char* pfile)<br>{<br>FILE* pFile &#x3D; fopen(pfile, “r”);<br>if (NULL &#x3D;&#x3D; pFile) return -1;</p>
+<p>char buf[1024];<br>while (fgets(buf, 1024, pFile))<br>{<br>printf(“%s”, buf);<br>}</p>
+<p>fclose(pFile);<br>return 0;<br>}</p>
+<p>方法一中，是设定一个buf为1024个字节，向这个buf填入内容，然后打印，当一行中的数据超过了1024个字节的时候，会分多次将整行内容读取。此时会有一个问题出现，如果你希望在每一行中查找一个单词如“from”，而“from”这个单词刚好在这一行的1022的位置，此时这个单词就会被截断。为了解决这个问题，本文提出了动态分配空间来储存整行数据到malloc的空间中，然后进行查找、对比和打印。代码如下：</p>
+<p>int readFile(char* pfile)<br>{<br>FILE* pFile &#x3D; fopen(pfile, “r”);<br>if (NULL &#x3D;&#x3D; pFile) return -1;</p>
+<p>char line[1024];<br>char* p_malloc &#x3D; NULL;<br>while (fgets(line, sizeof(line), pFile) !&#x3D; NULL)<br>{<br>&#x2F;&#x2F; 判断是否包含\n<br>if (NULL &#x3D;&#x3D; strstr(line, “\n”))<br>{<br>&#x2F;&#x2F; 如果不包含，则判断p_malloc是否已经分配了空间<br>if (p_malloc &#x3D;&#x3D; NULL)<br>{<br>&#x2F;&#x2F; 如果没有分配空间，那证明是一个全新行，读取第一段数据<br>p_malloc &#x3D; (char*)malloc(sizeof(line));<br>&#x2F;&#x2F; 将内容拷贝进新申请的空间中<br>strcpy(p_malloc, line);<br>}<br>else<br>{<br>&#x2F;&#x2F; 如果 p_malloc !&#x3D; NULL 证明不是新行，而是在某一行读取的第2+n次<br>&#x2F;&#x2F; 拓展的空间由以前空间的大小加上新读取到的数据的大小<br>p_malloc &#x3D; (char*)realloc(p_malloc,<br>(strlen(p_malloc) + 1) + sizeof(line));<br>&#x2F;&#x2F; 将内容追加到拓展后的空间中<br>strcat(p_malloc, line);<br>}<br>}<br>else<br>{<br>&#x2F;&#x2F; 包含\n的情况下，判断p_malloc是否已经分配过空间<br>if (p_malloc &#x3D;&#x3D; NULL)<br>{<br>&#x2F;&#x2F; 如果没有分配过空间，证明是个新行，而且buf足够容纳读取出来的内容<br>&#x2F;&#x2F; 打印内容（buf可以容纳）<br>printf(“%s”, line);<br>}<br>else<br>{<br>&#x2F;&#x2F; 如果分配过空间，证明不是新行，而且是第二次读取<br>&#x2F;&#x2F; 拓展空间，将后面读取进来的字符串存入<br>p_malloc &#x3D; (char*)realloc(p_malloc,<br>(strlen(p_malloc) + 1) + sizeof(line));<br>strcat(p_malloc, line);</p>
+<p>&#x2F;&#x2F; 打印内容（大于buf空间）<br>printf(“%s”, p_malloc);</p>
+<p>&#x2F;&#x2F; 释放申请的空间<br>free(p_malloc);<br>p_malloc &#x3D; NULL;<br>}<br>}</p>
+<p>}</p>
+<p>fclose(pFile);<br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-06T15:32:01.000Z" itemprop="datePublished">
+              2015-05-06
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>linux/unix socket 最简单实例演示 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>linux/unix socket 最简单实例演示</h1>
+    </header>
+
+    <section>
+      <p>今日开始接触 socket 网络编程，下面实例演示了服务器和客户端创建连接的流程，以及 socket 编程中需要使用的常见函数的使用方法。我们遵循下图的案例编写了一个服务端和一个客户端，目的只为写清楚每个函数的使用方法，所以只支持了一个客户端，也可以在 accept 后创建新的线程来维护客户端之间的通讯。具体参见图片和代码。</p>
+<span id="more"></span>
+<hr>
+<p><a href="/images/2015/07/2015-07-07_201137.png"><img src="/images/2015/07/2015-07-07_201137.png" alt="2015-07-07_201137"></a></p>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;&#x2F;* exit *&#x2F;<br>#include &lt;sys&#x2F;types.h&gt;          &#x2F;* socket *&#x2F;<br>#include &lt;sys&#x2F;socket.h&gt;<br>#include &lt;strings.h&gt;&#x2F;* bzero *&#x2F;<br>#include &lt;ctype.h&gt;&#x2F;* toupper *&#x2F;<br>#include &lt;arpa&#x2F;inet.h&gt;&#x2F;* struct sockaddr_in *&#x2F;<br>#include &lt;unistd.h&gt;&#x2F;* read write close *&#x2F;<br>#include &lt;string.h&gt;&#x2F;* strlen *&#x2F;<br>#include &lt;pthread.h&gt;</p>
+<p>#define SERVER_PORT 8000</p>
+<p>int main(int argc, char* argv[])<br>{<br>int ret;<br>&#x2F;* 创建 socket *&#x2F;<br>&#x2F;&#x2F; ipv4协议  流式协议  流式协议的第0号协议(tcp)<br>int sock &#x3D; socket(AF_INET, SOCK_STREAM, 0);<br>if (-1 &#x3D;&#x3D; sock)<br>{<br>perror(“socket”);<br>exit(1);<br>}</p>
+<p>&#x2F;* 绑定 socket 端口 *&#x2F;<br>&#x2F;&#x2F; 声明结构体<br>struct sockaddr_in srv_addr;<br>&#x2F;&#x2F; 清空结构体<br>bzero(&amp;srv_addr, sizeof(srv_addr));<br>&#x2F;&#x2F; 使用 ipv4 地址类型<br>srv_addr.sin_family &#x3D; AF_INET;<br>&#x2F;&#x2F; 绑定本机所有网口 INADDR_ANY 需要先转换为网络字节序<br>srv_addr.sin_addr.s_addr &#x3D; htonl(INADDR_ANY);<br>&#x2F;&#x2F; 端口，需要先转换为网络字节序<br>srv_addr.sin_port&#x3D; htons(SERVER_PORT);<br>&#x2F;&#x2F; 开始绑定<br>ret &#x3D; bind(sock, (struct sockaddr*)&amp;srv_addr, sizeof(srv_addr));<br>if (-1 &#x3D;&#x3D; ret)<br>{<br>perror(“bind”);<br>close(sock);<br>exit(1);<br>}</p>
+<p>&#x2F;* 开始监听 *&#x2F;<br>&#x2F;&#x2F; 设置 sock 可以同时处理多少个连接<br>ret &#x3D; listen(sock, 20);<br>if (-1 &#x3D;&#x3D; ret)<br>{<br>perror(“listen”);<br>close(sock);<br>exit(1);<br>}</p>
+<p>&#x2F;* 等待接收客户连接 *&#x2F;<br>struct sockaddr_in new_addr;<br>&#x2F;&#x2F; 清空结构体<br>bzero(&amp;new_addr, sizeof(new_addr));<br>&#x2F;&#x2F; 定义一个accept第三个参数所需的数据类型<br>socklen_t new_len &#x3D; sizeof(new_addr);</p>
+<p>&#x2F;&#x2F; 一些局部变量<br>char buf[1024];<br>&#x2F;&#x2F; 等待客户端连接，返回一个新的文件描述符，提供给我们读取数据<br>int recv &#x3D; accept(sock, (struct sockaddr*)&amp;new_addr, &amp;new_len);<br>while (1)<br>{<br>&#x2F;&#x2F; 根据新的文件描述符读取客户端发送过来的内容<br>int len &#x3D; read(recv, buf, sizeof(buf));<br>&#x2F;&#x2F; 将客户端发送过来的所有字符转换为大写<br>for (int i &#x3D; 0; i &lt; strlen(buf); i++)<br>{<br>buf[i] &#x3D; toupper(buf[i]);<br>}<br>&#x2F;&#x2F; 将转换后的字符再次发会给客户端<br>write(recv, buf, len);<br>}</p>
+<p>&#x2F;&#x2F; 关闭两个文件描述符<br>close(sock);<br>close(recv);<br>return 0;<br>}</p>
+<p>以上为服务器代码</p>
+<p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;&#x2F;* exit *&#x2F;<br>#include &lt;sys&#x2F;types.h&gt;          &#x2F;* socket *&#x2F;<br>#include &lt;sys&#x2F;socket.h&gt;<br>#include &lt;strings.h&gt;&#x2F;* bzero *&#x2F;<br>#include &lt;ctype.h&gt;&#x2F;* toupper *&#x2F;<br>#include &lt;arpa&#x2F;inet.h&gt;&#x2F;* struct sockaddr_in *&#x2F;<br>#include &lt;unistd.h&gt;&#x2F;* read write close *&#x2F;<br>#include &lt;string.h&gt;&#x2F;* strlen *&#x2F;<br>#include &lt;arpa&#x2F;inet.h&gt;</p>
+<p>#define SERVER_PORT 8000</p>
+<p>int main(int argc, char* argv[])<br>{<br>int ret;<br>struct sockaddr_in srv_addr;<br>&#x2F;&#x2F; 创建 socket<br>int sock &#x3D; socket(AF_INET, SOCK_STREAM, 0);<br>if (-1 &#x3D;&#x3D; sock)<br>{<br>perror(“socket”);<br>exit(1);<br>}<br>&#x2F;&#x2F; 清空结构体<br>bzero(&amp;srv_addr, sizeof(srv_addr));<br>&#x2F;&#x2F; 设置结构体发送数据包类型<br>srv_addr.sin_family &#x3D; AF_INET;<br>&#x2F;&#x2F; 设置服务器ip地址<br>inet_pton(AF_INET, “127.0.0.1”, &amp;srv_addr.sin_addr.s_addr);<br>&#x2F;&#x2F; 设置要发送目标服务器的端口<br>srv_addr.sin_port &#x3D; htons(SERVER_PORT);</p>
+<p>&#x2F;&#x2F; 连接服务器<br>ret &#x3D; connect(sock, (struct sockaddr*)&amp;srv_addr, sizeof(srv_addr));<br>if (-1 &#x3D;&#x3D; ret)<br>{<br>perror(“connect”);<br>exit(1);<br>}</p>
+<p>int len;<br>char buf[1024];<br>while (fgets(buf, sizeof(buf), stdin))<br>{<br>&#x2F;&#x2F; 讲从stdin获取的字符串发送<br>write(sock, buf, strlen(buf));<br>&#x2F;&#x2F; 阻塞等待服务器返回数据<br>len &#x3D; read(sock, buf, sizeof(buf));<br>&#x2F;&#x2F; 将返回的数据打印到标准输出<br>write(STDOUT_FILENO, buf, len);<br>}<br>close(sock);<br>return 0;<br>}</p>
+<p>以上为客户端代码，分别编译后首先运行服务端，然后再启动客户端，然后在客户端输入内容后回车，服务端会自动将内容转换为大写并重新发送给客户端，如下图： <a href="/images/2015/07/2015-07-07-201754.png"><img src="/images/2015/07/2015-07-07-201754.png" alt="2015-07-07 20:17:54"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-07T20:18:49.000Z" itemprop="datePublished">
+              2015-07-07
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%BD%91%E7%BB%9C/">网络</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

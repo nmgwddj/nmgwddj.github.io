@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>this 指针的意义及作用 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>this 指针的意义及作用</h1>
+    </header>
+
+    <section>
+      <p>在构造一个对象时，默认会生成一个指向当前对象的指针，这个的目的就是为了带来方便，它就是this指针，举例几个常见this指针的用途。</p>
+<span id="more"></span>
+<p>第一种：若成员函数中传递进来的参数与成员变量名字相等，那么赋值时就会出现问题。如下：</p>
+<p>class CStudent<br>{<br>public:<br>CStudent(string name, int age)<br>{<br>&#x2F;&#x2F; 想将形参中name赋值给成员变量name<br>name &#x3D; name;<br>&#x2F;&#x2F; 想将形参中age赋值给成员变量age<br>age &#x3D; age;<br>}<br>~CStudent();<br>private:<br>string name;<br>int age;</p>
+<p>};</p>
+<p>使用this指针就可以解决这个问题，如下：</p>
+<p>class CStutent<br>{<br>public:<br>CStutent(string name, int age)<br>{<br>&#x2F;&#x2F; this &#x3D;&#x3D; &amp;CStudent<br>this-&gt;name &#x3D; name;<br>this-&gt;age &#x3D; age;<br>}<br>~CStutent();<br>private:<br>string name;<br>int age;<br>};</p>
+<p>第二种：可以给让某成员函数返回this指针所指向的自身对象，这样就可以在一个语句中连续调用成员方法了（多重串联调用）。如下所示：</p>
+<p>#include <iostream><br>#include <string><br> <br>using namespace std;<br> <br>class CStudent<br>{<br>public:<br>CStudent(string name, int age)<br>{<br>this-&gt;name &#x3D; name;<br>this-&gt;age &#x3D; age;<br>}<br> <br>CStudent&amp; growUp()<br>{<br>age++;<br>&#x2F;&#x2F; 返回 *this 是将整个对象返回<br>&#x2F;&#x2F; 可以让main函数中调用growUp方法后继续调用growUp<br>return *this;<br>}<br>void display()<br>{<br>cout &lt;&lt; “name:” &lt;&lt; name &lt;&lt; endl &lt;&lt; “age:” &lt;&lt; age &lt;&lt; endl;<br>}<br>~CStudent(){}<br>private:<br>string name;<br>int age;<br>};<br> <br>int main(int argc, char* argv[])<br>{<br>CStudent s(“dengjia”, 25);<br>&#x2F;&#x2F; growUp后返回的是CStudent对象，所以可以继续调用其growUp方法<br>s.growUp().growUp().growUp();<br>s.display();<br>getchar();<br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-10T22:17:40.000Z" itemprop="datePublished">
+              2015-05-10
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

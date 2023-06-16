@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>mysql 预编译 sql 实现代码 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>mysql 预编译 sql 实现代码</h1>
+    </header>
+
+    <section>
+      <p>mysql 的预编译功能，是为了那些频繁执行的语法不变的 sql 语句而准备的，每次 sql 语句执行都要经过数据库的编译，这个过程比较耗时，一条两条或十几条可能没什么感觉，如果是上千条效率会明显的有变化。mysql 提供的机制是可以让一个结构不变的 sql 语句预先在数据库中编译，我们只需要将可变的参数每次传递给它执行就可以了，这样就省去了编译的步骤，效率提高非常明显。下面就是预编译的一个小例子。</p>
+<span id="more"></span>
+<hr>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br>#include &lt;mysql.h&gt;</p>
+<p>#define STRING_SIZE 50</p>
+<p>&#x2F;&#x2F; 删除表语句<br>#define DROP_SAMPLE_TABLE “DROP TABLE IF EXISTS test_table”<br>&#x2F;&#x2F; 创建表语句<br>#define CREATE_SAMPLE_TABLE “CREATE TABLE test_table(col1 INT,col2 VARCHAR(40),col3 SMALLINT,col4 TIMESTAMP)”<br>&#x2F;&#x2F; 给表插入数据的预编译语句<br>#define INSERT_SAMPLE “INSERT INTO test_table(col1,col2,col3) VALUES(?,?,?)”</p>
+<p>int main(int argc, char* argv[])<br>{<br>unsigned int err;<br>&#x2F;&#x2F; 初始化 mysql 句柄<br>MYSQL* mysql;<br>mysql &#x3D; mysql_init(NULL);</p>
+<p>if (mysql &#x3D;&#x3D; NULL)<br>{<br>err &#x3D; mysql_errno(mysql);<br>printf(“mysql_init error, code &#x3D; %d\n”, err);<br>return err;<br>}</p>
+<p>&#x2F;&#x2F; 连接服务器<br>mysql &#x3D; mysql_real_connect(mysql, “127.0.0.1”, “root”, “******“, “mydb61”, 0, NULL, 0);<br>if (NULL &#x3D;&#x3D; mysql)<br>{<br>err &#x3D; mysql_errno(mysql);<br>printf(“mysql_real_connect error, code &#x3D; %d\n”, err);<br>return err;<br>}</p>
+<p>&#x2F;&#x2F; ——————————————</p>
+<p>MYSQL_STMT    *stmt;&#x2F;&#x2F; 预处理所用句柄<br>MYSQL_BIND    bind[3];&#x2F;&#x2F; 绑定的变量数组<br>my_ulonglong  affected_rows;&#x2F;&#x2F; 记录受影响行数变量<br>int           param_count;&#x2F;&#x2F; 获取需绑定变量的个数<br>short         small_data;&#x2F;&#x2F; 插入数据所用的变量<br>int           int_data;&#x2F;&#x2F; 同上<br>char          str_data[STRING_SIZE];&#x2F;&#x2F; 同上<br>unsigned long str_length;&#x2F;&#x2F; 同上<br>my_bool       is_null;&#x2F;&#x2F; 处理 null 的变量，为1则插入null，为0则根据传递的值插入</p>
+<p>&#x2F;&#x2F; 在操作前先把已经有的表删除<br>if (mysql_query(mysql, DROP_SAMPLE_TABLE))<br>{<br>  fprintf(stderr, “ DROP TABLE failed\n”);<br>  fprintf(stderr, “ %s\n”, mysql_error(mysql));<br>  exit(0);<br>}</p>
+<p>&#x2F;&#x2F; 然后重新创建表<br>if (mysql_query(mysql, CREATE_SAMPLE_TABLE))<br>{<br>  fprintf(stderr, “ CREATE TABLE failed\n”);<br>  fprintf(stderr, “ %s\n”, mysql_error(mysql));<br>  exit(0);<br>}</p>
+<p>&#x2F;&#x2F; 初始化预编译功能句柄<br>stmt &#x3D; mysql_stmt_init(mysql);<br>if (!stmt)<br>{<br>  fprintf(stderr, “ mysql_stmt_init(), out of memory\n”);<br>  exit(0);<br>}</p>
+<p>&#x2F;&#x2F; 创建预处理语句<br>if (mysql_stmt_prepare(stmt, INSERT_SAMPLE, strlen(INSERT_SAMPLE)))<br>{<br>  fprintf(stderr, “ mysql_stmt_prepare(), INSERT failed\n”);<br>  fprintf(stderr, “ %s\n”, mysql_stmt_error(stmt));<br>  exit(0);<br>}<br>fprintf(stdout, “ prepare, INSERT successful\n”);</p>
+<p>&#x2F;&#x2F; 获取预处理语句有多少个需要绑定的变量<br>param_count&#x3D; mysql_stmt_param_count(stmt);<br>fprintf(stdout, “ total parameters in INSERT: %d\n”, param_count);</p>
+<p>if (param_count !&#x3D; 3) &#x2F;* validate parameter count *&#x2F;<br>{<br>  fprintf(stderr, “ invalid parameter count returned by MySQL\n”);<br>  exit(0);<br>}</p>
+<p>&#x2F;* Bind the data for all 3 parameters *&#x2F;<br>memset(bind, 0, sizeof(bind));</p>
+<p>&#x2F;&#x2F; 与第一个要插入的数据绑定的结构体初始化<br>bind[0].buffer_type&#x3D; MYSQL_TYPE_LONG;&#x2F;&#x2F; 插入的数据类型<br>bind[0].buffer&#x3D; (char *)&amp;int_data;&#x2F;&#x2F; 插入数据的变量地址，可以在后面再给这个变量赋值<br>bind[0].is_null&#x3D; 0;&#x2F;&#x2F; 插入数据是否为 null，为0则根据上面的参数插入数据<br>bind[0].length&#x3D; 0;&#x2F;&#x2F; 插入数据的长度，除了 string 类型外，这个都不需要设置</p>
+<p>&#x2F;&#x2F; 与第而个要插入的数据绑定的结构体初始化<br>bind[1].buffer_type&#x3D; MYSQL_TYPE_STRING;&#x2F;&#x2F; 插入的数据类型，string<br>bind[1].buffer&#x3D; (char *)str_data;&#x2F;&#x2F; 字符串的首地址，先绑定，可以在后面修改它的值<br>bind[1].buffer_length&#x3D; STRING_SIZE;&#x2F;&#x2F; 设定 buffer 的长度<br>bind[1].is_null&#x3D; 0;&#x2F;&#x2F; 是否为 null<br>bind[1].length&#x3D; &amp;str_length;&#x2F;&#x2F; 字符串的长度</p>
+<p>&#x2F;&#x2F; 与第三个要插入的数据绑定的结构体初始化<br>bind[2].buffer_type&#x3D; MYSQL_TYPE_SHORT;&#x2F;&#x2F; 插入的数据类型 short<br>bind[2].buffer&#x3D; (char *)&amp;small_data;&#x2F;&#x2F; 插入的数据地址，先绑定，可以在后面修改它的值<br>bind[2].is_null&#x3D; &amp;is_null;&#x2F;&#x2F; 是否为 null ，先绑定，可以在后面修改它的值<br>bind[2].length&#x3D; 0;&#x2F;&#x2F; 无需设置长度</p>
+<p>&#x2F;&#x2F; 绑定变量<br>if (mysql_stmt_bind_param(stmt, bind))<br>{<br>  fprintf(stderr, “ mysql_stmt_bind_param() failed\n”);<br>  fprintf(stderr, “ %s\n”, mysql_stmt_error(stmt));<br>  exit(0);<br>}</p>
+<p>&#x2F;&#x2F; 给绑定变量的各个数据赋值<br>int_data&#x3D; 10;             &#x2F;* integer *&#x2F;<br>strncpy(str_data, “MySQL”, STRING_SIZE); &#x2F;* string  *&#x2F;<br>str_length&#x3D; strlen(str_data);</p>
+<p>&#x2F;&#x2F; 设置 is_null 的值为1，这样第三个参数插入的就是 null 了<br>is_null&#x3D; 1;</p>
+<p>&#x2F;&#x2F; 执行已经编译的查询语句<br>if (mysql_stmt_execute(stmt))<br>{<br>  fprintf(stderr, “ mysql_stmt_execute(), 1 failed\n”);<br>  fprintf(stderr, “ %s\n”, mysql_stmt_error(stmt));<br>  exit(0);<br>}</p>
+<p>&#x2F;&#x2F; 查询语句结果的列数<br>affected_rows&#x3D; mysql_stmt_affected_rows(stmt);<br>fprintf(stdout, “ total affected rows(insert 1): %lu\n”,<br>(unsigned long) affected_rows);</p>
+<p>if (affected_rows !&#x3D; 1) &#x2F;* validate affected rows *&#x2F;<br>{<br>  fprintf(stderr, “ invalid affected rows by MySQL\n”);<br>  exit(0);<br>}</p>
+<p>&#x2F;&#x2F; 再次给绑定变量赋予其他的值<br>int_data&#x3D; 1000;<br>strncpy(str_data, “The most popular Open Source database”, STRING_SIZE);<br>str_length&#x3D; strlen(str_data);<br>small_data&#x3D; 1000;         &#x2F;* smallint *&#x2F;<br>is_null&#x3D; 0;               &#x2F;* reset *&#x2F;</p>
+<p>&#x2F;&#x2F; 再次执行预编译的语句<br>if (mysql_stmt_execute(stmt))<br>{<br>  fprintf(stderr, “ mysql_stmt_execute, 2 failed\n”);<br>  fprintf(stderr, “ %s\n”, mysql_stmt_error(stmt));<br>  exit(0);<br>}</p>
+<p>&#x2F;&#x2F; 获取结果中的列数<br>affected_rows&#x3D; mysql_stmt_affected_rows(stmt);<br>fprintf(stdout, “ total affected rows(insert 2): %lu\n”,<br>(unsigned long) affected_rows);</p>
+<p>if (affected_rows !&#x3D; 1) &#x2F;* validate affected rows *&#x2F;<br>{<br>  fprintf(stderr, “ invalid affected rows by MySQL\n”);<br>  exit(0);<br>}</p>
+<p>&#x2F;&#x2F; 关闭<br>if (mysql_stmt_close(stmt))<br>{<br>  fprintf(stderr, “ failed while closing the statement\n”);<br>  fprintf(stderr, “ %s\n”, mysql_stmt_error(stmt));<br>  exit(0);<br>}</p>
+<p>&#x2F;&#x2F; 关闭 mysql 句柄<br>mysql_close(mysql);<br>return 0;<br>}</p>
+<h3 id="编译程序"><a href="#编译程序" class="headerlink" title="编译程序"></a>编译程序</h3><p>编译语句：gcc 03_mysql_stmt.c -o 03_mysql_stmt -I &#x2F;usr&#x2F;include&#x2F;mysql -L &#x2F;usr&#x2F;lib64&#x2F;mysql -l mysqlclient -l stdc++ -l pthread -l dl -l rt</p>
+<h3 id="执行效果"><a href="#执行效果" class="headerlink" title="执行效果"></a>执行效果</h3><p>代码分两个阶段，分别对已经绑定的 sql 语句传递了两次不同的数据，让其再执行，执行的结果是一条 sql 语句只编译一次，却产生了两个结果。 <a href="/images/2015/07/2015-07-27_222914.png"><img src="/images/2015/07/2015-07-27_222914.png" alt="2015-07-27_222914"></a> 这是程序执行的结果，下面是其执行后创建的表和表中的内容 <a href="/images/2015/07/2015-07-27_222948.png"><img src="/images/2015/07/2015-07-27_222948.png" alt="2015-07-27_222948"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-27T22:30:47.000Z" itemprop="datePublished">
+              2015-07-27
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/sql/">sql</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/mysql/">mysql</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

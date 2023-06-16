@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ES6 学习笔记之数组的拓展 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>ES6 学习笔记之数组的拓展</h1>
+    </header>
+
+    <section>
+      <p>ES6 在数组上改变还是比较多的，主要是为了弥补 ES5 一些方法的不足或新增一些方法，但大体这些方法在其他语言中也都见过，所以操作和使用起来不难，可能名字不一样，但看一看就知道如何使用了。</p>
+<span id="more"></span>
+<h2 id="Array-from-方法"><a href="#Array-from-方法" class="headerlink" title="Array.from() 方法"></a>Array.from() 方法</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">const arrayLike = &#123;</span><br><span class="line">  &#x27;0&#x27;: &#x27;a&#x27;,</span><br><span class="line">  &#x27;1&#x27;: &#x27;b&#x27;,</span><br><span class="line">  &#x27;2&#x27;: &#x27;c&#x27;,</span><br><span class="line">  &#x27;length&#x27;: 3</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// ES6 写法</span><br><span class="line">let arr1 = Array.from(arrayLike);</span><br><span class="line"></span><br><span class="line">arr1.forEach((arr) =&gt; &#123;</span><br><span class="line">  console.log(arr);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>从字符串中初始化一个数组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let arr2 = Array.from(&#x27;Hello&#x27;);</span><br><span class="line">console.log(arr2);</span><br><span class="line">// [ &#x27;H&#x27; &#x27;e&#x27; &#x27;l&#x27; &#x27;l&#x27; &#x27;o&#x27; ]</span><br></pre></td></tr></table></figure>
+
+<p>从 Set 结构中初始化一个数组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let arr3 = Array.from(new Set([&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;, &#x27;d&#x27;]));</span><br><span class="line">console.log(arr3);</span><br><span class="line">// [ &#x27;a&#x27; &#x27;b&#x27; &#x27;c&#x27; &#x27;d&#x27; ]</span><br></pre></td></tr></table></figure>
+
+<p>转换一个表明了有 length 属性的对象，由于仅指定了长度为 3，而 3 个元素均没有表明，所以都是 undefined。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let arr4 = Array.from(&#123;length: 3&#125;);</span><br><span class="line">console.log(arr4);</span><br><span class="line">// [ undefined, undefined, undefined ]</span><br></pre></td></tr></table></figure>
+
+<h2 id="Array-of-方法"><a href="#Array-of-方法" class="headerlink" title="Array.of() 方法"></a>Array.of() 方法</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let arr5 = Array.of(1, 2, 3, 4, 5);</span><br><span class="line">console.log(arr5);</span><br></pre></td></tr></table></figure>
+
+<h2 id="copyWithin-方法"><a href="#copyWithin-方法" class="headerlink" title="copyWithin() 方法"></a>copyWithin() 方法</h2><p>将指定位置的元素复制到当前数组的指定位置，就是会改变原数组的内容</p>
+<ul>
+<li>target（必需）：从该位置开始替换数据。</li>
+<li>start（可选）：从该位置开始读取数据，默认为0。如果为负值，表示倒数。</li>
+<li>end（可选）：到该位置前停止读取数据，默认等于数组长度。如果为负值，表示倒数。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[1, 2, 3, 4, 5].copyWithin(0, 3);</span><br><span class="line">console.log(arr5);</span><br><span class="line">// [ 4, 5, 3, 4, 5 ]</span><br></pre></td></tr></table></figure>
+
+<h2 id="find-方法"><a href="#find-方法" class="headerlink" title="find() 方法"></a>find() 方法</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const testArr = [1, 3, -5, 10];</span><br><span class="line"></span><br><span class="line">// 找小于 0 的元素</span><br><span class="line">console.log(testArr.find((n) =&gt; n &lt; 0));</span><br><span class="line"></span><br><span class="line">// 找大于 9 的元素</span><br><span class="line">console.log(testArr.find((value, index, arr) =&gt; &#123;</span><br><span class="line">  return value &gt; 9;</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure>
+
+<h2 id="keys-values-entries"><a href="#keys-values-entries" class="headerlink" title="keys() values() entries()"></a>keys() values() entries()</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">for (let index of [&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;].keys()) &#123;</span><br><span class="line">  console.log(index);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">for (let elem of [&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;].values()) &#123;</span><br><span class="line">  console.log(elem);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">for (let [index, elem] of [&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;].entries()) &#123;</span><br><span class="line">  console.log(`$&#123;index&#125;: $&#123;elem&#125;`);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-02-21T22:09:21.000Z" itemprop="datePublished">
+              2017-02-21
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/ES6/">ES6</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

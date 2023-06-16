@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/28/2015/2015-05-28_174813-302/">线性表链式存储</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-28T17:48:13.000Z" itemprop="datePublished">
+    2015-05-28
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%8C%87%E9%92%88/">指针</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%9F%A5%E6%89%BE/">查找</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">类型转换</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>上文中我们介绍了线性表顺序储存的方式，并给大家画了一幅比较详细的图（虽然看着比较凌乱），本文介绍的是数据储存的另外一种方式“链式储存”，这相当于我们之前提到过的<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/datastruct/21.html">单向链表</a>，但是，本文与上一篇文章一样，都将数据的储存和算法进行了分离。这才是我们真正应该晋级了解的东西，如果只是一个单向链表，不足以我们耗费这么多精力。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/28/2015/2015-05-28_174813-302/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/26/2015/2015-05-26_223115-258/">线性表顺序储存</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-26T22:31:15.000Z" itemprop="datePublished">
+    2015-05-26
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%9F%A5%E6%89%BE/">查找</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">类型转换</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>线性表，是一个或多个数据元素的集合，数据之间是连续的一段内存。线性表的特性如下。</p>
+<ol>
+<li>数据元素之间是有顺序的</li>
+<li>数据元素个数是有限的</li>
+<li>数据元素的类型必须相同
+        
+          <div class="more-link">
+            <a href="/2015/05/26/2015/2015-05-26_223115-258/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/25/2015/2015-05-25_162110-253/">cocos2dx 入口分析</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-25T16:21:10.000Z" itemprop="datePublished">
+    2015-05-25
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%A4%9A%E6%80%81/">多态</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>为了理解多态的进一步应用，老师带着我们简单分析了一下cocos2dx的入口，深刻的体会到了虚函数和类静态成员变量的作用。以此给大家分享一下这个过程。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/25/2015/2015-05-25_162110-253/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/25/2015/2015-05-25_161439-182/">自实现 MyString 类</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-25T16:14:39.000Z" itemprop="datePublished">
+    2015-05-25
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>自实现 myString 类主要目的是剖析系统内部的 string 类的一些实现方法以及加强对类封装、运算符重载等特性的掌握。其中包含了几项非常重要的功能实现。</p>
+<ol>
+<li>使用构造器创建对象。</li>
+<li>拷贝构造器创建对象。</li>
+<li>赋值运算符重载构造对象。</li>
+<li>[]运算符重载构造对象数组。</li>
+<li>=&#x3D;运算符重载判断对象是否相等。</li>
+<li>+运算符重载实现对象相加。</li>
+<li>&gt;&gt; &lt;&lt; 流输入输出运算符实现打印和输入。</li>
+</ol>
+<p>具体的实现代码分三个部分，一个 MyString.h 文件，包含类的声明和结构。一个 MyString.cpp 文件，包含类的成员及友元函数实现。最终是一个 main.cpp 来测试我们自己的 MyString 类是否可以正常使用。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/25/2015/2015-05-25_161439-182/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/25/2015/2015-05-25_161101-248/">STL 常用方法集合</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-25T16:11:01.000Z" itemprop="datePublished">
+    2015-05-25
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%9F%A5%E6%89%BE/">查找</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%A8%A1%E7%89%88/">模版</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/STL/">STL</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Algorithm/">Algorithm</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>我本想将 STL 中各种容器的实现方法和作用全部写一遍，然后每种容器都发一篇文章，但后来发现这样做的意义不大，在 MSDN 或其他一些帮助文档中，他们比我写的要详细，其实我只需要记住每种容器的常用方法，和在什么场合选择合适的容器。下面这张表是我这里的一些常用方法集合。备用参考。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/25/2015/2015-05-25_161101-248/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/25/2015/2015-05-25_160642-246/">iomanip 流输入输出格式控制</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-25T16:06:42.000Z" itemprop="datePublished">
+    2015-05-25
+  </time>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在 C 中，我们使用 printf 输出内容时，可以使用多种格式控制方法，比如 %x %d %f %p 等等，但在 C++ 的io流输入输出的类中，我们找不到这些方法也不知道如何实现这些功能了。本文就介绍一些 C++ 中，io流输入输出格式控制的函数。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/25/2015/2015-05-25_160642-246/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/25/2015/2015-05-25_160322-242/">C++ 读写文本文件和二进制文件</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-25T16:03:22.000Z" itemprop="datePublished">
+    2015-05-25
+  </time>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在 C 中，我们通过 FILE 结构体生成的指向 FILE 结构体的指针来操作文件。其提供了诸如 fgetc、fgets、feof等等函数，在 C++ 中重新封装了操作文件的方法，其实现在 iostream 派生的 fstream 中，实际内部实现基本原理与 C 相同。下面就分别介绍下操作文本文件和二进制文件的方法。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/25/2015/2015-05-25_160322-242/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/25/2015/2015-05-25_155324-239/">函数模版与类模版</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-25T15:53:24.000Z" itemprop="datePublished">
+    2015-05-25
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%A8%A1%E7%89%88/">模版</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>模版是泛型编程中一种重要的手段，泛型编程意思是让多种数据类型的数据都可以在一个代码段算法中使用。泛型的代表作就是STL。其中模版则是让数据类型参数化，让调用者在使用的时候，多传递一个操作数据的类型便可以调用一份“参数个数相同而类型不同，且函数体相同”的代码段，这个代码段可以让多种数据类型都可以计算出正确的结果。我们首先来看一个常规情况下函数重载的例子。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/25/2015/2015-05-25_155324-239/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/25/2015/2015-05-25_155116-229/">“虚函数表”推演及多态的原理</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-25T15:51:16.000Z" itemprop="datePublished">
+    2015-05-25
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%A4%9A%E6%80%81/">多态</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>C++ 的多态性据前辈们所说，是非常难以理解的一部分内容，虽然他实现很简单，但是套用到各种设计模式后，你会非常难以理解，但无论怎样，笔者始终认为，如果了解了内部的实现原理，实际就不会那么难了。本文将介绍虚函数表的相关内容，阐述了它与多态之间难以割舍的关系。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/25/2015/2015-05-25_155116-229/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/05/25/2015/2015-05-25_154348-225/">抽象类纯虚函数与虚析构</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-05-25T15:43:48.000Z" itemprop="datePublished">
+    2015-05-25
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%A4%9A%E6%80%81/">多态</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/">继承与派生</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>纯虚函数，一般是在设计一个基类时使用的，它将接口函数设置为纯虚函数后，只提供子类去继承并实现，以形成多态，除此以外不提供任何其他功能，我们称这种类为抽象类(abstract)。</p>
+        
+          <div class="more-link">
+            <a href="/2015/05/25/2015/2015-05-25_154348-225/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/32/">« prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="page-number" href="/page/32/">32</a><span class="page-number current">33</span><a class="page-number" href="/page/34/">34</a><a class="page-number" href="/page/35/">35</a><span class="space">&hellip;</span><a class="page-number" href="/page/40/">40</a><a class="extend next" rel="next" href="/page/34/">next »</a>
+    </nav>
+  </section>
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>CEF 修改请求 header 与单独处理 header 中的 referer | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>CEF 修改请求 header 与单独处理 header 中的 referer</h1>
+    </header>
+
+    <section>
+      <p>有些时候利用 CEF 内嵌的页面加载某些资源的时候需要附带一些头信息，比如里面的图片需要携带一些校验和信息才能正常访问的，这个时候就需要在发起请求前对 HTTP Request 的 Header 部分进行修改。CEF 提供了两个接口用于读写 Request Header，分别是 <code>CefLifeSpanHandler::OnAfterCreated</code> 和 <code>CefRequestHandler::OnBeforeResourceLoad</code> 方法。两个都是虚函数，需要继承并重写两个方法来实现对 Request Header 的读取和修改。</p>
+<span id="more"></span>
+<h2 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h2><p><code>OnAfterCreated</code> 和 <code>OnBeforeResourceLoad</code> 的区别是，<code>OnAfterCreated</code> 中传递的 request 参数是只读的， 这里只能对数据进行读取而不能修改。而 <code>OnBeforeResourceLoad</code> 中 request 参数是可以修改的。所以如果你需要添加或修改一些头信息需要在这里进行处理。</p>
+<h2 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h2><p>修改的过程十分简单，只需要先把原来的 Header 信息读取出来，然后将你需要修改的信息删除再添加进去就可以了，如果只是新增内容，直接 emplace 就可以了。要注意的是，header 是一个 multimap 结构，允许有重复值，所以修改要么是基于原来修改，要么是删除再添加。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">CefRequestHandler::ReturnValue <span class="title">ProfileMine::OnBeforeLoadResource</span><span class="params">(CefRefPtr&lt;CefRequest&gt; request, <span class="type">bool</span> is_redirect)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (app_sdk::AppSDKInterface::<span class="built_in">IsSafeUrl</span>(request-&gt;<span class="built_in">GetURL</span>().<span class="built_in">ToString</span>()))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// backup headers</span></span><br><span class="line">        CefRequest::HeaderMap headers;</span><br><span class="line">        request-&gt;<span class="built_in">GetHeaderMap</span>(headers);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// .... do something</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// add new headers</span></span><br><span class="line">        headers.<span class="built_in">emplace</span>(<span class="string">&quot;AppKey&quot;</span>, appkey);</span><br><span class="line">        headers.<span class="built_in">emplace</span>(<span class="string">&quot;Nonce&quot;</span>, nonce);</span><br><span class="line">        headers.<span class="built_in">emplace</span>(<span class="string">&quot;CurTime&quot;</span>, curtime);</span><br><span class="line">        headers.<span class="built_in">emplace</span>(<span class="string">&quot;CheckSum&quot;</span>, checksum);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// reset headers</span></span><br><span class="line">        request-&gt;<span class="built_in">SetHeaderMap</span>(headers);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// referer 要单独设置，不允许使用 SetHeaderMap 接口设置 referer 内容见 SetHeaderMap 注释</span></span><br><span class="line">        request-&gt;<span class="built_in">SetReferrer</span>(referer, REFERRER_POLICY_ALWAYS);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">QLOG_APP</span>(<span class="string">L&quot;ProfileMine::OnBeforeLoadResource short URL = &#123;0&#125;&quot;</span>) &lt;&lt; request-&gt;<span class="built_in">GetURL</span>().<span class="built_in">ToString16</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> RV_CONTINUE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>上面代码大家也注意到了，我没有将 <code>referer</code> 的值通 <code>SetHeaderMap</code> 方法来修改，而是后面调用单独的 <code>SetReferrer</code> 方法来修改，这源于 CEF 内部的限制，看一下 <code>SetHeaderMap</code> 的注释：</p>
+<blockquote>
+<p>&#x2F;&#x2F;&#x2F; &#x2F;&#x2F; Set the header values. If a Referer value exists in the header map it will &#x2F;&#x2F; be removed and ignored. &#x2F;&#x2F;&#x2F; &#x2F;<em>--cef()–</em>&#x2F; virtual void SetHeaderMap(const HeaderMap&amp; headerMap) &#x3D;0;</p>
+</blockquote>
+<p>另外要注意的是，修改了 header 内容以后，通过 CEF 内置的调试工具抓包是看不到修改后的内容的，如果是 https 协议，你只能去服务器看一下接收到的参数中是否有你携带的 headers。这个要注意，我们在这个上面花费了很长时间，最后才发现调试工具是看不到的。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2019-04-03T11:58:09.000Z" itemprop="datePublished">
+              2019-04-03
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

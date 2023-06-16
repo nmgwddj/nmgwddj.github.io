@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>C++11 auto 关键字及 decltype 关键字 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>C++11 auto 关键字及 decltype 关键字</h1>
+    </header>
+
+    <section>
+      <p>C++11中引入的auto主要有两种用途：自动类型推导和返回值占位。auto在C++98中的标识临时变量的语义，由于使用极少且多余，在C++11中已被删除。前后两个标准的auto，完全是两个概念。新的 auto 关键字在声明一些迭代器、类模板等变量的时候，使用非常方便，具体可以看以下代码，有详细的注释。</p>
+<span id="more"></span>
+<p>#include <iostream><br>#include <string><br>#include <list></p>
+<p>using namespace std;</p>
+<p>int main( int argc, char* argv[])<br>{<br>      list<string> list_string;<br>      &#x2F;&#x2F; 传统方式定义迭代器的变量<br>      list<string>::iterator it &#x3D; list_string.begin();<br>      &#x2F;&#x2F; 使用auto定义迭代器变量<br>      for ( auto auto_it &#x3D; list_string.begin();<br>            auto_it !&#x3D; list_string.end();<br>            it++ )<br>      {<br>             &#x2F;&#x2F;……………..<br>      }</p>
+<pre><code>  // new的内存也一定要初始化，否则auto推倒不出到底是什么类型
+  auto k = 5;
+  auto\* pk = new auto(5);
+
+  // auto 关键字声明的变量必须初始化，在一行时必须使用相同数据类型初始化
+  int a, b, c;
+  auto aa = 0, ab = 10, ac = 20;
+
+  // auto 引用类型可以接受 const 变量的反推，其他形式则不行
+  const int consta = 0;
+  auto constb = consta;
+
+  return 0;
+</code></pre>
+<p>}</p>
+<p>使用 auto 关键字有以下几点注意事项： 1、可以使用valatile，pointer（*），reference（&amp;），rvalue reference（&amp;&amp;） 来修饰auto</p>
+<p>auto k &#x3D; 5;<br>auto* pK &#x3D; new auto(k);<br>auto** ppK &#x3D; new auto(&amp;k);<br>const auto n &#x3D; 6;</p>
+<p>2、用auto声明的变量必须初始化</p>
+<p>auto m; &#x2F;&#x2F; m should be intialized</p>
+<p>3、auto不能与其他类型组合连用</p>
+<p>auto int p; &#x2F;&#x2F; 这是旧auto的做法</p>
+<p>4、函数和模板参数不能被声明为auto</p>
+<p>void MyFunction( auto parameter){} &#x2F;&#x2F; no auto as method argument<br>template<auto T> &#x2F;&#x2F; utter nonsense - not allowed<br>void Fun(T t){}</p>
+<p>5、定义在堆上的变量，使用了auto的表达式必须被初始化</p>
+<p>int* p &#x3D; new auto(0); &#x2F;&#x2F;fine<br>int* pp &#x3D; new auto(); &#x2F;&#x2F; should be initialized<br>auto x &#x3D; new auto(); &#x2F;&#x2F; no intializer<br>auto* y &#x3D; new auto(9); &#x2F;&#x2F; Fine. Here y is a int*<br>auto z &#x3D; new auto(9); &#x2F;&#x2F;Fine. Here z is a int* (It is not just an int)</p>
+<p>6、以为auto是一个占位符，并不是一个他自己的类型，因此不能用于类型转换或其他一些操作，如sizeof和typeid</p>
+<p>int value &#x3D; 123;<br>auto x2 &#x3D; (auto)value; &#x2F;&#x2F; no casting using auto<br>auto x3 &#x3D; static_cast<auto>(value); &#x2F;&#x2F; same as above</p>
+<p>7、定义在一个auto序列的变量必须始终推导成同一类型</p>
+<p>auto x1 &#x3D; 5, x2 &#x3D; 5.0, x3 &#x3D; ‘r’; &#x2F;&#x2F; This is too much….we cannot combine like this</p>
+<p>8、auto不能自动推导成CV-qualifiers（constant &amp; volatile qualifiers），除非被声明为引用类型</p>
+<p>const int i &#x3D; 99;<br>auto j &#x3D; i; &#x2F;&#x2F; j is int, rather than const int<br>j &#x3D; 100; &#x2F;&#x2F; Fine. As j is not constant<br>&#x2F;&#x2F; Now let us try to have reference<br>auto&amp; k &#x3D; i; &#x2F;&#x2F; Now k is const int&amp;<br>k &#x3D; 100; &#x2F;&#x2F; Error. k is constant<br>&#x2F;&#x2F; Similarly with volatile qualifer</p>
+<p>9、auto会退化成指向数组的指针，除非被声明为引用</p>
+<p>int a[9];<br>auto j &#x3D; a;<br>cout &lt;&lt; typeid(j).name() &lt;&lt; endl; &#x2F;&#x2F; This will print int*<br>auto&amp; k &#x3D; a;<br>cout &lt;&lt; typeid(k).name() &lt;&lt; endl; &#x2F;&#x2F; This will print int [9]</p>
+<h3 id="【decltype-关键字】"><a href="#【decltype-关键字】" class="headerlink" title="【decltype 关键字】"></a>【decltype 关键字】</h3><p>可以根据一个表达式或者根据一个变量推出类型。</p>
+<p>#include <iostream><br>#include <string><br>#include <list></p>
+<p>using namespace std;</p>
+<p>void func01(){}</p>
+<p>int main( int argc, char* argv[])<br>{<br>      int declA;<br>      &#x2F;&#x2F; 通过declA 变量反推出类型，然后根据这个反推出来的类型声明新的变量<br>      decltype(declA) declB;<br>      &#x2F;&#x2F; 通过func01函数指针反推出类型，然后根据这个类型声明新的函数指针 *declC<br>      decltype(func01) *declC;</p>
+<pre><code>  return 0;
+</code></pre>
+<p>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-14T22:26:10.000Z" itemprop="datePublished">
+              2015-06-14
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

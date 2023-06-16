@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>信号的概念及基本操作 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>信号的概念及基本操作</h1>
+    </header>
+
+    <section>
+      <p>在linux&#x2F;unix系统中，我们如果想杀死一个进程，可以使用 kill -9 PID 的方式来杀死一个进程，这种方式并不是调用了什么系统的API函数实现的，实际是给进程发送了一个 SIGKILL 信号。当进程收到这个信号后执行了一个默认的操作 Term，而这个 Term 代表的就是终止进程 （Terminate Process）。这就是一个信号最直观的应用。</p>
+<span id="more"></span>
+<hr>
+<p>而并非只有杀死进程用到了信号，在linux&#x2F;unix中，很多场景都用到了信号机制，在说这些场景之前，我们先来看一下系统一共有多少个信号，在终端下使用命令 kill -l 可以查看所有信号和信号编号： <a href="/images/2015/06/2015-06-30_225606.png"><img src="/images/2015/06/2015-06-30_225606.png" alt="2015-06-30_225606"></a> 图中可以看出，一共有1~62个信号，前31个信号是我们讨论的重点，编号为34以后的信号是实时信号，一般在嵌入式开发中使用较多，我们本文中不做讨论。SIGKILL信号的编号就是9，所以我们在使用 kill -9 PID 的时候实际是给进程发送了一个编号为 9 的信号，而进程接收到这个信号以后，执行了系统设定的默认动作。那这个默认动作是什么呢？我们可以通过 man page 来查看一下 signal 中的详细解释，通过命令 man 7 signal 可以查看具体的信息： <a href="/images/2015/06/2015-06-30_230642.png"><img src="/images/2015/06/2015-06-30_230642.png" alt="2015-06-30_230642"></a> 在上图中，第一列的数据是信号，第二列是信号编号，第三列则是信号执行的默认动作，第四列代表系统发送这个信号给进程是代表出现了什么事件。我们看到 SIGKILL 对应的默认动作就是 Term，而且大家发现，除了 SIGKILL 信号的默认动作是 Term 以外，其他的很多信号也执行这个默认的 Term 动作。这个 Term 到底是什么意思？在 man 7 signal 中是如下解释： <a href="/images/2015/06/2015-06-30_230451.png"><img src="/images/2015/06/2015-06-30_230451.png" alt="2015-06-30_230451"></a> “Default action is to treminate the process” 默认动作是杀死这个进程，除了 Term 我们还看到了 Ign、Core、Stop、Cont。他们的作用翻译为中文分别如下：</p>
+<p> 动作</p>
+<p> 作用</p>
+<p> Term</p>
+<p> 默认动作是杀死这个进程</p>
+<p> Ign</p>
+<p> 默认动作是忽略这个信号</p>
+<p> Core</p>
+<p> 默认动作是杀死这个进程并转储核心文件，详见 man 5 core</p>
+<p> Stop</p>
+<p> 默认动作是暂停这个进程</p>
+<p> Cont</p>
+<p> 如果这个进程是暂停状态，那么默认动作则是继续（恢复）这个进程运行</p>
+<p>了解了每种信号的默认动作，那我们就有必要来了解一下，一个进程在什么情况下会收到这些信号呢？下面的列表记录了每种信号的产生原因：</p>
+<p> 信号</p>
+<p>Defalut</p>
+<p> 信号产生原因</p>
+<ol>
+<li>SIGHUP</li>
+</ol>
+<p>Term</p>
+<p>当用户退出shell时，由该shell启动的所有进程将收到这个信号</p>
+<ol start="2">
+<li>SIGINT</li>
+</ol>
+<p>Term</p>
+<p>当用户按下了&lt;Ctrl+C&gt;组合键时，用户终端向正在运行中的由该终端启动的程序发出此信号</p>
+<ol start="3">
+<li>SIGQUIT</li>
+</ol>
+<p>Core</p>
+<p>当按下&lt;ctrl+\&gt;组合键时产生该信号，终端向正在运行中的由该终端启动的程序发出些信号</p>
+<ol start="4">
+<li>SIGILL</li>
+</ol>
+<p>Core</p>
+<p>CPU检测到某进程执行了非法指令</p>
+<ol start="5">
+<li>SIGTRAP</li>
+</ol>
+<p>Core</p>
+<p>该信号由断点指令或其他 trap指令产生</p>
+<ol start="6">
+<li>SIGABRT</li>
+</ol>
+<p>Core</p>
+<p>调用abort函数时产生该信号</p>
+<ol start="7">
+<li>SIGBUS</li>
+</ol>
+<p>Core</p>
+<p>非法访问内存地址，包括内存对齐出错</p>
+<ol start="8">
+<li>SIGFPE</li>
+</ol>
+<p>Core</p>
+<p>在发生致命的运算错误时发出。不仅包括浮点运算错误，还包括溢出及除数为0等所有的算法错误</p>
+<ol start="9">
+<li>SIGKILL</li>
+</ol>
+<p>Term</p>
+<p>无条件终止进程。本信号不能被忽略，处理和阻塞。</p>
+<ol start="10">
+<li>SIGUSE1</li>
+</ol>
+<p>Term</p>
+<p>用户定义的信号，即程序员可以在程序中定义并使用该信号。</p>
+<ol start="11">
+<li>SIGSEGV</li>
+</ol>
+<p>Core</p>
+<p>指示进程进行了无效内存访问（段错误会产生该信号）</p>
+<ol start="12">
+<li>SIGUSR2</li>
+</ol>
+<p>Term</p>
+<p>这是另外一个用户自定义信号 ，程序员可以在程序中定义 并使用该信号</p>
+<ol start="13">
+<li>SIGPIPE</li>
+</ol>
+<p>Term</p>
+<p>Broken pipe向一个没有读端的管道写数据</p>
+<ol start="14">
+<li>SIGALRM</li>
+</ol>
+<p>Term</p>
+<p>定时器超时，超时的时间 由系统调用alarm设置</p>
+<ol start="15">
+<li>SIGTERM</li>
+</ol>
+<p>Term</p>
+<p>程序结束信号，与SIGKILL不同的是，该信号可以被阻塞和终止。通常用来要示程序正常退出</p>
+<ol start="16">
+<li>SIGSTKFLT</li>
+</ol>
+<p>Term</p>
+<p>协处理器堆栈错误</p>
+<ol start="17">
+<li>SIGCHLD</li>
+</ol>
+<p>Ign</p>
+<p>fork() 子进程结束时，父进程会收到这个信号</p>
+<ol start="18">
+<li>SIGCONT</li>
+</ol>
+<p>Cont</p>
+<p>在进程挂起时继续，否则是忽略，不能被忽略，处理和阻塞</p>
+<ol start="19">
+<li>SIGSTOP</li>
+</ol>
+<p>Stop</p>
+<p>提供给管理员暂停进程的特权，不能被忽略，处理和阻塞</p>
+<ol start="20">
+<li>SIGTSTP</li>
+</ol>
+<p>Stop</p>
+<p>停止进程的运行。按下&lt;ctrl+z&gt;组合键时发出这个信号</p>
+<ol start="21">
+<li>SIGTTIN</li>
+</ol>
+<p>Stop</p>
+<p>后台进程读终端控制台</p>
+<ol start="22">
+<li>SIGTTOU</li>
+</ol>
+<p>Stop</p>
+<p>该信号类似于SIGTTIN，在后台进程要向终端输出数据时发生</p>
+<ol start="23">
+<li>SIGURG</li>
+</ol>
+<p>Ign</p>
+<p>套接字上有紧急数据时，向当前正在运行的进程发出些信号，报告有紧急数据到达</p>
+<ol start="24">
+<li>SIGXCPU</li>
+</ol>
+<p>Term</p>
+<p>进程执行时间超过了分配给该进程的CPU时间 ，系统产生该信号并发送给该进程</p>
+<ol start="25">
+<li>SIGXFSZ</li>
+</ol>
+<p>Term</p>
+<p>超过文件的最大长度设置</p>
+<ol start="26">
+<li>SIGVTALRM</li>
+</ol>
+<p>Term</p>
+<p>虚拟时钟超时时产生该信号。类似于SIGALRM，但是该信号只计算该进程占用CPU的使用时间</p>
+<ol start="27">
+<li>SIGPROF</li>
+</ol>
+<p>Term</p>
+<p>类似于SIGVTALRM，它不公包括该进程占用CPU时间还包括执行系统调用时间</p>
+<ol start="28">
+<li>SIGWINCH</li>
+</ol>
+<p>Ign</p>
+<p>窗口变化大小时发出</p>
+<ol start="29">
+<li>SIGIO</li>
+</ol>
+<p>Ign</p>
+<p>此信号向进程指示发出了一个异步IO事件</p>
+<ol start="30">
+<li>SIGPWR</li>
+</ol>
+<p>Term</p>
+<p>关机</p>
+<ol start="31">
+<li>SIGSYS</li>
+</ol>
+<p>Core</p>
+<p>无效的系统调用</p>
+<p>上面这些信号，我们可以在终端中使用 kill -信号 -PID 给某个进程发送，如果要通过程序实现，可以调用以下系统函数： <strong>int kill(pid_t pid, int sig);</strong></p>
+<ul>
+<li>第一个参数：要发送的进程PID</li>
+<li>第二个参数：要发送的信号宏或者信号编号</li>
+<li>返回值：成功返回0，失败返回-1并设置errno</li>
+</ul>
+<ol>
+<li>当pid参数是正数时，它将发送信号到这个正数所对应的进程PID。</li>
+<li>当pid参数等于0时，它将发送信号到所有进程的调用进程的进程组。</li>
+<li>当pid参数等于-1时，它将发送信号到除init进程外所有有权限发送的进程中。</li>
+<li>当pid参数小于-1时，它将发送信号到除了-号以外的这个进程PID的进程组中。</li>
+<li>当sig等于0时，将不发送信号，但依然执行错误检查。</li>
+</ol>
+<p>除了kill函数，还有其他几个发送信号的函数：</p>
+<ul>
+<li>**int raise(int sig)**：给当前调用进程或线程发送一个信号，如果只有一个线程就相当与 kill(getpid(), sig)</li>
+<li>**void abort(void)**：首先解除对 SIGABRT 的阻塞，然后给调用进程发送 SIGABRT 信号，会使调用进程异常终止</li>
+<li>**unsigned int alarm(unsigned int seconds)**：参数是设定一个以秒为单位的整数，当调用进程执行了该函数时，在等待了参数传递的秒数以后回给调用进程发送一个 SIGALRM 信号，该信号默认是 Term，也就是杀掉进程。如果参数设置为0，那么在未决信号集中的alarm信号位置0（后文会解释未决信号集），也就是取消了 SIGALRM 信号。这个信号可以用来做自己的延迟函数，代码如下（代码虽然实现了基本需求，但是存在严重bug，后文我们在讨论时序竞态的时候会讨论这个问题）：</li>
+</ul>
+<p>#include &lt;stdio.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;signal.h&gt;</p>
+<p>void dosig(int n)<br>{<br>}</p>
+<p>int mysleep(int sec)<br>{<br>int ret;<br>struct sigaction act, oldact;</p>
+<p>&#x2F;&#x2F; 捕获 SIGALRM 信号，交给 dosig 处理函数，oldact结构体保留原信号处理信息<br>act.sa_handler &#x3D; dosig;<br>&#x2F;&#x2F; 清空设定掩码<br>sigemptyset(&amp;act.sa_mask);<br>&#x2F;&#x2F; 设置标志位为0,代表使用 sa_handler 函数指针<br>act.sa_flags &#x3D; 0;<br>&#x2F;&#x2F; 捕获 SIGALRM 信号，第二个参数时上面设定好的结构体，第三个参数时备份<br>sigaction(SIGALRM, &amp;act, &amp;oldact);</p>
+<p>&#x2F;&#x2F; 根据传递进来的秒数发送一个 SIGALRM 信号<br>alarm(sec);<br>&#x2F;&#x2F; 暂停程序运行，一直等待收到某信号并执行信号默认动作<br>&#x2F;&#x2F; 由于我们捕获了 SIGALRM 信号，所以即使收到 SIGALRM 信号也不会终止进程<br>pause();<br>&#x2F;&#x2F; 将 alarm 置零并记录返回值<br>ret &#x3D; alarm(0);<br>&#x2F;&#x2F; 恢复原有信号处理方式<br>sigaction(SIGALRM, &amp;oldact, NULL);<br>return ret;<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>printf(“Hello World…\n”);<br>&#x2F;&#x2F; 延迟10秒<br>mysleep(10);<br>printf(“Hello World…\n”);<br>return 0;<br>}</p>
+<p>以上就是信号的基本概念和基本操作，后面的文章我们再详细介绍信号的更多操作。比如信号的阻塞、信号的捕获等等，这些我们都需要单独的文章篇幅来分析。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-01T00:18:32.000Z" itemprop="datePublished">
+              2015-07-01
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E4%BF%A1%E5%8F%B7/">信号</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

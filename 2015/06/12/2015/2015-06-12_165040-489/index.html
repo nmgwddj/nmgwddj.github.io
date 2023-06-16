@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>模版类实现线性表链式储存 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>模版类实现线性表链式储存</h1>
+    </header>
+
+    <section>
+      <p>同上一篇文章，我们一样是把以前使用C语言实现的单向链表用模版实现了一次，进一步让我们对模版和C++的封装特性有了了解。对于链表的操作我们不过多介绍了，如果有还不清楚操作的，请看以前介绍链表的文章。</p>
+<span id="more"></span>
+<p>#pragma once</p>
+<p>&#x2F;&#x2F; 链表储存数据的结构体<br>template<typename T><br>struct LinkListNode<br>{<br>T data;<br>LinkListNode* next;<br>};</p>
+<p>template<typename T><br>class LinkList<br>{<br>public:<br>LinkList();<br>~LinkList();</p>
+<p>void clear();&#x2F;&#x2F; 清空<br>T get(int pos);&#x2F;&#x2F; 获取某位置的元素<br>int insert(int pos, T&amp; data);&#x2F;&#x2F; 插入一个元素<br>T remove(int pos);&#x2F;&#x2F; 删除一个元素<br>int length();&#x2F;&#x2F; 获取链表长度</p>
+<p>private:<br>LinkListNode &lt; T &gt;* m_header;&#x2F;&#x2F; 链表头节点<br>int m_length;&#x2F;&#x2F; 链表长度<br>};</p>
+<p>template<typename T><br>int LinkList<T>::length()<br>{<br>return m_length;<br>}</p>
+<p>template<typename T><br>T LinkList<T>::remove(int pos)<br>{<br>&#x2F;&#x2F; 备份头节点指针<br>LinkListNode &lt; T &gt;* pCur &#x3D; m_header;<br>&#x2F;&#x2F; 循环找到pos位置的前一个节点<br>for (int i &#x3D; 0; i &lt; pos; i++)<br>{<br>if (pCur-&gt;next !&#x3D; nullptr)<br>pCur &#x3D; pCur-&gt;next;<br>}<br>&#x2F;&#x2F; 定义一个指针记录pos位置的节点<br>LinkListNode &lt; T &gt;* pDel &#x3D; pCur-&gt;next;<br>&#x2F;&#x2F; 备份节点的数据<br>T tData &#x3D; pDel-&gt;data;<br>&#x2F;&#x2F; 改变指针指向，让链表跳过pos位置的节点重新连接<br>pCur-&gt;next &#x3D; pDel-&gt;next;</p>
+<p>&#x2F;&#x2F; 删除节点并长度–<br>delete pDel;<br>m_length–;</p>
+<p>&#x2F;&#x2F; 返回被删除的数据<br>return tData;<br>}</p>
+<p>template<typename T><br>int LinkList<T>::insert(int pos, T&amp; data)<br>{<br>&#x2F;&#x2F; 记录头节点位置<br>LinkListNode &lt; T &gt;* pCur &#x3D; m_header;<br>&#x2F;&#x2F; 生成新节点<br>LinkListNode &lt; T &gt;* node &#x3D; new LinkListNode &lt; T &gt; ;</p>
+<p>&#x2F;&#x2F; 给新节点数据域赋值<br>node-&gt;data &#x3D; data;</p>
+<p>&#x2F;&#x2F; 循环找到 pos 位置的前一个节点的位置<br>for (int i &#x3D; 0; i &lt; pos; i++)<br>{<br>if (pCur-&gt;next !&#x3D; nullptr)<br>pCur &#x3D; pCur-&gt;next;<br>}</p>
+<p>&#x2F;&#x2F; 把新节点插入到 pos 的前一个位置并对长度++<br>node-&gt;next &#x3D; pCur-&gt;next;<br>pCur-&gt;next &#x3D; node;<br>m_length++;</p>
+<p>return 0;<br>}</p>
+<p>template<typename T><br>T LinkList<T>::get(int pos)<br>{<br>&#x2F;&#x2F; 记录头节点位置<br>LinkListNode &lt; T &gt;* pCur &#x3D; m_header;</p>
+<p>&#x2F;&#x2F; 循环找到 pos 位置的节点<br>for (int i &#x3D; 0; i &lt;&#x3D; pos; i++)<br>{<br>&#x2F;&#x2F; 如果后面没有节点了，就指向最后一个节点<br>if (pCur-&gt;next !&#x3D; nullptr)<br>pCur &#x3D; pCur-&gt;next;<br>}<br>&#x2F;&#x2F; 返回节点数据<br>return pCur-&gt;data;<br>}</p>
+<p>template<typename T><br>void LinkList<T>::clear()<br>{<br>while (length())<br>{<br>remove(0);<br>}<br>}</p>
+<p>template<typename T><br>LinkList<T>::~LinkList()<br>{<br>clear();<br>&#x2F;&#x2F; 释放头节点<br>delete m_header;<br>}</p>
+<p>template<typename T><br>LinkList<T>::LinkList()<br>{<br>&#x2F;&#x2F; 初始化头节点和长度<br>m_header &#x3D; new LinkListNode &lt; T &gt; ;<br>m_header-&gt;next &#x3D; nullptr;<br>m_length &#x3D; 0;<br>}</p>
+<p>测试代码</p>
+<p>#include <iostream><br>#include “seqlist.hpp”<br>#include “LinkList.hpp”</p>
+<p>using namespace std;</p>
+<p>void LinkListTest()<br>{<br>&#x2F;&#x2F;创建链表<br>LinkList<int> list;<br>int array[5] &#x3D; { 0 };<br>&#x2F;&#x2F;初始化<br>for (int i &#x3D; 0; i &lt; sizeof(array) &#x2F; sizeof(int); ++i)<br>{<br>array[i] &#x3D; i;<br>&#x2F;&#x2F;插入数据<br>list.insert(array[i], i);<br>}</p>
+<p>&#x2F;&#x2F;遍历链表<br>for (int i &#x3D; 0; i &lt; list.length(); ++i)<br>{<br>cout &lt;&lt; “list emement “ &lt;&lt; i &lt;&lt; “ value &#x3D; “ &lt;&lt; list.get(i) &lt;&lt; endl;<br>}</p>
+<p>&#x2F;&#x2F;删除所有节点<br>while (list.length() &gt; 0)<br>{<br>cout &lt;&lt; “Delete element “ &lt;&lt; list.remove(0) &lt;&lt; endl;<br>}<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>LinkListTest();</p>
+<p>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-12T16:50:40.000Z" itemprop="datePublished">
+              2015-06-12
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E6%A8%A1%E7%89%88/">模版</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

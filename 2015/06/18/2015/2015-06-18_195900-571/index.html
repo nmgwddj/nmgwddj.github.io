@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt 状态栏 QStatusBar 使用 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt 状态栏 QStatusBar 使用</h1>
+    </header>
+
+    <section>
+      <p>借用上一篇文章的窗口，我们在里面又创建了一个 QStatusBar 的状态栏例子，例子中使用了一个小的 Label 控件添加到了 StatusBar 中，让其可以随时改变 StatusBar 中文字的内容。具体示例代码如下：</p>
+<span id="more"></span>
+<p>#include “cmainwindow.h”<br>#include <QMenuBar><br>#include <QDebug><br>#include <QToolBar><br>#include <QStatusBar></p>
+<p>CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent)<br>{<br>    &#x2F;&#x2F; 创建一个菜单栏<br>    QMenuBar* pMenuBar &#x3D; menuBar();</p>
+<pre><code>// 给菜单栏增加一个主菜单 File
+QMenu\* menuFile = pMenuBar-&gt;addMenu(&quot;&amp;File&quot;);
+/\*
+ \* 给 File 下增加子菜单
+ \* 第一个参数：图标
+ \* 第二个参数：显示文字
+ \* 第三个参数：由谁（哪个对象）来处理他的功能
+ \* 第四个参数：处理的槽函数（后面再介绍）
+ \* 第五个参数：快捷键
+ \*/
+QAction\* newAction = menuFile-&gt;addAction(QIcon(QPixmap(&quot;d:\\\\qt-logo.png&quot;)), &quot;&amp;New&quot;, this, SLOT(slotNew()), QKeySequence(tr(&quot;CTRL+N&quot;)));
+menuFile-&gt;addAction(&quot;&amp;Open&quot;);
+menuFile-&gt;addAction(&quot;&amp;Save&quot;);
+// 插入分隔符
+menuFile-&gt;addSeparator();
+menuFile-&gt;addAction(&quot;&amp;Exit&quot;);
+
+// 给菜单栏增加一个主菜单 File
+QMenu\* menuHelp = pMenuBar-&gt;addMenu(&quot;&amp;Help&quot;);
+menuHelp-&gt;addAction(&quot;&amp;About&quot;);
+
+// 添加一个工具栏
+QToolBar\* toolBar = addToolBar(&quot;toolBar&quot;);
+// 用工具栏的返回值来初始化工具栏子项
+toolBar-&gt;addAction(newAction);
+
+// 添加状态栏
+QStatusBar\* status = statusBar();
+// 给状态栏添加一个label用来显示文字 \_label 是成员变量，可以在对象中其他的位置修改它的值
+status-&gt;addWidget(\_label = new QLabel(&quot;就绪&quot;));
+</code></pre>
+<p>}</p>
+<p>void CMainWindow::slotNew()<br>{<br>    qDebug() &lt;&lt; “slotNew…”;<br>    &#x2F;&#x2F; 修改状态栏的值<br>    _label-&gt;setText(“新建”);<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-18T19:59:00.000Z" itemprop="datePublished">
+              2015-06-18
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Mac OS X 安装 Consolas 字体 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Mac OS X 安装 Consolas 字体</h1>
+    </header>
+
+    <section>
+      <p>以前有朋友介绍 Consolas 字体，用了以后一下就爱上了，最近一段时间用 Mac 笔记本，发现 Mac OS 系统里面没有这个字体，所以要自己安装，以下是在网络上搜索的方法，原文地址：<a target="_blank" rel="noopener" href="http://blog.ikato.com/post/15675823000/how-to-install-consolas-font-on-mac-os-x">http://blog.ikato.com/post/15675823000/how-to-install-consolas-font-on-mac-os-x</a></p>
+<span id="more"></span>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ brew install cabextract</span><br><span class="line">$ cd ~/Downloads</span><br><span class="line">$ mkdir consolas</span><br><span class="line">$ cd consolas</span><br><span class="line">$ curl -O http://download.microsoft.com/download/f/5/a/f5a3df76-d856-4a61-a6bd-722f52a5be26/PowerPointViewer.exe</span><br><span class="line">$ cabextract PowerPointViewer.exe</span><br><span class="line">$ cabextract ppviewer.cab</span><br><span class="line">$ open CONSOLA*.TTF</span><br></pre></td></tr></table></figure>
+
+<p>按如上命令在终端执行后，会打开字体安装界面，如下图： <a href="/images/2015/10/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-10-22-%E4%B8%8B%E5%8D%882.00.04.png"><img src="/images/2015/10/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-10-22-%E4%B8%8B%E5%8D%882.00.04.png" alt="屏幕快照 2015-10-22 下午2.00.04"></a> 点击安装字体后会弹出安装过程和安装完成的界面： <a href="/images/2015/10/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-10-22-%E4%B8%8B%E5%8D%882.00.21.png"><img src="/images/2015/10/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-10-22-%E4%B8%8B%E5%8D%882.00.21.png" alt="屏幕快照 2015-10-22 下午2.00.21"></a> 这样就安装完毕了，打开 atom 设置使用 Consolas 字体： <a href="/images/2015/10/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-10-22-%E4%B8%8B%E5%8D%889.14.52.png"><img src="/images/2015/10/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-10-22-%E4%B8%8B%E5%8D%889.14.52.png" alt="屏幕快照 2015-10-22 下午9.14.52"></a> 最终设置效果如下，非常漂亮： <a href="/images/2015/10/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-10-22-%E4%B8%8B%E5%8D%889.08.31.png"><img src="/images/2015/10/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-10-22-%E4%B8%8B%E5%8D%889.08.31.png" alt="屏幕快照 2015-10-22 下午9.08.31"></a> 终端选择使用 Consolas 字体： <a href="/images/2015/10/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-10-22-%E4%B8%8B%E5%8D%889.21.15.png"><img src="/images/2015/10/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-10-22-%E4%B8%8B%E5%8D%889.21.15.png" alt="屏幕快照 2015-10-22 下午9.21.15"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-10-22T21:21:46.000Z" itemprop="datePublished">
+              2015-10-22
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Visual Studio Code 下 Meteor 自动补全插件 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Visual Studio Code 下 Meteor 自动补全插件</h1>
+    </header>
+
+    <section>
+      <p>这段时间一直在用 Visual Studio Code 做 Meteor 开发，但一直苦于没有 Meteor 的代码只能提示插件可以用，今天偶然间在 VSCode 的 marketplace 上逛的时候看到了 Meteor 的插件。最后一次更新就是昨天11月29日，所以马上安装了一下试用。效果非常好，比目前 atom、sublime text 等工具提供的插件都完善，而且智能补全的代码也都是目前 Meteor 官网最新的代码，比如 onRendered。</p>
+<span id="more"></span>
+<p><a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-30-%E4%B8%8B%E5%8D%883.10.02.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-30-%E4%B8%8B%E5%8D%883.10.02-300x142.png" alt="屏幕快照 2015-11-30 下午3.10.02"></a></p>
+<h3 id="使用效果"><a href="#使用效果" class="headerlink" title="使用效果"></a>使用效果</h3><ul>
+<li><p>Meteor API <img src="/images/2015/11/NrMN8ev1sD.gif" alt="NrMN8ev1sD"></p>
+</li>
+<li><p>模板 <img src="/images/2015/11/mWXsIGhvMt.gif" alt="mWXsIGhvMt"></p>
+</li>
+<li><p>更多 关注官方：<a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items/jmlv.MeteorSnippets">https://marketplace.visualstudio.com/items/jmlv.MeteorSnippets</a></p>
+</li>
+</ul>
+<h3 id="安装方法"><a href="#安装方法" class="headerlink" title="安装方法"></a>安装方法</h3><p>在 Mac OS X 中，按 <code>⌘P</code> 弹出输入框，输入 <code>ext install</code> （注意后面有一个空格，不然不会弹出安装界面），过一会儿会弹出如下界面。 <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-30-%E4%B8%8B%E5%8D%882.17.01.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-30-%E4%B8%8B%E5%8D%882.17.01.png" alt="屏幕快照 2015-11-30 下午2.17.01"></a> 搜索 Meteor 相关的拓展程序 <code>Meteor snippets</code>。 <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-30-%E4%B8%8B%E5%8D%882.17.23.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-30-%E4%B8%8B%E5%8D%882.17.23.png" alt="屏幕快照 2015-11-30 下午2.17.23"></a> 搜索到以后按下回车开始安装，安装完毕后会提示你立即重启编辑器。 <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-30-%E4%B8%8B%E5%8D%882.18.41.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-30-%E4%B8%8B%E5%8D%882.18.41.png" alt="屏幕快照 2015-11-30 下午2.18.41"></a> 这样就可以使用强大的智能提示了，关于该拓展都丰富了哪些函数可以参考 github：<a target="_blank" rel="noopener" href="https://github.com/awatson1978/meteor-api/blob/master/snippets/meteor-api-snippets-javascript.cson">https://github.com/awatson1978/meteor-api/blob/master/snippets/meteor-api-snippets-javascript.cson</a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-11-30T15:18:07.000Z" itemprop="datePublished">
+              2015-11-30
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/VSCode/">VSCode</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

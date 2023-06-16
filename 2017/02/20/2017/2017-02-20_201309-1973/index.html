@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ES6 学习笔记之部署运行环境 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>ES6 学习笔记之部署运行环境</h1>
+    </header>
+
+    <section>
+      <p>即日起开始记录学习 ES6 的语法笔记，以巩固以前学习过的知识并学习新的知识以备 React、MeteorJS 新框架的学习。其中 ES6 全部学习资源来自网络阮一峰编写的图书：<a target="_blank" rel="noopener" href="http://es6.ruanyifeng.com/">http://es6.ruanyifeng.com/</a>，其中记录的代码或联系可能与书中重复。一些与历史相关的资料请阅读书中内容，我仅记录自己学习过程中遇到的问题和与历史语法不一致的内容，以下进入正题。</p>
+<span id="more"></span>
+<h2 id="node-环境部署"><a href="#node-环境部署" class="headerlink" title="node 环境部署"></a>node 环境部署</h2><p>通过书中可以看到，node 对 ES6 的支持要比浏览器好，所以我们尽量在 node 中学习 ES6 语法，这样可以学习的功能也更多一些。我 Mac 中安装了 brew，所以用 brew 来安装 node。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install node</span><br></pre></td></tr></table></figure>
+
+<p>使用如下命令可以查看 node 支持哪些 ES6 新特性。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node --v8-options  grep harmony</span><br></pre></td></tr></table></figure>
+
+<p>安装 Babel，这里注意要全局安装，否则 babel-node 命令无效。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g babel-cli</span><br></pre></td></tr></table></figure>
+
+<p>新建一个学习的目录，然后执行如下命令安装解析支持库。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev babel-preset-es2015</span><br><span class="line">npm install --save-dev babel-preset-react</span><br></pre></td></tr></table></figure>
+
+<p>项目目录下创建一个名为 <code>.babelrc</code> 的配置文件，并填进去如下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;presets&quot;: [</span><br><span class="line">        &quot;es2015&quot;,</span><br><span class="line">        &quot;react&quot;</span><br><span class="line">    ],</span><br><span class="line">    &quot;plugins&quot;: []</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样我们环境其实就已经可以使用了，创建一个 index.js 的测试文件，编写如下测试代码。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let [a, b, c] = [11, 22, 33];</span><br><span class="line"></span><br><span class="line">console.log(a);</span><br><span class="line">console.log(b);</span><br><span class="line">console.log(c);</span><br></pre></td></tr></table></figure>
+
+<p>然后运行 <code>babel-node index.js</code> 命令，就可以看到输出效果了。上面代码 let 和结构赋值都是 ES6 的新特性。 <a href="/images/2017/02/7DD93BB8-F438-41B4-994F-AF48A0404B20.jpg"><img src="/images/2017/02/7DD93BB8-F438-41B4-994F-AF48A0404B20.jpg"></a> 现在的环境足够我们学习一些基础语法了，你可以根据书中的资料进一步安装其他支持库，比如 babel-register 等。更进一步的复杂环境，我们其实可以安装一些框架，利用框架部署好的集成环境来学习 ES6，不过我觉得那样就由点大炮打蚂蚁的意思了，还是先从最基础的环境学起对自己有好处。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2017-02-20T20:13:09.000Z" itemprop="datePublished">
+              2017-02-20
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/ES6/">ES6</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

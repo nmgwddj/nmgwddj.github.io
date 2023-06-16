@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>proc 编程执行 insert、delete、update语句 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>proc 编程执行 insert、delete、update语句</h1>
+    </header>
+
+    <section>
+      <p>主题中提到的三种语句都是没有返回值的，所以我们实现起来也最简单，下面代码中包含了 insert、update 和 delete 三种语法的使用。值得注意的是在 insert 和 update 的时候使用宿主变量时的语法，在宿主变量前一定要加冒号，这是初学者最容易犯的错误。</p>
+<span id="more"></span>
+<hr>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;string.h&gt;<br>#include “sqlca.h”</p>
+<p>EXEC SQL BEGIN DECLARE SECTION;</p>
+<pre><code>char \*serversid = &quot;scott/tiger@orcl&quot;;
+
+// 宿主变量
+int deptno;
+char dname\[20\];
+char loc\[10\];
+char newname\[20\];
+char newloc\[10\];
+</code></pre>
+<p>EXEC SQL END DECLARE SECTION;</p>
+<p>int main(int argc, char* argv[])<br>{<br>    int ret &#x3D; 0;</p>
+<pre><code>// 连接 oracle 服务器
+EXEC SQL CONNECT :serversid;
+if (sqlca.sqlcode != 0)
+&#123;
+    ret = sqlca.sqlcode;
+    printf(&quot;connect oracle error... code = %d\\n&quot;, ret);
+    return ret;
+&#125;
+
+// 插入数据
+deptno = 60;
+strcpy(dname, &quot;dengjia&quot;);
+strcpy(loc, &quot;hello&quot;);
+// 请注意插入数据时使用宿主变量的语法
+EXEC SQL insert into dept(deptno, dname, loc) values(:deptno, :dname, :loc);
+if (sqlca.sqlcode != 0)
+&#123;
+    ret = sqlca.sqlcode;
+    printf(&quot;insert into error... code = %d\\n&quot;, ret);
+    return ret;
+&#125;
+
+// 更新数据
+strcpy(newname, &quot;mynewname&quot;);
+strcpy(newloc, &quot;mynewloc&quot;);
+// update 数据时使用宿主变量的语法，更新 deptno 为 60 的数据
+EXEC SQL update dept set dname = :newname, loc = :newloc where deptno = 60;
+if (sqlca.sqlcode != 0)
+&#123;
+    ret = sqlca.sqlcode;
+    printf(&quot;update set error... code = %d\\n&quot;, ret);
+    return ret;
+&#125;
+printf(&quot;update success...\\n&quot;);
+// 对上面执行的操作执行一次提交
+EXEC SQL commit;
+
+// 删除 dept 表中 deptno 为 50 的数据
+EXEC SQL delete from dept where deptno = 50;
+if (sqlca.sqlcode != 0)
+&#123;
+    ret = sqlca.sqlcode;
+    printf(&quot;delete from error... code = %d\\n&quot;, ret);
+    return ret;
+&#125;
+printf(&quot;delete success...\\n&quot;);
+EXEC SQL commit release;
+return 0;
+</code></pre>
+<p>}</p>
+<h3 id="代码编译"><a href="#代码编译" class="headerlink" title="代码编译"></a>代码编译</h3><p>proc 预处理：proc insert.pc gcc 编译：gcc insert.c -o insert -I $ORACLE_HOME&#x2F;precomp&#x2F;public -L $ORACLE_HOME&#x2F;lib -l clntsh</p>
+<h3 id="执行效果"><a href="#执行效果" class="headerlink" title="执行效果"></a>执行效果</h3><p>表中的原有如下数据： <a href="/images/2015/07/2015-07-24_162304.png"><img src="/images/2015/07/2015-07-24_162304.png" alt="2015-07-24_162304"></a> 执行我们的程序（<strong>注意，在程序执行前，你要操作的数据必须都是真正提交到数据库中的，如果操作了未commit的数据，那么程序就会卡住不动</strong>）： <a href="/images/2015/07/2015-07-24_163039.png"><img src="/images/2015/07/2015-07-24_163039.png" alt="2015-07-24_163039"></a> 执行后再次查看数据库： <a href="/images/2015/07/2015-07-24_163010.png"><img src="/images/2015/07/2015-07-24_163010.png" alt="2015-07-24_163010"></a> 多了一条 deptno &#x3D; 60 的数据，而原来 deptno &#x3D; 50 的数据被我们删除了。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-24T16:11:47.000Z" itemprop="datePublished">
+              2015-07-24
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/oracle/">oracle</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

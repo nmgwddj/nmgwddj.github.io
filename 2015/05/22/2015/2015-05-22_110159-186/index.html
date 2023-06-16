@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>运算符重载使用它类对象作为参数 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>运算符重载使用它类对象作为参数</h1>
+    </header>
+
+    <section>
+      <p>我们想实现一个功能，分别有两个类，一个名为 Sender，负责发送邮件。另外一个类名为 Mail，负责管理发送的标题和内容。在使用的时候，我们需要让类 Sender 重载 &lt;&lt; 操作符，以实现将 Mail 类的数据发送出去，大致用法就是 Sender &lt;&lt; Mail 这样的方式。这就涉及到了诸多问题。</p>
+<span id="more"></span>
+<p>1、运算符重载函数要写在哪个类中？ 发送数据的格式为 Sender &lt;&lt; Mail，很明显相当于 Sender.operator&lt;&lt;(Mail) 这样的操作，所以运算符重载函数要写到 Sender 类中。 2、Sender 要使用 Mail 类对象作为参数，需要访问 Mail 类中的私有成员怎么办？ 此时友元就发挥了作用，我们需要将 Sender 类中的运算符重载函数在 Mail 类中声明为友元函数，这样 Sender 类才能正常访问 Mail 类的私有成员。这个问题类似我们之前介绍过的“<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/basics/138.html">类A的成员函数做类B的友元函数</a>”。 具体实现的代码如下：</p>
+<p>#include <iostream><br>#include <string></p>
+<p>using namespace std;</p>
+<p>&#x2F;&#x2F; 前向声明 Mail<br>class Mail;</p>
+<p>class Sender<br>{<br>public:<br>Sender(string addr)<br>:_addr(addr){}</p>
+<p>&#x2F;&#x2F; 操作符重载函数，返回 Sender 引用是为了连续的 &lt;&lt; 操作<br>Sender&amp; operator&lt;&lt;(Mail&amp; mail);</p>
+<p>private:<br>string _addr;<br>};</p>
+<p>class Mail<br>{<br>public:<br>Mail(string title, string content)<br>:_title(title), _content(content){}</p>
+<p>&#x2F;&#x2F; 声明友元函数的时候要加域，否则他找不到是哪个 operator<br>friend Sender&amp; Sender::operator&lt;&lt;(Mail&amp; mail);</p>
+<p>private:<br>string _title;<br>string _content;<br>};</p>
+<p>&#x2F;&#x2F; Mail 类后面实现，防止访问不到类成员的情况<br>Sender&amp; Sender::operator&lt;&lt;(Mail&amp; mail)<br>{<br>cout &lt;&lt; “To      : “ &lt;&lt; _addr &lt;&lt; endl;<br>cout &lt;&lt; “Title   : “ &lt;&lt; mail._title &lt;&lt; endl;<br>cout &lt;&lt; “Content : “ &lt;&lt; mail._content &lt;&lt; endl;<br>&#x2F;&#x2F; 返回 *this 是为了连续 &lt;&lt; 操作<br>return *this;<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>Sender sender(“<a href="mailto:&#51;&#48;&#x38;&#x36;&#52;&#49;&#x37;&#x40;&#x71;&#x71;&#46;&#x63;&#x6f;&#x6d;">&#51;&#48;&#x38;&#x36;&#52;&#49;&#x37;&#x40;&#x71;&#x71;&#46;&#x63;&#x6f;&#x6d;</a>“);</p>
+<p>Mail mail(“节假日请你吃饭”, “周末我们去外婆家吃老干妈吧。”);<br>Mail mail2(“你的QQ申诉邮件”, “你的QQ申诉失败了！！”);</p>
+<p>sender &lt;&lt; mail &lt;&lt; mail2;</p>
+<p>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-22T11:01:59.000Z" itemprop="datePublished">
+              2015-05-22
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%8F%8B%E5%85%83/">友元</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

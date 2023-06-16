@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>socket 实现最小化UDP广播程序 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>socket 实现最小化UDP广播程序</h1>
+    </header>
+
+    <section>
+      <p>广播是某一个终端给一个子网发送数据，这个子网可以是本地的最小化子网，比如 192.168.1.255，也可以是整个子网 255.255.255.255，这取决于你要发送的范围，本文中只介绍一个最小化的广播程序，值得注意的是，即使客户端没有设定IP地址，它依然是可以接收到广播数据的。</p>
+<span id="more"></span>
+<hr>
+<h3 id="服务端代码"><a href="#服务端代码" class="headerlink" title="服务端代码"></a>服务端代码</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;sys&#x2F;types.h&gt;<br>#include &lt;sys&#x2F;socket.h&gt;<br>#include &lt;string.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;arpa&#x2F;inet.h&gt;<br>#include &lt;net&#x2F;if.h&gt;</p>
+<p>#define SERVER_PORT 8000<br>#define CLIENT_PORT 9000<br>#define MAXLINE 1500<br>#define BROADCAST_IP “255.255.255.255”&#x2F;&#x2F; 广播地址</p>
+<p>int main(void)<br>{<br>    int sockfd;<br>    struct sockaddr_in serveraddr, clientaddr;<br>    char buf[MAXLINE] &#x3D; “mycode\n”;</p>
+<pre><code>/\* 构造用于UDP通信的套接字 \*/
+sockfd = socket(AF\_INET, SOCK\_DGRAM, 0);
+bzero(&amp;serveraddr, sizeof(serveraddr)); 
+</code></pre>
+<p>&#x2F;* IPv4 *&#x2F;<br>    serveraddr.sin_family &#x3D; AF_INET;<br>&#x2F;* 本地任意IP INADDR_ANY &#x3D; 0 *&#x2F;<br>    serveraddr.sin_addr.s_addr &#x3D; htonl(INADDR_ANY);<br>    serveraddr.sin_port &#x3D; htons(SERVER_PORT);<br>    bind(sockfd, (struct sockaddr *)&amp;serveraddr, sizeof(serveraddr));</p>
+<p>&#x2F;&#x2F; 设置socket为广播方式<br>    int flag &#x3D; 1;<br>    setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST, &amp;flag, sizeof(flag));</p>
+<pre><code>/\*构造 client 地址 IP+端口  192.168.12.255+9000 \*/
+bzero(&amp;clientaddr, sizeof(clientaddr));
+clientaddr.sin\_family = AF\_INET;
+inet\_pton(AF\_INET, BROADCAST\_IP, &amp;clientaddr.sin\_addr.s\_addr);
+clientaddr.sin\_port = htons(CLIENT\_PORT);
+
+int i = 0;
+while (1) &#123;
+    sprintf(buf, &quot;mycode %d\\n&quot;, i++);
+</code></pre>
+<p>&#x2F;&#x2F; 发送数据<br>        sendto(sockfd, buf, strlen(buf), 0,<br>(struct sockaddr *)&amp;clientaddr, sizeof(clientaddr));<br>        sleep(1);<br>    }<br>    close(sockfd);<br>    return 0;<br>}</p>
+<h3 id="客户端代码"><a href="#客户端代码" class="headerlink" title="客户端代码"></a>客户端代码</h3><p>#include &lt;netinet&#x2F;in.h&gt;<br>#include &lt;stdio.h&gt;<br>#include &lt;sys&#x2F;types.h&gt;<br>#include &lt;sys&#x2F;socket.h&gt;<br>#include &lt;arpa&#x2F;inet.h&gt;<br>#include &lt;string.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;sys&#x2F;stat.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;fcntl.h&gt;<br>#include &lt;net&#x2F;if.h&gt;<br>#define SERVER_PORT 8000<br>#define MAXLINE 4096</p>
+<p>#define CLIENT_PORT 9000<br>int main(int argc, char *argv[])<br>{<br>    struct sockaddr_in serveraddr, localaddr;<br>    int confd;<br>    ssize_t len;<br>    char buf[MAXLINE];</p>
+<pre><code>//1.创建一个socket
+confd = socket(AF\_INET, SOCK\_DGRAM, 0);
+
+//2.初始化本地端地址
+bzero(&amp;localaddr, sizeof(localaddr));
+localaddr.sin\_family = AF\_INET;
+inet\_pton(AF\_INET, &quot;0.0.0.0&quot; , &amp;localaddr.sin\_addr.s\_addr);
+localaddr.sin\_port = htons(CLIENT\_PORT);
+</code></pre>
+<p>&#x2F;&#x2F; 广播客户端也要绑定固定的端口，否则接收不到<br>    bind(confd, (struct sockaddr *)&amp;localaddr, sizeof(localaddr));</p>
+<pre><code>socklen\_t slen;
+while (1) &#123;
+    slen = sizeof(serveraddr);
+    len = recvfrom(confd, buf, sizeof(buf), 0, (struct sockaddr \*)&amp;serveraddr, &amp;slen);
+    //printf(&quot;%s\\n&quot;, inet\_ntop(AF\_INET, &amp;serveraddr.sin\_addr.s\_addr, buf, sizeof(buf)));
+    write(STDOUT\_FILENO, buf, len);
+&#125;
+close(confd);
+return 0;
+</code></pre>
+<p>}</p>
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>编译客户端：gcc boardcast_client.c -o boardcast_client 编译服务端：gcc boardcast_server.c -o boardcast_server 运行效果： <a href="/images/2015/07/2015-07-18-213510.png"><img src="/images/2015/07/2015-07-18-213510.png" alt="2015-07-18 21:35:10"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-18T21:35:30.000Z" itemprop="datePublished">
+              2015-07-18
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%BD%91%E7%BB%9C/">网络</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

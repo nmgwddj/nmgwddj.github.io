@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>使用条件变量实现生产者消费者模型 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>使用条件变量实现生产者消费者模型</h1>
+    </header>
+
+    <section>
+      <p>生产者消费者模型是多线程案例中经常用到的一种模型，有专门的线程在负责生产产品（这个产品指代程序所需的数据、文件等等），有专门的线程在负责取出生产出来的产品用以提供程序使用（消费）。因为生产和消费在程序中是不定时间的，我们也无法确定什么时候需要生产产品，什么时候需要消费产品。所以就有了使用条件变量实现的解决方案。</p>
+<span id="more"></span>
+<hr>
+<p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;pthread.h&gt;</p>
+<p>struct tag_product {<br>struct tag_product* next;<br>int data;<br>};<br>struct tag_product* head;</p>
+<p>&#x2F;&#x2F; 初始化条件变量和锁的另外一种方式，也可以使用init<br>pthread_cond_t product &#x3D; PTHREAD_COND_INITIALIZER;<br>pthread_mutex_t mutex &#x3D; PTHREAD_MUTEX_INITIALIZER;</p>
+<p>void* producer(void* arg)<br>{<br>struct tag_product* cur;<br>while (1)<br>{<br>&#x2F;&#x2F; 加锁<br>pthread_mutex_lock(&amp;mutex);<br>&#x2F;&#x2F; 创建新节点<br>cur &#x3D; (struct tag_product*)malloc(<br>sizeof(struct tag_product));<br>&#x2F;&#x2F; 让新节点先有所指向<br>cur-&gt;next &#x3D; head-&gt;next;<br>&#x2F;&#x2F; 让头节点指向新来的节点<br>head-&gt;next &#x3D; cur;</p>
+<p>&#x2F;&#x2F; 解锁<br>pthread_mutex_unlock(&amp;mutex);<br>&#x2F;&#x2F; 让其他线程得到新产品通知<br>pthread_cond_signal(&amp;product);<br>sleep(rand() % 5);<br>}<br>return (void*)0;<br>}</p>
+<p>void* consumer(void* arg)<br>{<br>printf(“consumer thread &#x3D; %d\n”, (unsigned int)pthread_self());<br>struct tag_product* tmp;<br>while(1)<br>{<br>&#x2F;&#x2F; 加锁<br>pthread_mutex_lock(&amp;mutex);<br>while(head-&gt;next &#x3D;&#x3D; NULL)<br>{<br>&#x2F;&#x2F; 等待，循环判断头节点是否有下一个节点<br>pthread_cond_wait(&amp;product, &amp;mutex);<br>}<br>&#x2F;&#x2F; 有新节点则备份第一个节点<br>tmp &#x3D; head-&gt;next;<br>&#x2F;&#x2F; 让头节点跳过第一个节点<br>head-&gt;next &#x3D; tmp-&gt;next;<br>&#x2F;&#x2F; 打印第一个节点的数据<br>printf(“consumer %d\n”, tmp-&gt;data);</p>
+<p>&#x2F;&#x2F; 释放第一个节点<br>free(tmp);<br>&#x2F;&#x2F; 解锁<br>pthread_mutex_unlock(&amp;mutex);<br>sleep(rand() % 5);<br>}<br>return (void*)0;<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>pthread_t pid, cid;<br>srand(time(NULL));</p>
+<p>head &#x3D; (struct tag_product*)malloc(sizeof(struct tag_product));<br>head-&gt;next &#x3D; NULL;</p>
+<p>pthread_create(&amp;pid, NULL, producer, (void*)1);<br>pthread_create(&amp;cid, NULL, consumer, (void*)1);</p>
+<p>pthread_join(pid,NULL);<br>pthread_join(cid,NULL);<br>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-05T17:26:22.000Z" itemprop="datePublished">
+              2015-07-05
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

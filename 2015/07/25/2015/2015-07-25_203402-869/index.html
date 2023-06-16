@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>mysql 较 oracle 查询语句的不同 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>mysql 较 oracle 查询语句的不同</h1>
+    </header>
+
+    <section>
+      <p>mysql 与 oracle 的查询语法有一部分不太相同，特别是在多表查询时，mysql 无法适应 oracle 的做外连接和右外连接的查询语法，自己有另外一套查询语法，与 ms sql server 相似。所以这里列举一下，方便以后查询和使用。</p>
+<span id="more"></span>
+<hr>
+<h3 id="数据库操作"><a href="#数据库操作" class="headerlink" title="数据库操作"></a>数据库操作</h3><p><strong>创建</strong></p>
+<p>create database dbname<br>create database dbname character set utf8<br>create database dbname character set utf8 collate utf8_general_ci</p>
+<p><strong>查看</strong></p>
+<p>show databases;<br>show create database dbname</p>
+<p><strong>修改</strong></p>
+<p>alter database dbname character set utf8</p>
+<p><strong>删除</strong></p>
+<p>drop database dbname</p>
+<h3 id="表操作"><a href="#表操作" class="headerlink" title="表操作"></a>表操作</h3><p><strong>创建</strong></p>
+<p>create table tablename(tid int, tname varchar(20))<br>create table tablename(tid int, tname varchar(20)) character set utf8 collate utf8_general_ci</p>
+<p><strong>查看</strong></p>
+<p>show create table tablename<br>desc tablename</p>
+<p><strong>修改</strong></p>
+<p>rename table oldname to newname<br>alter table tablename add column height double<br>alter table tablename modify column height float<br>alter table tablename drop column height<br>alter table tablename character set utf8</p>
+<p><strong>删除</strong></p>
+<p>drop table tablename</p>
+<h3 id="时间处理函数"><a href="#时间处理函数" class="headerlink" title="时间处理函数"></a>时间处理函数</h3><p><strong>当前时间</strong>  </p>
+<p>now()</p>
+<p><strong>日期加减</strong></p>
+<p>date_add(now(), INTERVAL 2 year)<br>date_sub(now(), INTERVAL 1 month)<br>date_add(now(), INTERVAL -1 day)</p>
+<p><strong>日期转换</strong></p>
+<p>select date_format(now(), ‘%Y-%m-%d’)<br>select date_format(now(), ‘%Y-%c-%d’);<br>select date_format(now(), ‘%Y-%c-%d %h:%i:%s’);</p>
+<p><strong>年月日</strong></p>
+<p>year(now())<br>month(now())<br>day(now())</p>
+<h3 id="内连接"><a href="#内连接" class="headerlink" title="内连接"></a>内连接</h3><p>select d.deptno, count(e.empno)<br>from dept d left outer join emp e &#x2F;* 取 join 左侧表的数据 *&#x2F;<br>on d.deptno &#x3D; e.deptno<br>group by d.deptno;</p>
+<p>select d.deptno, count(e.empno)<br>from emp e right outer join dept d &#x2F;* 取 join 右侧表的数据 *&#x2F;<br>on d.deptno &#x3D; e.deptno<br>group by d.deptno;</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-25T20:34:02.000Z" itemprop="datePublished">
+              2015-07-25
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/sql/">sql</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/mysql/">mysql</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

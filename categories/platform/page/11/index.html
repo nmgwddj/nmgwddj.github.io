@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ platform }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/29/2015/2015-06-29_111008-623/">遍历环境变量内容</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-29T11:10:08.000Z" itemprop="datePublished">
+    2015-06-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>所有应用程序则运行后都会有一组环境变量值，它是一组指针数组，每一个指针指向的内容都具有 name&#x3D;value 的结构，其中 name 是环境变量名，value 是环境变量值。在程序中我们可以遍历这组环境变量内容，具体代码如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/29/2015/2015-06-29_111008-623/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/24/2015/2015-06-24_233326-614/">文件描述符详解</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-24T23:33:26.000Z" itemprop="datePublished">
+    2015-06-24
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在 32 位的 linux&#x2F;unix 系统下，每个程序打开一个文件都会有一段 4G 的虚拟地址空间，这部分空间中，有1G是内核地址空间，3G是用户地址空间，这个概念我们在之前的文章中有介绍过，可参考 “<a target="_blank" rel="noopener" href="http://不同位置的变量在内存中的排布/">不同位置的变量在内存中的排布</a>”，其中在内核地址空间中，维护着一个 PCB 进程控制块，其中包含很多进程相关的信息，比如进程ID、用户ID、组ID等等，但本文我们最关注的，是 PCB 进程控制块中维护的一份“文件描述符表”，表的格式抽象成下图的样子。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/24/2015/2015-06-24_233326-614/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/24/2015/2015-06-24_194343-612/">O_EXCL 实现根据文件是否存在来创建文件</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-24T19:43:43.000Z" itemprop="datePublished">
+    2015-06-24
+  </time>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在使用 open 函数时，会有这样的需求，如果文件存在，那么就报错退出，如果文件不存在那么就创建该文件。当然我们在执行 open 函数之前可以判断一下文件是否存在，但是这样做不仅多了一步，而且比较麻烦，其实使用 open 中的 O_EXCL 参数就可以解决这种问题。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/24/2015/2015-06-24_194343-612/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/categories/platform/page/10/">« prev</a><a class="page-number" href="/categories/platform/">1</a><span class="space">&hellip;</span><a class="page-number" href="/categories/platform/page/9/">9</a><a class="page-number" href="/categories/platform/page/10/">10</a><span class="page-number current">11</span>
+    </nav>
+  </section>
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

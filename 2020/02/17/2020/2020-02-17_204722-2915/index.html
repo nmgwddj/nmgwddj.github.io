@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt Quick Windows 下实现无边框窗口阴影效果 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt Quick Windows 下实现无边框窗口阴影效果</h1>
+    </header>
+
+    <section>
+      <p>Qt Quick 中实现一个无边框窗口阴影效果的中心思想是将 Window 容器背景设置为透明的，在 Windows 容器中添加一个填满窗口的容器（如 Page、Rectangle 等），然后将这个容器设置一些边距，再给这个容器附加一个阴影效果，实现的效果如下： <strong>注意：本文所描述的方案会有严重的性能损耗，尤其是在 2k 4k 显示器上性能损耗严重、帧率极低，如非特殊需求，建议不使用类似方案。</strong></p>
+<span id="more"></span>
+<p><a href="/images/2020/02/2020-02-17_20-42-59.png"><img src="/images/2020/02/2020-02-17_20-42-59.png"></a></p>
+<h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">import QtQuick 2.12</span><br><span class="line">import QtQuick.Window 2.12</span><br><span class="line">import QtQuick.Controls 2.12</span><br><span class="line">import QtGraphicalEffects 1.0</span><br><span class="line"></span><br><span class="line">Window &#123;</span><br><span class="line">    id: mainWindow</span><br><span class="line">    visible: true</span><br><span class="line">    width: 640</span><br><span class="line">    height: 480</span><br><span class="line">    title: qsTr(&quot;Hello World&quot;)</span><br><span class="line">    // 无边框窗口</span><br><span class="line">    flags: Qt.Window  Qt.FramelessWindowHint</span><br><span class="line">    // 设置窗口背景色为透明</span><br><span class="line">    color: &quot;#00000000&quot;</span><br><span class="line"></span><br><span class="line">    Rectangle &#123;</span><br><span class="line">        id: mainLayout</span><br><span class="line">        // 一个填满窗口的容器，Page、Rectangle 都可以</span><br><span class="line">        anchors.fill: parent</span><br><span class="line">        // 当窗口全屏时，设置边距为 0，则不显示阴影，窗口化时设置边距为 10 就可以看到阴影了</span><br><span class="line">        anchors.margins: mainWindow.visibility === Window.Maximized ? 0 : 10</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    DropShadow &#123;</span><br><span class="line">        anchors.fill: mainLayout</span><br><span class="line">        horizontalOffset: 1</span><br><span class="line">        verticalOffset: 1</span><br><span class="line">        radius: 8</span><br><span class="line">        samples: 16</span><br><span class="line">        source: mainLayout</span><br><span class="line">        color: &quot;#33333F&quot;</span><br><span class="line">        Behavior on radius &#123; PropertyAnimation &#123; duration: 100 &#125; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样设置后可以看到窗口阴影的效果，但是还是有一些缺点的， 当你使用一些 Dialog、Popup 控件时，并设置 modal 为 true 的情况下，Dialog 这类浮层窗口会显示一个黑色背景，此时黑色背景的边缘是以 Window 为基础的，而不是我们放到 Window 中的容器。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2020-02-17T20:47:22.000Z" itemprop="datePublished">
+              2020-02-17
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/QML/">QML</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ gcc }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/03/06/2016/2016-03-06_134527-1515/">gcc 编译一个应用程序的四个过程</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-03-06T13:45:27.000Z" itemprop="datePublished">
+    2016-03-06
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/gcc/">gcc</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>还是 2015 年学过的知识，这么久不用忘差不多了。本文主要记录一下方便以后查阅并加深印象。gcc 编译一个程序的四个过程分别是 预处理-&gt;汇编-&gt;编译-&gt;链接，预处理一般是导入一些头文件的信息及一些宏的替换等等，汇编是将代码编译为汇编代码，真正到编译过程才是把汇编代码编译为二进制的文件，最后链接是链接一些函数所需的库文件。以下是分布执行对应步骤的命令。</p>
+        
+          <div class="more-link">
+            <a href="/2016/03/06/2016/2016-03-06_134527-1515/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/02/16/2016/2016-02-16_201923-1499/">makefile 基础、进阶及常用 makefile</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-02-16T20:19:23.000Z" itemprop="datePublished">
+    2016-02-16
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/gcc/">gcc</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/makefile/">makefile</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <h3 id="makefile-语法"><a href="#makefile-语法" class="headerlink" title="makefile 语法"></a>makefile 语法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">目标:依赖</span><br><span class="line">（tab）命令</span><br><span class="line"></span><br><span class="line">如：add.o:add.c</span><br><span class="line">(一个tab缩进)gcc –Wall –g –c add.c –o add.o</span><br><span class="line"></span><br><span class="line">目标：要生成的目标文件</span><br><span class="line">依赖：目标文件由哪些文件生成</span><br><span class="line">命令：通过执行该命令由依赖文件生成目标</span><br></pre></td></tr></table></figure>
+        
+          <div class="more-link">
+            <a href="/2016/02/16/2016/2016-02-16_201923-1499/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

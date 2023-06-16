@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ Tools }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/10/19/2018/2018-10-19_100216-2509/">用于 Windows 下的日志跟踪分析工具（Tail for Windows）</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-10-19T10:02:16.000Z" itemprop="datePublished">
+    2018-10-19
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/DuiLib/">DuiLib</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在 Linux 下做开发和调试任务的时候，有些情况会动态去跟踪一些日志的变化来调试问题。Linux 下使用 <code>tail -f</code> 就可以达到需求了，但 Windows 下一直没有找到类似的好用工具，在 github 上也有一些开源项目，不是项目相对陈旧界面丑陋，就是功能不完善不能让人专注于分析日志。索性自己做了一个，预览图如下： <a href="/images/2018/10/logs_monitor-1.gif"><img src="/images/2018/10/logs_monitor-1.gif"></a></p>
+        
+          <div class="more-link">
+            <a href="/2018/10/19/2018/2018-10-19_100216-2509/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/07/08/2018/2018-07-08_191914-2411/">Windows 监控 iPhone 上的 HTTP 访问记录</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-07-08T19:19:14.000Z" itemprop="datePublished">
+    2018-07-08
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Charles/">Charles</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>有些测试场景需要知道在真实实体手机上访问我们开发的页面时产生了哪些不同的请求、访问了哪些链接。这个事情在 Windows 上做起来很简单，工具也有很多。浏览器自带的监控工具、HttpWatch 等工具都可以实现，今天介绍的主角 charles-proxy 也可以实现，但是 charles-proxy 强大的地方在于它可以建立一个临时代理服务器，手机上设置使用这个代理即可在 charles-proxy 中查看所有的浏览记录。</p>
+        
+          <div class="more-link">
+            <a href="/2018/07/08/2018/2018-07-08_191914-2411/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/04/25/2018/2018-04-25_094827-2364/">设置 Notepad++ 制表符（Tab 缩进）宽度为2个空格大小</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-04-25T09:48:27.000Z" itemprop="datePublished">
+    2018-04-25
+  </time>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>Notepad++ 默认的制表符宽度是 4 个空格的大小，一个规模比较大的代码段或者 xml 等文件，小屏幕打开时看到的情景真的和让人着急，拖来拖去！有两种方案可以解决这种情况。</p>
+<h2 id="修改缩进为空格"><a href="#修改缩进为空格" class="headerlink" title="修改缩进为空格"></a>修改缩进为空格</h2><p>这种我们不太推荐，但是有些公司或者团队会刻意要求就使用空格作为缩进。在一些前端开发的团队中比较多见。</p>
+<h2 id="修改缩进为2个空格的大小（依然使用-Tab-缩进）"><a href="#修改缩进为2个空格的大小（依然使用-Tab-缩进）" class="headerlink" title="修改缩进为2个空格的大小（依然使用 Tab 缩进）"></a>修改缩进为2个空格的大小（依然使用 Tab 缩进）</h2><p>这种情况是缩进依然使用制表符，但是宽度明显减小。 以上两种设置方法，都可以通过 <code>设置-&gt;首选项-&gt;语言</code> 界面中，通过勾选是否使用空格替换制表符和设置缩进宽度来达到你的需求。如下图： <a href="/images/2018/04/2018-04-25_09-40-11.png"><img src="/images/2018/04/2018-04-25_09-40-11.png"></a></p>
+
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/03/29/2018/2018-03-29_142753-2330/">查看视音频格式工具 MediaInfo</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-03-29T14:27:53.000Z" itemprop="datePublished">
+    2018-03-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/FFmpeg/">FFmpeg</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>初期做音视频开发的开发人员经常需要查看某些视频文件的封装格式、压缩编码标准等信息，一般音视频播放工具就可以看到这些信息，但有些是没有这样的功能的，MediaInfo 是专门用于查看音视频文件的详细信息的，通过该工具的不同试图可以让将音视频的各类数据一览无余。</p>
+<h2 id="下载地址"><a href="#下载地址" class="headerlink" title="下载地址"></a>下载地址</h2><p><a target="_blank" rel="noopener" href="https://mediaarea.net/en/MediaInfo/Download">https://mediaarea.net/en/MediaInfo/Download</a></p>
+<h2 id="相关截图"><a href="#相关截图" class="headerlink" title="相关截图"></a>相关截图</h2><p><a href="/images/2018/03/2018-03-29_142652.png"><img src="/images/2018/03/2018-03-29_142652.png"></a> <a href="/images/2018/03/2018-03-29_142703.png"><img src="/images/2018/03/2018-03-29_142703.png"></a></p>
+
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/03/29/2018/2018-03-29_142327-2327/">RESTful API 调试工具 insomnia</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-03-29T14:23:27.000Z" itemprop="datePublished">
+    2018-03-29
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/RESTful-API/">RESTful API</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在开发 RESTful API 相关的工作中，经常需要测试我们的接口是否可以正常使用，或通过传递测试数据来验证接口的输出。本文介绍的工具可以说就是为了 RESTful API 测试而生。工具功能强大，多种试图模式。没有 Postman 的多余功能。</p>
+<h2 id="下载地址"><a href="#下载地址" class="headerlink" title="下载地址"></a>下载地址</h2><p><a target="_blank" rel="noopener" href="https://insomnia.rest/download/">https://insomnia.rest/download/</a></p>
+<h2 id="相关截图"><a href="#相关截图" class="headerlink" title="相关截图"></a>相关截图</h2><p><a href="/images/2018/03/2018-03-29_141904.png"><img src="/images/2018/03/2018-03-29_141904.png"></a></p>
+
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/02/09/2018/2018-02-09_124015-2294/">使用七牛云对象储存缓存 wordpress 静态文件加速网站</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-02-09T12:40:15.000Z" itemprop="datePublished">
+    2018-02-09
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/wordpress/">wordpress</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>最近博客的访问量越来越大，导致使用阿里云的限制流量的云服务器超出了流量备关停，分析了以后大部分是一些下载的资源和图片资源占用的流量比较大。所以希望能把这些资源缓存起来，刚好最近经常用七牛云，发现有类似的功能。所以自己做了一下顺便记录一下步骤（网上大部分教程已经比较老，不太好与现在七牛云的对应了）</p>
+        
+          <div class="more-link">
+            <a href="/2018/02/09/2018/2018-02-09_124015-2294/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2017/09/04/2017/2017-09-04_120728-2175/">JavaScript Standard 编码规范</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2017-09-04T12:07:28.000Z" itemprop="datePublished">
+    2017-09-04
+  </time>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/JavaScript/">JavaScript</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在远程工作中，并不是所有项目都是从头开始的，有很多项目是已经做了一部分，或者需要按着其要求来创建项目和编码的。所以这其中就有一些公司或者团队会使用一些代码规范，以保证无论是公司内部还是远程工作的同事都可以保持一致的代码规范，让代码不会过于凌乱。</p>
+        
+          <div class="more-link">
+            <a href="/2017/09/04/2017/2017-09-04_120728-2175/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2017/09/01/2017/2017-09-01_172927-2172/">Meteor MongoDB 数据库管理工具 Studio T3</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2017-09-01T17:29:27.000Z" itemprop="datePublished">
+    2017-09-01
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/mongodb/">mongodb</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>最近开始做新项目了，熟悉代码的过程中发现以前的 robomongo 工具链接上 Meteor 新版本程序的数据库后看不到数据了，搜索了一些内容没解决问题，后面在群里问了一下，朋友给我介绍了一个『升级款』<a target="_blank" rel="noopener" href="https://studio3t.com/download/">Studio T3</a>。</p>
+        
+          <div class="more-link">
+            <a href="/2017/09/01/2017/2017-09-01_172927-2172/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2017/08/28/2017/2017-08-28_092809-2167/">解决 VS2017 使用 Windows 桌面向导创建的项目编译时触发 warning C4819 警告</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2017-08-28T09:28:09.000Z" itemprop="datePublished">
+    2017-08-28
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>昨天升级了一下 VS2017 到最新版本，发现创建项目的向导有了很大的变化，以前创建 <code>Win32项目</code> 的菜单不见了，取而代之的是 <code>Windows桌面应用程序</code> 和 <code>Windows桌面向导</code>。如下图所示： <a href="/images/2017/08/2017-08-28_092258.png"><img src="/images/2017/08/2017-08-28_092258.png"></a></p>
+        
+          <div class="more-link">
+            <a href="/2017/08/28/2017/2017-08-28_092809-2167/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2017/08/14/2017/2017-08-14_110811-2156/">notepad++ 7.4.2 x64 版本无法使用当前目录配置文件</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2017-08-14T11:08:11.000Z" itemprop="datePublished">
+    2017-08-14
+  </time>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>最近更新一下电脑里的 notepad++ 到最新版本，遇到了一个问题就是新版本的 notepad++ 不再使用当前目录的配置文件了。通过查询资料得知，需要在当前目录新建一个 0 字节的 doLocalConf.xml 的配置文件，这样就会使用当前目录下的配置文件了。可我按照这种方法操作后却发现 notepad++ 依然使用的是 %APPDATA% 下面的配置信息。</p>
+        
+          <div class="more-link">
+            <a href="/2017/08/14/2017/2017-08-14_110811-2156/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/categories/Tools/">« prev</a><a class="page-number" href="/categories/Tools/">1</a><span class="page-number current">2</span><a class="page-number" href="/categories/Tools/page/3/">3</a><a class="page-number" href="/categories/Tools/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/categories/Tools/page/6/">6</a><a class="extend next" rel="next" href="/categories/Tools/page/3/">next »</a>
+    </nav>
+  </section>
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

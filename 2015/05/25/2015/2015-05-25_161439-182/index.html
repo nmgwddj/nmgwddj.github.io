@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>自实现 MyString 类 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>自实现 MyString 类</h1>
+    </header>
+
+    <section>
+      <p>自实现 myString 类主要目的是剖析系统内部的 string 类的一些实现方法以及加强对类封装、运算符重载等特性的掌握。其中包含了几项非常重要的功能实现。</p>
+<ol>
+<li>使用构造器创建对象。</li>
+<li>拷贝构造器创建对象。</li>
+<li>赋值运算符重载构造对象。</li>
+<li>[]运算符重载构造对象数组。</li>
+<li>=&#x3D;运算符重载判断对象是否相等。</li>
+<li>+运算符重载实现对象相加。</li>
+<li>&gt;&gt; &lt;&lt; 流输入输出运算符实现打印和输入。</li>
+</ol>
+<p>具体的实现代码分三个部分，一个 MyString.h 文件，包含类的声明和结构。一个 MyString.cpp 文件，包含类的成员及友元函数实现。最终是一个 main.cpp 来测试我们自己的 MyString 类是否可以正常使用。</p>
+<span id="more"></span>
+<h2 id="【myString-h】"><a href="#【myString-h】" class="headerlink" title="【myString.h】"></a>【myString.h】</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">#pragma once</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line"></span><br><span class="line">class CMyString</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    // 构造器</span><br><span class="line">    CMyString(char* str = NULL);</span><br><span class="line">    // 拷贝构造器原型，another为传递进来的同类对象</span><br><span class="line">    CMyString(const CMyString &amp; another);</span><br><span class="line">    // 赋值运算符重载，系统会提供默认，但同样是等位拷贝</span><br><span class="line">    CMyString&amp; operator=(const CMyString &amp; another);</span><br><span class="line">    // []运算符重载</span><br><span class="line">    char operator[](int idx);</span><br><span class="line">    // ==运算符重载</span><br><span class="line">    bool operator==(const CMyString&amp; another);</span><br><span class="line">    // + 运算符重载</span><br><span class="line">    CMyString operator+(const CMyString&amp; another);</span><br><span class="line">    // 流输入输出</span><br><span class="line">    friend std::ostream&amp; operator&lt;&lt;(std::ostream&amp; os, CMyString&amp; another);</span><br><span class="line">    friend std::istream&amp; operator&lt;&lt;(std::istream&amp; is, CMyString&amp; another);</span><br><span class="line"></span><br><span class="line">    ~CMyString(void);</span><br><span class="line">    char* c_str();</span><br><span class="line">private:</span><br><span class="line">    char* m_str;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="【myString-cpp】"><a href="#【myString-cpp】" class="headerlink" title="【myString.cpp】"></a>【myString.cpp】</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;MyString.h&quot;</span><br><span class="line">#include &lt;cstring&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">CMyString::CMyString(char* str)</span><br><span class="line">&#123;</span><br><span class="line">    if (str)</span><br><span class="line">    &#123;</span><br><span class="line">        int len = strlen(str);</span><br><span class="line">        m_str = new char[len + 1];</span><br><span class="line">        strcpy_s(m_str, len + 1, str);</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        m_str = new char[1];</span><br><span class="line">        *m_str = &#x27;\0&#x27;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CMyString::CMyString(const CMyString &amp; another)</span><br><span class="line">&#123;</span><br><span class="line">    // 浅拷贝，等位拷贝，会造成 double free</span><br><span class="line">    // 这样操作会导致 m_str 和 another.m_str 指向同一块堆内存</span><br><span class="line">    // 析构时会造成 delete 了同一块内存</span><br><span class="line">    // m_str = another.m_str;</span><br><span class="line"></span><br><span class="line">    // 深拷贝，根据another.m_str的长度给对象new一块内存使双方不冲突</span><br><span class="line">    int len = strlen(another.m_str);</span><br><span class="line">    m_str = new char[len + 1];</span><br><span class="line">    strcpy_s(m_str, len + 1, another.m_str);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CMyString&amp; CMyString::operator=(const CMyString &amp; another)</span><br><span class="line">&#123;</span><br><span class="line">    if (this == &amp;another)</span><br><span class="line">    &#123;</span><br><span class="line">        // 解决 s6 = s6 会导致崩溃的问题</span><br><span class="line">        return *this;</span><br><span class="line">    &#125;</span><br><span class="line">    delete [] m_str;</span><br><span class="line">    int len = strlen(another.m_str);</span><br><span class="line">    m_str = new char[len + 1];</span><br><span class="line">    strcpy_s(m_str, len + 1, another.m_str);</span><br><span class="line">    return *this;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">char CMyString::operator[](int idx)</span><br><span class="line">&#123;</span><br><span class="line">    return m_str[idx];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bool CMyString::operator==(const CMyString&amp; another)</span><br><span class="line">&#123;</span><br><span class="line">    if (strcmp(this-&gt;m_str, another.m_str) == 0)</span><br><span class="line">        return true;</span><br><span class="line">    else</span><br><span class="line">        return false;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CMyString CMyString::operator+(const CMyString&amp; another)</span><br><span class="line">&#123;</span><br><span class="line">    int len = 0;</span><br><span class="line">    len = strlen(this-&gt;m_str);</span><br><span class="line">    len += strlen(another.m_str);</span><br><span class="line"></span><br><span class="line">    CMyString tmp;</span><br><span class="line">    delete [] tmp.m_str;</span><br><span class="line"></span><br><span class="line">    tmp.m_str = new char[len + 1];</span><br><span class="line">    memset(tmp.m_str, 0, len + 1);</span><br><span class="line">    strcat_s(tmp.m_str, len + 1, this-&gt;m_str);</span><br><span class="line">    strcat_s(tmp.m_str, len + 1, another.m_str);</span><br><span class="line"></span><br><span class="line">    return tmp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">std::ostream&amp; operator&lt;&lt;(std::ostream&amp; os, CMyString&amp; another)</span><br><span class="line">&#123;</span><br><span class="line">    os &lt;&lt; another.m_str;</span><br><span class="line">    return os;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">std::istream&amp; operator&lt;&lt;(std::istream&amp; is, CMyString&amp; another)</span><br><span class="line">&#123;</span><br><span class="line">    // 先删除了原来保存的数据</span><br><span class="line">    delete [] another.m_str;</span><br><span class="line">    char buffer[BUFSIZ];</span><br><span class="line">    is.getline(buffer, BUFSIZ);</span><br><span class="line">    int length = strlen(buffer);</span><br><span class="line">    another.m_str = new char[length + 1];</span><br><span class="line">    strcpy_s(another.m_str, length + 1, buffer);</span><br><span class="line">    return is;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CMyString::~CMyString(void)</span><br><span class="line">&#123;</span><br><span class="line">    std::cout &lt;&lt; &quot;delete [] m_str : &quot; &lt;&lt; m_str &lt;&lt; std::endl;</span><br><span class="line">    delete [] m_str;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">char* CMyString::c_str()</span><br><span class="line">&#123;</span><br><span class="line">    return m_str;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="【main-cpp】"><a href="#【main-cpp】" class="headerlink" title="【main.cpp】"></a>【main.cpp】</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &quot;MyString.h&quot;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    // 构造函数，无参数</span><br><span class="line">    CMyString s;</span><br><span class="line">    cout &lt;&lt; s.c_str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    // 构造函数，有参数</span><br><span class="line">    CMyString s1(&quot;china&quot;);</span><br><span class="line">    cout &lt;&lt; s1.c_str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    // 类型转化函数</span><br><span class="line">    CMyString s2 = &quot;china&quot;;</span><br><span class="line">    cout &lt;&lt; s2.c_str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">     以上均是调用构造器来创建的</span><br><span class="line">     */</span><br><span class="line"></span><br><span class="line">    // 拷贝构造器</span><br><span class="line">    CMyString s3(s2);</span><br><span class="line">    cout &lt;&lt; s3.c_str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    // 同上</span><br><span class="line">    CMyString s4 = s3;</span><br><span class="line">    cout &lt;&lt; s4.c_str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    // 赋值，=号运算符重载</span><br><span class="line">    CMyString s5;</span><br><span class="line">    // 等同于 s5.operator= (s4);</span><br><span class="line">    s5 = s4;</span><br><span class="line">    // 同上 相当于s5.operator=(s4.operator=(s3));</span><br><span class="line">    s5 = s4 = s3;</span><br><span class="line">    cout &lt;&lt; s5.c_str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    CMyString s6(&quot;china&quot;);</span><br><span class="line">    // 这样操作会进入=号运算符重载的函数内</span><br><span class="line">    // 但刚进入后 s6 就被 delete 了</span><br><span class="line">    // 如果继续后面的操作将会导致访问违规内存而报错</span><br><span class="line">    // 个别系统环境下可能不报错，带不代表就是正确的</span><br><span class="line">    s6 = s6;</span><br><span class="line">    cout &lt;&lt; s6.c_str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    // []运算符重载</span><br><span class="line">    cout &lt;&lt; s6[2] &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    // ==运算符重载</span><br><span class="line">    if (s5 == s6) cout &lt;&lt; &quot;s5 == s6&quot; &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    // + 运算符重载</span><br><span class="line">    CMyString s7 = s6 + s5;</span><br><span class="line">    cout &lt;&lt; s7.c_str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; s7 &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    getchar();</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-25T16:14:39.000Z" itemprop="datePublished">
+              2015-05-25
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

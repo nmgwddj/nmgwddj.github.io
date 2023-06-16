@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ CMake }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2021/12/09/2021/2021-12-09_141701-3088/">CMake 自动安装 git pre-commit hooks</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2021-12-09T14:17:01.000Z" itemprop="datePublished">
+    2021-12-09
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/CMake/">CMake</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/Tools/">Tools</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在日常开发中，我们经常通过各类 IDE 工具来自动修正代码风格，但由于部分 IDE 工具与 clang-format 配合不是特别完善，导致保存或者按下分号、冒号以后代码自动格式化导致错乱，或者格式化时间过长等问题。这在日常开发中是很难让人接受的。 那么我们有没有办法在开发过程中不去让 clang-format 自动格式化，而是在提交代码时检查一次就够了呢？答案是可以的。Git 天生提供了 pre-commit hooks 能力，允许我们预设一些检查脚本在提交前做一些检查。手动编写脚本是比较麻烦的，而且不同开发者的不同环境适配也是棘手的问题。其实早就有人想到了这些事情，pre-commit 工具就是为这个而生的。</p>
+        
+          <div class="more-link">
+            <a href="/2021/12/09/2021/2021-12-09_141701-3088/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2020/07/11/2020/2020-07-11_134248-2938/">使用 CMake + Git Submodule 方式管理项目三方库</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2020-07-11T13:42:48.000Z" itemprop="datePublished">
+    2020-07-11
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/CMake/">CMake</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/iOS-macOS/">iOS/macOS</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/iOS-macOS/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在项目开发过程中，避免不了要使用一些开源的三方库，我参加过的一些团队有不同的管理三方库的方式。不同的方式都各有优缺点，我们先列举一下碰到过的管理方式，说一些他们的优缺点，最后再来讨论我们今天介绍的管理方式弥补了哪些缺点。</p>
+        
+          <div class="more-link">
+            <a href="/2020/07/11/2020/2020-07-11_134248-2938/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

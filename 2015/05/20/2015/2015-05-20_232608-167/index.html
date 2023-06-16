@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>运算符重载前++与后++ | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>运算符重载前++与后++</h1>
+    </header>
+
+    <section>
+      <p>无论前++还是后++，操作数都只有一个，这样我们做运算符重载的时候，该如何区分呢？这里就要接受一个新的知识，就是亚元。在C++ Primer一书中是这样描述的（中文版 第五版 503 页）“为了解决这个问题，后置版本接受一个额外的（不被使用）int类型的形参。当我们使用后置运算符时，编译器为这个形参提供一个值为0的实参。尽管从语法上来说后置函数可以使用这个额外的形参，但是在实际过程中通常不会这么做。这个形参唯一的作用就是区分前置版本和后置版本的函数，而不是真的要在实现后置版本时参与运算。”</p>
+<span id="more"></span>
+<p>下面便是前++和后++的实现代码，请注意两种实现不同的区别，一个是返回引用，一个是返回临时对象：</p>
+<p>#include <iostream></p>
+<p>using namespace std;</p>
+<p>class Complex<br>{<br>public:<br>Complex(float x, float y)<br>:_x(x), _y(y) {}</p>
+<p>void display()<br>{<br>cout &lt;&lt; “(x &#x3D; “ &lt;&lt; _x &lt;&lt; “, y &#x3D; “ &lt;&lt; _y &lt;&lt; “)” &lt;&lt; endl;<br>}</p>
+<p>&#x2F;&#x2F; 一定要返回引用，因为++会改变操作数，而如果是临时对象，操作数据的值不会变<br>&#x2F;&#x2F; 前++<br>Complex&amp; operator++()<br>{<br>++this-&gt;_x;<br>++this-&gt;_y;<br>return *this;<br>}</p>
+<p>&#x2F;&#x2F; 后++，在参数中随便加一个类型，表示是后++，称为亚元<br> const Complex operator++(int)<br>{<br>&#x2F;&#x2F; 先保存一个*this的临时变量<br>Complex tmp(*this);<br>&#x2F;&#x2F; 对this自身++<br>this-&gt;_x++;<br>this-&gt;_y++;<br>&#x2F;&#x2F; 返回临时的变量<br>return tmp;<br>}</p>
+<p>private:<br>float _x;<br>float _y;<br>};</p>
+<p>int main(int argc, char* argv[])<br>{<br>&#x2F;*<br>基础数据类型，前++<br>int n &#x3D; 10;<br>cout &lt;&lt; n &lt;&lt; endl;&#x2F;&#x2F; 10<br>cout &lt;&lt; ++n &lt;&lt; endl;&#x2F;&#x2F; 11<br>cout &lt;&lt; n &lt;&lt; endl;&#x2F;&#x2F; 11<br>cout &lt;&lt; ++++n &lt;&lt; endl;&#x2F;&#x2F; 13<br>*&#x2F;</p>
+<p>Complex c1(10, 0);<br>++c1;<br>c1.display();<br>++++c1;<br>c1.display();</p>
+<p>&#x2F;*<br>基础数据类型，后++<br>int n &#x3D; 10;<br>cout &lt;&lt; n &lt;&lt; endl;<br>cout &lt;&lt; n++ &lt;&lt; endl;<br>cout &lt;&lt; n &lt;&lt; endl;<br>cout &lt;&lt; n++++ &lt;&lt; endl;&#x2F;&#x2F; 不允许的语法<br>*&#x2F;</p>
+<p>Complex c2(10, 0);<br>Complex c3 &#x3D; c2++;<br>&#x2F;&#x2F; c3 是用返回的临时对象初始化的<br>c3.display();<br>&#x2F;&#x2F; 此时的 c2 是++后的 c2<br>c2.display();</p>
+<p>&#x2F;&#x2F; 不能允许出现的语法，对返回值加 const 就可以了<br>&#x2F;&#x2F; c2++++;</p>
+<p>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-20T23:26:08.000Z" itemprop="datePublished">
+              2015-05-20
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

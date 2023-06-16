@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>用于 Windows 下的日志跟踪分析工具（Tail for Windows） | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>用于 Windows 下的日志跟踪分析工具（Tail for Windows）</h1>
+    </header>
+
+    <section>
+      <p>在 Linux 下做开发和调试任务的时候，有些情况会动态去跟踪一些日志的变化来调试问题。Linux 下使用 <code>tail -f</code> 就可以达到需求了，但 Windows 下一直没有找到类似的好用工具，在 github 上也有一些开源项目，不是项目相对陈旧界面丑陋，就是功能不完善不能让人专注于分析日志。索性自己做了一个，预览图如下： <a href="/images/2018/10/logs_monitor-1.gif"><img src="/images/2018/10/logs_monitor-1.gif"></a></p>
+<span id="more"></span>
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><p>Github：<a target="_blank" rel="noopener" href="https://github.com/nmgwddj/logs-monitor">https://github.com/nmgwddj/logs-monitor</a></p>
+<h2 id="程序功能"><a href="#程序功能" class="headerlink" title="程序功能"></a>程序功能</h2><ul>
+<li>可以动态监控日志文件的变化并显示到界面上</li>
+<li>可以同时监控多个文件的变化</li>
+<li>快速清空文件以方便针对性的查看分析日志</li>
+<li>现代化 UI 风格</li>
+<li>可以对一些关键字高亮显示</li>
+</ul>
+<h2 id="开发计划"><a href="#开发计划" class="headerlink" title="开发计划"></a>开发计划</h2><ul>
+<li>高亮关键字的一行或者关键字之后的一行文字</li>
+<li>做一些性能优化</li>
+<li>提供系统设置设置个性化功能</li>
+</ul>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2018-10-19T10:02:16.000Z" itemprop="datePublished">
+              2018-10-19
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/DuiLib/">DuiLib</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

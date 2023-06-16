@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>NSIS 打包 Electron 项目的注意事项（拖拽、权限、兼容性等） | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>NSIS 打包 Electron 项目的注意事项（拖拽、权限、兼容性等）</h1>
+    </header>
+
+    <section>
+      <p>我自己本人不做 Electron 的开发，但有一位合作伙伴在使用 NSIS 打包 Electron 应用的时候遇到了一些问题，主要问题有以下几个，先记录下来，然后追个击破。</p>
+<ul>
+<li>打包后应用在 Windows 7 无法直接运行，需要修改兼容性为 Windows 7 才可以使用</li>
+<li>打包后安装或者卸载时应用在运行会安装或者卸载失败，无法替换或删除应用（这个与 Electron 无关但也介绍一下）</li>
+<li>打包后应用第一次启动无法使用拖拽功能<span id="more"></span></li>
+</ul>
+<h2 id="脚本设置启动程序兼容性"><a href="#脚本设置启动程序兼容性" class="headerlink" title="脚本设置启动程序兼容性"></a>脚本设置启动程序兼容性</h2><p>设置程序兼容性有两种方式，一种是手动右键修改，但这种方式明显不可能让用户自己去操作，所以我们需要另外一种方式就是在安装程序后自动写入一个注册表，告诉系统我们启动自己的应用时使用 Windows 7 兼容模式运行，示例注册表如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Windows Registry Editor Version 5.00</span><br><span class="line"></span><br><span class="line">[HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers]</span><br><span class="line">&quot;C:\\Program Files (x86)\\MyOffice\\avic.exe&quot;=&quot;WIN7RTM&quot;</span><br></pre></td></tr></table></figure>
+
+<p>要在 NSIS 的脚本中写入这个注册表，可以像下面这样操作：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Section -Post</span><br><span class="line">  WriteUninstaller &quot;$INSTDIR\uninst.exe&quot;</span><br><span class="line">  WriteRegStr HKCU &quot;Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers&quot; &quot;$INSTDIR\avic.exe&quot; &quot;WIN7RTM&quot;</span><br><span class="line">  WriteRegStr HKLM &quot;$&#123;PRODUCT_DIR_REGKEY&#125;&quot; &quot;&quot; &quot;$INSTDIR\avic.exe&quot;</span><br><span class="line">  WriteRegStr $&#123;PRODUCT_UNINST_ROOT_KEY&#125; &quot;$&#123;PRODUCT_UNINST_KEY&#125;&quot; &quot;DisplayName&quot; &quot;$(^Name)&quot;</span><br><span class="line">  WriteRegStr $&#123;PRODUCT_UNINST_ROOT_KEY&#125; &quot;$&#123;PRODUCT_UNINST_KEY&#125;&quot; &quot;UninstallString&quot; &quot;$INSTDIR\uninst.exe&quot;</span><br><span class="line">  WriteRegStr $&#123;PRODUCT_UNINST_ROOT_KEY&#125; &quot;$&#123;PRODUCT_UNINST_KEY&#125;&quot; &quot;DisplayIcon&quot; &quot;$INSTDIR\avic.exe&quot;</span><br><span class="line">  WriteRegStr $&#123;PRODUCT_UNINST_ROOT_KEY&#125; &quot;$&#123;PRODUCT_UNINST_KEY&#125;&quot; &quot;DisplayVersion&quot; &quot;$&#123;PRODUCT_VERSION&#125;&quot;</span><br><span class="line">  WriteRegStr $&#123;PRODUCT_UNINST_ROOT_KEY&#125; &quot;$&#123;PRODUCT_UNINST_KEY&#125;&quot; &quot;URLInfoAbout&quot; &quot;$&#123;PRODUCT_WEB_SITE&#125;&quot;</span><br><span class="line">  WriteRegStr $&#123;PRODUCT_UNINST_ROOT_KEY&#125; &quot;$&#123;PRODUCT_UNINST_KEY&#125;&quot; &quot;Publisher&quot; &quot;$&#123;PRODUCT_PUBLISHER&#125;&quot;</span><br><span class="line">SectionEnd</span><br></pre></td></tr></table></figure>
+
+<p>如代码第三行所示，我们将应用安装所在目录下的执行程序通过 <code>WriteRegStr</code> 方法写入到了注册表中，给它设置的值是 <code>WIN7RTM</code>，这样应用在启动的时候，就会以 Windows 7 兼容性模式运行了。</p>
+<h2 id="安装或卸载前结束应用"><a href="#安装或卸载前结束应用" class="headerlink" title="安装或卸载前结束应用"></a>安装或卸载前结束应用</h2><p>需要两个插件，一个是 <a target="_blank" rel="noopener" href="https://nsis.sourceforge.io/KillProcDLL_plug-in">KillProcDLL.dll</a>，另一个是 <a target="_blank" rel="noopener" href="https://nsis.sourceforge.io/FindProcDLL_plug-in">FindProcDLL.dll</a>，这两个插件均可以从 NSIS 官网下载。以下是示例脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">Function .onInit</span><br><span class="line">  FindProcDLL::FindProc &quot;avic.exe&quot;</span><br><span class="line">  Pop $R0</span><br><span class="line">  IntCmp $R0 1 0 no_run</span><br><span class="line">  MessageBox MB_OKCANCELMB_ICONSTOP  &quot;安装程序检测到 $&#123;PRODUCT_NAME&#125; 正在运行。$\r$\n$\r$\n点击 “确定” 强制关闭$&#123;PRODUCT_NAME&#125;，继续安装。$\r$\n点击 “取消” 退出安装程序。&quot; IDCANCEL Exit</span><br><span class="line">  KillProcDLL::KillProc &quot;avic.exe&quot;</span><br><span class="line">  Sleep 1000</span><br><span class="line">  FindProcDLL::FindProc &quot;avic.exe&quot;</span><br><span class="line">  Pop $R0</span><br><span class="line">  IntCmp $R0 1 0 no_run</span><br><span class="line">  Exit:</span><br><span class="line">  Quit</span><br><span class="line">  no_run:</span><br><span class="line">FunctionEnd</span><br><span class="line"></span><br><span class="line">Function un.onInit</span><br><span class="line">  MessageBox MB_ICONQUESTIONMB_YESNOMB_DEFBUTTON2 &quot;您确定要卸载[MyOffice]？&quot; IDYES +2</span><br><span class="line">  Abort</span><br><span class="line">  #检测程序是否运行</span><br><span class="line">  FindProcDLL::FindProc &quot;avic.exe&quot;</span><br><span class="line">  Pop $R0</span><br><span class="line">  IntCmp $R0 1 0 no_run</span><br><span class="line">  KillProcDLL::KillProc &quot;avic.exe&quot;</span><br><span class="line">  Sleep 1000</span><br><span class="line">  FindProcDLL::FindProc &quot;avic.exe&quot;</span><br><span class="line">  Pop $R0</span><br><span class="line">  IntCmp $R0 1 0 no_run</span><br><span class="line">  Quit</span><br><span class="line">  no_run:</span><br><span class="line">FunctionEnd</span><br></pre></td></tr></table></figure>
+
+<h2 id="打包后无法使用拖拽功能"><a href="#打包后无法使用拖拽功能" class="headerlink" title="打包后无法使用拖拽功能"></a>打包后无法使用拖拽功能</h2><p>经过排查发现，NSIS 打包后安装包程序默认是以管理员身份启动的，第一次安装完成后自动启动应用时会继承安装包的权限（管理员）导致拖拽功能无法使用了，而直接从桌面运行快捷方式是没问题的。解决这个问题的办法就是让安装包不以管理员方式运行就可以了。在初始化代码中加如下代码，让安装包使用普通用户权限：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RequestExecutionLevel user</span><br></pre></td></tr></table></figure>
+
+<p>当安装包没有管理员权限后，你安装到 C:\Program Files 目录就会被拒绝，这时你可以参考想 VSCode 一样，将应用安装到 <code>C:\Users\Administrator\AppData\Local\Programs</code> 目录下，来避免权限问题。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2019-11-12T13:56:27.000Z" itemprop="datePublished">
+              2019-11-12
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/NSIS/">NSIS</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

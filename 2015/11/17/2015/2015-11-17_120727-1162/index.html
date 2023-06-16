@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ngrok 实现微信公共号开发本地调试 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>ngrok 实现微信公共号开发本地调试</h1>
+    </header>
+
+    <section>
+      <h2 id="微信开发团队已经提供“微信开发者工具”，本文内容已经落后，请开发者选择“微信开发者工具”。"><a href="#微信开发团队已经提供“微信开发者工具”，本文内容已经落后，请开发者选择“微信开发者工具”。" class="headerlink" title="微信开发团队已经提供“微信开发者工具”，本文内容已经落后，请开发者选择“微信开发者工具”。"></a>微信开发团队已经提供“微信开发者工具”，本文内容已经落后，请开发者选择“微信开发者工具”。</h2><p>你是否遇到过这样的问题？在微信公共号开发过程中，有一些诸如获取用户身份等信息的代码必须要再微信客户端打开连接测试，而且微信后台获取用户信息时必须设置一个安全域名，这个域名指定到一个我们暴露在外网的服务器上才可以正常使用。而我们编写代码的环境<strong>往往是本机</strong>，很少有直接连接服务器用 vi 编写代码的场景，一般情况都是本地修改好代码，把代码通过 FileZilla 等类似的工具把代码传到服务器上，或者把代码提交到 github 上，再到服务器把最新的代码 pull 下来测试。对熟悉微信公共号开发的人来说也许还好，但是对于一个刚刚接触微信公共号开发的人可能这个测试的过程要来回重复十几次才能把代码跑通，而这只是其中一个获取用户身份的功能，调用 JS SDK 等等都需要在服务器环境测试，这个过程是很折磨人的。 类似上面的问题，我想了很多办法，比如用 atom remote sync 插件、自动同步代码到服务器等等思路，最终还是有各种小问题折磨着我。<strong>如果能实现手机微信公共号跳转的页面直接访问的是我们编程环境的电脑，代码修改后只需要等待服务端重新编译，手机端就可以直接测试效果，这样岂不是方便很多？</strong></p>
+<span id="more"></span>
+<p>为了实现上面的功能，我首先想到了用路由把我本机的某个端口映射出去使用，但是这个想法瞬间瓦解了，因为我没有控制路由的权限。既然路由不行，那就要实现类似花生壳那种动态域名解析的功能，只需要运行一个花生壳客户端，无论我怎么更换办公网络都可以通过指定域名访问到我本机，但是花生壳客户端没有 Mac OS X 版本，这个想法又被 kill 了。 最终功夫不负有心人，我找到了一个开源项目 ngrok，它实现的就是类似花生壳的功能，外网有一台服务器做转接服务器，其官网有提供编译好的版本，但是由于它使用的是国外的服务器，已经被国内给墙了，所以无法使用，我们必须自己编译服务端和客户端搭建自己的转接环境。写了这么多得铺垫，最终是要演示如何搭建这样一个环境为我们开发带来便利。具体的操作步骤就是本文如下的重点了。 注意：以下内容大多转载于网络，我整理加以修改并测试正常运行。原文出自： <a target="_blank" rel="noopener" href="https://imququ.com/post/self-hosted-ngrokd.html">https://imququ.com/post/self-hosted-ngrokd.html</a> <a target="_blank" rel="noopener" href="http://www.ekan001.com/articles/38">http://www.ekan001.com/articles/38</a></p>
+<h2 id="安装必要工具"><a href="#安装必要工具" class="headerlink" title="安装必要工具"></a>安装必要工具</h2><p>$ sudo apt-get install build-essential golang mercurial git</p>
+<h2 id="clone-ngrok-源码"><a href="#clone-ngrok-源码" class="headerlink" title="clone ngrok 源码"></a>clone ngrok 源码</h2><p>$ git clone <a target="_blank" rel="noopener" href="https://github.com/inconshreveable/ngrok.git">https://github.com/inconshreveable/ngrok.git</a> ngrok<br>$ cd ngrok</p>
+<h2 id="生成证书"><a href="#生成证书" class="headerlink" title="生成证书"></a>生成证书</h2><p>生成并替换源码里默认的证书，注意域名修改为你自己的。（之后编译出来的服务端客户端会基于这个证书来加密通讯，保证了安全性）</p>
+<p>$ NGROK_DOMAIN&#x3D;”msdn.xin”</p>
+<p>$ openssl genrsa -out base.key 2048<br>$ openssl req -new -x509 -nodes -key base.key -days 10000 -subj “&#x2F;CN&#x3D;$NGROK_DOMAIN” -out base.pem<br>$ openssl genrsa -out server.key 2048<br>$ openssl req -new -key server.key -subj “&#x2F;CN&#x3D;$NGROK_DOMAIN” -out server.csr<br>$ openssl x509 -req -in server.csr -CA base.pem -CAkey base.key -CAcreateserial -days 10000 -out server.crt</p>
+<p>$ cp base.pem assets&#x2F;client&#x2F;tls&#x2F;ngrokroot.crt</p>
+<h2 id="编译服务端"><a href="#编译服务端" class="headerlink" title="编译服务端"></a>编译服务端</h2><p>在编译前需要修改一下源码，因为源码中有用到外部的库，库链接的地址是 google 的地址，国内是无法访问的，我们可以换成 github 的地址。</p>
+<p>$ vi src&#x2F;ngrok&#x2F;log&#x2F;logger.go</p>
+<p>将第4行（代码可能会有变动，最好搜索一下）</p>
+<p>log “code.google.com&#x2F;p&#x2F;log4go”</p>
+<p>替换成</p>
+<p>log “github.com&#x2F;keepeye&#x2F;log4go”</p>
+<p>替换完成后开始编译服务端</p>
+<p>$ sudo make release-server</p>
+<p>编译过程比较长，视服务器性能而定，一定要耐心等待。如果一切正常，ngrok&#x2F;bin 目录下会生成 ngrokd 文件。 <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-17-%E4%B8%8A%E5%8D%8811.01.58.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-17-%E4%B8%8A%E5%8D%8811.01.58-300x50.png" alt="屏幕快照 2015-11-17 上午11.01.58"></a> 这就是服务端了，服务端此时已经可以运行，但是别着急。我们还要根据自己的情况编译客户端。</p>
+<h2 id="编译客户端"><a href="#编译客户端" class="headerlink" title="编译客户端"></a>编译客户端</h2><p>因为我用的是 Mac OS X，所以客户端要指定编译环境才可以，其他的环境编译方法我也一并列出。</p>
+<h4 id="Mac-OS-X"><a href="#Mac-OS-X" class="headerlink" title="Mac OS X"></a>Mac OS X</h4><p>$ sudo GOOS&#x3D;darwin GOARCH&#x3D;amd64 make release-client</p>
+<h4 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h4><p>$ sudo GOOS&#x3D;windows GOARCH&#x3D;amd64 make release-client</p>
+<h4 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h4><p>$ sudo make release-client</p>
+<p>如果是 Mac OS X 方式编译的，那么会在 ngrok&#x2F;bin 目录下会多出来一个 darwin_amd64 目录（不同平台目录不同，自己观察一下新生成的目录），这里的 ngrok 文件就可以拷到 Mac OS X 系统用了。</p>
+<h2 id="运行服务端"><a href="#运行服务端" class="headerlink" title="运行服务端"></a>运行服务端</h2><p>前面生成的 ngrokd 就是服务端程序了，指定证书、域名和端口启动它（证书就是前面生成的，注意修改域名）：</p>
+<p>$ sudo .&#x2F;bin&#x2F;ngrokd -tlsKey&#x3D;server.key -tlsCrt&#x3D;server.crt -domain&#x3D;”msdn.xin” -httpAddr&#x3D;”:8081” -httpsAddr&#x3D;”:8082”</p>
+<p>如果你需要做微信开发，那么服务端可能必须要使用 80 端口，这里的 httpAddr 就可以换成 80 端口，但前提是你本机的 80 端口没有被占用。我曾尝试过使用 nginx 的反向代理将 80 的数据转接给本机的 8081 端口，但这样会有问题。没有继续尝试，有兴趣的同学可以自己研究一下反向代理。 <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-17-%E4%B8%8A%E5%8D%8811.12.54.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-17-%E4%B8%8A%E5%8D%8811.12.54-1024x127.png" alt="屏幕快照 2015-11-17 上午11.12.54"></a> 到这一步，ngrok 服务已经跑起来了，可以通过屏幕上显示的日志查看更多信息。httpAddr、httpsAddr 分别是 ngrok 用来转发 http、https 服务的端口，可以随意指定。ngrokd 还会开一个 4443 端口用来跟客户端通讯（可通过 -tunnelAddr&#x3D;”:xxx” 指定），如果你配置了 iptables 规则，需要放行这三个端口上的 TCP 协议。 现在，通过 <a target="_blank" rel="noopener" href="http://msdn.xin:8081/">http://msdn.xin:8081</a> 和 <a target="_blank" rel="noopener" href="https://msdn.xin:8082/">https://msdn.xin:8082</a> 就可以访问到 ngrok 提供的转发服务。为了使用方便，建议把域名泛解析到 VPS 上，这样能方便地使用不同子域转发不同的本地服务。我直接在域名后台将 *.msdn.xin 指定到我的服务器上了。 <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-17-%E4%B8%8B%E5%8D%8812.04.08.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-17-%E4%B8%8B%E5%8D%8812.04.08-1024x39.png" alt="屏幕快照 2015-11-17 下午12.04.08"></a> 我给 msdn.xin 做了泛解析，随便访问一个子域，如：<a target="_blank" rel="noopener" href="http://wechat.msdn.xin:8081/">http://wechat.msdn.xin:8081</a>，可以看到这样一行提示： <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-17-%E4%B8%8A%E5%8D%8811.15.45.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-17-%E4%B8%8A%E5%8D%8811.15.45-300x69.png" alt="屏幕快照 2015-11-17 上午11.15.45"></a> 这说明万事俱备，只差客户端来连了。</p>
+<h2 id="客户端连接"><a href="#客户端连接" class="headerlink" title="客户端连接"></a>客户端连接</h2><p>首先你刚才要把已经编译好的 Mac OS X 客户端拷贝到你的电脑中，写一个简单的配置文件（注意域名），随意命名如 ngrok.cfg：</p>
+<p>server_addr: msdn.xin:4443<br>trust_host_root_certs: false</p>
+<p>指定子域、要转发的协议和端口，以及配置文件，运行客户端：</p>
+<p>$ .&#x2F;ngrok -subdomain wechat -proto&#x3D;http -config&#x3D;ngrok.cfg 3000</p>
+<p>运行客户端后如果连接正常，那么客户端会出现如下提示： <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-17-%E4%B8%8A%E5%8D%8811.30.26.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-17-%E4%B8%8A%E5%8D%8811.30.26-1024x261.png" alt="屏幕快照 2015-11-17 上午11.30.26"></a> 现在再访问 <a target="_blank" rel="noopener" href="http://wechat.msdn.xin:8081/">http://wechat.msdn.xin::8081</a>，访问到的已经是我本机 3000 端口上的服务了。至此你便可以实现将内网某个端口映射到外网直接使用的需求了。客户端还提供了管理界面，上图提示中有一个 Web Interface 的地址，127.0.0.1:4040，这就是本机的管理地址，可以查看到所有的 http 数据包内容。 <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-17-%E4%B8%8A%E5%8D%8811.37.09.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-17-%E4%B8%8A%E5%8D%8811.37.09-1024x547.png" alt="屏幕快照 2015-11-17 上午11.37.09"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-11-17T12:07:27.000Z" itemprop="datePublished">
+              2015-11-17
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

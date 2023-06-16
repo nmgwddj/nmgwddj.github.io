@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>友元概念及简单使用方法 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>友元概念及简单使用方法</h1>
+    </header>
+
+    <section>
+      <p>在C++中类的出现，将数据和方法都封装在类中，似有的数据成员只有类中的成员函数才能操作，但有些时需要定义某些函数，它不是类中的成员，但需要频繁的操作类中的私有数据成员。此时可以将这些函数定义为某个类的友元函数。除了友元函数外，还有友元类，两者都成为友元。友元的出现提高了程序的运行效率，但是破坏了类的封装性和隐蔽性，使非成员函数可以访问类的私有成员。</p>
+<span id="more"></span>
+<p>（摘自：传智播客 教师课件）友元函数是可以直接访问类的私有成员的非成员函数。它是定义在类外的普通函数，它不属于任何类，但需要在类的定义中加以声明，声明时只需在友元的名称前加上关键字 friend，其格式如下：</p>
+<p>friend 类型 函数名(参数)</p>
+<p>一个函数可以是多个类的友元函数，只需要在对应的类中声明即可。下面既是一个简单的友元函数案例。</p>
+<p>#include<iostream><br>#include<cmath><br> <br>using namespace std;<br> <br>class Point<br>{<br>public:<br>Point(double xx, double yy)<br>{<br>x &#x3D; xx;<br>y &#x3D; yy;<br>}<br>void Getxy();<br>&#x2F;&#x2F; 类 Point 的友元函数 Distance<br>friend double Distance(Point &amp;a, Point &amp;b);<br>private:<br>double x, y;<br>};<br>void Point::Getxy()<br>{<br>cout &lt;&lt; “(“ &lt;&lt; x &lt;&lt; “,” &lt;&lt; y &lt;&lt; “)” &lt;&lt; endl;<br>}<br> <br>&#x2F;&#x2F; 一个全局函数访问了 Point 类，并操作了类中的私有成员<br>&#x2F;&#x2F; 在类中需要声明为 friend 函数才可以操作<br>double Distance(Point &amp;a, Point &amp;b)<br>{<br>double dx &#x3D; a.x - b.x;<br>double dy &#x3D; a.y - b.y;<br>return sqrt(dx*dx + dy*dy);<br>}<br>int main(void)<br>{<br>Point p1(3.0, 4.0), p2(6.0, 8.0);<br>p1.Getxy();<br>p2.Getxy();<br>double d &#x3D; Distance(p1, p2);<br>cout &lt;&lt; “Distance is : “ &lt;&lt; d &lt;&lt; endl;<br>return 0;</p>
+<p>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-15T22:01:51.000Z" itemprop="datePublished">
+              2015-05-15
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E5%8F%8B%E5%85%83/">友元</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

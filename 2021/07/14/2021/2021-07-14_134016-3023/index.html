@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>node-pre-gyp 应用场景介绍及使用方法 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>node-pre-gyp 应用场景介绍及使用方法</h1>
+    </header>
+
+    <section>
+      <p>Node.js 提供了使用 C++ addon 方案作为扩展的能力。我们可以编写 C++ 的代码来扩展 Node.js 或封装自己产品相关的能力接口为 Node.js 接口提供用户或者开发者使用。将编写好的源代码上传至 npm publish 平台，开发者通过 npm install 就可以使用你的扩展包了。但使用的前提是引入方必须要具备编译 C++ 代码的环境，比如在 Windows 下需要安装 MSVC 的编译工具链。而正常的前端开发者并不会将这些组件安装到系统里面，他们更关注的是前端业务逻辑。</p>
+<span id="more"></span>
+<p>由于 npm 平台不允许上传太大的文件或二进制文件，所以在用户执行 <code>npm install</code> 时自动下载已经预编译好的二进制文件包就映入我们的眼帘了。node-pre-gyp 就是来做这个用的。它包含了打包上传、根据版本自动下载等一系列流程。这些步骤只需要你对工程做一些简单的配置就可以实现。node-sqlite3 就是通过该插件来实现下载预编译的二进制包的：<a target="_blank" rel="noopener" href="https://github.com/mapbox/node-sqlite3">https://github.com/mapbox/node-sqlite3</a> 针对一些不依赖三方 SDK 的 C++ 插件来说，只需导出一份 .node 文件即可让开发者导入使用。将二进制包打包为 .tar.gz，将打包后的压缩文件上传到外网可以访问的服务器中，接下来配置一下 node-pre-gyp 就可以了。首先安装 node-pre-gyp</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save @mapbox/node-pre-gyp</span><br></pre></td></tr></table></figure>
+
+<p>创建一个新的 target action_after_build 用来在你主工程编译完成后自动拷贝 .node 文件到准备上传的目录：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &#x27;target_name&#x27;: &#x27;action_after_build&#x27;,</span><br><span class="line">    &#x27;type&#x27;: &#x27;none&#x27;,</span><br><span class="line">    &#x27;dependencies&#x27;: [&#x27;&lt;(module_name)&#x27;],</span><br><span class="line">    &#x27;copies&#x27;: [</span><br><span class="line">        &#123;</span><br><span class="line">            &#x27;conditions&#x27;: [</span><br><span class="line">                [</span><br><span class="line">                    &#x27;OS==&quot;win&quot;&#x27;,</span><br><span class="line">                    &#123;</span><br><span class="line">                        &#x27;files&#x27;: [</span><br><span class="line">                            &#x27;&lt;(PRODUCT_DIR)/&lt;(module_name).node&#x27;</span><br><span class="line">                        ],</span><br><span class="line">                        &#x27;destination&#x27;: &#x27;&lt;(module_path)&#x27;</span><br><span class="line">                    &#125;</span><br><span class="line">                ],</span><br><span class="line">                [</span><br><span class="line">                    &#x27;OS==&quot;mac&quot;&#x27;,</span><br><span class="line">                    &#123;</span><br><span class="line">                        &#x27;files&#x27;: [</span><br><span class="line">                            &#x27;&lt;(PRODUCT_DIR)/&lt;(module_name).node&#x27;</span><br><span class="line">                        ],</span><br><span class="line">                        &#x27;destination&#x27;: &#x27;&lt;(module_path)&#x27;</span><br><span class="line">                    &#125;</span><br><span class="line">                ]</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>配置 package.json，让 node-pre-gyp 知道编译后的包保存到什么位置，在 package.json 中新增如下字段：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&quot;binary&quot;: &#123;</span><br><span class="line">    &quot;module_name&quot;: &quot;node_nim&quot;,</span><br><span class="line">    &quot;module_path&quot;: &quot;./lib/binding/&#123;node_abi&#125;-&#123;platform&#125;-&#123;arch&#125;/&quot;,</span><br><span class="line">    &quot;remote_path&quot;: &quot;./package/&quot;,</span><br><span class="line">    &quot;package_name&quot;: &quot;&#123;module_name&#125;-v&#123;version&#125;-&#123;node_abi&#125;-&#123;platform&#125;-&#123;arch&#125;.tar.gz&quot;,</span><br><span class="line">    &quot;host&quot;: &quot;https://your-download-host&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的 module_path 就是告诉 node-pre-gyp 编译后要保存到当前目录下的 .&#x2F;lib&#x2F;binding&#x2F;{node_abi}-{platform}-{arch}&#x2F; 目录。目录名是根据当前环境来自动创建的。除了保存，上面的配置还告诉 node-pre-gyp 第三方程序引入这个包时，node-pre-gyp 会尝试从 ${host}&#x2F;${remote_path}&#x2F;${package_name} 去下载这个包。如果下载到了这个包，那么自动解压到 module_path 路径下，就不会再尝试编译了。 配置基本就绪，还差最重要的一步，替换默认的 npm install 流程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;install&quot;: &quot;node-pre-gyp install --fallback-to-build&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在你的 package.json 中，scripts 字段下添加 install 配置，让默认的 install 行为变为 node-pre-gyp install –fallback-to-build。这样在三方应用引入我们的包时会调用 node-pre-gyp install 首先到 package.json 中指定的 host 去尝试下载已经编译好的二进制包，如果没有下载到则调用本地的 node-gyp（注意这里不是 node-pre-gyp）根据外部传递的参数来从本地代码编译，这样也就串通了整个流程。 同时 node-pre-gyp 其实支持二进制包自动上传的能力，需要你单独配置 AWS3 的 token 等信息，由于国内访问 S3 资源很困难，这一步我们并没有做进一步验证，有兴趣的同学可以参考官方文档来尝试。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2021-07-14T13:40:16.000Z" itemprop="datePublished">
+              2021-07-14
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

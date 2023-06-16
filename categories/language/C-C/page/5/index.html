@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ C/C++ }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/09/07/2018/2018-09-07_144018-2458/">Qt 用画笔对图片实现马赛克效果</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-09-07T14:40:18.000Z" itemprop="datePublished">
+    2018-09-07
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>最近接了一个用 Qt 做跨平台截图工具的任务，主要功能有截图、绘制图案、马赛克、毛玻璃、文字能效果，其中马赛克功能时参考网上的文献并自己研究制作出来的，这里特意给大家分享一下。有需要的朋友可以作为借鉴。</p>
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><p>首先要开始实现之前，我们首先要来说一下我自己实现马赛克功能的原理。</p>
+<ol>
+<li>为了可以执行撤销操作，我们不能直接对图片进行修改。将图片附加到窗口上以后，需要在窗口上覆盖一层透明的窗口，在这个窗口使用画笔等工具来绘制马赛克，覆盖后面的图片来实现一个视觉效果，最终保存的时候将图片和透明窗口上绘制的数据合并得到一个绘制了马赛克效果的图片。</li>
+<li>对窗口进行区块划分，比如当我们想让每个马赛克的块大小是 10px，那么我们以图片左上角为 0,0 点，给图片划分成一块一块 10px*10px 的小块。</li>
+<li>当鼠标点击透明窗口的某个区域时要到实际后面图片的响应坐标取这个坐标对应像素的颜色值（QColor），如果条件允许可以将这个坐标周围的色值也都取出来做一个颜色混合得到平均的颜色色彩。</li>
+<li>计算当前坐标对应的 10px_10px 小块的起始点坐标，然后根据已经取出来的颜色绘制一个 10px_10px 像素的方块。</li>
+<li>鼠标移动过程中时时计算坐标，如果当前鼠标所在坐标已经绘制了一个图形那么不再绘制，如果没有绘制则重复 3、4 步。</li>
+</ol>
+<p>大体步骤就是这样的，接下来我们来拆分每一个步骤的实现方式。</p>
+<h2 id="实现细节"><a href="#实现细节" class="headerlink" title="实现细节"></a>实现细节</h2><p>这个透明窗口派生于 QWidget 类，在构造函数中设置窗口为透明的，这样在我们将绘制的马赛克和图片混合的时候就不会有窗口背景色了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 让窗口背景透明，在获取窗口绘制的数据时不显示背景色</span><br><span class="line">setAttribute(Qt::WA_TranslucentBackground, true);</span><br></pre></td></tr></table></figure>
+
+<p>对窗口划分区域并根据鼠标得出马赛克绘制方块。在绘制前你要监听鼠标在窗口上按下、弹起、移动等消息，在鼠标按下前，我们要先初始化一个 image 对象来提供我们获取颜色，并根据图片大小初始化一个坐标数组，比如我们有一个 100*100 的图片，想让马赛克的大小是 10 像素，那么我们就要将这个图片宽和高都划分为 10 个 10 像素的小方块。记录下所有图片的像素坐标点。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// 将截取的未知转为 iamge 对象，用来获取坐标像素的颜色</span><br><span class="line">image_ = originPainting_-&gt;toImage();</span><br><span class="line">// 初始化每个像素点的坐标位置，鼠标移动过程中记录坐标并通过数组下标</span><br><span class="line">// 直接访问到数据查看某个区块是否已经被绘制上了马赛克。</span><br><span class="line">pointArray.reset(new QVector&lt;QVector&lt;bool&gt;&gt;);</span><br><span class="line">pointArray-&gt;resize(parentWidget()-&gt;width());</span><br><span class="line">for (int i = 0; i &lt; parentWidget()-&gt;width(); i++) &#123;</span><br><span class="line">    // 高度像素</span><br><span class="line">    (*pointArray)[i].resize(parentWidget()-&gt;height());</span><br><span class="line">&#125;</span><br><span class="line">for (int i = 0; i &lt; parentWidget()-&gt;width(); i++) &#123;</span><br><span class="line">    for (int j = 0; j &lt; parentWidget()-&gt;height(); j++) &#123;</span><br><span class="line">        (*pointArray)[i][j] = false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在按下的时候根据背景图像取像素的点，计算并记录像素坐标点归属那一块我们划分出来的小方块：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">int x = endPoint_.x() - endPoint_.x() % mosaicSize_;</span><br><span class="line">int y = endPoint_.y() - endPoint_.y() % mosaicSize_;</span><br><span class="line"></span><br><span class="line">if (x &lt; 0) x = 0;</span><br><span class="line">if (y &lt; 0) y = 0;</span><br><span class="line"></span><br><span class="line">// 防止越界崩溃</span><br><span class="line">if (x &gt; pointArray-&gt;size() - mosaicSize_ </span><br><span class="line">    y &gt; (*pointArray)[0].size() - mosaicSize_) &#123;</span><br><span class="line">    break;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if ((*pointArray)[x][y] == false) &#123;</span><br><span class="line">    (*pointArray)[x][y] = true;</span><br><span class="line"></span><br><span class="line">    MosaicData mosaic;</span><br><span class="line"></span><br><span class="line">    // 为适配 retina 屏幕从全屏界面中取像素颜色</span><br><span class="line">    QColor color = image_.pixel(realX, realY);</span><br><span class="line"></span><br><span class="line">    QPen pen;</span><br><span class="line">    pen.setColor(color);</span><br><span class="line"></span><br><span class="line">    mosaic.color_ = color;</span><br><span class="line">    mosaic.pen_ = pen;</span><br><span class="line">    mosaic.point_ = &#123; x, y &#125;;</span><br><span class="line"></span><br><span class="line">    drawMosaic_.push_back(mosaic);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>鼠标移动的时候同样走上面的流程，记录下鼠标移动的所有的坐标。此时在透明窗口的 paintEvent 中，你已经可以根据 drawMosaic_ 里面记录的坐标开始绘制一个一个 mosaicSize_ 大小的小方块了。最后在保存图片的时候，你可以先将透明窗口图片保存为一个 pixmap，然后将 pixmap 合并到图片中就可以了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">QRect imageRect = CommonHelper::getRetinaRect(currentRect_);</span><br><span class="line"></span><br><span class="line">// 创建一副空背景图片</span><br><span class="line">QImage resultImg = QImage(imageRect.width(), imageRect.height(), QImage::Format_ARGB32);</span><br><span class="line">std::shared_ptr&lt;QPainter&gt; painter;</span><br><span class="line">painter.reset(new QPainter(&amp;resultImg));</span><br><span class="line"></span><br><span class="line">// 先绘制截图的内容</span><br><span class="line">painter-&gt;drawPixmap(QRect(0, 0, imageRect.width(), imageRect.height()), *originPainting_, imageRect);</span><br><span class="line"></span><br><span class="line">// 再绘制图形数据</span><br><span class="line">for (auto window : drawItemList_) &#123;</span><br><span class="line">    // 跳过空文本窗体</span><br><span class="line">    if (window-&gt;getDrawModel() == DrawUnit::MODEL::Text &amp;&amp; window-&gt;getDrawText().size() == 0) &#123;</span><br><span class="line">        continue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 获取窗口数据到 pixmap 中</span><br><span class="line">    QPixmap pixmap = window-&gt;grab();</span><br><span class="line">    // 获取窗口实际大小</span><br><span class="line">    QRect windowRect = window-&gt;rect();</span><br><span class="line">    // retina 兼容</span><br><span class="line">    QRect windowImageRect = CommonHelper::getRetinaRect(windowRect);</span><br><span class="line"></span><br><span class="line">    painter-&gt;drawPixmap(QRect(currentRect_.width() - windowRect.width(), currentRect_.height() - windowRect.height(),</span><br><span class="line">        windowImageRect.width(), windowImageRect.height()), pixmap, windowImageRect);</span><br><span class="line"></span><br><span class="line">    window-&gt;close();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">return resultImg;</span><br></pre></td></tr></table></figure>
+
+<h2 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h2><p><a href="/images/2018/09/2018-09-07-14-39-41.png"><img src="/images/2018/09/2018-09-07-14-39-41.png"></a></p>
+
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/08/23/2018/2018-08-23_151417-2461/">Qt 5.11.1 静态编译</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-08-23T15:14:17.000Z" itemprop="datePublished">
+    2018-08-23
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p>离线安装包：<a target="_blank" rel="noopener" href="http://download.qt.io/archive/qt/5.11/5.11.1/">http://download.qt.io/archive/qt/5.11/5.11.1/</a> <a href="/images/2018/08/2018-08-23_14-58-19.png"><img src="/images/2018/08/2018-08-23_14-58-19.png"></a></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>安装过程中设置好路径，安装选项中记得勾选 Source 和 MinGW 5.3.0 32bit。 <a href="/images/2018/08/2018-08-23_14-59-27.png"><img src="/images/2018/08/2018-08-23_14-59-27.png"></a> <a href="/images/2018/08/2018-08-23_14-59-51.png"><img src="/images/2018/08/2018-08-23_14-59-51.png"></a></p>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p>用终端（Windows 下 cmd）进入你安装的 <code>Qt\Qt5.11.1\5.11.1\Src</code> 目录下，执行如下命令。请注意 <code>-prefix &quot;D:\Documents\Qt\Qt5.11.1_MinGW_Static&quot;</code> 参数，这里指定了最终生成的静态编译文件的位置，最后一步 <code>mingw32-make install</code> 的时候会复制文件到这个目录下。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Configure.bat -confirm-license -opensource -platform win32-g++ -mp -debug-and-release -static -prefix &quot;D:\Documents\Qt\Qt5.11.1_MinGW_Static&quot; -qt-sqlite -qt-zlib -qt-libpng -qt-libjpeg -opengl desktop -qt-freetype -no-qml-debug -no-angle -nomake tests -nomake examples</span><br></pre></td></tr></table></figure>
+
+<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><p>执行如下命令开始编译，<code>-j8</code> 代表使用 8 个线程，根据你 CPU 的情况而定。大概编译时间 2 - 3 小时。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mingw32-make -j8</span><br></pre></td></tr></table></figure>
+
+<p><a href="/images/2018/08/2018-08-15_11-00-06.png"><img src="/images/2018/08/2018-08-15_11-00-06.png"></a></p>
+<h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><p>会复制到你之前设置的 <code>-prefix &quot;D:\Documents\Qt\Qt5.11.1_MinGW_Static&quot;</code> 目录下。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mingw32-make install</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置-Qt"><a href="#配置-Qt" class="headerlink" title="配置 Qt"></a>配置 Qt</h2><p>打开 Qt Creator 增加静态库配置，打开工具-&gt;选项菜单，进入构建和运行-&gt;Qt Versions 选项卡。添加你刚才编译好的静态库目录下的 qmake.exe。 <a href="/images/2018/08/2018-08-23_15-09-50.png"><img src="/images/2018/08/2018-08-23_15-09-50.png"></a> 添加完成后切换到构建和套件选项卡，接着添加一个构建套件，注意调试器、编译器什么的都要选择好，不然无法使用： <a href="/images/2018/08/2018-08-23_15-11-01.png"><img src="/images/2018/08/2018-08-23_15-11-01.png"></a></p>
+<h2 id="静态编译项目"><a href="#静态编译项目" class="headerlink" title="静态编译项目"></a>静态编译项目</h2><p>打开你的项目在项目设置中就能看到可以使用的静态构建套件了。 <a href="/images/2018/08/2018-08-23_15-13-04.png"><img src="/images/2018/08/2018-08-23_15-13-04.png"></a> 配置好静态编译的构建套件后，项目下方就可以选择这个套件来生成项目了。 <a href="/images/2018/08/2018-08-23_15-12-31.png"><img src="/images/2018/08/2018-08-23_15-12-31.png"></a></p>
+
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/07/08/2018/2018-07-08_185237-2394/">一步一步教你自己来编译 wxsqlite3 静态库</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-07-08T18:52:37.000Z" itemprop="datePublished">
+    2018-07-08
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/sqlite/">sqlite</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Database/">Database</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>wxsqlite3 相比普通的 sqlite3 的好处就是可以对数据库进行加密，但这个 wxsqlite3 的编译过程真的是非常曲折，我自己也是折腾了几个小时才真正编译出来一个可用的 wxsqlite3 的静态库文件。那么接下来废话不多说开始准备环境。</p>
+        
+          <div class="more-link">
+            <a href="/2018/07/08/2018/2018-07-08_185237-2394/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2018/05/30/2018/2018-05-30_174442-2375/">递归删除文件（支持通配符）</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2018-05-30T17:44:42.000Z" itemprop="datePublished">
+    2018-05-30
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E9%80%92%E5%BD%92/">递归</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>一直想做一个类似 Windows 命令行中 del 命令删除文件的功能，它支持 <code>环境变量</code>，<code>通配符</code>，<code>可以递归</code>，后来发现自己写这么一个小功能还真的不是一件容易的事情，没办法为了着急使用先临时做了一个小版本。代码有些缺憾。</p>
+<ul>
+<li>不支持环境变量</li>
+<li>不支持固定后缀文件递归删除</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line">// example.cpp : 定义控制台应用程序的入口点。</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">#include &quot;stdafx.h&quot;</span><br><span class="line">#include &lt;windows.h&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">BOOL DeleteFiles(const std::wstring file_full_path)</span><br><span class="line">&#123;</span><br><span class="line">    BOOL no_error = TRUE;</span><br><span class="line">    WIN32_FIND_DATA win32_find_data = &#123; 0 &#125;;</span><br><span class="line"></span><br><span class="line">    std::wstring dir = file_full_path.substr(0, file_full_path.rfind(_T(&quot;\\&quot;))).c_str();</span><br><span class="line">    std::wstring file = file_full_path.substr(file_full_path.rfind(_T(&quot;\\&quot;)) + 1, file_full_path.length());</span><br><span class="line"></span><br><span class="line">    if (dir.size() == 0  file.size() == 0)</span><br><span class="line">    &#123;</span><br><span class="line">        return FALSE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    HANDLE handle = FindFirstFile(file_full_path.c_str(), &amp;win32_find_data);</span><br><span class="line">    if (INVALID_HANDLE_VALUE == handle)</span><br><span class="line">    &#123;</span><br><span class="line">        return no_error;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    do</span><br><span class="line">    &#123;</span><br><span class="line">        // 如果是目录递归操作</span><br><span class="line">        if (win32_find_data.dwFileAttributes &amp; FILE_ATTRIBUTE_DIRECTORY)</span><br><span class="line">        &#123;</span><br><span class="line">            // 排除 . 和 .. 两个文件夹</span><br><span class="line">            if (_tcsicmp(_T(&quot;.&quot;), win32_find_data.cFileName) != 0 &amp;&amp;</span><br><span class="line">                _tcsicmp(_T(&quot;..&quot;), win32_find_data.cFileName) != 0)</span><br><span class="line">            &#123;</span><br><span class="line">                // 根目录加上搜索出来的目录</span><br><span class="line">                std::wstring new_full_path = dir;</span><br><span class="line">                new_full_path += _T(&quot;\\&quot;);</span><br><span class="line">                new_full_path += win32_find_data.cFileName;</span><br><span class="line"></span><br><span class="line">                // 备份搜索出来的目录完整路径用以删除</span><br><span class="line">                std::wstring new_dir = new_full_path;</span><br><span class="line"></span><br><span class="line">                // 再加上要删除的文件名</span><br><span class="line">                new_full_path += _T(&quot;\\&quot;);</span><br><span class="line">                new_full_path += file;</span><br><span class="line"></span><br><span class="line">                // 开始删除</span><br><span class="line">                if (DeleteFiles(new_full_path))</span><br><span class="line">                &#123;</span><br><span class="line">                    // 删除子文件后删除整个目录</span><br><span class="line">                    RemoveDirectory(new_dir.c_str());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            std::wstring full_file_name = dir;</span><br><span class="line">            full_file_name += _T(&quot;\\&quot;);</span><br><span class="line">            full_file_name += win32_find_data.cFileName;</span><br><span class="line"></span><br><span class="line">            // 去除只读文件的只读属性</span><br><span class="line">            DWORD file_attr = GetFileAttributes(full_file_name.c_str());</span><br><span class="line">            if ((file_attr &amp; FILE_ATTRIBUTE_READONLY) != 0)</span><br><span class="line">            &#123;</span><br><span class="line">                SetFileAttributes(full_file_name.c_str(), file_attr &amp; (~FILE_ATTRIBUTE_READONLY));</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            BOOL del_res = DeleteFiles(full_file_name.c_str());</span><br><span class="line">            if (del_res)</span><br><span class="line">            &#123;</span><br><span class="line">                std::wcout &lt;&lt; full_file_name.c_str() &lt;&lt; std::endl;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            // 如果有一个文件删除失败则返回上层，上层若发现有删除失败的文件则不删除其斧文件夹</span><br><span class="line">            if (del_res == FALSE &amp;&amp; no_error == TRUE)</span><br><span class="line">            &#123;</span><br><span class="line">                no_error = FALSE;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; while (FindNextFile(handle, &amp;win32_find_data) != 0);</span><br><span class="line"></span><br><span class="line">    FindClose(handle);</span><br><span class="line">    return no_error;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int _tmain(int argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    _wsetlocale(LC_ALL, L&quot;chs&quot;);</span><br><span class="line"></span><br><span class="line">    DeleteFiles(_T(R&quot;(C:\Users\ADMINI~1\AppData\Local\Temp\*)&quot;));</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2017/03/25/2017/2017-03-25_201554-2084/">Windows 下处理文件路径相关的 API 介绍</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2017-03-25T20:15:54.000Z" itemprop="datePublished">
+    2017-03-25
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>处理文件路径信息是经常要用到的字符串处理的手段，应用场景非常的多，不论是 Linux 还是 Windows，在我没接触这一系列函数之前，都是使用一系列字符串处理函数来自己写。而在 Windows 环境下，系统给我们提供了一系列处理路径相关的 API，我们在需要使用的时候直接调用即可，不但可以避免自己使用字符串处理函数处理时可能造成的各种问题，还可以加快我们编程的速度。当然如果你还没有使用字符串处理函数自己处理过路径等信息，我强烈建议你先自己尝试学习一下。轮子可不重复制造，但你必须要清楚轮子的制作工艺，否则在出现故障时就不知道如何处理了。</p>
+        
+          <div class="more-link">
+            <a href="/2017/03/25/2017/2017-03-25_201554-2084/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/12/23/2016/2016-12-23_113743-1961/">微软 Credential Providers 详解二《关键函数》</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-12-23T11:37:43.000Z" itemprop="datePublished">
+    2016-12-23
+  </time>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>上一篇中我们介绍了凭据的加载和代码中函数的调用顺序，接下来我们就要了解一下一些关键函数在代码中起到什么作用了。了解清楚这些以后我们才能定制出我们自己需要功能。</p>
+        
+          <div class="more-link">
+            <a href="/2016/12/23/2016/2016-12-23_113743-1961/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/10/08/2016/2016-10-08_103553-1856/">遍历 Windows 系统账户信息</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-10-08T10:35:53.000Z" itemprop="datePublished">
+    2016-10-08
+  </time>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>最近在重构一个项目的时候需要用到遍历系统账户信息和每个账户的 SID 信息用来对比数据，所以就涉及到如何获取 Windows 的账户信息，以及每个账户所关联的 SID。学习了一些前辈的代码后自己总结了一下记录在博客里，方便以后使用。</p>
+        
+          <div class="more-link">
+            <a href="/2016/10/08/2016/2016-10-08_103553-1856/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/09/25/2016/2016-09-25_104716-1851/">FIELD_OFFSET 宏详解</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-09-25T10:47:16.000Z" itemprop="datePublished">
+    2016-09-25
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/VisualStudio/">VisualStudio</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/">结构体</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在日常开发过程中，我们常常用如下这种形式的结构体来传递数据。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">typedef struct  _PATH_INFO &#123;</span><br><span class="line">    HANDLE  hPPid;              // 父进程 PID</span><br><span class="line">    HANDLE  hPid;               // 子进程 PID</span><br><span class="line">    ULONG   PathLength;         // 子进程路径长度</span><br><span class="line">    TCHAR   Path[1];            // 用于存储子进程路径</span><br><span class="line">&#125; PATH_INFO, *PPATH_INFO;</span><br></pre></td></tr></table></figure>
+
+<p>其中前三个成员用来描述一个进程的父进程PID和自身进程的PID以及路径长度信息，而最后一个成员来描述该路径的实际内容，由于路径长度是不定的，我们为了节省内存，加了一个 PathLength 的成员来描述路径长度，不会将实际储存路径的成员设置成固定的 512 大小或者 1024 大小，这样会非常浪费内存，在使用过程中，我们会想如下这种方式来给结构体分配内存和填充数据。</p>
+        
+          <div class="more-link">
+            <a href="/2016/09/25/2016/2016-09-25_104716-1851/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/09/11/2016/2016-09-11_181941-1837/">BindView 可查看网络过滤驱动的工具</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-09-11T18:19:41.000Z" itemprop="datePublished">
+    2016-09-11
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Drivers/">Drivers</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>BindView 是微软提供的一个可以查看网络过滤驱动的小工具，并且是有源码可以学习改造的，该工具的源码地址在微软的 github 帐号下就可以找到：<a target="_blank" rel="noopener" href="https://github.com/Microsoft/Windows-driver-samples/tree/master/network/config/bindview">https://github.com/Microsoft/Windows-driver-samples/tree/master/network/config/bindview</a>，编译运行后可以看到如下效果：</p>
+        
+          <div class="more-link">
+            <a href="/2016/09/11/2016/2016-09-11_181941-1837/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2016/08/28/2016/2016-08-28_001956-1827/">CmRegisterCallbackEx 函数功能详解</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2016-08-28T00:19:56.000Z" itemprop="datePublished">
+    2016-08-28
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Drivers/">Drivers</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Language/">Language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Windows/">Windows</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>Windows 内核开发市面上流传的教程基本上都在写 <code>CmRegisterCallback</code> 函数的功能，而 <code>CmRegisterCallbackEx</code> 几乎没有（本人没有见到有描述比较清晰的）。看任何人写的教程都不如看一眼 <a target="_blank" rel="noopener" href="https://msdn.microsoft.com/en-us/library/windows/hardware/ff541921(v=vs.85).aspx">MSDN</a> 和 <a target="_blank" rel="noopener" href="https://github.com/Microsoft/Windows-driver-samples/tree/master/general/registry/regfltr">Example</a>，跟着微软的例子我详细记录一下这个函数的每个参数，希望可以帮到后面要使用该函数的人，如果大家看到有什么不对的地方请指证，以免我误导他人。</p>
+        
+          <div class="more-link">
+            <a href="/2016/08/28/2016/2016-08-28_001956-1827/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/categories/language/C-C/page/4/">« prev</a><a class="page-number" href="/categories/language/C-C/">1</a><span class="space">&hellip;</span><a class="page-number" href="/categories/language/C-C/page/3/">3</a><a class="page-number" href="/categories/language/C-C/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/categories/language/C-C/page/6/">6</a><a class="page-number" href="/categories/language/C-C/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/categories/language/C-C/page/17/">17</a><a class="extend next" rel="next" href="/categories/language/C-C/page/6/">next »</a>
+    </nav>
+  </section>
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

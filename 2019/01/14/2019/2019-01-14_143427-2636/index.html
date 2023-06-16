@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>CEF 设置页面缩放级别 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>CEF 设置页面缩放级别</h1>
+    </header>
+
+    <section>
+      <p>现在很多高分屏在笔记本和家用市场逐步扩大，普通应用大小在一个 2K 或者 4K 屏幕下就像一个便利签一样贴在屏幕上面，看着很小。于是操作系统提供了对分辨率进行缩放的功能，比如我可以设置当前分辨率放大到 125%，这样就可以让字体或者窗口看着更大一些。同样基于 CEF 制作的客户端程序也会随之放大到 125%，但是内嵌的网页呢？当然也需要根据系统设置放大缩小，CEF 给我们提供了 SetZoomLevel 方法让我们来设置页面的缩放比例。</p>
+<span id="more"></span>
+<p>同样，我们还是用 CEF 官方给出的 cefclient 举例，cefclient 提供了 ZoomLevel 的修改示例，在程序菜单中选择 Tests-&gt;Zoom In 页面就会放大，跟进代码我们可以看到。 <a href="/images/2019/01/2019-01-14_14-34-02.png"><img src="/images/2019/01/2019-01-14_14-34-02.png"></a> 实际是调用了通过 browser 获取到的 host 中的 SetZoomLevel 方法。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">void ModifyZoom(CefRefPtr&lt;CefBrowser&gt; browser, double delta) &#123;</span><br><span class="line">  if (!CefCurrentlyOn(TID_UI)) &#123;</span><br><span class="line">    // Execute on the UI thread.</span><br><span class="line">    CefPostTask(TID_UI, base::Bind(&amp;ModifyZoom, browser, delta));</span><br><span class="line">    return;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  browser-&gt;GetHost()-&gt;SetZoomLevel(browser-&gt;GetHost()-&gt;GetZoomLevel() + delta);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>缩放的维度在 cefclient 中是 0.5 一个维度，这个计算的差值可以参考 cef 社区中的讨论：<a target="_blank" rel="noopener" href="https://www.magpcss.org/ceforum/viewtopic.php?f=6&t=11491">https://www.magpcss.org/ceforum/viewtopic.php?f=6&t=11491</a>，当你想根据系统的缩放比例自动设置页面的缩放大小时，你要做的有以下几个步骤。</p>
+<ol>
+<li>获取当前系统的缩放比例</li>
+<li>根据缩放比例计算出实际应用到 CEF 的缩放数值</li>
+<li>调用 SetZoomLevel 方法设置缩放比例</li>
+</ol>
+<p>另外还要考虑一个时机的问题，我实测在 AfterCreated 中去设置是不生效的，这个阶段比较早，在 LoadEnd 中去设置是生效的，但是这个位置又比较晚，所以根据你自己项目的情况来决定哪里去设置这个缩放比例吧。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2019-01-14T14:34:27.000Z" itemprop="datePublished">
+              2019-01-14
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/CEF/">CEF</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

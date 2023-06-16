@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>仿函数实现 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>仿函数实现</h1>
+    </header>
+
+    <section>
+      <p>仿函数就是可以让类像函数一样使用，因为类的构造函数是不能有返回值的，所以如果你希望调用一个类的对象名+()而有返回值，那就必须要重载()。这样以实现仿函数的功能。实现的代码如下：</p>
+<span id="more"></span>
+<p>#include <iostream></p>
+<p>using namespace std;</p>
+<p>&#x2F;&#x2F; 自实现求平方类，做成仿函数方式使用<br>class Pow<br>{<br>public:<br>&#x2F;&#x2F; 重载()实现仿函数<br>int operator()(int i)<br>{<br>return i * i;<br>}<br>&#x2F;&#x2F; 支持函数重载<br>double operator()(double d)<br>{<br>return d * d;<br>}<br>};</p>
+<p>int main(int argc, char* argv[])<br>{<br>Pow myPow;<br>&#x2F;&#x2F; 像函数一样调用<br>int res &#x3D; myPow(10);<br>cout &lt;&lt; res &lt;&lt; endl;</p>
+<p>double dres &#x3D; myPow(23.4);<br>cout &lt;&lt; dres &lt;&lt; endl;</p>
+<p>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-21T23:04:46.000Z" itemprop="datePublished">
+              2015-05-21
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB/">类</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E4%BB%BF%E5%87%BD%E6%95%B0/">仿函数</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

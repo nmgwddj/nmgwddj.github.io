@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt QML qtquickcontrols2.conf 使用系统未安装的自定义字体 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt QML qtquickcontrols2.conf 使用系统未安装的自定义字体</h1>
+    </header>
+
+    <section>
+      <p>现在很多视觉设计最终给出的字体可能并不是所有系统都安装过的，所以项目中可能需要单独把字体文件打包进去在程序运行的时候加载。Qt QML 有多种方式加载一个自定义字体，本文将介绍所有我知道的方式，大家根据自己的需要选择使用任意一种即可。</p>
+<span id="more"></span>
+<h2 id="使用-FontLoader-方式加载并使用"><a href="#使用-FontLoader-方式加载并使用" class="headerlink" title="使用 FontLoader 方式加载并使用"></a>使用 FontLoader 方式加载并使用</h2><p>FontLoader 在 QML 文档中有非常详细的介绍，加载和使用字体的方式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">import QtQuick 2.0</span><br><span class="line"></span><br><span class="line">Column &#123;</span><br><span class="line">    FontLoader &#123; id: fixedFont; name: &quot;Courier&quot; &#125;</span><br><span class="line">    FontLoader &#123; id: webFont; source: &quot;http://www.mysite.com/myfont.ttf&quot; &#125;</span><br><span class="line"></span><br><span class="line">    Text &#123; text: &quot;Fixed-size font&quot;; font.family: fixedFont.name &#125;</span><br><span class="line">    Text &#123; text: &quot;Fancy font&quot;; font.family: webFont.name &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>FontLoader 可以加载网络字体、系统中已经安装的字体和本地文件的字体，当然也可以从资源文件中加载。但是如果你把很大的字体文件放到资源文件中，那么编译出来的执行文件体积也会随之增加，所以不推荐这样尝试。</p>
+<h2 id="C-加载字体-qtquickcontrols2-conf-配置设置全局字体"><a href="#C-加载字体-qtquickcontrols2-conf-配置设置全局字体" class="headerlink" title="C++ 加载字体 qtquickcontrols2.conf 配置设置全局字体"></a>C++ 加载字体 qtquickcontrols2.conf 配置设置全局字体</h2><p>Qt Quick 提供了一种通过 qtquickcontrols2.conf 设置全局字体的方式，通过 qtquickcontrols2.conf 设置后你不需要像上面示例代码中给单独的控件设置字体样式。见此文档：<a target="_blank" rel="noopener" href="https://doc.qt.io/qt-5/qtquickcontrols2-configuration.html">https://doc.qt.io/qt-5/qtquickcontrols2-configuration.html</a>。使用 qtquickcontrols2.conf 来加载字体前提是你的应用程序已经加载了字体，我们可以通过 C++ 代码在运行 QML Engine 前将字体加载好：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// Load font from local file</span><br><span class="line">int localFont = QFontDatabase::addApplicationFont(QGuiApplication::applicationDirPath() + &quot;/fonts/PingFang.ttf&quot;);</span><br><span class="line">QFontDatabase::applicationFontFamilies(localFont);</span><br></pre></td></tr></table></figure>
+
+<p>这样你将字体文件放到跟你执行程序相同目录下的 fonts 文件夹即可。程序运行会先加载字体，随后 QML 界面弹出发现 qtquickcontrols2.conf 设置了你需要的字体则加载该字体使用。比如我们使用的是 Material 样式，那么我们在 Material 样式下面设置默认字体为我们刚刚加载的 <code>PingFang SC</code> 就可以跑起来了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[Material]</span><br><span class="line">Primary=#337EFF</span><br><span class="line">Accent=#337EFF</span><br><span class="line">Theme=System</span><br><span class="line">Background=#FFFFFF</span><br><span class="line">Font\Family=PingFang SC</span><br><span class="line">Font\PixelSize=14</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2020-02-13T18:19:30.000Z" itemprop="datePublished">
+              2020-02-13
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/Qt-Quick/">Qt Quick</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/QML/">QML</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

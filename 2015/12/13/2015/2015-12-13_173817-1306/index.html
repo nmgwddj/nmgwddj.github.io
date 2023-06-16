@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>浏览器 window 下子对象 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>浏览器 window 下子对象</h1>
+    </header>
+
+    <section>
+      <p>以前我们操作的都是 window 下的 document 对象，他主要是浏览器的中的节点信息，是最重要的浏览器对象。接下来我记录的是一些浏览器不常用但一定会用到的其他对象，那就是 navigator 对象、location 对象、history 对象和 screen 对象。</p>
+<span id="more"></span>
+<h3 id="navigator-对象"><a href="#navigator-对象" class="headerlink" title="navigator 对象"></a>navigator 对象</h3><p>该对象包含了浏览器的名称、版本、语言等信息，可以通过浏览器的 console 窗口敲一下 window.navigator 来看一下他具体包含的内容。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">appCodeName: &quot;Mozilla&quot;</span><br><span class="line">appName: &quot;Netscape&quot;</span><br><span class="line">appVersion: &quot;5.0 (Macintosh; Intel Mac OS X 10_11_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36&quot;</span><br><span class="line">cookieEnabled: true</span><br><span class="line">doNotTrack: null</span><br><span class="line">geolocation: Geolocation</span><br><span class="line">hardwareConcurrency: 4</span><br><span class="line">language: &quot;zh-CN&quot;</span><br><span class="line">languages: Array[3]</span><br><span class="line">maxTouchPoints: 0</span><br><span class="line">mediaDevices: MediaDevices</span><br><span class="line">mimeTypes: MimeTypeArray</span><br><span class="line">onLine: true</span><br><span class="line">permissions: Permissions</span><br><span class="line">platform: &quot;MacIntel&quot;</span><br><span class="line">plugins: PluginArray</span><br><span class="line">presentation: Presentation</span><br><span class="line">product: &quot;Gecko&quot;</span><br><span class="line">productSub: &quot;20030107&quot;</span><br><span class="line">serviceWorker: ServiceWorkerContainer</span><br><span class="line">userAgent: &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36&quot;</span><br><span class="line">vendor: &quot;Google Inc.&quot;</span><br><span class="line">vendorSub: &quot;&quot;</span><br><span class="line">webkitPersistentStorage: DeprecatedStorageQuota</span><br><span class="line">webkitTemporaryStorage: DeprecatedStorageQuota</span><br></pre></td></tr></table></figure>
+
+<h3 id="location-对象"><a href="#location-对象" class="headerlink" title="location 对象"></a>location 对象</h3><p>该对象主要包含了浏览器地址栏的一些内容，比如当前地址栏的域名、协议、参数等等，都可以通过该属性获得。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">ancestorOrigins: DOMStringList</span><br><span class="line">assign: ()</span><br><span class="line">hash: &quot;#reply43&quot;</span><br><span class="line">host: &quot;www.v2ex.com&quot;</span><br><span class="line">hostname: &quot;www.v2ex.com&quot;</span><br><span class="line">href: &quot;https://www.v2ex.com/t/243170#reply43&quot;</span><br><span class="line">origin: &quot;https://www.v2ex.com&quot;</span><br><span class="line">pathname: &quot;/t/243170&quot;</span><br><span class="line">port: &quot;&quot;</span><br><span class="line">protocol: &quot;https:&quot;</span><br><span class="line">reload: reload()</span><br><span class="line">replace: ()</span><br><span class="line">search: &quot;&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="history-对象"><a href="#history-对象" class="headerlink" title="history 对象"></a>history 对象</h3><p>看名字就知道，是操作浏览器历史记录对象的。这个对象在浏览器里面敲命令没办法看到底有什么方法，但通过 <code>window.history.</code> 就能看到提示菜单。 <a href="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-13-%E4%B8%8B%E5%8D%885.34.05.png"><img src="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-13-%E4%B8%8B%E5%8D%885.34.05-217x300.png" alt="屏幕快照 2015-12-13 下午5.34.05"></a> 其中比较重要的几个属性如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// 浏览器历史记录</span><br><span class="line">length</span><br><span class="line">// 后退，与浏览器后退按钮一样</span><br><span class="line">back()</span><br><span class="line">// 前进，与浏览器前进按钮一样</span><br><span class="line">forward()</span><br><span class="line">// 达到任意想去的历史记录，n 可以为正数也可以为负数</span><br><span class="line">go(n)</span><br><span class="line">// 前进两页</span><br><span class="line">go(2)</span><br><span class="line">// 后退一页</span><br><span class="line">go(-1)</span><br></pre></td></tr></table></figure>
+
+<h3 id="screen-对象"><a href="#screen-对象" class="headerlink" title="screen 对象"></a>screen 对象</h3><p>screen 对象主要描述了浏览器当前在显示器中的位置、坐标等信息。他的具体属性如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">availHeight: 754</span><br><span class="line">availLeft: 0</span><br><span class="line">availTop: 0</span><br><span class="line">availWidth: 1280</span><br><span class="line">colorDepth: 24</span><br><span class="line">height: 800</span><br><span class="line">orientation: ScreenOrientation</span><br><span class="line">pixelDepth: 24</span><br><span class="line">width: 1280</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-12-13T17:38:17.000Z" itemprop="datePublished">
+              2015-12-13
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/BOM/">BOM</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

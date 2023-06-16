@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <ul class="Index">
+  
+    <header class='PageTitle'>
+        <h1>{ C/C++ }</h1>
+    </header>
+  
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/24/2015/2015-06-24_233326-614/">文件描述符详解</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-24T23:33:26.000Z" itemprop="datePublished">
+    2015-06-24
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/">platform</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/platform/Linux-Unix/">Linux/Unix</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/Platform/">Platform</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在 32 位的 linux&#x2F;unix 系统下，每个程序打开一个文件都会有一段 4G 的虚拟地址空间，这部分空间中，有1G是内核地址空间，3G是用户地址空间，这个概念我们在之前的文章中有介绍过，可参考 “<a target="_blank" rel="noopener" href="http://不同位置的变量在内存中的排布/">不同位置的变量在内存中的排布</a>”，其中在内核地址空间中，维护着一个 PCB 进程控制块，其中包含很多进程相关的信息，比如进程ID、用户ID、组ID等等，但本文我们最关注的，是 PCB 进程控制块中维护的一份“文件描述符表”，表的格式抽象成下图的样子。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/24/2015/2015-06-24_233326-614/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/23/2015/2015-06-23_211527-606/">Qt 区分多个信号函数绑定一个槽函数</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-23T21:15:27.000Z" itemprop="datePublished">
+    2015-06-23
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>当有多个信号函数（Signal）绑定同一个槽函数（Slot）时，你会有这样的需求，在槽函数中我希望知道到底是哪个信号函数发送出来的信号，这样根据不同的发送者来执行不同的操作。想实现这个功能可以在槽函数中调用 sender() 方法获取发送信号的对象类型。然后进行处理，具体代码如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/23/2015/2015-06-23_211527-606/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/23/2015/2015-06-23_170615-599/">Qt 信号和槽机制详解</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-23T17:06:15.000Z" itemprop="datePublished">
+    2015-06-23
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>信号和槽是 Qt 独有的一种机制，他让窗口的各种消息处理简化到极致，常规情况下我们相应某窗口（控件）的点击时都需要自己投递消息到框架中，由框架的消息队列投递给不同的窗口消息处理函数来处理。如果使用信号和槽，需要声明信号、定义槽函数、绑定信号和槽、发射信号就可以完成上述功能，代码简单容易理解，逻辑简单易懂。信号和槽的大致实现图如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/23/2015/2015-06-23_170615-599/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/23/2015/2015-06-23_140612-592/">Qt 窗口消息处理机制及拦截消息的五种方法</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-23T14:06:12.000Z" itemprop="datePublished">
+    2015-06-23
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>前几篇文章中，我们介绍了一些简单的消息拦截方法，但其实在整个 Qt 框架中，不仅仅有那么几处拦截消息的方法，在 Qt 文档中标明了，一共有5中方法。下面就一一列举一下每种方法所在的位置以及实现方法。后面我们会提供代码帮助大家学习。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/23/2015/2015-06-23_140612-592/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/23/2015/2015-06-23_104222-590/">Qt 键盘和定时器消息</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-23T10:42:22.000Z" itemprop="datePublished">
+    2015-06-23
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>键盘消息和鼠标消息没有什么差异，用法和覆写方法都差不多，可以通过传递的参数判断按下了哪些键，下面代码中有比较详细的示例。其中也介绍了一下定时器消息，当覆写一个定时器消息时，你需要调用 QWidget 的成员函数 startTimer 来启动定时器，它的参数是定时器多长时间运行一次，并且如果有多个定时器时，你还需要知道每个定时器的 ID 是多少，定时器消息因为哪个定时器触发了而运行。这些都在例子中有所体现。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/23/2015/2015-06-23_104222-590/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/22/2015/2015-06-22_232709-586/">Qt 窗口鼠标消息处理</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-22T23:27:09.000Z" itemprop="datePublished">
+    2015-06-22
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>在继承了 QWidget 窗口类以后，我们可以实现很多父类提供的虚函数，其中就包括鼠标的诸多消息处理函数，比如 mousePressEvent（鼠标单击消息）、mouseReleaseEvent（鼠标弹起消息）等等，这些虚函数我们可以通过 Qt 的帮助文档查看，如下：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/22/2015/2015-06-22_232709-586/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/22/2015/2015-06-22_192734-584/">Qt 中 QString 和 QByteArray</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-22T19:27:34.000Z" itemprop="datePublished">
+    2015-06-22
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">类型转换</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E9%87%8D%E8%BD%BD/">重载</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>QString 是 Qt 内部的一种字符串数据类型，QString 支持多字节编码（unicode）的一个字符串类。在程序和网络之间传输数据时，其他的程序和网络另一端的程序是不能识别他这种数据类型的。所以要想将 QString 类型的数据保存到文件或发送到网络，需要转换成 QByteArray 类型才可以。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/22/2015/2015-06-22_192734-584/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/18/2015/2015-06-18_225534-582/">Qt 中数据结构 map 使用</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-18T22:55:34.000Z" itemprop="datePublished">
+    2015-06-18
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/STL/">STL</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/DataStruct/">DataStruct</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>Qt 中的 map 与 stl、boost 中稍有差别，这些差别只能让你更加方便的去操作数据，下面代码演示了对 map 的增、删、改、查具体操作：</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/18/2015/2015-06-18_225534-582/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/18/2015/2015-06-18_222305-576/">Qt 中的数据结构 QVector、QList 使用</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-18T22:23:05.000Z" itemprop="datePublished">
+    2015-06-18
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/%E9%93%BE%E8%A1%A8/">链表</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/STL/">STL</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>与 stl 和 boost 库中的链表差不多，都有我们常见的属性，如at、push_back、push_front、erase 等等，操作与我们以前学习过的都大相径庭，所以我只贴出代码，有更多需要可以参考 Qt 帮助文档。下面只是 QList 的代码，其实你把里面 QList 的关键字替换成 QVector 就可以切换成数组形式了。这是 Qt 对为了让大家更方便的使用，所以让接口风格装都保持一致性，只不过在遍历时，vector使用at方法要比遍历链表速度快。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/18/2015/2015-06-18_222305-576/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+    <li>
+      <article class='ListView'>
+    <header class="title">
+      
+        <h1>
+          <a href="/2015/06/18/2015/2015-06-18_200322-573/">QMainWindow 添加中心部件</a>
+        </h1>
+      
+      <div class='ListMeta'>
+  <time datetime="2015-06-18T20:03:22.000Z" itemprop="datePublished">
+    2015-06-18
+  </time>
+  
+  | 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+  </ul>
+  
+  
+  / 
+  <ul>
+    
+  <li class="meta-text">
+  { <a href="/categories/language/">language</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/categories/language/C-C/">C/C++</a> }
+  </li>
+
+
+  </ul>
+  
+</div>
+
+    </header>
+    <div>
+      
+        <p>上几篇文章我们使用 QMainWindow 添加了菜单栏、工具栏、状态栏等控件，他们分别在窗口中起到不同的作用。但千万别忽略了中间位置，因为中间位置是我们用来添加其他控件的位置，如果你直接在对象中new了某些其他控件（比如一个button），那么这个控件会覆盖菜单栏导致不能正常显示。这就需要我们来创建一个中心部件，以保证各个控件之间不会冲突。</p>
+        
+          <div class="more-link">
+            <a href="/2015/06/18/2015/2015-06-18_200322-573/#more">Read On »</a>
+          </div>
+        
+      
+    </div>
+</article>
+
+    </li>
+  
+</ul>
+
+  <section id="nav-wrapper">
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/categories/language/C-C/page/8/">« prev</a><a class="page-number" href="/categories/language/C-C/">1</a><span class="space">&hellip;</span><a class="page-number" href="/categories/language/C-C/page/7/">7</a><a class="page-number" href="/categories/language/C-C/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/categories/language/C-C/page/10/">10</a><a class="page-number" href="/categories/language/C-C/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/categories/language/C-C/page/17/">17</a><a class="extend next" rel="next" href="/categories/language/C-C/page/10/">next »</a>
+    </nav>
+  </section>
+
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

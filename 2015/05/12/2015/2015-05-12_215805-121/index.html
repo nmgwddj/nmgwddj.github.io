@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>C++ new关键字的返回值 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>C++ new关键字的返回值</h1>
+    </header>
+
+    <section>
+      <p>在C中，我们申请一块内存时，往往会根据malloc的返回值来判断是否为NULL而判定是否申请内存成功，但C++中，new关键字并不像malloc一样是有返回值的。所以以下语法是没有意义的语法。</p>
+<span id="more"></span>
+<p>int* p &#x3D; new int(5);<br>if (NULL &#x3D;&#x3D; p) return -1;</p>
+<p>因为new关键字默认情况下是没有返回值的，如果申请失败，new关键字会抛出异常（以后会介绍）。既然没有返回值，难道我们就无法判断new是否申请成功吗？当然不是，想判断new是否申请成功，有两种方式。</p>
+<ol>
+<li>使用new关键字时让其不抛出异常而真正有返回值</li>
+<li>通过捕获异常判断是否申请成功（以后介绍）</li>
+</ol>
+<p>我们只介绍一下第一种方法，捕获异常的版本我们会在专门讲异常的地方给出示例。如果想让new关键字不抛出异常，只需要在申请内存时，增加一句话即可。如下所示：</p>
+<p>&#x2F;&#x2F;C++ 内存申请失败不抛出异常版本<br>int *q &#x3D; new (std::nothrow)int[10];<br>if(q &#x3D;&#x3D; NULL) return -1;</p>
+<p>在new后面增加(std::nothrow)以后，new不再抛出异常，而是真正得到返回值。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-05-12T21:58:05.000Z" itemprop="datePublished">
+              2015-05-12
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/">进程空间</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

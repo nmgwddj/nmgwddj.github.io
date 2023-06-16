@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Meteor 微信公共号开发将客户端日志传递到服务端打印 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Meteor 微信公共号开发将客户端日志传递到服务端打印</h1>
+    </header>
+
+    <section>
+      <p>因为在微信客户端环境，我们无法使用 console.log 查看前端显示的一些调试信息，如果需要用到调试，我们一般是使用 Session 方法来给前端一个固定专门显示日志的变量设定属性，这样这个固定的变量会跟随 Session.set 设定的值而变化。后面想了一个比较方便的办法，直接将客户端需要输出的日志信息通过 Meteor.call 发送到服务端打印我们就可以方便的在服务端一起看到server log 和 client log 了。</p>
+<span id="more"></span>
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><p>在项目中添加 maodouio:logs 包，地址：<a target="_blank" rel="noopener" href="https://atmospherejs.com/maodouio/logs">https://atmospherejs.com/maodouio/logs</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">meteor add maodouio:logs</span><br></pre></td></tr></table></figure>
+
+<h3 id="客户端调用"><a href="#客户端调用" class="headerlink" title="客户端调用"></a>客户端调用</h3><p>客户端在需要打印日志的位置，直接使用 Meteor.call 方法，call server 端的 printLog 方法，该方法是变参的，可以传递多个需要打印的参数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Template.hello.events(&#123;</span><br><span class="line">  &#x27;click button&#x27;: function () &#123;</span><br><span class="line">  // increment the counter when button is clicked</span><br><span class="line">  counter = 1;</span><br><span class="line">  Meteor.call(&quot;printLog&quot;, &quot;counter is &quot; + counter);</span><br><span class="line">  // 可以传递多个参数</span><br><span class="line">  // Meteor.call(&quot;printLog&quot;, &quot;counter is &quot; + counter, &quot;argument 2&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="服务端打印信息"><a href="#服务端打印信息" class="headerlink" title="服务端打印信息"></a>服务端打印信息</h3><p>客户端调用后，服务端就会自动打印客户端输出的日志了，如下图： <a href="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-17-%E4%B8%8B%E5%8D%883.23.14.png"><img src="/images/2015/11/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-11-17-%E4%B8%8B%E5%8D%883.23.14-300x99.png" alt="屏幕快照 2015-11-17 下午3.23.14"></a></p>
+<h3 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h3><p>以上方法虽然可以把客户端 console.log 的信息打印到服务端，但是客户端出现的异常信息我们是无法捕获的，所以说你只能庆幸程序代码别出现会导致严重错误的异常，比如语法错误等，否则调试起来将会特别麻烦。</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-11-17T15:25:28.000Z" itemprop="datePublished">
+              2015-11-17
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/meteor/">meteor</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>微软 Credential Providers 详解一《调用原理》 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>微软 Credential Providers 详解一《调用原理》</h1>
+    </header>
+
+    <section>
+      <p>在 XP 时代，微软提供了 GINA 的接口来让我们对系统登录界面进行定制，在 Win7 以上系统中，微软提供了另外一种接口，就是 Credential Providers， Credential Providers 译为凭据提供者&#x2F;商。所谓凭据就是提供了一种身份认证的方式，原有的 Windows 身份认证方式就是开机的时候需要你输入密码。而通过微软提供这套接口你可以实现丰富的身份认证方式，比如指纹、USB-Key等任意修改 Windows 系统登录时的界面。比较有名的有些一些应该了解过的产品就是 ThinkPad 的指纹解锁功能，通过验证指纹来解锁计算机，当你了解了实现机制以后，硬件条件允许的情况下，你也可以做一套自己的身份认证系统。</p>
+<span id="more"></span>
+<h2 id="它长什么样子？"><a href="#它长什么样子？" class="headerlink" title="它长什么样子？"></a>它长什么样子？</h2><p>在了解它之前我们要看看使用它到底能做什么功能。下图是微软官方提供的例子，显示了所有提供的控件，包括图片、下拉框、文本输入框、密码输入框、超链接按钮等。 <a href="/images/2016/12/2016-12-18_152348.png"><img src="/images/2016/12/2016-12-18_152348.png"></a></p>
+<h2 id="如何下载示例？"><a href="#如何下载示例？" class="headerlink" title="如何下载示例？"></a>如何下载示例？</h2><p>微软提供了两个版本，一个是最初的 Win7 版本，另一个 v2 版本中仅增加了一种动态更新界面数据的接口也就是支持 Win8 以上系统（包含现在的 Win10），下载地址： Win7: <a target="_blank" rel="noopener" href="https://github.com/Microsoft/Windows-classic-samples/tree/master/Samples/Win7Samples/security/credentialproviders">Samples&#x2F;Win7Samples&#x2F;security&#x2F;credentialproviders</a> Win8: <a target="_blank" rel="noopener" href="https://github.com/Microsoft/Windows-classic-samples/tree/master/Samples/CredentialProvider">Samples&#x2F;CredentialProvider</a></p>
+<h2 id="如何编译运行？"><a href="#如何编译运行？" class="headerlink" title="如何编译运行？"></a>如何编译运行？</h2><p>我们以 Win7 的 Samples 为例，代码与 v2 版本通用，Clone 下最新代码后，双击运行 <code>Samples\Win7Samples\security\credentialproviders\CredentialProviderSamples.sln</code>，这个项目是一个 vs2008 的工程。工程中一共有 5 个项目： <a href="/images/2016/12/2016-12-18_175114.png"><img src="/images/2016/12/2016-12-18_175114.png"></a> 其中 <code>SampleAllControlsCredentialProvider</code> 项目包含了所有控件的示例，我们也将从这个项目入手来讲解。编译 <code>SampleAllControlsCredentialProvider</code> 项目会得到一个 <code>SampleAllControlsCredentialProvider.dll</code> 的动态库文件。将这个文件拷贝到虚拟机中已经安装好的 Win7 系统中的 System32 目录下（注意如果是 64 位系统请编译成 64 位版本放到 System32 目录下）： <a href="/images/2016/12/2016-12-18_175710.png"><img src="/images/2016/12/2016-12-18_175710.png"></a> 拷贝文件到该目录下以后，我们再打开项目的目录，可以看到一个 <code>Register.reg</code> 的注册表文件，这个注册表就是将你编译好的动态库加载到系统的注册表文件。将它也复制到虚拟机的系统中导入，导入完成后，在虚拟机中按下 CTRL+ALT+INSERT 锁屏。此时你就能看到我们文章最前面的效果了。</p>
+<h2 id="调用顺序"><a href="#调用顺序" class="headerlink" title="调用顺序"></a>调用顺序</h2><p>我们已经看到微软给出示例的运行效果了，作为程序开发人员你还要了解清楚它的工作原理以便我们能进一步的去完善修改它的功能与我们的业务整合。我们首先要了解的是我们自己编译的凭据文件（.dll）文件是如何被调用起来的。这些内容微软官网是有详细介绍的，不过说实话我自己文化程度不高，看着有一些吃力。所以还是自己总结了一下。 我们写好的 dll 文件的路径在写入到注册表 <code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\Credential Providers</code> 下的时候，每次你进行锁屏、开机登录的时候，这个 dll 文件都会被系统的 LogonUI.exe 进程加载起来展现给最终用户，而界面上显示什么内容、显示哪些控件就是由我们自己编写的 dll 决定的了。 <a href="/images/2016/12/2016-12-18_181708.png"><img src="/images/2016/12/2016-12-18_181708.png"></a> 你可以理解这就是一个 COM 组件，我们去实现微软规定好的对应的函数，Windows 系统调用起来，在登录、登录成功等不同阶段执行不同的功能。那么我们就要来看一下都有哪些接口，以及这些接口的调用顺序是怎么样的。 接口文档： <a target="_blank" rel="noopener" href="https://msdn.microsoft.com/en-us/library/windows/desktop/bb776029(v=vs.85).aspx">ICredentialProvider interface</a> <a target="_blank" rel="noopener" href="https://msdn.microsoft.com/en-us/library/windows/desktop/bb776042(v=vs.85).aspx">ICredentialProviderCredential interface</a> <a target="_blank" rel="noopener" href="https://msdn.microsoft.com/en-us/library/windows/desktop/hh706912(v=vs.85).aspx">ICredentialProviderCredential2 interface</a> <a target="_blank" rel="noopener" href="https://msdn.microsoft.com/en-us/library/windows/desktop/bb776010(v=vs.85).aspx">ICredentialProviderCredentialEvents interface</a> .. 还有更多不一一列举，点开网页里面就能找到。 其实在我们刚才看的例子中就已经实现了 v1 版本的所有接口了，我们只要拿这个例子来改造就可以了。首先在两个类的所有的函数入口处加上我们的调试信息，如下所示： <a href="/images/2016/12/2016-12-18_185424.png"><img src="/images/2016/12/2016-12-18_185424.png"></a> 加上调试信息以后，我们将编译后的 dll 替换到系统中，执行一次锁屏、和解锁的过程，来看一下系统是如何调用我们编写好的接口的： <a href="/images/2016/12/2016-12-18_185601.png"><img src="/images/2016/12/2016-12-18_185601.png"></a> 通过 dbgview 我们看到调用的函数还是比较乱的，我们稍作整理一下，你就会发现，其实是非常有逻辑的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line">[932] CSample_CreateInstance                        // 最先被调用的函数，实例化一个 Provider 对象</span><br><span class="line">[932] CSampleProvider::SetUsageScenario             // 设置使用场景，这个函数很关键，后面我们介绍</span><br><span class="line">[932] CSampleCredential::Initialize                 // 初始化 Credential 类中的对象</span><br><span class="line">[932] CSampleProvider::Advise                       // 一个拓展接口，我们一直没有用到过，可以看看文档介绍</span><br><span class="line">[932] CSampleProvider::GetCredentialCount           // 自定义一些凭据的信息，比如是否自动登录等</span><br><span class="line">[932] CSampleProvider::GetCredentialAt              // 一系列初始化字段的函数，暂时无需关心</span><br><span class="line">[932] CSampleProvider::GetFieldDescriptorCount</span><br><span class="line">[932] CSampleProvider::GetFieldDescriptorAt</span><br><span class="line">[932] CSampleProvider::GetFieldDescriptorAt</span><br><span class="line">[932] CSampleProvider::GetFieldDescriptorAt</span><br><span class="line">[932] CSampleProvider::GetFieldDescriptorAt</span><br><span class="line">[932] CSampleProvider::GetFieldDescriptorAt</span><br><span class="line">[932] CSampleProvider::GetFieldDescriptorAt</span><br><span class="line">[932] CSampleProvider::GetFieldDescriptorAt</span><br><span class="line">[932] CSampleProvider::GetFieldDescriptorAt</span><br><span class="line">[932] CSampleProvider::GetFieldDescriptorAt</span><br><span class="line">[932] CSampleCredential::GetBitmapValue             // 初始化图片控件</span><br><span class="line">[932] CSampleCredential::GetFieldState</span><br><span class="line">[932] CSampleCredential::GetStringValue             // 初始化各种文本控件</span><br><span class="line">[932] CSampleCredential::GetFieldState</span><br><span class="line">[932] CSampleCredential::GetStringValue</span><br><span class="line">[932] CSampleCredential::GetFieldState</span><br><span class="line">[932] CSampleCredential::GetStringValue</span><br><span class="line">[932] CSampleCredential::GetFieldState</span><br><span class="line">[932] CSampleCredential::GetStringValue</span><br><span class="line">[932] CSampleCredential::GetFieldState</span><br><span class="line">[932] CSampleCredential::GetSubmitButtonValue       // 初始化提交按钮</span><br><span class="line">[932] CSampleCredential::GetFieldState</span><br><span class="line">[932] CSampleCredential::GetCheckboxValue           // 初始化 Checkbox 控件</span><br><span class="line">[932] CSampleCredential::GetFieldState</span><br><span class="line">[932] CSampleCredential::GetComboBoxValueCount      // 获取 Combobox 最大显示数据的数量，代码里设置为3</span><br><span class="line">[932] CSampleCredential::GetComboBoxValueAt         // 获取第一个数据</span><br><span class="line">[932] CSampleCredential::GetComboBoxValueAt         // 获取第二个数据</span><br><span class="line">[932] CSampleCredential::GetComboBoxValueAt         // 获取第三个数据</span><br><span class="line">[932] CSampleCredential::GetFieldState</span><br><span class="line">[932] CSampleCredential::GetStringValue</span><br><span class="line">[932] CSampleCredential::GetFieldState</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::SetSelected                // 可以控制控件显示状态等其他信息，并可以控制是否自动登录</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::SetStringValue</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::SetStringValue</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::SetStringValue</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::SetStringValue</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::SetStringValue</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::SetStringValue</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::SetStringValue</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::SetStringValue</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::SetStringValue</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::SetStringValue</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::SetStringValue</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::SetStringValue</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::SetStringValue</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::SetStringValue</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::SetStringValue</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::GetSerialization           // 点击登录按钮后出发的函数</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br><span class="line">[932] CSampleProvider::UnAdvise</span><br><span class="line">[932] CSampleCredential::Advise</span><br><span class="line">[932] CSampleCredential::ReportResult               // 登录成功或失败返回调用的函数</span><br><span class="line">[932] CSampleCredential::UnAdvise</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2016-12-18T19:16:20.000Z" itemprop="datePublished">
+              2016-12-18
+            </time>
+          </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

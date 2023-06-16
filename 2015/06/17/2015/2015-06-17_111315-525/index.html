@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt 水平布局 QHBoxLayout | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt 水平布局 QHBoxLayout</h1>
+    </header>
+
+    <section>
+      <p>Qt 像其他编辑器一样，在添加控件时，也可以自定义控件的坐标，让每个控件处于你希望的位置，但是这样相对麻烦，而 Qt 提供了一系列布局功能，本文介绍的就是水平布局 QHBoxLayout，他可以将一系列控件加入其布局中，然后将整个布局应用到窗口中。详见代码：</p>
+<span id="more"></span>
+<h3 id="【代码实现】"><a href="#【代码实现】" class="headerlink" title="【代码实现】"></a>【代码实现】</h3><p>注意：我们使用的都是自己继承的 QWidget 类来创建一个窗口，如果不清楚这个窗口是如何创建的，请参考“<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/library/515.html">使用 Qt 构建一个简单的窗体程序</a>”。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">#ifndef CWIDGETS_H</span><br><span class="line">#define CWIDGETS_H</span><br><span class="line"></span><br><span class="line">#include &lt;QWidget&gt;</span><br><span class="line">#include &lt;QHBoxLayout&gt;</span><br><span class="line">#include &lt;QPushButton&gt;</span><br><span class="line"></span><br><span class="line">class CWidgets : public QWidget</span><br><span class="line">&#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line">public:</span><br><span class="line">    explicit CWidgets(QWidget *parent = 0);</span><br><span class="line"></span><br><span class="line">    // 水平布局框架</span><br><span class="line">    QHBoxLayout* _layout;</span><br><span class="line"></span><br><span class="line">    // 按钮</span><br><span class="line">    QPushButton* _button1;</span><br><span class="line">    QPushButton* _button2;</span><br><span class="line">    QPushButton* _button3;</span><br><span class="line"></span><br><span class="line">signals:</span><br><span class="line"></span><br><span class="line">public slots:</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">#endif // CWIDGETS_H</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;cwidgets.h&quot;</span><br><span class="line"></span><br><span class="line">CWidgets::CWidgets(QWidget *parent) : QWidget(parent)</span><br><span class="line">&#123;</span><br><span class="line">    // 将成员变量 _layout new 出来</span><br><span class="line">    _layout = new QHBoxLayout;</span><br><span class="line"></span><br><span class="line">    // 将三个按钮也 new 出来并命名</span><br><span class="line">    _button1 = new QPushButton(&quot;button1&quot;);</span><br><span class="line">    _button2 = new QPushButton(&quot;button2&quot;);</span><br><span class="line">    _button3 = new QPushButton(&quot;button3&quot;);</span><br><span class="line"></span><br><span class="line">    // 将三个按钮添加到 _layout 布局中</span><br><span class="line">    _layout-&gt;addWidget(_button1);</span><br><span class="line">    _layout-&gt;addWidget(_button2);</span><br><span class="line">    _layout-&gt;addWidget(_button3);</span><br><span class="line"></span><br><span class="line">    // 调用 CWidget 成员函数 setLayout 将我们新建的布局应用到窗体中</span><br><span class="line">    setLayout(_layout);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;QApplication&gt;</span><br><span class="line">#include &quot;cwidgets.h&quot;</span><br><span class="line"></span><br><span class="line">int main(int argc, char* argv[])</span><br><span class="line">&#123;</span><br><span class="line">    QApplication app(argc, argv);</span><br><span class="line"></span><br><span class="line">    CWidgets w;</span><br><span class="line">    w.show();</span><br><span class="line"></span><br><span class="line">    return app.exec();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过以上代码，我们的窗口创建完成后就是下图的状态了： <a href="/images/2015/06/2015-06-17_102543.png"><img src="/images/2015/06/2015-06-17_102543.png" alt="2015-06-17_102543"></a> 当你拉伸窗口时，按钮也回跟随窗口变化，如下图： <a href="/images/2015/06/2015-06-17_102742.png"><img src="/images/2015/06/2015-06-17_102742.png" alt="2015-06-17_102742"></a> 如果你不希望拉伸窗口时控件跟随着变长，那么你可以调用 addStretch() 函数，增加一个“弹簧”，如下代码所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 在布局中添加一个弹簧，让控件不会跟随窗口变大而变大</span><br><span class="line">_layout-&gt;addStretch(1);</span><br></pre></td></tr></table></figure>
+
+<p>添加 addStretch 后，再拉伸窗体，按钮就不会跟着窗体拉长了： <a href="/images/2015/06/2015-06-17_104140.png"><img src="/images/2015/06/2015-06-17_104140.png" alt="2015-06-17_104140"></a> 那这个 addStretch() 函数到底是做什么用的？他是如何起到这样的作用的？ 其实我们每个添加的控件都是可以设定在窗口中的比例的，如果你不指定窗口比例，那么就以控件默认的大小来显示，这个 addStretch() 函数相当于在水平布局中，增加了一个比例为 1 的控件，只不过这个控件是什么都不显示的，其他控件因为没有指定比例，所以保持原有大小不变，而一拉伸窗口，用 addStretch() 添加的“控件”就会跟随窗口变大而变大，给我们的错觉就是像一个弹簧一样，把三个没有指定大小的控件一直挤在左侧。 如果我们设定了控件的比例会怎么样呢？如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 将三个按钮添加到 _layout 布局中</span><br><span class="line">_layout-&gt;addWidget(_button1, 1);    // 占整个窗口的 1/n</span><br><span class="line">_layout-&gt;addWidget(_button2, 2);    // 占整个窗口的 2/n</span><br><span class="line">_layout-&gt;addWidget(_button3, 3);    // 占整个窗口的 3/n</span><br><span class="line"></span><br><span class="line">// 在布局中添加一个弹簧，让控件不会跟随窗口变大而变大</span><br><span class="line">_layout-&gt;addStretch(1);             // 占整个窗口的 1/n</span><br></pre></td></tr></table></figure>
+
+<p>我们在 addwidget() 函数中增加了第二个参数，设定了控件的比例，如注释所写，按钮 1 占用了 1&#x2F;n 的比例，按钮 2 占用了 2&#x2F;n 的比例，按钮 3 占用了 3&#x2F;n 的比例，最后一个插入的“弹簧”占用了 1&#x2F;n 的比例，此时相当于在一个水平布局中 n &#x3D; 7，那按钮 1 就是占用 1&#x2F;7 的比例，按钮 2 占用了 2&#x2F;7 的比例，依次类推，效果就是下图这样了： <a href="/images/2015/06/2015-06-17_105424.png"><img src="/images/2015/06/2015-06-17_105424.png" alt="2015-06-17_105424"></a></p>
+<h3 id="【在其他控件中间插入控件】"><a href="#【在其他控件中间插入控件】" class="headerlink" title="【在其他控件中间插入控件】"></a>【在其他控件中间插入控件】</h3><p>以上是比例相关的解释，下面我们来看一下如何在这些按钮中插入一个按钮。比如我希望将一个按钮 button4 插入到 button1 和 button2 中间，那么你可以通过 insertWidget() 函数来实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 在控件 0 后面插入一个控件，这个控件被插入后就是在位置 1</span><br><span class="line">_layout-&gt;insertWidget(1, new QPushButton(&quot;button4&quot;));</span><br></pre></td></tr></table></figure>
+
+<p><a href="/images/2015/06/2015-06-17_110058.png"><img src="/images/2015/06/2015-06-17_110058.png" alt="2015-06-17_110058"></a></p>
+<h3 id="【在控件之间增加一个间隔】"><a href="#【在控件之间增加一个间隔】" class="headerlink" title="【在控件之间增加一个间隔】"></a>【在控件之间增加一个间隔】</h3><p>如果你希望两个控件之间能有一部分间隔，你可以通过 addSpacing() 函数来实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// button1 后面增加一个间隔，长度为50</span><br><span class="line">_layout-&gt;addSpacing(50);</span><br></pre></td></tr></table></figure>
+
+<p><a href="/images/2015/06/2015-06-17_110322.png"><img src="/images/2015/06/2015-06-17_110322.png" alt="2015-06-17_110322"></a></p>
+<h3 id="【设置-QHBoxLayout-的边距】"><a href="#【设置-QHBoxLayout-的边距】" class="headerlink" title="【设置 QHBoxLayout 的边距】"></a>【设置 QHBoxLayout 的边距】</h3><p>上面所有图中我们都可以看出，窗口和控件之间是有一点点距离的，这个距离我们也可以自己来控制，那就是调用 setMargin() 函数来实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 设置 QHBoxLayout 边距为 0</span><br><span class="line">_layout-&gt;setMargin(0);</span><br></pre></td></tr></table></figure>
+
+<p><a href="/images/2015/06/2015-06-17_110610.png"><img src="/images/2015/06/2015-06-17_110610.png" alt="2015-06-17_110610"></a></p>
+<h3 id="【设置全局控件之间的距离】"><a href="#【设置全局控件之间的距离】" class="headerlink" title="【设置全局控件之间的距离】"></a>【设置全局控件之间的距离】</h3><p>如果你希望将所有控件之间的距离都控制在一个长度，那么你可以通过 setSpacing() 函数来实现，它不同与 addSpcing() 函数，setSpacing() 函数是设置所有控件之间的间距：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 设置所有控件之间的间距为 0</span><br><span class="line">_layout-&gt;setSpacing(0);</span><br></pre></td></tr></table></figure>
+
+<p><a href="/images/2015/06/2015-06-17_110743.png"><img src="/images/2015/06/2015-06-17_110743.png" alt="2015-06-17_110743"></a> 与上图相比，可以看出控件之间的间距没有了。</p>
+<h3 id="【总结】"><a href="#【总结】" class="headerlink" title="【总结】"></a>【总结】</h3><p>最后我们来将所有功能重新梳理一下成为如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;cwidgets.h&quot;</span><br><span class="line"></span><br><span class="line">CWidgets::CWidgets(QWidget *parent) : QWidget(parent)</span><br><span class="line">&#123;</span><br><span class="line">    // 将成员变量 _layout new 出来并设置父窗口，无需后面再调用setLayout()函数</span><br><span class="line">    _layout = new QHBoxLayout(this);</span><br><span class="line">    // 设置 QHBoxLayout 边距为 0</span><br><span class="line">    _layout-&gt;setMargin(0);</span><br><span class="line">    // 设置所有控件之间的间距为 0</span><br><span class="line">    _layout-&gt;setSpacing(0);</span><br><span class="line"></span><br><span class="line">    // 添加控件的同时直接在参数中将控件 new 出来，这样代码可以更简洁</span><br><span class="line">    _layout-&gt;addWidget(_button1 = new QPushButton(&quot;button1&quot;), 1);</span><br><span class="line">    // 添加间距</span><br><span class="line">    _layout-&gt;addSpacing(50);</span><br><span class="line">    _layout-&gt;addWidget(_button2 = new QPushButton(&quot;button2&quot;), 2);</span><br><span class="line">    _layout-&gt;addWidget(_button3 = new QPushButton(&quot;button3&quot;), 3);</span><br><span class="line"></span><br><span class="line">    // 在布局中添加一个弹簧，让控件不会跟随窗口变大而变大</span><br><span class="line">    _layout-&gt;addStretch(1);             // 占整个窗口的 1/n</span><br><span class="line"></span><br><span class="line">    // 在控件 0 后面插入一个控件，这个控件被插入后就是在位置 1</span><br><span class="line">    _layout-&gt;insertWidget(1, new QPushButton(&quot;button4&quot;));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-06-17T11:13:15.000Z" itemprop="datePublished">
+              2015-06-17
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

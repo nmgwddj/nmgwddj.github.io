@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>mfc 中利用设备描述表(dc)绘制图案 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>mfc 中利用设备描述表(dc)绘制图案</h1>
+    </header>
+
+    <section>
+      <p>DC（Device Context）在程序中，可以形象的理解为就是一块画布，在画画之前，你要选择好画笔，给画笔蘸上颜色，决定要写字还是画画等等，这些形象的比喻在 mfc 中都有对应的类去实现，大家可以参考下面两篇文章，本文只记录一些特殊的方法，方便以后翻阅查询：</p>
+<span id="more"></span>
+<hr>
+<p><a target="_blank" rel="noopener" href="http://blog.csdn.net/phunxm/article/details/5083119">MFC GDI绘图基础</a>：<a target="_blank" rel="noopener" href="http://blog.csdn.net/phunxm/article/details/5083119">http://blog.csdn.net/phunxm/article/details/5083119</a> 关于设备描述表：<a target="_blank" rel="noopener" href="http://blog.sina.com.cn/s/blog/_5dbf4a610100ofzh.html">http://blog.sina.com.cn/s/blog\_5dbf4a610100ofzh.html</a></p>
+<h3 id="获取-DC-中字体信息"><a href="#获取-DC-中字体信息" class="headerlink" title="获取 DC 中字体信息"></a>获取 DC 中字体信息</h3><p>&#x2F;&#x2F; 获取 DC 中字体的信息<br>TEXTMETRIC tm;<br>hDC.GetTextMetrics(&amp;tm);</p>
+<p>TEXTMETRIC 是一个结构体，其中包含了在 DC 中字体的各种信息。如下：</p>
+<p>typedef struct tagTEXTMETRICW<br>{<br>    LONG        tmHeight; &#x2F;&#x2F; 字体高度<br>    LONG        tmAscent;<br>    LONG        tmDescent;<br>    LONG        tmInternalLeading;<br>    LONG        tmExternalLeading;<br>    LONG        tmAveCharWidth;<br>    LONG        tmMaxCharWidth;<br>    LONG        tmWeight;<br>    LONG        tmOverhang;<br>    LONG        tmDigitizedAspectX;<br>    LONG        tmDigitizedAspectY;<br>    WCHAR       tmFirstChar;<br>    WCHAR       tmLastChar;<br>    WCHAR       tmDefaultChar;<br>    WCHAR       tmBreakChar;<br>    BYTE        tmItalic;<br>    BYTE        tmUnderlined;<br>    BYTE        tmStruckOut;<br>    BYTE        tmPitchAndFamily;<br>    BYTE        tmCharSet;<br>} TEXTMETRICW, *PTEXTMETRICW, NEAR *NPTEXTMETRICW, FAR *LPTEXTMETRICW;</p>
+<p>每一个参数所代表的意义：<a target="_blank" rel="noopener" href="https://msdn.microsoft.com/zh-cn/vstudio/dd145132(v=vs.90).aspx">https://msdn.microsoft.com/zh-cn/vstudio/dd145132(v=vs.90).aspx</a></p>
+<h3 id="获取-DC-背景色"><a href="#获取-DC-背景色" class="headerlink" title="获取 DC 背景色"></a>获取 DC 背景色</h3><p>&#x2F;&#x2F; 获取 DC 的背景色<br>COLORREF color &#x3D; hDC.GetBkColor();<br>&#x2F;&#x2F; 设置 DC 绘制字体时的颜色与背景色一致<br>color &#x3D; hDC.SetTextColor(color);</p>
+<p>上面示例获取了 DC 的背景色以后有将背景色设置为字体颜色，这样写出来的字就与背景色一致了（看不到写出来的字）。</p>
+<h3 id="返回一个字符串在-DC-中的宽度"><a href="#返回一个字符串在-DC-中的宽度" class="headerlink" title="返回一个字符串在 DC 中的宽度"></a>返回一个字符串在 DC 中的宽度</h3><p>CSize size &#x3D; hDC.GetTextExtent(m_str);<br>&#x2F;&#x2F; 返回的 size.cx 是长度<br>&#x2F;&#x2F; 返回的 size.cy 是高度</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-30T16:44:05.000Z" itemprop="datePublished">
+              2015-07-30
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/MFC/">MFC</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

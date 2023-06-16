@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>oracle 表的集合运算（联合查询） | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>oracle 表的集合运算（联合查询）</h1>
+    </header>
+
+    <section>
+      <p>以前使用 ms sqlserver 的时候就用到过 union 关键字，将多条查询语句保存到一个列表中用程序来处理，这样可以让多个查询结果集合合并在一起，一般很少有这种需求，个人在使用的时候除非是子查询或多表查询实在无法实现的情况下才会用到。</p>
+<span id="more"></span>
+<hr>
+<h3 id="集合运算要注意的问题"><a href="#集合运算要注意的问题" class="headerlink" title="集合运算要注意的问题"></a>集合运算要注意的问题</h3><ol>
+<li>参与运算的各个集合必须列数相同且类型一致</li>
+<li>采用第一个集合的表头作为最终结果的表头</li>
+<li>如果使用了 order by，必须每个集合后面都使用 order by</li>
+<li>可以使用小括号()先执行后面的语句</li>
+</ol>
+<h3 id="集合运算的几种方式"><a href="#集合运算的几种方式" class="headerlink" title="集合运算的几种方式"></a>集合运算的几种方式</h3><p>图片来自传智播客教师课件。 <strong>1、union&#x2F;union all 并集</strong> UNION运算符返回两个集合去掉重复元素后的所有记录。</p>
+<p>SELECT employee_id, job_id<br>FROM   employees<br>UNION<br>SELECT employee_id, job_id<br>FROM   job_history;</p>
+<p>UNION ALL 返回两个集合的所有记录，包括重复的。</p>
+<p>SELECT employee_id, job_id, department_id<br>FROM   employees<br>UNION ALL<br>SELECT employee_id, job_id, department_id<br>FROM   job_history<br>ORDER BY  employee_id;</p>
+<p><a href="/images/2015/07/2015-07-22_193759.png"><img src="/images/2015/07/2015-07-22_193759.png" alt="2015-07-22_193759"></a>   <strong>2、intersect 交集</strong> INTERSECT 运算符返回同时属于两个集合的记录。</p>
+<p>select ename,sal from emp<br>where sal between 700 and 1300<br>INTERSECT<br>select ename,sal from emp<br>where sal between 1201 and 1400;</p>
+<p><a href="/images/2015/07/2015-07-22_193807.png"><img src="/images/2015/07/2015-07-22_193807.png" alt="2015-07-22_193807"></a> <strong>3、minus 差集</strong> MINUS返回属于第一个集合，但不属于第二个集合的记录。</p>
+<p>select ename,sal from emp<br>where sal between 700 and 1300<br>minus<br>select ename,sal from emp<br>where sal between 1201 and 1400;</p>
+<p><a href="/images/2015/07/2015-07-22_193816.png"><img src="/images/2015/07/2015-07-22_193816.png" alt="2015-07-22_193816"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-22T19:48:39.000Z" itemprop="datePublished">
+              2015-07-22
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/oracle/">oracle</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/sql/">sql</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

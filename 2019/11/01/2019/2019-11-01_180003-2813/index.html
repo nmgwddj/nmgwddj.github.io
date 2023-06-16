@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qt Quick 项目实现根据操作系统语言自动显示指定翻译 | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>Qt Quick 项目实现根据操作系统语言自动显示指定翻译</h1>
+    </header>
+
+    <section>
+      <p>Qt 提供了一整套的翻译引擎，讲你需要翻译的内容使用 qsTr(“”) 包括起来就可以通过工具来扫描这些待翻译的内容。我们用 Qt 创建的 Empty 项目来做演示，创建完成后，main.qml 中只有如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import QtQuick 2.12</span><br><span class="line">import QtQuick.Window 2.12</span><br><span class="line"></span><br><span class="line">Window &#123;</span><br><span class="line">    visible: true</span><br><span class="line">    width: 640</span><br><span class="line">    height: 480</span><br><span class="line">    title: qsTr(&quot;Hello World&quot;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>其中 Hello World 文字就使用 qsTr() 括起来了，我们首先需要做的就是让 Qt 翻译工具可以扫描到这些带翻译的文件。</p>
+<span id="more"></span>
+<h2 id="将待翻译文件添加到扫描列表"><a href="#将待翻译文件添加到扫描列表" class="headerlink" title="将待翻译文件添加到扫描列表"></a>将待翻译文件添加到扫描列表</h2><p>在 Qt 项目的 pro 文件中添加如下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 告诉 Qt 翻译处理工具扫描所有当前目录下的 qml 文件</span><br><span class="line">lupdate_only &#123;</span><br><span class="line">    SOURCES  += *.qml</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 你要生成几种语言的模板文件，这里指示生成两种，一种英文、一种中文</span><br><span class="line">TRANSLATIONS = app_zh_cn.ts \</span><br><span class="line">               app_en_us.ts</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>如如上注释，<code>lupdate_only</code> 要告诉 Qt 翻译工具你要扫描所有目录下的 qml 文件，<code>TRANSLATIONS</code> 指示要生成几种语言的翻译模板。</p>
+<h2 id="生成-ts-中间文件"><a href="#生成-ts-中间文件" class="headerlink" title="生成 .ts 中间文件"></a>生成 .ts 中间文件</h2><p>点击 Qt Creaetor 菜单栏的工具-&gt;外部-&gt;Qt语言专家-&gt;更新翻译(lupdate)，生成中间的 .ts 文件。 <a href="/images/2019/11/Snipaste_2019-11-01_17-34-39.png"><img src="/images/2019/11/Snipaste_2019-11-01_17-34-39.png"></a> 此时看下面概要信息生成了如下内容： <a href="/images/2019/11/Snipaste_2019-11-01_17-35-20.png"><img src="/images/2019/11/Snipaste_2019-11-01_17-35-20.png"></a> 到项目目录下就能看到这两个中间待翻译的 .ts 文件了： <a href="/images/2019/11/Snipaste_2019-11-01_17-36-07.png"><img src="/images/2019/11/Snipaste_2019-11-01_17-36-07.png"></a></p>
+<h2 id="开始翻译"><a href="#开始翻译" class="headerlink" title="开始翻译"></a>开始翻译</h2><p>到你的 Qt 安装目录下找到 <code>Qt5.12.3\5.12.3\msvc2017\bin\linguist.exe</code> 文件，不同的编译器路径可能不一样，自己仔细找一下。打开 <code>linguist.exe</code> 将我们要翻译的文件拖进去，比如我要翻译刚刚生成的 <code>app_zh_cn.ts</code> 文件。选择你要翻译的内容，然后在下面输入翻译的文字，最后点击上面的绿色勾确认翻译。 <a href="/images/2019/11/Snipaste_2019-11-01_17-41-10.png"><img src="/images/2019/11/Snipaste_2019-11-01_17-41-10.png"></a> 完成后记得保存文件（切记切记）</p>
+<h2 id="生成目标二进制文件"><a href="#生成目标二进制文件" class="headerlink" title="生成目标二进制文件"></a>生成目标二进制文件</h2><p>在翻译中间文件完成后，返回 Qt Creator，还是点击 工具-&gt;外部-&gt;Qt语言专家-&gt;发布翻译(lrelease)，此时你会看到生成了两个后缀为 .qm 的文件： <a href="/images/2019/11/Snipaste_2019-11-01_17-45-14.png"><img src="/images/2019/11/Snipaste_2019-11-01_17-45-14.png"></a> <a href="/images/2019/11/Snipaste_2019-11-01_17-45-57.png"><img src="/images/2019/11/Snipaste_2019-11-01_17-45-57.png"></a> 这就是最终的目标翻译文件了，接下来就是加载翻译了。</p>
+<h2 id="加载翻译"><a href="#加载翻译" class="headerlink" title="加载翻译"></a>加载翻译</h2><p>打开 main.cpp 文件，在实例化 app 对象后面加入如下代码（别忘了 include QTranslator）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">QTranslator translator;</span><br><span class="line">if (translator.load(QLocale(), QLatin1String(&quot;app&quot;), QLatin1String(&quot;_&quot;), QGuiApplication::applicationDirPath())) &#123;</span><br><span class="line">    app.installTranslator(&amp;translator);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>translator.load() 的参数说明如下（也可以参考 Qt 官网：<a target="_blank" rel="noopener" href="https://doc.qt.io/qt-5/qtranslator.html#load-1">https://doc.qt.io/qt-5/qtranslator.html#load-1</a>）：</p>
+<ul>
+<li>第一个参数指定当前系统语言，使用 QLocale 就可以获取到。</li>
+<li>第二个参数设置当前翻译文件的前缀名字，我们名字前缀是 app。</li>
+<li>第三个参数设置前缀名字和实际语言中间的分割符号。</li>
+<li>第四个参数指定翻译文件的位置，就是程序当前目录。</li>
+</ul>
+<p>最终组成的就是 <code>前缀+分隔符号+系统语言+.qm</code>。这样编译出来的程序就可以根据系统语言自动切换翻译文件了。讲我们刚刚生成的两个 .qm 文件复制到 exe 所在目录： <a href="/images/2019/11/Snipaste_2019-11-01_17-58-35.png"><img src="/images/2019/11/Snipaste_2019-11-01_17-58-35.png"></a> 然后运行程序，在 Windows 10 中文系统中最终运行效果如下： <a href="/images/2019/11/Snipaste_2019-11-01_17-58-59.png"><img src="/images/2019/11/Snipaste_2019-11-01_17-58-59.png"></a></p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2019-11-01T18:00:03.000Z" itemprop="datePublished">
+              2019-11-01
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/Qt/">Qt</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>

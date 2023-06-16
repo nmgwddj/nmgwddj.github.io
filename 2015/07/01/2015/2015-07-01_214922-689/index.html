@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>使用信号实现进程同步（踢皮球游戏） | Dylan&#39;s blog</title>
+  
+  
+  
+  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+<div class="Shell">
+    <aside class='SideBar'>
+    <section class='avatar' style="background-image: url()">
+        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
+        </div>
+    </section>
+    <section class='menu'>
+        <div>Dylan&#39;s blog</div>
+        
+            <div>To the pursuit of truth.</div>
+        
+        <ul>
+          
+            <a href="/" class="Btn">
+              <li>Home</li>
+            </a>  
+          
+            <a href="/archives/" class="Btn">
+              <li>Archive</li>
+            </a>  
+          
+        </ul>
+    </section>
+    <section class="media">
+        
+    </section>
+</aside>
+
+    <div class="container">
+        <div data-pager-shell>
+            <div>
+  <article class='ContentView'>
+    <header class='PageTitle'>
+        <h1>使用信号实现进程同步（踢皮球游戏）</h1>
+    </header>
+
+    <section>
+      <p>学习了信号机制，我们就可以利用信号机制实现进程间同步了，比如我们希望一个进程处理完某件事情后再通知另外一个进程继续处理某件事情，这种需求实现的方法有很多，但是用信号实现是最方便的，这里我们举例用了一个踢皮球的小游戏充分展示了利用信号实现进程间同步的功能。程序执行后效果如下：</p>
+<span id="more"></span>
+<hr>
+<p><a href="/images/2015/07/2015-07-01_212759.png"><img src="/images/2015/07/2015-07-01_212759.png" alt="2015-07-01_212759"></a> A 进程打印数字 1 后发送信号给 B 进程，B 进程收到信号将打印的值 +1 再输出到屏幕上，再发送信号给 A 进程，依次循环。</p>
+<h3 id="【实现代码】"><a href="#【实现代码】" class="headerlink" title="【实现代码】"></a>【实现代码】</h3><p>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;signal.h&gt;<br>#include &lt;unistd.h&gt;</p>
+<p>void sigdoAction(int num, siginfo_t* siginfo, void* p)<br>{<br>int tmp &#x3D; siginfo-&gt;si_int;&#x2F;&#x2F; 得到结构体中存放的变量值，这里可以判断是否到了100<br>int nProcessID &#x3D; siginfo-&gt;si_pid;&#x2F;&#x2F; 得到发送信号进程的进程PID<br>printf(“sigdoAction: tmp &#x3D; %d, ProcessID &#x3D; %d, Send Signal ProcessID &#x3D; %d\n”, tmp, getpid(), nProcessID);</p>
+<p>&#x2F;&#x2F; 将皮球踢回去<br>sleep(1);&#x2F;&#x2F; 等待一秒，不然太快<br>tmp++;&#x2F;&#x2F; 皮球值+1<br>union sigval unsig;&#x2F;&#x2F; 定义 sigqueue 所需结构体<br>unsig.sival_int &#x3D; tmp;&#x2F;&#x2F; 初始化结构体成员（皮球）<br>sigqueue(nProcessID, SIGINT, unsig);&#x2F;&#x2F; 给参数传递进来的进程发送SIGINT信号<br>}</p>
+<p>int main(int argc, char* argv[])<br>{<br>&#x2F;&#x2F; 捕获SIGINT信号<br>struct sigaction act;<br>act.sa_sigaction &#x3D; sigdoAction;&#x2F;&#x2F; 指定信号处理函数<br>act.sa_flags &#x3D; SA_SIGINFO;&#x2F;&#x2F; 指定使用那种处理方式<br>sigemptyset(&amp;act.sa_mask);&#x2F;&#x2F; 清空掩码防止垃圾值<br>sigaction(SIGINT, &amp;act, NULL);&#x2F;&#x2F; 捕获信号</p>
+<p>&#x2F;&#x2F; 只有在调用程序时加了进程PID参数才会执行这个操作，主要为了发起互相踢球的第一个信号<br>if (argc &gt;&#x3D; 2)<br>{<br>int nSendPid &#x3D; atoi(argv[1]);&#x2F;&#x2F; 将传递进来的参数转为int提供给信号发送函数的第一个参数使用</p>
+<p>union sigval unsig;&#x2F;&#x2F; 定义 sigqueue 所需结构体<br>unsig.sival_int &#x3D; 1;&#x2F;&#x2F; 初始化结构体成员（皮球的初值）<br>sigqueue(nSendPid, SIGINT, unsig);&#x2F;&#x2F; 给参数传递进来的进程发送SIGINT信号<br>}</p>
+<p>while (1)<br>{<br>sleep(1);<br>}</p>
+<p>return 0;<br>}</p>
+
+
+      
+
+    </section>
+    
+      <section class='ArticleMeta'>
+          <div>
+            发布于&nbsp;
+            <time datetime="2015-07-01T21:49:22.000Z" itemprop="datePublished">
+              2015-07-01
+            </time>
+          </div>
+          
+            <div>
+              tags: 
+  <li class="meta-text">
+  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
+  </li>
+
+  <li class="meta-text">
+  { <a href="/tags/%E4%BF%A1%E5%8F%B7/">信号</a> }
+  </li>
+
+
+            </div>
+          
+      </section>
+    
+    
+</article>
+
+  
+</div>
+
+            <footer>
+    <div>© 2023 - Dylan </div>
+    <div>
+        <span>
+            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+        </span>
+        ,
+        <span>
+            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
+        </span>
+    </div>
+</footer>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/pager/dist/singlepager.js"></script>
+
+<script>
+var sp = new Pager('data-pager-shell')
+
+</script>
+</body>
+</html>
