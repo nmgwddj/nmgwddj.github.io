@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>基于 git flow + gitlab 协作开发：02 解决问题 | Dylan&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="上一篇文章中我们提到了在一个周维度或者月维度发布产品的小型协作项目中，会遇到各类协作上的问题，随着发布的越来越紧凑，问题也就越来越突出。本文主要对上一篇文章中提到的问题解决方案做细化，让大家可以清楚的知道如何通过合理的 git 工作流来解决这些问题，让原来发布时的手忙脚乱不再出现。通过 git flow 我们可以对项目做一个分支模型管理：  master 固定，一致保持当前最新稳定的发布版本代码，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于 git flow + gitlab 协作开发：02 解决问题">
+<meta property="og:url" content="https://nmgwddj.github.io/2021/03/12/2021/2021-03-12_173556-2965/index.html">
+<meta property="og:site_name" content="Dylan&#39;s blog">
+<meta property="og:description" content="上一篇文章中我们提到了在一个周维度或者月维度发布产品的小型协作项目中，会遇到各类协作上的问题，随着发布的越来越紧凑，问题也就越来越突出。本文主要对上一篇文章中提到的问题解决方案做细化，让大家可以清楚的知道如何通过合理的 git 工作流来解决这些问题，让原来发布时的手忙脚乱不再出现。通过 git flow 我们可以对项目做一个分支模型管理：  master 固定，一致保持当前最新稳定的发布版本代码，">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-03-12T17:35:56.000Z">
+<meta property="article:modified_time" content="2023-06-16T07:08:53.763Z">
+<meta property="article:author" content="Dylan">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Dylan's blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Dylan&#39;s blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">To the pursuit of truth.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://nmgwddj.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-2021/2021-03-12_173556-2965" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/03/12/2021/2021-03-12_173556-2965/" class="article-date">
+  <time class="dt-published" datetime="2021-03-12T17:35:56.000Z" itemprop="datePublished">2021-03-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/language/">language</a>►<a class="article-category-link" href="/categories/language/C-C/">C/C++</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      基于 git flow + gitlab 协作开发：02 解决问题
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>上一篇文章中我们提到了在一个周维度或者月维度发布产品的小型协作项目中，会遇到各类协作上的问题，随着发布的越来越紧凑，问题也就越来越突出。本文主要对上一篇文章中提到的问题解决方案做细化，让大家可以清楚的知道如何通过合理的 git 工作流来解决这些问题，让原来发布时的手忙脚乱不再出现。通过 git flow 我们可以对项目做一个分支模型管理：</p>
+<ul>
+<li>master 固定，一致保持当前最新稳定的发布版本代码，在 CI&#x2F;CD 建设时，你可以只在该分支做签名、公证等一系列自动化流程</li>
+<li>develop 固定，这是我们日常的开发分支，所有新功能分支都将合并到该分支</li>
+<li>release&#x2F;* 可删，进入预发布阶段时基于 develop 创建的分支，再此基础集成，它名字可能是 release&#x2F;2.8.0，release&#x2F;2.9.0 等。</li>
+<li>bugfix&#x2F;* 可删，这种分支一般情况下基于 develop 或者 release&#x2F;* 分支开出，作为简单的缺陷修复分支，最终合并到 develop 或 release&#x2F;* 分支中</li>
+<li>hotfix&#x2F;* 可删，是对线上最新版本或长期服务版本做紧急修复时使用的分支，他不是常驻的</li>
+</ul>
+<p>说多不多，说少也不少，还没有了解 git-flow 的同学可能会有点不太好理解，下面就详细介绍每个分支类型是如何在我们平时工作协作中起到重要作用的。</p>
+<span id="more"></span>
+<h2 id="让功能独立拆分-git-flow-feature"><a href="#让功能独立拆分-git-flow-feature" class="headerlink" title="让功能独立拆分 git flow feature"></a>让功能独立拆分 git flow feature</h2><p>以往的开发我们经常是基于 master 开启一个分支，命名为 dev&#x2F;* 或者 release&#x2F;* 等来区分不同版本的迭代，但当迭代节奏加快，团队人员增加，不同的人做不同的功能，都工作在一个分支时互相 rebase 代码的时间会变得非常多，更重要的是在临近发布前一些功能还在出现各种各样的缺陷，影响整个版本的发布。如果我们能将每个相对独立的功能分开分支开发，在临近发布时将稳定的功能分支合并进发布分支，那些不稳定的功能可以延后至下个迭代中，这非常符合现在敏捷开发的团队需求，刚提到的问题也都很好的解决了。使用 git-flow 模型可以基于 develop 分支开启一个 feature&#x2F;* 的分支，来对一个功能进行开发</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git flow feature start clock</span><br></pre></td></tr></table></figure>
+
+<p>这样就开启了一个名为 feature&#x2F;clock 的分支，当你在此分支完成了所有关于 clock 的功能后并进行了一部分冒烟测试，那么可以使用如下命令将该 feature 合并到 develop 分支。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git flow feature finish</span><br></pre></td></tr></table></figure>
+
+<p>执行以上命令后，feature&#x2F;clock 分支会自动合并到 develop 分支，并且将自动删除临时的 feature 分支。他类似与你自己执行了如下的 git 原生命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 当前在 develop 分支</span></span><br><span class="line">git branch -b feature/clock</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编写业务功能代码后一系列提交</span></span><br><span class="line">git commit -a -s -m <span class="string">&quot;feature commit message&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 完成功能</span></span><br><span class="line">git checkout develop</span><br><span class="line">git merge --no-ff feature/clock</span><br><span class="line">git branch -d feature/clock</span><br></pre></td></tr></table></figure>
+
+<p>如果您对主仓库的 develop 有推送权限，那么可以直接推送代码到仓库中，但某些场景下，团队是需要 code review 的，您可以将 feature&#x2F;* 分支推送到你 fork 的子仓库中，并以 Pull Request 或 Merge Request 的方式提交到主仓库的 develop 分支进行 code review。当然 code review 的方式有很多种，我们可以根据自己团队的需求来做一些改变。</p>
+<h2 id="让版本发布自动化-git-flow-release"><a href="#让版本发布自动化-git-flow-release" class="headerlink" title="让版本发布自动化 git flow release"></a>让版本发布自动化 git flow release</h2><p>当进入一个发布窗口期，我们需要考量一下哪些功能可以在准备发布的版本进行发布了，这些功能首先会被合并到 develop 分支，这里避免不了会有一些代码的冲突，需要指定功能的负责人进行合并，在确认无误后我们开启一个准备发布的分支：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git flow release start 8.0.0</span><br></pre></td></tr></table></figure>
+
+<p>执行以上命令后，我们就基于 develop 分支开启了一个 release&#x2F;8.0.0 的分支，你可以使用该分支做整体预发布功能的回归、做一些版本号修改、文档更正等简单的工作。这个分支不在进行大规模的代码调整，仅做一些回归时发现的小缺陷修复，这个周期通常要 1~2 天的时间。当确认该分支代码稳定可以发布时，执行如下命令进行发布：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 当前在 release/8.0.0 分支</span></span><br><span class="line">git flow release finish</span><br></pre></td></tr></table></figure>
+
+<p>该命令执行了如下几个操作：</p>
+<ul>
+<li>合并 release&#x2F;8.0.0 到 master 分支</li>
+<li>创建 8.0.0 tag</li>
+<li>合并 8.0.0 tag 到 develop 分支</li>
+</ul>
+<p>整个 release 版本发布的阶段，转化为 git 的原生指令他是这样一个步骤：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 当前工作与 develop 分支</span></span><br><span class="line">git checkout -b release/8.0.0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 做一些简单修复或者版本更改，提交代码</span></span><br><span class="line">git commit -a -s -m <span class="string">&quot;Update version...&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 完成版本发布</span></span><br><span class="line">git checkout master</span><br><span class="line">git merge --no-ff release/8.0.0</span><br><span class="line">git tag -a 8.0.0</span><br><span class="line">git checkout develop</span><br><span class="line">git merge --no-ff 8.0.0</span><br><span class="line">git branch -d release/8.0.0</span><br></pre></td></tr></table></figure>
+
+<p>整个发布过程的指令就是这些，看似简单，但是当我们自己操作时很难不出错误，特别是版本发布和线上缺陷（hotfix）修复同时进行的时候，如果有这些辅助指令可以大大加快我们的工作效率且不容易出错。在 release 阶段你可以让你的自动构建系统配合 git-flow 的固有规则进行构建，比如我们可以根据分支名称或者当前最新 tag 自动给产出物做版本号的修改，而不需要我们在代码中新建一个提交去修改这些内容。 另外我更建议在 release&#x2F;* 分支做版本发布，而不是 master 分支，master 分支仅作为一个备份分支，他在一些开源项目中显得比较重要，因为他代表着最新稳定分支。但公司内部的一些开发团队中来看 master 分支可有、可无。但是你不能在 master 分支随便产生一个提交，这样会打乱 git flow 的工作流程，你要来来回回合并好几次才能保证各个协作分支正常工作。之所以建议在 release&#x2F;* 分支做发布操作，是因为有些时候在你执行完 <code>git flow release finish</code> 后还会发现有一些非常简单的错误需要修复，比如对外文档中的一个符号错误、一个错别字、甚至版本号错误等，这些都是避免不了的。如果你已经合并到 master 分支，你需要基于 develop 重来一遍发布流程，这会产生非常多的麻烦。何不在 release 分支就都完成了呢？当产品上线、部署到官网后，下一个迭代开始前，在执行 <code>git flow release finish</code> 更好。</p>
+<h2 id="线上缺陷紧急修复-git-flow-hotfix"><a href="#线上缺陷紧急修复-git-flow-hotfix" class="headerlink" title="线上缺陷紧急修复 git flow hotfix"></a>线上缺陷紧急修复 git flow hotfix</h2><p>谁都不愿意看到线上出现紧急问题，出问题不要怕，解决它并告诉自己不要再犯同样的错误，这也是我为什么使用 git flow 一个很重要的原因。以往的线上紧急问题修复中，我们通常是基于 master 或者最新 tag 拉取一个分支，在这个分支中做缺陷的紧急修复，分支名称比较随意，有时带版本、有时不带版本，不同人的做法不一导致这个流程出现很多问题。在紧急问题修复后我们要把这些修复的问题合并回 master，但同时我们需要将这个修复合并到我们正在开发或者准备发布的分支中，这一步是经常容易忘记的，无论你是新来的同事还是老同学都可能在这里犯错。 而使用 git-flow 则可以非常简单的避免这些问题，它有非常完善的 hotfix 流程，确保你在修复问题时不影响常规迭代，当线上发生紧急问题时，你需要基于 master 分支执行如下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git flow hotfix start 8.0.1</span><br></pre></td></tr></table></figure>
+
+<p>该命令会基于 master 创建一个 hotfix&#x2F;8.0.1 的分支，在进行一系列缺陷修复并通过测试后，使用如下命令完成这个紧急修复：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git flow hotfix finish</span><br></pre></td></tr></table></figure>
+
+<p>git-flow 命令行工具会自动根据当前分支获取要使用的版本号，它将执行如下功能：</p>
+<ul>
+<li>将修复合并到 master 分支确保主干为最新得到修复的内容</li>
+<li>新建 8.0.1 的 tag</li>
+<li>将修复同时合并到 develop 分支，确保当前开发分支也同样得到修复而不是被遗忘</li>
+<li>删除临时的 hotfix 分支</li>
+</ul>
+<p>两条命令帮助我们做了非常多我们容易忘记的事情，同时版本号的管理也更加严禁不会轻易让我们出错，自动根据版本号创建 tag 也让我们的紧急修复可以被追溯。上面简单的两条命令还原为 git 的原生命令是如下代码：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 基于 master 开启分支</span></span><br><span class="line">git checkout -b hotfix/8.0.1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修复内容</span></span><br><span class="line">git commit -a -s -m <span class="string">&quot;Fixed something&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并修复到主干和开发分支</span></span><br><span class="line">git checkout master</span><br><span class="line">git merge --no-ff hotfix/8.0.1</span><br><span class="line">git tag -a 8.0.1</span><br><span class="line">git checkout develop</span><br><span class="line">git merge --no-ff 8.0.1 <span class="comment"># merge tag</span></span><br><span class="line">git branch -d hotfix/8.0.1</span><br></pre></td></tr></table></figure>
+
+<p>机器代码最容易解决的就是流程上的问题，但最难解决的是变更。当你在准备下一个 release 版本比如 release&#x2F;8.1.0 时，此时线上又出现了紧急的缺陷待修复必须马上发版本解决。团队决定又不准备做版本回滚，那么就要有一些变更了。我们需要在完成修复代码后将修复内容合并到 release&#x2F;8.1.0 分支，而不是 develop 分支，因为在 release&#x2F;8.1.0 完成后会自动合并到 develop，确保我们的代码不会被丢失。这些场景我们的确有碰到。但我更建议在流程上避免这些事情，release 分支的新建代表下一个迭代版本即将发布，如不是非常紧急的问题可以等待新版本发布，否则可能对现有发布流程产生影响。</p>
+<h2 id="长期服务分支维护-git-flow-support"><a href="#长期服务分支维护-git-flow-support" class="headerlink" title="长期服务分支维护 git flow support"></a>长期服务分支维护 git flow support</h2><p>私有化版本在我们的团队中是“家常便饭”，这些私有化版本常常无法与主版本代码保持一致，包括 hotfix 也无法覆盖到这些版本中。通常的情况是我们最新的版本已经发布到 8.0.0 版本，但外部还有使用 7.4.0 或 7.9.0 版本的客户，他们因为业务稳定性的要求，很难升级 SDK 至最新版本，你不得不把一些主版本已经修复的问题单独合并到这些长期维护分支中，它很像 Linux 的 LTS 版本。 在 git-flow 模型中，使用 <code>support/</code> 前缀来管理这些长期维护版本分支，当我们确定某个版本的代码是需要长期维护的，并且客户在这个版本中提到了一些已知问题，我们需要对这些问题进行修复时，首先基于该版本开启一个 support 分支。如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git flow support start 7.4.x 7.4.0</span><br></pre></td></tr></table></figure>
+
+<p>以上命令是基于 7.4.0 的 tag 开启了一个新的分支 support&#x2F;7.4.x 分支，这个分支就长期存在了，你不能删除它，它的级别与 master、develop 是一样重要的，比 release、hotfix 等更重要。因为他保存了这个长期支持分支的所有修复内容。接下来我们基于这个长期服务分支进行问题修复：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git flow hotfix start 7.4.1 support/7.4.x</span><br></pre></td></tr></table></figure>
+
+<p>此命令代表我们要基于 <code>support/7.4.x</code> 分支开启一个 hotfix 修复，修复后的版本号我们定在 7.4.1。在新的 hotfix 分支上我们进行问题代码修复，修复完成后执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git flow hotfix finsih <span class="string">&#x27;7.4.1&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>执行此命令后会有如下几个操作：</p>
+<ul>
+<li>合并 hotfix&#x2F;7.4.1 到 support&#x2F;7.4.x 分支</li>
+<li>新建 tag 7.4.1</li>
+<li>删除 hotifx&#x2F;7.4.1 的分支</li>
+</ul>
+<p>这样基于 support&#x2F;7.4.x 分支开启的所有修复都会合并回该分支中，它一直保持最新。在团队协作过程中，hotfix&#x2F;* 分支开启后，需要在该分支中提测和测试，在确保无误后再合并到 support&#x2F;* 分支确保。 我们来总结一下 git flow support 拆分成单独的 git 原生指令是如何工作的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 新建分支</span></span><br><span class="line">git checkout 7.4.0</span><br><span class="line">git branch -b support/7.4.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># 基于 support/7.4.x 新建 hotfix</span></span><br><span class="line">git checkout -b hotfix/7.4.1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 解决问题并合并修复</span></span><br><span class="line">git commit -a -s -m <span class="string">&quot;fix: somthing&quot;</span></span><br><span class="line">git checkout support/7.4.x</span><br><span class="line">git merge --no-ff hotfix/7.4.1</span><br><span class="line">git tag 7.4.1</span><br><span class="line">git branch -D hotfix/7.4.1</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>git-flow 模型和工具链给我们团队协作带来很大的方便，但是它有学习成本，即使是最简单的几条命令很多人也不愿意去理解它。现有的一些 GUI 管理工具如 SourceTree 则通过界面交互的方式让开发者少敲一些命令相信学习成本会有一些降低。但过度依赖 GUI 工具或现有 git-flow 工具链的命令并不是什么好事儿，容易变成“教条”或者“真理”让团队生厌。理解它的原理，当有一天你可以不依赖 git-flow 工具链能完整的做一个开发、发布、修复、支持等流程时，才算真的理解 git-flow。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nmgwddj.github.io/2021/03/12/2021/2021-03-12_173556-2965/" data-id="cliy8bebp00c6g8or3fjo38cn" data-title="基于 git flow + gitlab 协作开发：02 解决问题" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/07/14/2021/2021-07-14_134016-3023/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          node-pre-gyp 应用场景介绍及使用方法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/10/26/2020/2020-10-26_113857-2974/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Qt 通过自定义 URL Scheme 给已经运行的应用传参（Windows&amp;macOS）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataStruct/">DataStruct</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Language/">Language</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Platform/">Platform</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tools/">Tools</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/">language</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/language/C-C/">C/C++</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/language/C-C/QML/">QML</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/Perl/">Perl</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/QML/">QML</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/platform/">platform</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/platform/Linux-Unix/">Linux/Unix</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/platform/Linux-Unix/Windows/">Windows</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/platform/Windows/">Windows</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/platform/iOS-macOS/">iOS/macOS</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/platform/iOS-macOS/Windows/">Windows</a></li></ul></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AU3/" rel="tag">AU3</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BOM/" rel="tag">BOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CEF/" rel="tag">CEF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CMake/" rel="tag">CMake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Charles/" rel="tag">Charles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chrome/" rel="tag">Chrome</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DOM/" rel="tag">DOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug/" rel="tag">Debug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Drivers/" rel="tag">Drivers</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DuiLib/" rel="tag">DuiLib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ES6/" rel="tag">ES6</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Event/" rel="tag">Event</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FFmpeg/" rel="tag">FFmpeg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FTP/" rel="tag">FTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MFC/" rel="tag">MFC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac-OS-X/" rel="tag">Mac OS X</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NSIS/" rel="tag">NSIS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NVIDIA/" rel="tag">NVIDIA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QML/" rel="tag">QML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/" rel="tag">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt-Quick/" rel="tag">Qt Quick</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RESTful-API/" rel="tag">RESTful API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React/" rel="tag">React</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STL/" rel="tag">STL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SerialPort/" rel="tag">SerialPort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPN/" rel="tag">VPN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VSCode/" rel="tag">VSCode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VisualStudio/" rel="tag">VisualStudio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/atom/" rel="tag">atom</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django/" rel="tag">django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gcc/" rel="tag">gcc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/macOS/" rel="tag">macOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/makefile/" rel="tag">makefile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/meteor/" rel="tag">meteor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/node/" rel="tag">node</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/npm/" rel="tag">npm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redux/" rel="tag">redux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlite/" rel="tag">sqlite</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime-text/" rel="tag">sublime text</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wordpress/" rel="tag">wordpress</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/" rel="tag">二进制</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%BF%E5%87%BD%E6%95%B0/" rel="tag">仿函数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BD%8D%E6%93%8D%E4%BD%9C/" rel="tag">位操作</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BF%A1%E5%8F%B7/" rel="tag">信号</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8B%E5%85%83/" rel="tag">友元</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E6%80%81/" rel="tag">多态</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag">字符串</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8/" rel="tag">引用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/" rel="tag">思维导图</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8C%87%E9%92%88/" rel="tag">指针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%92%E5%BA%8F/" rel="tag">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E7%BB%84/" rel="tag">数组</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/" rel="tag">智能指针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9F%A5%E6%89%BE/" rel="tag">查找</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A8%A1%E7%89%88/" rel="tag">模版</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B1%BB/" rel="tag">类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" rel="tag">类型转换</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/" rel="tag">继承与派生</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/" rel="tag">运算符重载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" rel="tag">进程&#x2F;线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/" rel="tag">进程空间</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8D%E8%BD%BD/" rel="tag">重载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%93%BE%E8%A1%A8/" rel="tag">链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8/" rel="tag">驱动</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AU3/" style="font-size: 10px;">AU3</a> <a href="/tags/BOM/" style="font-size: 10px;">BOM</a> <a href="/tags/Boost/" style="font-size: 11.05px;">Boost</a> <a href="/tags/CEF/" style="font-size: 12.63px;">CEF</a> <a href="/tags/CMake/" style="font-size: 10.53px;">CMake</a> <a href="/tags/Charles/" style="font-size: 10px;">Charles</a> <a href="/tags/Chrome/" style="font-size: 10.53px;">Chrome</a> <a href="/tags/DOM/" style="font-size: 12.63px;">DOM</a> <a href="/tags/Debug/" style="font-size: 10px;">Debug</a> <a href="/tags/Drivers/" style="font-size: 13.68px;">Drivers</a> <a href="/tags/DuiLib/" style="font-size: 10px;">DuiLib</a> <a href="/tags/ES6/" style="font-size: 15.26px;">ES6</a> <a href="/tags/Event/" style="font-size: 11.58px;">Event</a> <a href="/tags/FFmpeg/" style="font-size: 10px;">FFmpeg</a> <a href="/tags/FTP/" style="font-size: 10px;">FTP</a> <a href="/tags/MFC/" style="font-size: 11.58px;">MFC</a> <a href="/tags/Mac-OS-X/" style="font-size: 11.05px;">Mac OS X</a> <a href="/tags/NSIS/" style="font-size: 10px;">NSIS</a> <a href="/tags/NVIDIA/" style="font-size: 10px;">NVIDIA</a> <a href="/tags/QML/" style="font-size: 10.53px;">QML</a> <a href="/tags/Qt/" style="font-size: 20px;">Qt</a> <a href="/tags/Qt-Quick/" style="font-size: 11.05px;">Qt Quick</a> <a href="/tags/RESTful-API/" style="font-size: 10px;">RESTful API</a> <a href="/tags/React/" style="font-size: 16.84px;">React</a> <a href="/tags/STL/" style="font-size: 12.11px;">STL</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/SerialPort/" style="font-size: 10px;">SerialPort</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/VSCode/" style="font-size: 11.05px;">VSCode</a> <a href="/tags/VisualStudio/" style="font-size: 18.42px;">VisualStudio</a> <a href="/tags/atom/" style="font-size: 10px;">atom</a> <a href="/tags/django/" style="font-size: 10px;">django</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gcc/" style="font-size: 10.53px;">gcc</a> <a href="/tags/git/" style="font-size: 12.63px;">git</a> <a href="/tags/highcharts/" style="font-size: 10px;">highcharts</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/makefile/" style="font-size: 10px;">makefile</a> <a href="/tags/meteor/" style="font-size: 17.37px;">meteor</a> <a href="/tags/mongodb/" style="font-size: 11.05px;">mongodb</a> <a href="/tags/mysql/" style="font-size: 12.11px;">mysql</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/node/" style="font-size: 10px;">node</a> <a href="/tags/npm/" style="font-size: 10px;">npm</a> <a href="/tags/openssl/" style="font-size: 10px;">openssl</a> <a href="/tags/oracle/" style="font-size: 16.32px;">oracle</a> <a href="/tags/redux/" style="font-size: 10px;">redux</a> <a href="/tags/sql/" style="font-size: 16.32px;">sql</a> <a href="/tags/sqlite/" style="font-size: 10px;">sqlite</a> <a href="/tags/sublime-text/" style="font-size: 11.05px;">sublime text</a> <a href="/tags/wordpress/" style="font-size: 11.58px;">wordpress</a> <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/" style="font-size: 10.53px;">二进制</a> <a href="/tags/%E4%BB%BF%E5%87%BD%E6%95%B0/" style="font-size: 10px;">仿函数</a> <a href="/tags/%E4%BD%8D%E6%93%8D%E4%BD%9C/" style="font-size: 11.05px;">位操作</a> <a href="/tags/%E4%BF%A1%E5%8F%B7/" style="font-size: 12.11px;">信号</a> <a href="/tags/%E5%8F%8B%E5%85%83/" style="font-size: 13.16px;">友元</a> <a href="/tags/%E5%A4%9A%E6%80%81/" style="font-size: 12.63px;">多态</a> <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" style="font-size: 17.89px;">字符串</a> <a href="/tags/%E5%BC%95%E7%94%A8/" style="font-size: 10px;">引用</a> <a href="/tags/%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/" style="font-size: 10px;">思维导图</a> <a href="/tags/%E6%8C%87%E9%92%88/" style="font-size: 18.42px;">指针</a> <a href="/tags/%E6%8E%92%E5%BA%8F/" style="font-size: 16.84px;">排序</a> <a href="/tags/%E6%95%B0%E7%BB%84/" style="font-size: 17.37px;">数组</a> <a href="/tags/%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/" style="font-size: 10px;">智能指针</a> <a href="/tags/%E6%9F%A5%E6%89%BE/" style="font-size: 12.63px;">查找</a> <a href="/tags/%E6%A8%A1%E7%89%88/" style="font-size: 12.63px;">模版</a> <a href="/tags/%E7%B1%BB/" style="font-size: 19.47px;">类</a> <a href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" style="font-size: 12.11px;">类型转换</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/" style="font-size: 14.21px;">继承与派生</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 16.84px;">网络</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/" style="font-size: 14.74px;">运算符重载</a> <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" style="font-size: 18.42px;">进程/线程</a> <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/" style="font-size: 18.95px;">进程空间</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 15.79px;">递归</a> <a href="/tags/%E9%87%8D%E8%BD%BD/" style="font-size: 10.53px;">重载</a> <a href="/tags/%E9%93%BE%E8%A1%A8/" style="font-size: 18.42px;">链表</a> <a href="/tags/%E9%A9%B1%E5%8A%A8/" style="font-size: 10px;">驱动</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">June 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">April 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">December 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/06/01/2023/2023-06-01_163201-3202/">macOS 应用正确签名并公证后分发依然提示“无法验证开发者”</a>
+          </li>
+        
+          <li>
+            <a href="/2023/04/26/2023/2023-04-26_100852-3189/">Qt6 QML 中渲染自定义视频帧的改进 2023-05-30 更新</a>
+          </li>
+        
+          <li>
+            <a href="/2022/12/09/2022/2022-12-09_182753-3163/">量化你团队的代码质量</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/05/2022/2022-08-05_160056-3146/">Jenkins pipeline macOS agent 报错：cmake: command not found</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/09/2022/2022-04-09_164105-3116/">使用 Conan、CMake 组织跨平台 Qt 工程</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 Dylan<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

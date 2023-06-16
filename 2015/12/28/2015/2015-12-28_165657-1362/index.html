@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Meteor 开发环境 mongodb 的连接 | Dylan&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="本文主要总结一下在使用 Meteor 开发过程中对 mongodb 数据库的管理。其中包含使用命令行终端（meteor shell）进行管理，还有图形化界面的工具 Robomongo 工具。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Meteor 开发环境 mongodb 的连接">
+<meta property="og:url" content="https://nmgwddj.github.io/2015/12/28/2015/2015-12-28_165657-1362/index.html">
+<meta property="og:site_name" content="Dylan&#39;s blog">
+<meta property="og:description" content="本文主要总结一下在使用 Meteor 开发过程中对 mongodb 数据库的管理。其中包含使用命令行终端（meteor shell）进行管理，还有图形化界面的工具 Robomongo 工具。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.09.31-1024x669.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.09.59-1024x609.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.10.24-1024x671.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.10.51-1024x711.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.55.09-1024x712.png">
+<meta property="article:published_time" content="2015-12-28T16:56:57.000Z">
+<meta property="article:modified_time" content="2023-06-16T07:08:53.755Z">
+<meta property="article:author" content="Dylan">
+<meta property="article:tag" content="meteor">
+<meta property="article:tag" content="mongodb">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://nmgwddj.github.io/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.09.31-1024x669.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Dylan's blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Dylan&#39;s blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">To the pursuit of truth.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://nmgwddj.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-2015/2015-12-28_165657-1362" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2015/12/28/2015/2015-12-28_165657-1362/" class="article-date">
+  <time class="dt-published" datetime="2015-12-28T16:56:57.000Z" itemprop="datePublished">2015-12-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Database/">Database</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Meteor 开发环境 mongodb 的连接
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>本文主要总结一下在使用 Meteor 开发过程中对 mongodb 数据库的管理。其中包含使用命令行终端（meteor shell）进行管理，还有图形化界面的工具 Robomongo 工具。</p>
+<span id="more"></span>
+<h3 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h3><p>当使用 meteor 命令启动 meteor 项目后，meteor 会默认使用 <code>3000</code> 端口作为 web 项目的端口，我们可以通过 <a target="_blank" rel="noopener" href="http://domainname:3000/">http://domainName:3000/</a> 这样的地址来访问我们的网站。而数据库所使用的端口，则是在这个端口基础上 +1，就是 <code>3001</code> 端口。也就是说，如果你指定启动 meteor 项目时使用了其他端口，比如 <code>meteor -p 8000</code>，那么 mongodb 的数据库连接端口就是 <code>8001</code>。</p>
+<h3 id="使用-meteor-shell-进行管理"><a href="#使用-meteor-shell-进行管理" class="headerlink" title="使用 meteor shell 进行管理"></a>使用 meteor shell 进行管理</h3><p>通过 meteor shell 管理 mongodb 不需要指定端口，你只要在 meteor 项目启动后的项目目录下执行 <code>meteor mongo</code> 就可以连接到数据库了。如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">myCode:~/Project/microduino$ meteor mongo</span><br><span class="line">MongoDB shell version: 2.6.7</span><br><span class="line">connecting to: 127.0.0.1:3001/meteor</span><br><span class="line">meteor:PRIMARY&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这样就连接到了当前项目的 mongodb 数据库，通过 <code>help</code> 命令可以看到帮助。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">meteor:PRIMARY&gt; help</span><br><span class="line">    db.help()                    help on db methods</span><br><span class="line">    db.mycoll.help()             help on collection methods</span><br><span class="line">    sh.help()                    sharding helpers</span><br><span class="line">    rs.help()                    replica set helpers</span><br><span class="line">    help admin                   administrative help</span><br><span class="line">    help connect                 connecting to a db help</span><br><span class="line">    help keys                    key shortcuts</span><br><span class="line">    help misc                    misc things to know</span><br><span class="line">    help mr                      mapreduce</span><br><span class="line"></span><br><span class="line">    show dbs                     show database names</span><br><span class="line">    show collections             show collections in current database</span><br><span class="line">    show users                   show users in current database</span><br><span class="line">    show profile                 show most recent system.profile entries with time &gt;= 1ms</span><br><span class="line">    show logs                    show the accessible logger names</span><br><span class="line">    show log [name]              prints out the last segment of log in memory, &#x27;global&#x27; is default</span><br><span class="line">    use &lt;db_name&gt;                set current database</span><br><span class="line">    db.foo.find()                list objects in collection foo</span><br><span class="line">    db.foo.find( &#123; a : 1 &#125; )     list objects in foo where a == 1</span><br><span class="line">    it                           result of the last line evaluated; use to further iterate</span><br><span class="line">    DBQuery.shellBatchSize = x   set default number of items to display on shell</span><br><span class="line">    exit                         quit the mongo shell</span><br></pre></td></tr></table></figure>
+
+<p>通过 <code>show dbs</code> 命令可以查看当前的数据库列表。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">meteor:PRIMARY&gt; show dbs</span><br><span class="line">admin   (empty)</span><br><span class="line">local   0.063GB</span><br><span class="line">meteor  0.031GB</span><br></pre></td></tr></table></figure>
+
+<p>上面我们看到，有一个名为 <code>meteor</code> 占用 0.031GB 的空间，使用命令 <code>use meteor</code> 选择它，然后使用命令 <code>show collections</code> 查看所有数据库。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">meteor:PRIMARY&gt; use meteor</span><br><span class="line">switched to db meteor</span><br><span class="line">meteor:PRIMARY&gt; show collections</span><br><span class="line">Accounts</span><br><span class="line">AnalyticsEvents</span><br><span class="line">Articles</span><br><span class="line">Cards</span><br><span class="line">Cart</span><br><span class="line">Discounts</span><br><span class="line">Orders</span><br><span class="line">Packages</span><br><span class="line">Products</span><br><span class="line">Sessions</span><br><span class="line">Shipping</span><br><span class="line">Shops</span><br><span class="line">Tags</span><br><span class="line">Taxes</span><br><span class="line">Translations</span><br><span class="line">cfs.Images.filerecord</span><br><span class="line">cfs._tempstore.chunks</span><br><span class="line">cfs_gridfs._tempstore.chunks</span><br><span class="line">cfs_gridfs._tempstore.files</span><br><span class="line">friends</span><br><span class="line">meteor_accounts_loginServiceConfiguration</span><br><span class="line">meteor_oauth_pendingCredentials</span><br><span class="line">meteor_oauth_pendingRequestTokens</span><br><span class="line">modules</span><br><span class="line">oldUsers</span><br><span class="line">roles</span><br><span class="line">system.indexes</span><br><span class="line">users</span><br></pre></td></tr></table></figure>
+
+<p>如果要对数据库进行查询，那么此时你就可以使用命令 <code>db.collectionName.find(...);</code> 来操作了。下面我们来介绍图形化界面的 Robomongo。</p>
+<h3 id="使用-Robomongo-管理数据库"><a href="#使用-Robomongo-管理数据库" class="headerlink" title="使用 Robomongo 管理数据库"></a>使用 Robomongo 管理数据库</h3><p>下载地址：<a target="_blank" rel="noopener" href="http://robomongo.org/">http://robomongo.org/</a> 安装完成后，配置连接属性，程序刚打开的时候一片空白，我们要手动点右键 Add 一个新的连接。 <a href="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.09.31.png"><img src="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.09.31-1024x669.png" alt="屏幕快照 2015-12-28 16.09.31"></a> 输入 mongodb 的连接信息，记住这个端口，要根据你项目启动的端口来决定的。 <a href="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.09.59.png"><img src="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.09.59-1024x609.png" alt="屏幕快照 2015-12-28 16.09.59"></a> 保存后点击 Connect 连接 <a href="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.10.24.png"><img src="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.10.24-1024x671.png" alt="屏幕快照 2015-12-28 16.10.24"></a> 连接上以后，就可以通过 <code>meteor-&gt;Collections</code> 看到所有的数据库信息了 <a href="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.10.51.png"><img src="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.10.51-1024x711.png" alt="屏幕快照 2015-12-28 16.10.51"></a> 如果想执行查询、更新等语句，可以双击一个数据库，再右侧数据列表的上方输入查询语句 <a href="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.55.09.png"><img src="/images/2015/12/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2015-12-28-16.55.09-1024x712.png" alt="屏幕快照 2015-12-28 16.55.09"></a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nmgwddj.github.io/2015/12/28/2015/2015-12-28_165657-1362/" data-id="cliy8bela01hwg8or2yk30iiu" data-title="Meteor 开发环境 mongodb 的连接" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/meteor/" rel="tag">meteor</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/01/01/2016/2016-01-01_165517-1371/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Sublime text 3 最新 Meteor 代码提示插件
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/12/26/2015/2015-12-26_184813-1314/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Meteor 分页包 alethes:pages 详解</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataStruct/">DataStruct</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Language/">Language</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Platform/">Platform</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tools/">Tools</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/">language</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/language/C-C/">C/C++</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/language/C-C/QML/">QML</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/Perl/">Perl</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/QML/">QML</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/platform/">platform</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/platform/Linux-Unix/">Linux/Unix</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/platform/Linux-Unix/Windows/">Windows</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/platform/Windows/">Windows</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/platform/iOS-macOS/">iOS/macOS</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/platform/iOS-macOS/Windows/">Windows</a></li></ul></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AU3/" rel="tag">AU3</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BOM/" rel="tag">BOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CEF/" rel="tag">CEF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CMake/" rel="tag">CMake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Charles/" rel="tag">Charles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chrome/" rel="tag">Chrome</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DOM/" rel="tag">DOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug/" rel="tag">Debug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Drivers/" rel="tag">Drivers</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DuiLib/" rel="tag">DuiLib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ES6/" rel="tag">ES6</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Event/" rel="tag">Event</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FFmpeg/" rel="tag">FFmpeg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FTP/" rel="tag">FTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MFC/" rel="tag">MFC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac-OS-X/" rel="tag">Mac OS X</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NSIS/" rel="tag">NSIS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NVIDIA/" rel="tag">NVIDIA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QML/" rel="tag">QML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/" rel="tag">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt-Quick/" rel="tag">Qt Quick</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RESTful-API/" rel="tag">RESTful API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React/" rel="tag">React</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STL/" rel="tag">STL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SerialPort/" rel="tag">SerialPort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPN/" rel="tag">VPN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VSCode/" rel="tag">VSCode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VisualStudio/" rel="tag">VisualStudio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/atom/" rel="tag">atom</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django/" rel="tag">django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gcc/" rel="tag">gcc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/macOS/" rel="tag">macOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/makefile/" rel="tag">makefile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/meteor/" rel="tag">meteor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/node/" rel="tag">node</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/npm/" rel="tag">npm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redux/" rel="tag">redux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlite/" rel="tag">sqlite</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime-text/" rel="tag">sublime text</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wordpress/" rel="tag">wordpress</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/" rel="tag">二进制</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%BF%E5%87%BD%E6%95%B0/" rel="tag">仿函数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BD%8D%E6%93%8D%E4%BD%9C/" rel="tag">位操作</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BF%A1%E5%8F%B7/" rel="tag">信号</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8B%E5%85%83/" rel="tag">友元</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E6%80%81/" rel="tag">多态</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag">字符串</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8/" rel="tag">引用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/" rel="tag">思维导图</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8C%87%E9%92%88/" rel="tag">指针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%92%E5%BA%8F/" rel="tag">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E7%BB%84/" rel="tag">数组</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/" rel="tag">智能指针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9F%A5%E6%89%BE/" rel="tag">查找</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A8%A1%E7%89%88/" rel="tag">模版</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B1%BB/" rel="tag">类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" rel="tag">类型转换</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/" rel="tag">继承与派生</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/" rel="tag">运算符重载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" rel="tag">进程&#x2F;线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/" rel="tag">进程空间</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8D%E8%BD%BD/" rel="tag">重载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%93%BE%E8%A1%A8/" rel="tag">链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8/" rel="tag">驱动</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AU3/" style="font-size: 10px;">AU3</a> <a href="/tags/BOM/" style="font-size: 10px;">BOM</a> <a href="/tags/Boost/" style="font-size: 11.05px;">Boost</a> <a href="/tags/CEF/" style="font-size: 12.63px;">CEF</a> <a href="/tags/CMake/" style="font-size: 10.53px;">CMake</a> <a href="/tags/Charles/" style="font-size: 10px;">Charles</a> <a href="/tags/Chrome/" style="font-size: 10.53px;">Chrome</a> <a href="/tags/DOM/" style="font-size: 12.63px;">DOM</a> <a href="/tags/Debug/" style="font-size: 10px;">Debug</a> <a href="/tags/Drivers/" style="font-size: 13.68px;">Drivers</a> <a href="/tags/DuiLib/" style="font-size: 10px;">DuiLib</a> <a href="/tags/ES6/" style="font-size: 15.26px;">ES6</a> <a href="/tags/Event/" style="font-size: 11.58px;">Event</a> <a href="/tags/FFmpeg/" style="font-size: 10px;">FFmpeg</a> <a href="/tags/FTP/" style="font-size: 10px;">FTP</a> <a href="/tags/MFC/" style="font-size: 11.58px;">MFC</a> <a href="/tags/Mac-OS-X/" style="font-size: 11.05px;">Mac OS X</a> <a href="/tags/NSIS/" style="font-size: 10px;">NSIS</a> <a href="/tags/NVIDIA/" style="font-size: 10px;">NVIDIA</a> <a href="/tags/QML/" style="font-size: 10.53px;">QML</a> <a href="/tags/Qt/" style="font-size: 20px;">Qt</a> <a href="/tags/Qt-Quick/" style="font-size: 11.05px;">Qt Quick</a> <a href="/tags/RESTful-API/" style="font-size: 10px;">RESTful API</a> <a href="/tags/React/" style="font-size: 16.84px;">React</a> <a href="/tags/STL/" style="font-size: 12.11px;">STL</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/SerialPort/" style="font-size: 10px;">SerialPort</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/VSCode/" style="font-size: 11.05px;">VSCode</a> <a href="/tags/VisualStudio/" style="font-size: 18.42px;">VisualStudio</a> <a href="/tags/atom/" style="font-size: 10px;">atom</a> <a href="/tags/django/" style="font-size: 10px;">django</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gcc/" style="font-size: 10.53px;">gcc</a> <a href="/tags/git/" style="font-size: 12.63px;">git</a> <a href="/tags/highcharts/" style="font-size: 10px;">highcharts</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/makefile/" style="font-size: 10px;">makefile</a> <a href="/tags/meteor/" style="font-size: 17.37px;">meteor</a> <a href="/tags/mongodb/" style="font-size: 11.05px;">mongodb</a> <a href="/tags/mysql/" style="font-size: 12.11px;">mysql</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/node/" style="font-size: 10px;">node</a> <a href="/tags/npm/" style="font-size: 10px;">npm</a> <a href="/tags/openssl/" style="font-size: 10px;">openssl</a> <a href="/tags/oracle/" style="font-size: 16.32px;">oracle</a> <a href="/tags/redux/" style="font-size: 10px;">redux</a> <a href="/tags/sql/" style="font-size: 16.32px;">sql</a> <a href="/tags/sqlite/" style="font-size: 10px;">sqlite</a> <a href="/tags/sublime-text/" style="font-size: 11.05px;">sublime text</a> <a href="/tags/wordpress/" style="font-size: 11.58px;">wordpress</a> <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/" style="font-size: 10.53px;">二进制</a> <a href="/tags/%E4%BB%BF%E5%87%BD%E6%95%B0/" style="font-size: 10px;">仿函数</a> <a href="/tags/%E4%BD%8D%E6%93%8D%E4%BD%9C/" style="font-size: 11.05px;">位操作</a> <a href="/tags/%E4%BF%A1%E5%8F%B7/" style="font-size: 12.11px;">信号</a> <a href="/tags/%E5%8F%8B%E5%85%83/" style="font-size: 13.16px;">友元</a> <a href="/tags/%E5%A4%9A%E6%80%81/" style="font-size: 12.63px;">多态</a> <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" style="font-size: 17.89px;">字符串</a> <a href="/tags/%E5%BC%95%E7%94%A8/" style="font-size: 10px;">引用</a> <a href="/tags/%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/" style="font-size: 10px;">思维导图</a> <a href="/tags/%E6%8C%87%E9%92%88/" style="font-size: 18.42px;">指针</a> <a href="/tags/%E6%8E%92%E5%BA%8F/" style="font-size: 16.84px;">排序</a> <a href="/tags/%E6%95%B0%E7%BB%84/" style="font-size: 17.37px;">数组</a> <a href="/tags/%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/" style="font-size: 10px;">智能指针</a> <a href="/tags/%E6%9F%A5%E6%89%BE/" style="font-size: 12.63px;">查找</a> <a href="/tags/%E6%A8%A1%E7%89%88/" style="font-size: 12.63px;">模版</a> <a href="/tags/%E7%B1%BB/" style="font-size: 19.47px;">类</a> <a href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" style="font-size: 12.11px;">类型转换</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/" style="font-size: 14.21px;">继承与派生</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 16.84px;">网络</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/" style="font-size: 14.74px;">运算符重载</a> <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" style="font-size: 18.42px;">进程/线程</a> <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/" style="font-size: 18.95px;">进程空间</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 15.79px;">递归</a> <a href="/tags/%E9%87%8D%E8%BD%BD/" style="font-size: 10.53px;">重载</a> <a href="/tags/%E9%93%BE%E8%A1%A8/" style="font-size: 18.42px;">链表</a> <a href="/tags/%E9%A9%B1%E5%8A%A8/" style="font-size: 10px;">驱动</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">June 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">April 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">December 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/06/01/2023/2023-06-01_163201-3202/">macOS 应用正确签名并公证后分发依然提示“无法验证开发者”</a>
+          </li>
+        
+          <li>
+            <a href="/2023/04/26/2023/2023-04-26_100852-3189/">Qt6 QML 中渲染自定义视频帧的改进 2023-05-30 更新</a>
+          </li>
+        
+          <li>
+            <a href="/2022/12/09/2022/2022-12-09_182753-3163/">量化你团队的代码质量</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/05/2022/2022-08-05_160056-3146/">Jenkins pipeline macOS agent 报错：cmake: command not found</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/09/2022/2022-04-09_164105-3116/">使用 Conan、CMake 组织跨平台 Qt 工程</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 Dylan<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

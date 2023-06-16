@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Dylan&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Dylan&#39;s blog">
+<meta property="og:url" content="https://nmgwddj.github.io/page/25/index.html">
+<meta property="og:site_name" content="Dylan&#39;s blog">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="Dylan">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Dylan's blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Dylan&#39;s blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">To the pursuit of truth.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://nmgwddj.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-2015/2015-07-11_114330-772" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2015/07/11/2015/2015-07-11_114330-772/" class="article-date">
+  <time class="dt-published" datetime="2015-07-11T11:43:30.000Z" itemprop="datePublished">2015-07-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Platform/">Platform</a>►<a class="article-category-link" href="/categories/platform/">platform</a>►<a class="article-category-link" href="/categories/platform/Linux-Unix/">Linux/Unix</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2015/07/11/2015/2015-07-11_114330-772/">多路 io 转接模型 select/poll</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>多路io转发服务器模型也是为了解决大并发多客户端场景下的问题，比多进程、多线程开销要少。多进程多线程常规情况下都是使用 accept 或 read 函数在阻塞等接收客户端发送过来的数据，而多路io模型则是提供了一个系统函数，该函数负责阻塞判断各路被监控的文件描述符是否有数据读取或写入操作，当有数据读取或写入时再让 accept 或 read 去直接处理从而不会阻塞，系统函数可能会同时返回多个有数据的文件描述符等待后面的代码处理，所以效率上要比多进程和多线程同时只在一个位置阻塞获取数据效率要高一些，下面就介绍一下多路 io 模型 select 和 poll，poll 模型较 select 模型还存在一些优势，在本文后面将介绍。</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/07/11/2015/2015-07-11_114330-772/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nmgwddj.github.io/2015/07/11/2015/2015-07-11_114330-772/" data-id="cliy8bej5017yg8orbaoge86m" data-title="多路 io 转接模型 select/poll" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" rel="tag">进程&#x2F;线程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2015/2015-07-11_104444-764" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2015/07/11/2015/2015-07-11_104444-764/" class="article-date">
+  <time class="dt-published" datetime="2015-07-11T10:44:44.000Z" itemprop="datePublished">2015-07-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Platform/">Platform</a>►<a class="article-category-link" href="/categories/platform/">platform</a>►<a class="article-category-link" href="/categories/platform/Linux-Unix/">Linux/Unix</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2015/07/11/2015/2015-07-11_104444-764/">socket 多进程/多线程模型实现</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>前文我们实现了一个 socket 最小的实现，它只允许一台终端连接到服务器进行数据通信，但这样的程序对我们来说没有什么意义，所以我们一定要实现多个客户端与一个服务端通信交互数据，这样才能真正派上用场，所以本文主要介绍了两种实现多客户端连接的方案，一种是多进程，一种是多线程，两种性能相差无几，但明显多线程在资源方面明显要比多进程消耗要少的多。</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/07/11/2015/2015-07-11_104444-764/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nmgwddj.github.io/2015/07/11/2015/2015-07-11_104444-764/" data-id="cliy8bej4017vg8oram7zghnb" data-title="socket 多进程/多线程模型实现" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" rel="tag">进程&#x2F;线程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2015/2015-07-07_201849-758" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2015/07/07/2015/2015-07-07_201849-758/" class="article-date">
+  <time class="dt-published" datetime="2015-07-07T20:18:49.000Z" itemprop="datePublished">2015-07-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Platform/">Platform</a>►<a class="article-category-link" href="/categories/platform/">platform</a>►<a class="article-category-link" href="/categories/platform/Linux-Unix/">Linux/Unix</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2015/07/07/2015/2015-07-07_201849-758/">linux/unix socket 最简单实例演示</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>今日开始接触 socket 网络编程，下面实例演示了服务器和客户端创建连接的流程，以及 socket 编程中需要使用的常见函数的使用方法。我们遵循下图的案例编写了一个服务端和一个客户端，目的只为写清楚每个函数的使用方法，所以只支持了一个客户端，也可以在 accept 后创建新的线程来维护客户端之间的通讯。具体参见图片和代码。</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/07/07/2015/2015-07-07_201849-758/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nmgwddj.github.io/2015/07/07/2015/2015-07-07_201849-758/" data-id="cliy8bej3017sg8or6cche5l6" data-title="linux/unix socket 最简单实例演示" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2015/2015-07-06_195033-751" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2015/07/06/2015/2015-07-06_195033-751/" class="article-date">
+  <time class="dt-published" datetime="2015-07-06T19:50:33.000Z" itemprop="datePublished">2015-07-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Platform/">Platform</a>►<a class="article-category-link" href="/categories/platform/">platform</a>►<a class="article-category-link" href="/categories/platform/Linux-Unix/">Linux/Unix</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2015/07/06/2015/2015-07-06_195033-751/">linux/unix 多线程拷贝文件示例</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>为了进一步加深对线程的操作，本文介绍了使用多线程实现拷贝文件的一个案例，网络上虽然有很多多线程拷贝的案例，但是都存在重大 bug。我们独辟蹊径，首先将一个文件分段映射到内存（mmap），随后将每一段映射的内存通知给线程，由线程去对每一段已经映射的内存进行复制。具体实现代码如下：</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/07/06/2015/2015-07-06_195033-751/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nmgwddj.github.io/2015/07/06/2015/2015-07-06_195033-751/" data-id="cliy8bej2017pg8orhzs62xz2" data-title="linux/unix 多线程拷贝文件示例" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" rel="tag">进程&#x2F;线程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2015/2015-07-06_111809-741" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2015/07/06/2015/2015-07-06_111809-741/" class="article-date">
+  <time class="dt-published" datetime="2015-07-06T11:18:09.000Z" itemprop="datePublished">2015-07-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Platform/">Platform</a>►<a class="article-category-link" href="/categories/platform/">platform</a>►<a class="article-category-link" href="/categories/platform/Linux-Unix/">Linux/Unix</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2015/07/06/2015/2015-07-06_111809-741/">ubuntu 安装微软雅黑和 Consolas 字体</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Consolas 字体用来写代码真的是非常舒服，可惜 ubuntu 系统中默认并没有这个字体，我们需要自己下载安装，本文就介绍了如何自己手动下载并安装如上字体。先来看一下vim下使用 Consolas 字体的效果图吧。</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/07/06/2015/2015-07-06_111809-741/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nmgwddj.github.io/2015/07/06/2015/2015-07-06_111809-741/" data-id="cliy8bej1017mg8or3unael65" data-title="ubuntu 安装微软雅黑和 Consolas 字体" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2015/2015-07-05_173828-737" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2015/07/05/2015/2015-07-05_173828-737/" class="article-date">
+  <time class="dt-published" datetime="2015-07-05T17:38:28.000Z" itemprop="datePublished">2015-07-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Platform/">Platform</a>►<a class="article-category-link" href="/categories/platform/">platform</a>►<a class="article-category-link" href="/categories/platform/Linux-Unix/">Linux/Unix</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2015/07/05/2015/2015-07-05_173828-737/">多线程互斥锁解决哲学家就餐问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>哲学家就餐问题是一个了解和练习线程间同步的非常好的小例子，题为 5 个哲学家（线程）围成一桌就餐，但是只有 5 只筷子（锁），一个人想要吃饭就必须要拥有左侧的筷子（锁1）和右侧的筷子（锁2）才能吃饭。每一个哲学家刚进桌前都持有了自己左侧的筷子，这样所有人只有一只筷子都无法就餐，所以就要想办法去拿右侧的筷子，而因为右侧的筷子被别人持有，所以无法拿到，这个时间就成了死锁状态。所以必须要有一个解锁的条件，那就是在哲学家尝试去拿右侧筷子的时候，如果失败了，那么将自己左手边的筷子放下，此时这个哲学家左侧人就可以持有他原来左手边的筷子来就餐了。实现的具体步骤和代码如下：</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/07/05/2015/2015-07-05_173828-737/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nmgwddj.github.io/2015/07/05/2015/2015-07-05_173828-737/" data-id="cliy8bej0017jg8orfcx73xew" data-title="多线程互斥锁解决哲学家就餐问题" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" rel="tag">进程&#x2F;线程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2015/2015-07-05_173142-735" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2015/07/05/2015/2015-07-05_173142-735/" class="article-date">
+  <time class="dt-published" datetime="2015-07-05T17:31:42.000Z" itemprop="datePublished">2015-07-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Platform/">Platform</a>►<a class="article-category-link" href="/categories/platform/">platform</a>►<a class="article-category-link" href="/categories/platform/Linux-Unix/">Linux/Unix</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2015/07/05/2015/2015-07-05_173142-735/">信号量实现的生产者消费者模型</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>信号量实现生产者消费者模型，可以无需互斥量（mutex）协助就能实现。实现方法是声明两个信号量变量，两个信号量分别代表可生产产品的数量和已经生产的产品数量，然后在线程函数中维护这两个信号量变量实现生产者消费者模型。</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/07/05/2015/2015-07-05_173142-735/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nmgwddj.github.io/2015/07/05/2015/2015-07-05_173142-735/" data-id="cliy8beiy017gg8or3nya9tp2" data-title="信号量实现的生产者消费者模型" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" rel="tag">进程&#x2F;线程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2015/2015-07-05_172622-733" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2015/07/05/2015/2015-07-05_172622-733/" class="article-date">
+  <time class="dt-published" datetime="2015-07-05T17:26:22.000Z" itemprop="datePublished">2015-07-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Platform/">Platform</a>►<a class="article-category-link" href="/categories/platform/">platform</a>►<a class="article-category-link" href="/categories/platform/Linux-Unix/">Linux/Unix</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2015/07/05/2015/2015-07-05_172622-733/">使用条件变量实现生产者消费者模型</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>生产者消费者模型是多线程案例中经常用到的一种模型，有专门的线程在负责生产产品（这个产品指代程序所需的数据、文件等等），有专门的线程在负责取出生产出来的产品用以提供程序使用（消费）。因为生产和消费在程序中是不定时间的，我们也无法确定什么时候需要生产产品，什么时候需要消费产品。所以就有了使用条件变量实现的解决方案。</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/07/05/2015/2015-07-05_172622-733/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nmgwddj.github.io/2015/07/05/2015/2015-07-05_172622-733/" data-id="cliy8beix017dg8or3nks6qhs" data-title="使用条件变量实现生产者消费者模型" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" rel="tag">进程&#x2F;线程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2015/2015-07-05_171537-731" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2015/07/05/2015/2015-07-05_171537-731/" class="article-date">
+  <time class="dt-published" datetime="2015-07-05T17:15:37.000Z" itemprop="datePublished">2015-07-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Platform/">Platform</a>►<a class="article-category-link" href="/categories/platform/">platform</a>►<a class="article-category-link" href="/categories/platform/Linux-Unix/">Linux/Unix</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2015/07/05/2015/2015-07-05_171537-731/">互斥量操作原语</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>保证在某一时刻只有一个线程能访问数据的简便办法。在任意时刻只允许一个线程对共享资源进行访问。如果有多个线程试图同时访问临界区，那么 在有一个线程进入后其他所有试图访问此临界区的线程将被挂起，并一直持续到进入临界区的线程离开。临界区在被释放后，其他线程可以继续抢占，并以此达到用原子方式操作共享资源的目的。临界区的选定因尽可能小，如果选定太大会影响程序的并行处理性能。</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/07/05/2015/2015-07-05_171537-731/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nmgwddj.github.io/2015/07/05/2015/2015-07-05_171537-731/" data-id="cliy8beiw017ag8or0k7cb2yr" data-title="互斥量操作原语" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" rel="tag">进程&#x2F;线程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-2015/2015-07-05_170518-724" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2015/07/05/2015/2015-07-05_170518-724/" class="article-date">
+  <time class="dt-published" datetime="2015-07-05T17:05:18.000Z" itemprop="datePublished">2015-07-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Platform/">Platform</a>►<a class="article-category-link" href="/categories/platform/">platform</a>►<a class="article-category-link" href="/categories/platform/Linux-Unix/">Linux/Unix</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2015/07/05/2015/2015-07-05_170518-724/">线程属性设置</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>本文将通过一个创建n个线程的案例来展示一下线程属性的设定及使用，通常情况下，系统对于线程的创建是没有限制的，但是每一个线程都是需要一个栈空间的，每个栈空间大小也都是固定的，可通过系统命令 ulimit -a 来查看，如果线程栈空间的总数超过了一个进程可使用的虚拟内存用户空间，那么就无法再继续创建线程了。我们只是做一个小的测试，调整每个线程的栈空间大小来揭露线程属性的使用方法，并提高一个程序创建线程的数量（Notice：提高线程数量并没有什么好处，我们只是为了演示如何修改线程属性）。</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/07/05/2015/2015-07-05_170518-724/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nmgwddj.github.io/2015/07/05/2015/2015-07-05_170518-724/" data-id="cliy8beiv0177g8orhq0qdrh7" data-title="线程属性设置" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" rel="tag">进程&#x2F;线程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/24/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="page-number current">25</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><span class="space">&hellip;</span><a class="page-number" href="/page/40/">40</a><a class="extend next" rel="next" href="/page/26/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataStruct/">DataStruct</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Language/">Language</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Platform/">Platform</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tools/">Tools</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/">language</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/language/C-C/">C/C++</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/language/C-C/QML/">QML</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/Perl/">Perl</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/QML/">QML</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/platform/">platform</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/platform/Linux-Unix/">Linux/Unix</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/platform/Linux-Unix/Windows/">Windows</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/platform/Windows/">Windows</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/platform/iOS-macOS/">iOS/macOS</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/platform/iOS-macOS/Windows/">Windows</a></li></ul></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AU3/" rel="tag">AU3</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BOM/" rel="tag">BOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CEF/" rel="tag">CEF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CMake/" rel="tag">CMake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Charles/" rel="tag">Charles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chrome/" rel="tag">Chrome</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DOM/" rel="tag">DOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug/" rel="tag">Debug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Drivers/" rel="tag">Drivers</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DuiLib/" rel="tag">DuiLib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ES6/" rel="tag">ES6</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Event/" rel="tag">Event</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FFmpeg/" rel="tag">FFmpeg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FTP/" rel="tag">FTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MFC/" rel="tag">MFC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac-OS-X/" rel="tag">Mac OS X</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NSIS/" rel="tag">NSIS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NVIDIA/" rel="tag">NVIDIA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QML/" rel="tag">QML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/" rel="tag">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt-Quick/" rel="tag">Qt Quick</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RESTful-API/" rel="tag">RESTful API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React/" rel="tag">React</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STL/" rel="tag">STL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SerialPort/" rel="tag">SerialPort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPN/" rel="tag">VPN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VSCode/" rel="tag">VSCode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VisualStudio/" rel="tag">VisualStudio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/atom/" rel="tag">atom</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django/" rel="tag">django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gcc/" rel="tag">gcc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/macOS/" rel="tag">macOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/makefile/" rel="tag">makefile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/meteor/" rel="tag">meteor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/node/" rel="tag">node</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/npm/" rel="tag">npm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redux/" rel="tag">redux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlite/" rel="tag">sqlite</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime-text/" rel="tag">sublime text</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wordpress/" rel="tag">wordpress</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/" rel="tag">二进制</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%BF%E5%87%BD%E6%95%B0/" rel="tag">仿函数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BD%8D%E6%93%8D%E4%BD%9C/" rel="tag">位操作</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BF%A1%E5%8F%B7/" rel="tag">信号</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8B%E5%85%83/" rel="tag">友元</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E6%80%81/" rel="tag">多态</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag">字符串</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8/" rel="tag">引用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/" rel="tag">思维导图</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8C%87%E9%92%88/" rel="tag">指针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%92%E5%BA%8F/" rel="tag">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E7%BB%84/" rel="tag">数组</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/" rel="tag">智能指针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9F%A5%E6%89%BE/" rel="tag">查找</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A8%A1%E7%89%88/" rel="tag">模版</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B1%BB/" rel="tag">类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" rel="tag">类型转换</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/" rel="tag">继承与派生</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/" rel="tag">运算符重载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" rel="tag">进程&#x2F;线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/" rel="tag">进程空间</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8D%E8%BD%BD/" rel="tag">重载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%93%BE%E8%A1%A8/" rel="tag">链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8/" rel="tag">驱动</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AU3/" style="font-size: 10px;">AU3</a> <a href="/tags/BOM/" style="font-size: 10px;">BOM</a> <a href="/tags/Boost/" style="font-size: 11.05px;">Boost</a> <a href="/tags/CEF/" style="font-size: 12.63px;">CEF</a> <a href="/tags/CMake/" style="font-size: 10.53px;">CMake</a> <a href="/tags/Charles/" style="font-size: 10px;">Charles</a> <a href="/tags/Chrome/" style="font-size: 10.53px;">Chrome</a> <a href="/tags/DOM/" style="font-size: 12.63px;">DOM</a> <a href="/tags/Debug/" style="font-size: 10px;">Debug</a> <a href="/tags/Drivers/" style="font-size: 13.68px;">Drivers</a> <a href="/tags/DuiLib/" style="font-size: 10px;">DuiLib</a> <a href="/tags/ES6/" style="font-size: 15.26px;">ES6</a> <a href="/tags/Event/" style="font-size: 11.58px;">Event</a> <a href="/tags/FFmpeg/" style="font-size: 10px;">FFmpeg</a> <a href="/tags/FTP/" style="font-size: 10px;">FTP</a> <a href="/tags/MFC/" style="font-size: 11.58px;">MFC</a> <a href="/tags/Mac-OS-X/" style="font-size: 11.05px;">Mac OS X</a> <a href="/tags/NSIS/" style="font-size: 10px;">NSIS</a> <a href="/tags/NVIDIA/" style="font-size: 10px;">NVIDIA</a> <a href="/tags/QML/" style="font-size: 10.53px;">QML</a> <a href="/tags/Qt/" style="font-size: 20px;">Qt</a> <a href="/tags/Qt-Quick/" style="font-size: 11.05px;">Qt Quick</a> <a href="/tags/RESTful-API/" style="font-size: 10px;">RESTful API</a> <a href="/tags/React/" style="font-size: 16.84px;">React</a> <a href="/tags/STL/" style="font-size: 12.11px;">STL</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/SerialPort/" style="font-size: 10px;">SerialPort</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/VSCode/" style="font-size: 11.05px;">VSCode</a> <a href="/tags/VisualStudio/" style="font-size: 18.42px;">VisualStudio</a> <a href="/tags/atom/" style="font-size: 10px;">atom</a> <a href="/tags/django/" style="font-size: 10px;">django</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gcc/" style="font-size: 10.53px;">gcc</a> <a href="/tags/git/" style="font-size: 12.63px;">git</a> <a href="/tags/highcharts/" style="font-size: 10px;">highcharts</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/makefile/" style="font-size: 10px;">makefile</a> <a href="/tags/meteor/" style="font-size: 17.37px;">meteor</a> <a href="/tags/mongodb/" style="font-size: 11.05px;">mongodb</a> <a href="/tags/mysql/" style="font-size: 12.11px;">mysql</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/node/" style="font-size: 10px;">node</a> <a href="/tags/npm/" style="font-size: 10px;">npm</a> <a href="/tags/openssl/" style="font-size: 10px;">openssl</a> <a href="/tags/oracle/" style="font-size: 16.32px;">oracle</a> <a href="/tags/redux/" style="font-size: 10px;">redux</a> <a href="/tags/sql/" style="font-size: 16.32px;">sql</a> <a href="/tags/sqlite/" style="font-size: 10px;">sqlite</a> <a href="/tags/sublime-text/" style="font-size: 11.05px;">sublime text</a> <a href="/tags/wordpress/" style="font-size: 11.58px;">wordpress</a> <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/" style="font-size: 10.53px;">二进制</a> <a href="/tags/%E4%BB%BF%E5%87%BD%E6%95%B0/" style="font-size: 10px;">仿函数</a> <a href="/tags/%E4%BD%8D%E6%93%8D%E4%BD%9C/" style="font-size: 11.05px;">位操作</a> <a href="/tags/%E4%BF%A1%E5%8F%B7/" style="font-size: 12.11px;">信号</a> <a href="/tags/%E5%8F%8B%E5%85%83/" style="font-size: 13.16px;">友元</a> <a href="/tags/%E5%A4%9A%E6%80%81/" style="font-size: 12.63px;">多态</a> <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" style="font-size: 17.89px;">字符串</a> <a href="/tags/%E5%BC%95%E7%94%A8/" style="font-size: 10px;">引用</a> <a href="/tags/%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/" style="font-size: 10px;">思维导图</a> <a href="/tags/%E6%8C%87%E9%92%88/" style="font-size: 18.42px;">指针</a> <a href="/tags/%E6%8E%92%E5%BA%8F/" style="font-size: 16.84px;">排序</a> <a href="/tags/%E6%95%B0%E7%BB%84/" style="font-size: 17.37px;">数组</a> <a href="/tags/%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/" style="font-size: 10px;">智能指针</a> <a href="/tags/%E6%9F%A5%E6%89%BE/" style="font-size: 12.63px;">查找</a> <a href="/tags/%E6%A8%A1%E7%89%88/" style="font-size: 12.63px;">模版</a> <a href="/tags/%E7%B1%BB/" style="font-size: 19.47px;">类</a> <a href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" style="font-size: 12.11px;">类型转换</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/" style="font-size: 14.21px;">继承与派生</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 16.84px;">网络</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/" style="font-size: 14.74px;">运算符重载</a> <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" style="font-size: 18.42px;">进程/线程</a> <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/" style="font-size: 18.95px;">进程空间</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 15.79px;">递归</a> <a href="/tags/%E9%87%8D%E8%BD%BD/" style="font-size: 10.53px;">重载</a> <a href="/tags/%E9%93%BE%E8%A1%A8/" style="font-size: 18.42px;">链表</a> <a href="/tags/%E9%A9%B1%E5%8A%A8/" style="font-size: 10px;">驱动</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">June 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">April 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">December 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/06/01/2023/2023-06-01_163201-3202/">macOS 应用正确签名并公证后分发依然提示“无法验证开发者”</a>
+          </li>
+        
+          <li>
+            <a href="/2023/04/26/2023/2023-04-26_100852-3189/">Qt6 QML 中渲染自定义视频帧的改进 2023-05-30 更新</a>
+          </li>
+        
+          <li>
+            <a href="/2022/12/09/2022/2022-12-09_182753-3163/">量化你团队的代码质量</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/05/2022/2022-08-05_160056-3146/">Jenkins pipeline macOS agent 报错：cmake: command not found</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/09/2022/2022-04-09_164105-3116/">使用 Conan、CMake 组织跨平台 Qt 工程</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 Dylan<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

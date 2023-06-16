@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>量化你团队的代码质量 | Dylan&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="在疫情背景下各大公司都有所异动，toB 的团队企业内卷也越来越明显。此时此刻如果团队中的产品又出现各种低级问题无疑是雪上加霜。本文围绕团队在产品质量攻坚工作中做的一些质量检查手段，介绍如何让你团队的代码质量可以量化，并保留最珍贵、可维护、可持续、可传承的工程化代码。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="量化你团队的代码质量">
+<meta property="og:url" content="https://nmgwddj.github.io/2022/12/09/2022/2022-12-09_182753-3163/index.html">
+<meta property="og:site_name" content="Dylan&#39;s blog">
+<meta property="og:description" content="在疫情背景下各大公司都有所异动，toB 的团队企业内卷也越来越明显。此时此刻如果团队中的产品又出现各种低级问题无疑是雪上加霜。本文围绕团队在产品质量攻坚工作中做的一些质量检查手段，介绍如何让你团队的代码质量可以量化，并保留最珍贵、可维护、可持续、可传承的工程化代码。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2022/12/01.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2022/12/02.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2022/12/03.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2022/12/04.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2022/12/05.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2022/12/06.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2022/12/07.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2022/12/08.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2022/12/09.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2022/12/10.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2022/12/11.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2022/12/12.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2022/12/13.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2022/12/14.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2022/12/15.png">
+<meta property="article:published_time" content="2022-12-09T18:27:53.000Z">
+<meta property="article:modified_time" content="2023-06-16T07:08:53.763Z">
+<meta property="article:author" content="Dylan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://nmgwddj.github.io/images/2022/12/01.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Dylan's blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Dylan&#39;s blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">To the pursuit of truth.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://nmgwddj.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-2022/2022-12-09_182753-3163" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/12/09/2022/2022-12-09_182753-3163/" class="article-date">
+  <time class="dt-published" datetime="2022-12-09T18:27:53.000Z" itemprop="datePublished">2022-12-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/language/">language</a>►<a class="article-category-link" href="/categories/language/C-C/">C/C++</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      量化你团队的代码质量
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在疫情背景下各大公司都有所异动，toB 的团队企业内卷也越来越明显。此时此刻如果团队中的产品又出现各种低级问题无疑是雪上加霜。本文围绕团队在产品质量攻坚工作中做的一些质量检查手段，介绍如何让你团队的代码质量可以量化，并保留最珍贵、可维护、可持续、可传承的工程化代码。</p>
+<span id="more"></span>
+<h2 id="整合目标"><a href="#整合目标" class="headerlink" title="整合目标"></a>整合目标</h2><p>本文除了让大家了解这些工具如何使用以外，还会重点描述如何组织这些代码质量的周边工具链使其达到工程化程度，讨论什么该做，什么不该做，为什么这么做。我对所谓 工程化 有以下几个明确的定义：</p>
+<ul>
+<li>可维护：贴近 GitOps，尽量将所有可变配置放到代码仓库，而不是分散维护，Everything is code.</li>
+<li>可持续：不是应付一次检查或攻坚，而是形成常态</li>
+<li>可传承：新人只关注代码，不关注质量工具的配置细节，通过类似于 MRs 的结果反馈不断改进自身代码质量</li>
+</ul>
+<p>一些涉及到权限控制的位置（如代码质量阈设置）是需要有管理员把控的，要实施这些步骤首先团队的技术管理负责人要有这些认知并且能在关键点拍板。如果仅认为这些东西有了就够了恐怕是很难实施下去的！ 本文示例均已一个简单的 ne-phoenix 基础库代码作为示例，介绍围绕该工程展开的质量突击。</p>
+<h2 id="准备工具"><a href="#准备工具" class="headerlink" title="准备工具"></a>准备工具</h2><ul>
+<li>clang-tidy、infer 用于静态代码检查</li>
+<li>lcov 用于统计单元测试代码覆盖率</li>
+<li>gcovr 用于生成覆盖率报告及转为 SonarQube 支持的报告格式</li>
+<li>sonar-scanner 用于传送以上工具的报告结果到 SonarQube 平台（平台搭建请参考官方文档）</li>
+<li>pre-commit 可选，用于提交时本地执行静态代码检查</li>
+</ul>
+<p>这些工具在 macOS 中均可通过 brew 来进行安装，比较特殊的是 clang-tidy，它在 LLVM 工具链中，您需要在 brew install llvm 后再通过 brew link llvm 按提示将可执行文件添加到环境变量中，使脚本可以直接访问到 clang-tidy 可执行程序。</p>
+<h2 id="Code-coverage"><a href="#Code-coverage" class="headerlink" title="Code coverage"></a>Code coverage</h2><p>单元测试、API 测试、集成测试，只听这些概念就足够让我们晕头转向，但无论如何，我一直很认同一句话：没有覆盖率统计的测试就是耍流氓。即便你提供了所谓每天的自动化测试报告，貌似可以量化，但真正的作用谁有知道呢？虽然覆盖率统计并不能代表代码就是 100% 可靠的。但它可以通过量化的数据告诉我们代码的哪些分支、哪些逻辑我们还没有覆盖，至少能让你知道，你的测试是不是在做一些无意义的事情。 在 ne-phoenix 基础库中，我们以 CMake + Conan 驱动整个工程的编译，单元测试的框架使用了 Google Test。要统计执行测试程序后对代码的覆盖情况，我们要做以下几点工作：</p>
+<ul>
+<li>增加编译选项为 coverage 做准备</li>
+<li>lcov 初始化一次基础扫描</li>
+<li>编译并运行测试可执行程序</li>
+<li>lcov 扫描执行测试程序后的结果捕获覆盖到的代码情况</li>
+<li>lcov 与基础报告对比生成结果</li>
+</ul>
+<p>这个步骤比较繁琐，我们找到了一个开源的 CMake 插件 <a target="_blank" rel="noopener" href="https://github.com/bilke/cmake-modules/blob/master/CodeCoverage.cmake">CodeCoverage.cmake</a>，有了这个插件，您只需要在您的工程中添加几行 CMake 代码即可实现覆盖率统计能力：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (APPLE)</span><br><span class="line">    <span class="keyword">include</span>(CodeCoverage)</span><br><span class="line">    append_coverage_compiler_flags()</span><br><span class="line"><span class="keyword">endif</span> ()</span><br><span class="line"></span><br><span class="line">.....</span><br><span class="line">..... </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (BUILD_TESTING)</span><br><span class="line">    <span class="keyword">add_subdirectory</span>(testing)</span><br><span class="line">    <span class="keyword">if</span> (APPLE)</span><br><span class="line">        setup_target_for_coverage_lcov(</span><br><span class="line">            NAME coverage</span><br><span class="line">            SONARQUBE <span class="keyword">TRUE</span></span><br><span class="line">            BASE_DIRECTORY <span class="string">&quot;$&#123;CMAKE_CURRENT_LIST_DIR&#125;&quot;</span></span><br><span class="line">            EXECUTABLE testing</span><br><span class="line">            EXECUTABLE_ARGS --gtest_output=xml:result.xml</span><br><span class="line">            EXCLUDE <span class="string">&quot;/*v1/*&quot;</span> <span class="string">&quot;/*/.conan/data/*&quot;</span> <span class="string">&quot;/*CompilerId*&quot;</span> <span class="string">&quot;/*/testing*&quot;</span> <span class="string">&quot;/*/*_unittest.cc&quot;</span></span><br><span class="line">        )</span><br><span class="line">    <span class="keyword">endif</span> ()</span><br><span class="line"><span class="keyword">endif</span> ()</span><br></pre></td></tr></table></figure>
+
+<p>首先在脚本开始判断平台并引入 CodeCoverage.cmake 插件，调用 <code>append_coverage_compiler_flags()</code> 接口全局添加统计代码覆盖率所需的编译选项。随后调用 <code>setup_target_for_coverage_lcov()</code> 添加一个自定义 CMake 目标用来执行并输出覆盖率统计报告，它的参数分别如下：</p>
+<ul>
+<li><code>NAME</code> 在 CMake 中生成的自定义目标名称</li>
+<li><code>SONARQUBE</code> 是否生成 SonarQube 兼容的覆盖率统计报告</li>
+<li><code>BASE_DIRECTORY</code> 要统计覆盖率源码的起始目录</li>
+<li><code>EXECUTABLE</code> 执行测试的程序，这里使用接入了 Google Test 的可执行程序</li>
+<li><code>EXECUTABLE_ARGS</code> 执行测试程序是的命令行参数，用于生成 GTest 结果报告为 xml 上报给 GitLab</li>
+<li><code>EXCLUDE</code> 在报告中排除一些不需要的目录</li>
+</ul>
+<p>添加完成后只需要如下两条命令，就可以自动在 CMake 缓存目录生成覆盖率统计报告了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 初始化工程为 Debug</span></span><br><span class="line">cmake -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_STANDARD=14</span><br><span class="line"><span class="comment"># 编译 coverage 目标</span></span><br><span class="line">cmake --build build --config Debug --target coverage</span><br></pre></td></tr></table></figure>
+
+<p>生成 coverage 目标完成后，该目标会自动化执行测试程序并统计出报告：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Writing directory view page.</span><br><span class="line">Overall coverage rate:</span><br><span class="line">  lines......: 80.5% (1583 of 1966 lines)</span><br><span class="line">  <span class="built_in">functions</span>..: 78.3% (503 of 642 <span class="built_in">functions</span>)</span><br><span class="line">SonarQube code coverage info report saved <span class="keyword">in</span> coverage_sonarqube.xml.</span><br><span class="line">Open ./coverage/index.html <span class="keyword">in</span> your browser to view the coverage report.</span><br></pre></td></tr></table></figure>
+
+<p>我们打开 build&#x2F;coverage&#x2F;index.html 就可以看到完整的覆盖率情况了： <a href="/images/2022/12/01.png"><img src="/images/2022/12/01.png"></a> 点击某个文件进入可查看当前测试程序覆盖到了哪些条件判断，其中红色的表示你的测试程序没有覆盖到该位置的代码： <a href="/images/2022/12/02.png"><img src="/images/2022/12/02.png"></a> 除了可视化的 html 查看覆盖率报告外，还输出了 SonarQube 兼容的 xml 格式报告 build&#x2F;coverage_sonarqube.xml 文件，稍后我们介绍如何将该文件上传到 SonarQube 平台用以统计。 同时测试程序的成功、失败情况也输出在了 build&#x2F;result.xml 中，稍后我们介绍如何将该文件上传到 GitLab 展示。</p>
+<h2 id="Code-static-analyzer"><a href="#Code-static-analyzer" class="headerlink" title="Code static analyzer"></a>Code static analyzer</h2><p>无论颗粒度是怎样的测试不仅能帮助我们发现业务流程中的问题，也能让我们尽快发现代码实现上的问题。但代码质量、可读性、可扩展性这些都是无法得知的，这些可以通过静态代码检查来实现。 Google 团队在 Chromium 项目中很早就应用了诸多静态代码检查工具，有的是依赖编译的，有的是通过正则模式分析的，各有优劣。仰仗于各个大厂和开源社区的努力，周边工具链越来越给力，类 clang-tidy、infer 的工具，不仅能实现完整的静态代码检查，还可以完全替代以前的正则类扫描工具如 cpplint 等。本文以 clang-tidy 分析 C++ 代码举例，让我们一起了解如何从头分析一个完整的工程。 如果你是 CMake 工程，做到这件事情非常简单，只需要在 CMake 初始化工程时增加参数：<code>-DCMAKE_EXPORT_COMPILE_COMMANDS=ON</code>，该参数的增加会告知 CMake 将所有源文件的编译选项写入到一个名为 compile_commands.json 的 json 文件中。后续所有的静态代码检查都是基于该文件进行的。 以 ne-phoenix 工程举例，首先使用如下命令生成工程配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cmake -Bbuild -DCMAKE_BUILD_TYPE=Debug \</span><br><span class="line">    -DBUILD_TESTING=ON \</span><br><span class="line">    -DCMAKE_CXX_STANDARD=14 \</span><br><span class="line">    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON</span><br></pre></td></tr></table></figure>
+
+<p><code>compile_commands.json</code> 会生成到 CMake 的缓存目录 build 下，然后调用 clang-tidy 命令，对你关注的文件进行分析：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clang-tidy -p=build main.cpp</span><br></pre></td></tr></table></figure>
+
+<p>clang-tidy 有默认的规则是启用所有，如果你希望控制规则细节，可在工程目录放置一个 .clang-tidy 配置文件，内容类似如下：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">Checks:</span> <span class="string">&gt;</span></span><br><span class="line"><span class="string">  -*,</span></span><br><span class="line"><span class="string">  abseil-*,</span></span><br><span class="line"><span class="string">  bugprone-*,</span></span><br><span class="line"><span class="string">  clang-analyzer-*,</span></span><br><span class="line"><span class="string">  google-*,</span></span><br><span class="line"><span class="string">  misc-*,</span></span><br><span class="line"><span class="string">  modernize-*,</span></span><br><span class="line"><span class="string">  performance-*,</span></span><br><span class="line"><span class="string">  portability-*,</span></span><br><span class="line"><span class="string">  readability-*,</span></span><br><span class="line"><span class="string">  -google-readability-braces-around-statements,</span></span><br><span class="line"><span class="string">  -google-readability-namespace-comments,</span></span><br><span class="line"><span class="string">  -google-runtime-references,</span></span><br><span class="line"><span class="string">  -misc-non-private-member-variables-in-classes,</span></span><br><span class="line"><span class="string">  -modernize-return-braced-init-list,</span></span><br><span class="line"><span class="string">  -modernize-use-trailing-return-type,</span></span><br><span class="line"><span class="string">  -modernize-avoid-c-arrays,</span></span><br><span class="line"><span class="string">  -performance-move-const-arg,</span></span><br><span class="line"><span class="string">  -readability-braces-around-statements,</span></span><br><span class="line"><span class="string">  -readability-identifier-length,</span></span><br><span class="line"><span class="string">  -readability-magic-numbers,</span></span><br><span class="line"><span class="string">  -readability-named-parameter,</span></span><br><span class="line"><span class="string">  -readability-redundant-declaration,</span></span><br><span class="line"><span class="string">  -readability-function-cognitive-complexity,</span></span><br><span class="line"><span class="string">  -bugprone-narrowing-conversions,</span></span><br><span class="line"><span class="string">  -bugprone-easily-swappable-parameters,</span></span><br><span class="line"><span class="string">  -bugprone-implicit-widening-of-multiplication-result</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="comment"># WarningsAsErrors: &quot;*&quot;</span></span><br><span class="line"><span class="attr">HeaderFilterRegex:</span> <span class="string">&quot;.*&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">FormatStyle:</span> <span class="string">file</span></span><br></pre></td></tr></table></figure>
+
+<p>该规则参考了 <a target="_blank" rel="noopener" href="https://github.com/googleapis/google-cloud-cpp-common/blob/master/.clang-tidy">Google Cloud</a> 开源项目配置，所有配置项可参考 LLVM 官网：<a target="_blank" rel="noopener" href="https://clang.llvm.org/extra/clang-tidy/">Extra Clang Tools</a> 上面单独调用 clang-tidy 只能分析单个文件，如果要分析多个文件，我们要把所有文件依次传给 clang-tidy。这样命令写起来比较繁琐且不易阅读。更重要的是无法实现多个实例同时对多个文件进行检查，效率极低。LLVM 工具链中早就想好了这些问题，他们提供了 run-clang-tidy.py 提供我们进行批量分析，见：LLVM <a target="_blank" rel="noopener" href="https://github.com/llvm-mirror/clang-tools-extra/blob/master/clang-tidy/tool/run-clang-tidy.py">run-clang-tidy.py</a>。有了这个脚本，我们就可以批量进行分析了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 .build/run-clang-tidy.py -p=build -j 8 &gt; build/clang-tidy-output.txt</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>-p</code> 表示指定 compile_commands.json 文件所在目录</li>
+<li><code>-j 8</code> 表示最多可以同时执行 8 路分析不同的文件，加快分析速度</li>
+</ul>
+<p>分析时间视工程目录源码文件多少而定，如果代码中使用的模板较多，分析的时间会较长。分析完成后会在 build 目录下生成名为 <code>clang-tidy-output.txt</code> 的分析结果，手动打开该文件你就可以可以看到一分析的错误信息了。接下来就是将这个报告上传到 SonarQube 平台。</p>
+<h2 id="SonarQube-集成"><a href="#SonarQube-集成" class="headerlink" title="SonarQube 集成"></a>SonarQube 集成</h2><p>由于考虑篇幅问题，这里不详细介绍 SonarQube 的部署及多分支插件的安装，这部分资料官网和 StackOverflow 资料非常多，大家可参考搭建部署。在上传报告前参考文章开头，先安装好 sonar-scanner 上传工具。将项目的配置信息保存到名为 <code>sonar-project.properties</code> 的配置文件中并存放到项目根目录下，内容类似：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># must be unique in a given SonarQube instance</span><br><span class="line">sonar.host.url=http://10.246.152.58:9000</span><br><span class="line">sonar.projectKey=ne-phoenix</span><br><span class="line">sonar.login=sqp_86571ff6d309106814c26e22621e23d87******</span><br><span class="line">sonar.qualitygate.wait=true</span><br><span class="line">sonar.sources=.</span><br><span class="line">sonar.sourceEncoding=UTF-8</span><br><span class="line">sonar.cxx.file.suffixes=.cxx,.cpp,.cc,.c,.hxx,.hpp,.hh,.h</span><br><span class="line">sonar.lang.patterns.objc=**/*.m,**/*.mm</span><br><span class="line">sonar.cxx.clangtidy.reportPaths=build/clang-tidy-output.txt</span><br><span class="line">sonar.exclusions=build/**,**/*_unittest.*,conanfile.py,uploadConan.py</span><br></pre></td></tr></table></figure>
+
+<p>各个参数用途如下：</p>
+<ul>
+<li>sonar.host.url SonarQube 服务器地址</li>
+<li>sonar.projectKey SonarQube 平台上创建的工程名</li>
+<li>sonar.login SonarQube 上传 token</li>
+<li>sonar.qualitygate.wait 表示等待 SonarQube 返回扫描结果</li>
+<li>sonar.source 表示源码是当前根目录</li>
+<li>sonar.sourceEncodin 表示以 UTF-8 格式分析报告</li>
+<li>sonar.cxx.file.suffixes 表示要分析的 C++ 文件后缀</li>
+<li>sonar.lang.patterns.objc 表示要分析的 Objective-C 代码的文件后缀</li>
+<li>sonar.cxx.clangtidy.reportPaths 表示要上报的 clang-tidy 分析报告</li>
+<li>sonar.exclusions 表示要排除的目录，包括测试覆盖率、静态分析结果</li>
+</ul>
+<p>上传时只需要调用 sonar-scanner 即可将当前分支信息上报到 SonarQube 平台，如果一切顺利，将会返回如下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">INFO: ------------------------------------------------------------------------</span><br><span class="line">INFO: EXECUTION SUCCESS</span><br><span class="line">INFO: ------------------------------------------------------------------------</span><br><span class="line">INFO: Total time: 26.011s</span><br><span class="line">INFO: Final Memory: 25M/108M</span><br><span class="line">INFO: ------------------------------------------------------------------------</span><br><span class="line">➜  ne-phoenix git:master) ✗ </span><br></pre></td></tr></table></figure>
+
+<p>此时再次打开 SonarQube 平台，就可以看到分析结果了（一定要安装 <a target="_blank" rel="noopener" href="https://github.com/SonarOpenCommunity/sonar-cxx/releases">cxx-community</a> 插件并应用 clang-tidy 规则）： <a href="/images/2022/12/03.png"><img src="/images/2022/12/03.png"></a> SonarQube 支持设置每个工程的质量阈，如果您的团队短时间内无法对新代码实现高的覆盖率，可适当调整质量阈，以管理员身份登陆 SonarQube，点击上方菜单的 Quility Gates： <a href="/images/2022/12/04.png"><img src="/images/2022/12/04.png"></a> 内置有默认的质量阈，代码覆盖率的要求达到了 80%，您可以自己手动新建一个质量与并在单独的工程设置中选择你自己创建的质量阈。</p>
+<h2 id="CI-集成"><a href="#CI-集成" class="headerlink" title="CI 集成"></a>CI 集成</h2><h3 id="GitLab-测试报告集成"><a href="#GitLab-测试报告集成" class="headerlink" title="GitLab 测试报告集成"></a>GitLab 测试报告集成</h3><p>GitLab 和 SonarQube 都支持展示测试覆盖率统计结果，GitLab 还可以把测试的所有子项内容展示在 Pipeline 结果页中： <a href="/images/2022/12/05.png"><img src="/images/2022/12/05.png"></a> GitLab 展示测试覆盖率： <a href="/images/2022/12/06.png"><img src="/images/2022/12/06.png"></a> 要显示这些内容在 GitLab 上非常简单，你只需在 gitlab-ci.yml 中将 GTest 测试结果的 result.xml 当作 Artifacts 上传到 GitLab 即可：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">stages:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">step-analysis</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">step-conan-package-test</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">step-deploy</span></span><br><span class="line"></span><br><span class="line"><span class="attr">coverage:</span></span><br><span class="line">  <span class="attr">stage:</span> <span class="string">step-analysis</span></span><br><span class="line">  <span class="attr">script:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">export</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">git</span> <span class="string">checkout</span> <span class="string">-B</span> <span class="string">&quot;$CI_BUILD_REF_NAME&quot;</span> <span class="string">&quot;$CI_BUILD_REF&quot;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">cmake</span> <span class="string">-Bbuild</span> <span class="string">-DCMAKE_BUILD_TYPE=Debug</span> <span class="string">-DBUILD_TESTING=ON</span> <span class="string">-DCMAKE_CXX_STANDARD=14</span> <span class="string">-DCMAKE_EXPORT_COMPILE_COMMANDS=ON</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">cmake</span> <span class="string">--build</span> <span class="string">build</span> <span class="string">--config</span> <span class="string">Debug</span> <span class="string">--target</span> <span class="string">coverage</span> <span class="string">--parallel</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">lcov</span> <span class="string">--list</span> <span class="string">build/coverage.info</span></span><br><span class="line">  <span class="attr">only:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">merge_requests</span></span><br><span class="line">  <span class="attr">artifacts:</span></span><br><span class="line">    <span class="attr">when:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">reports:</span></span><br><span class="line">      <span class="attr">junit:</span> <span class="string">build/result.xml</span></span><br><span class="line">  <span class="attr">tags:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">yunxin-darwin-runner</span></span><br></pre></td></tr></table></figure>
+
+<p>命令跟我们本地测试一样，先初始化 CMake 工程，然后编译 coverage 项目，编译时会自动执行代码覆盖率检查并输出 result.xml，最后调用 lcov 在终端输出了覆盖率报告内容，类似如下效果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">$ lcov --list build/coverage.info</span><br><span class="line">Reading tracefile build/coverage.info</span><br><span class="line">                                               Lines      FunctionsBranches  </span><br><span class="line">Filename                                       Rate    NumRate  NumRate   Num</span><br><span class="line">================================================================================</span><br><span class="line">[/Users/yunxin/builds/Kri8Pkvi/0/netease-im/ne_phoenix/src/ne_base/]</span><br><span class="line">base/ne_object.h                                100%     850.0%  24    -    0</span><br><span class="line">base/ne_object_ability...nnect_able_supportor.h80.8%    2671.4%   7    -    0</span><br><span class="line">base/ne_object_ability...ble_shared_from_this.h62.5%     866.7%   6    -    0</span><br><span class="line">base/ne_object_ability...ent/ne_signal_from3p.h 0.0%    10 0.0%   4    -    0</span><br><span class="line">base/ne_object_ability...ak_closure_supportor.h 100%     250.0%   4    -    0</span><br><span class="line">crypto/md5.cpp                                 86.5%   20883.3%  12    -    0</span><br><span class="line">design_patterns/scoped_generic.h                0.0%     4 0.0%   3    -    0</span><br><span class="line">device/mac/platform_device_mac.mm              89.5%    19 100%   3    -    0</span><br><span class="line">device/platform_device.cpp                     77.8%     966.7%   3    -    0</span><br><span class="line">device/posix/platform_device_posix.cpp         92.6%    2750.0%   2    -    0</span><br><span class="line">file/file_util.cpp                             85.0%    4071.4%   7    -    0</span><br><span class="line">file/file_version_info.h                        0.0%     2 0.0%   4    -    0</span><br><span class="line">file/mac/file_version_info_mac.mm               0.0%    42 0.0%  24    -    0</span><br><span class="line">file/ne_filesystem.cpp                         85.1%   141 100%  14    -    0</span><br><span class="line">log/log_file.cpp                               93.2%    74 100%  10    -    0</span><br><span class="line">log/log_file.h                                  100%     6 100%   6    -    0</span><br><span class="line">log/log_mmap_file.cpp                          80.9%   173 100%  16    -    0</span><br><span class="line">log/log_os_filesys_util_posix.cc               82.5%    5787.5%   8    -    0</span><br><span class="line">mmkv/mmkv.cpp                                  84.4%    45 100%   6    -    0</span><br><span class="line">mmkv/mmkv.h                                     100%    15 100%   7    -    0</span><br><span class="line">numerics/safe_conversions_impl.h                100%     5 100%  13    -    0</span><br><span class="line">numerics/safe_math.h                            100%     8 100%  23    -    0</span><br><span class="line">numerics/safe_math_impl.h                       100%    14 100%  31    -    0</span><br><span class="line">path_util/path_util.cpp                        95.7%    46 100%  11    -    0</span><br><span class="line">string/string_number_conversions.cc            77.2%   16784.8% 105    -    0</span><br><span class="line">string/string_util.cpp                         77.6%   19688.9%  18    -    0</span><br><span class="line">string/string_util.h                           83.3%     6 100%   2    -    0</span><br><span class="line">synchronization/lock.h                         71.4%    21 100%   7    -    0</span><br><span class="line">system/mac/sys_info_mac.cc                     60.7%    2857.1%   7    -    0</span><br><span class="line">system/posix/sys_info_posix.cc                 55.6%    1850.0%   4    -    0</span><br><span class="line">system/sys_info.cc                              100%     4 100%   2    -    0</span><br><span class="line">system/sys_info.h                               100%     1 100%   4    -    0</span><br><span class="line">system/sys_tool.cpp                            75.9%    2985.7%   7    -    0</span><br><span class="line">thread/task_loop_interface.h                    100%     650.0%  12    -    0</span><br><span class="line">thread/task_thread.cpp                         83.1%   14283.3%  24    -    0</span><br><span class="line">thread/task_thread.h                           91.6%   13193.3%  45    -    0</span><br><span class="line">thread/thread.cpp                              81.5%   11960.6%  33    -    0</span><br><span class="line">thread/thread.h                                81.8%    1177.8%   9    -    0</span><br><span class="line">thread/thread_interface.h                      84.0%    2573.3%  15    -    0</span><br><span class="line">time/time.cpp                                   100%    19 100%   5    -    0</span><br><span class="line">time/time.h                                     100%    25 100%   4    -    0</span><br><span class="line">value/ne_any.h                                 46.3%    4177.9%  95    -    0</span><br><span class="line">================================================================================</span><br><span class="line">                                         Total:80.6%  197878.8% 646    -    0</span><br></pre></td></tr></table></figure>
+
+<p>最后的 <code>Total:80.6%</code> 就是总的覆盖率情况，这一步很重要，我们要在 GitLab 中添加一段正则代码，匹配最终的结果，GitLab 会在 Job 执行完成后从输出内容中正则匹配到对应内容并显示到 GitLab Job 结果页面，打开 <code>Project-&gt;Settings-&gt;CI/CD</code> 页面，展开 <code>General pipelines</code> 选项卡，在最下方的 <code>Test coverage parsing</code> 中输入如下正则，即可匹配到覆盖率统计数据：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Total:\(\d+\.?\d+\%)</span><br></pre></td></tr></table></figure>
+
+<p>如下图所示： <a href="/images/2022/12/07.png"><img src="/images/2022/12/07.png"></a> 添加后 Save 保存，下一次触发 Pipeline 就会自动上报覆盖率百分比结果。</p>
+<h3 id="SonarQube-测试覆盖率集成"><a href="#SonarQube-测试覆盖率集成" class="headerlink" title="SonarQube 测试覆盖率集成"></a>SonarQube 测试覆盖率集成</h3><p>要上传测试覆盖率到 SonarQube 只需要在 sonar-project.properties 的配置文件中添加一行上报之前生成的 sonarqube_coverage.xml 即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># must be unique in a given SonarQube instance</span><br><span class="line">sonar.host.url=http://10.246.152.58:9000</span><br><span class="line">sonar.projectKey=ne-phoenix</span><br><span class="line">sonar.login=sqp_86571ff6d309106814c26e22621e23d8778eb0bc</span><br><span class="line">sonar.qualitygate.wait=true</span><br><span class="line">sonar.sources=.</span><br><span class="line">sonar.sourceEncoding=UTF-8</span><br><span class="line">sonar.cxx.file.suffixes=.cxx,.cpp,.cc,.c,.hxx,.hpp,.hh,.h</span><br><span class="line">sonar.lang.patterns.objc=**/*.m,**/*.mm</span><br><span class="line">sonar.cxx.clangtidy.reportPaths=build/clang-tidy-output.txt</span><br><span class="line">sonar.coverageReportPaths=build/coverage_sonarqube.xml</span><br><span class="line">sonar.exclusions=build/**,**/*_unittest.*,conanfile.py,uploadConan.py</span><br></pre></td></tr></table></figure>
+
+<p>主意倒数第二行。通过次方式上传报告后，在 SonarQube 平台就可以展示测试覆盖率百分比的情况了： <a href="/images/2022/12/08.png"><img src="/images/2022/12/08.png"></a> SonarQube 平台支持设置统一的质量阈，当你的代码发现 Major 级别以上的错误又或者覆盖率达不到一定百分比，则 SonarQube 会回报给 GitLab 告诉他本次 MR 不通过并创建一个临时的错误 Job： <a href="/images/2022/12/09.png"><img src="/images/2022/12/09.png"></a> 而如果一切正常，也会创建一个反馈入口： <a href="/images/2022/12/10.png"><img src="/images/2022/12/10.png"></a> 点击即可直达本次 Merge request 的分析详情。</p>
+<h3 id="Merge-request-增量代码静态检查"><a href="#Merge-request-增量代码静态检查" class="headerlink" title="Merge request 增量代码静态检查"></a>Merge request 增量代码静态检查</h3><p>如果你实操过代码静态检查，你会发现在你庞大的工程中做一次代码静态分析的时间成本是非常昂贵的，我们不可能也不允许在每次 CI 阶段都要等待这么长的时间，符合逻辑的场景应该是只检查本次变更，如果能细化到代码行就更好了。可以实现吗？当然！ LLVM 工具链提供了一个脚本 <a target="_blank" rel="noopener" href="https://github.com/llvm-mirror/clang-tools-extra/blob/master/clang-tidy/tool/clang-tidy-diff.py">clang-tidy-diff.py</a>，它可以实现细化到代码行。用于帮助我们在 CI 集成时对增量数据进行检查。下载该脚本保存到项目工程的 .build 目录下。 同样的在使用 clang-tidy-diff.py 脚本进行增量分析时，也是需要生成整个项目的 <code>compile_commands.json</code> 配置文件。该脚本只是将我们变更的文件列表通过参数的方式传递给 clang-tidy 可执行文件。然后到 <code>compile_commands.json</code> 中查找这些文件的编译指令来进行静态代码检查。生成请参考上方全量分析命令。 在发起一个 Merge request 或者 Pull request 时，一些 CI 集成工具都会帮我们收集要合并的分支已经合并的目标分支信息。通过这两个分支我们就可以确定下来修改的文件有多少。以下 git 命令可以展示从开启新的功能分支后所有的提交及文件变更信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git diff -U0 feature/new-feature origin/develop^</span><br></pre></td></tr></table></figure>
+
+<p>以 GitLab CI 举例，假如 feature&#x2F;new-feature 是基于 develop 开出的新功能分支，当发起 Merge request 时，会有两个变量分别描述这两个分支的信息。</p>
+<ul>
+<li>${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME} 用来描述新的 feature 分支</li>
+<li>${CI_MERGE_REQUEST_TARGET_BRANCH_NAME} 用来描述目标合并分支</li>
+</ul>
+<p>连带上面的已经实践过的 gitlab-ci.yml 代码，在 GitLab .gitlab-ci.yml 中我们可以这样编写脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">coverage:</span><br><span class="line">  stage: step-analysis</span><br><span class="line">  script:</span><br><span class="line">    - export</span><br><span class="line">    - git checkout -B &quot;$CI_BUILD_REF_NAME&quot; &quot;$CI_BUILD_REF&quot;</span><br><span class="line">    - cmake -Bbuild -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON -DCMAKE_CXX_STANDARD=14 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON</span><br><span class="line">    - cmake --build build --config Debug --target coverage --parallel</span><br><span class="line">    - lcov --list build/coverage.info</span><br><span class="line">    - set +e &amp;&amp; git diff -U0 origin/$&#123;CI_MERGE_REQUEST_TARGET_BRANCH_NAME&#125;^ $&#123;CI_MERGE_REQUEST_SOURCE_BRANCH_NAME&#125; </span><br><span class="line">      python3 .build/clang-tidy-diff.py -path=build -p1 -j 8 &gt; build/clang-tidy-output.txt &amp;&amp; set -e</span><br><span class="line">    - sonar-scanner -Dsonar.pullrequest.key=$&#123;CI_MERGE_REQUEST_IID&#125;</span><br><span class="line">      -Dsonar.pullrequest.branch=$&#123;CI_MERGE_REQUEST_SOURCE_BRANCH_NAME&#125;</span><br><span class="line">      -Dsonar.pullrequest.base=$&#123;CI_MERGE_REQUEST_TARGET_BRANCH_NAME&#125;</span><br><span class="line">      -Dsonar.gitlab.ref_name=$&#123;CI_COMMIT_REF_NAME&#125;</span><br><span class="line">      -Dsonar.gitlab.commit_sha=$&#123;CI_COMMIT_SHA&#125;</span><br><span class="line">      -Dsonar.gitlab.project_id=$&#123;CI_PROJECT_PATH&#125;</span><br><span class="line">      -Dsonar.projectVersion=$&#123;CI_COMMIT_REF_NAME&#125;</span><br><span class="line">  only:</span><br><span class="line">    - merge_requests</span><br><span class="line">  artifacts:</span><br><span class="line">    when: always</span><br><span class="line">    reports:</span><br><span class="line">      junit: build/result.xml</span><br><span class="line">  tags:</span><br><span class="line">    - yunxin-darwin-runner</span><br></pre></td></tr></table></figure>
+
+<p>注意第 10,11 行，我们通过 git diff 将变更信息传递给 clang-tidy-diff.py 脚本，该脚本会自己分析 git diff 结果对变更文件进行静态代码检查。同时在使用 sonar-scanner 进行扫描时我们也传递对应的源分支、目标分支信息，SonarQube 会创建一个 Merge Request 的分支分析信息提供您查看。 需要注意的是给 git diff 传递 base 时需要指定 origin 使用远端分支，通常情况下 GitLab CI 只会 checkout 你要编译的分支，本地可能不存在 base 分支的代码，无法进行比较。如 origin&#x2F;${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}^ 这样在上报到 SonarQube 平台后我们就可以按分支查看分析报告了（提要安装好多分支插件 <a target="_blank" rel="noopener" href="https://github.com/mc1arke/sonarqube-community-branch-plugin/releases">branch-plugin</a>）： <a href="/images/2022/12/11.png"><img src="/images/2022/12/11.png"></a> 查看某个 MR 或者某个分支的数据是单独显示的。</p>
+<h3 id="Merge-request-反馈"><a href="#Merge-request-反馈" class="headerlink" title="Merge request 反馈"></a>Merge request 反馈</h3><p>数据上报到 SonarQube 平台后，我们每次都要人工去这个平台查看反馈报告，这样非常不方便，幸运的是 SonarQube 提供了 SCM 平台反馈能力，以管理员身份登录 SonarQube 平台，设置 GitLab 的配置如下（前提要安装好多分支插件 branch-plugin）： <a href="/images/2022/12/12.png"><img src="/images/2022/12/12.png"></a> 确保配置没有问题后，选择一个你的项目，进入项目设置页面，输入项目 ID 并选择刚才配置好的 GitLab API 保存： <a href="/images/2022/12/13.png"><img src="/images/2022/12/13.png"></a> 确认连接无问题后保存，再次触发某个 Pipeline 并上报结果到 SonarQube 后，SonarQube 平台会调用 GitLab 提供的 API 将问题数据回报给每个 MR，并且在你有问题的代码中添加评论，效果如下： <a href="/images/2022/12/14.png"><img src="/images/2022/12/14.png"></a> <a href="/images/2022/12/15.png"><img src="/images/2022/12/15.png"></a></p>
+<h2 id="Pre-commit-集成"><a href="#Pre-commit-集成" class="headerlink" title="Pre-commit 集成"></a>Pre-commit 集成</h2><p>如果你的团队启用了 pre-commit-hooks，您可以添加如下脚本，在每次提交时就检查一次变更的文件，这样在没有上传代码到 GitLab 时就可以及时的发现问题：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">repos:</span></span><br><span class="line"><span class="bullet">-</span>   <span class="attr">repo:</span> <span class="string">https://github.com/pre-commit/pre-commit-hooks</span></span><br><span class="line">    <span class="attr">rev:</span> <span class="string">v4.0.1</span></span><br><span class="line">    <span class="attr">hooks:</span></span><br><span class="line">    <span class="bullet">-</span>   <span class="attr">id:</span> <span class="string">trailing-whitespace</span></span><br><span class="line">        <span class="attr">args:</span> [<span class="string">--markdown-linebreak-ext=md</span>]</span><br><span class="line">    <span class="bullet">-</span>   <span class="attr">id:</span> <span class="string">check-added-large-files</span></span><br><span class="line">    <span class="bullet">-</span>   <span class="attr">id:</span> <span class="string">check-merge-conflict</span></span><br><span class="line">    <span class="bullet">-</span>   <span class="attr">id:</span> <span class="string">end-of-file-fixer</span></span><br><span class="line">    <span class="bullet">-</span>   <span class="attr">id:</span> <span class="literal">no</span><span class="string">-commit-to-branch</span></span><br><span class="line">        <span class="attr">args:</span> [<span class="string">&#x27;--pattern&#x27;</span>, <span class="string">&#x27;^(?!((bugfixfeaturereleasehotfixsupportci)\/[A-Za-z0-9\_\-\.]+)$develop).*&#x27;</span>]</span><br><span class="line">    <span class="bullet">-</span>   <span class="attr">id:</span> <span class="string">check-case-conflict</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span>   <span class="attr">repo:</span> <span class="string">https://github.com/pocc/pre-commit-hooks</span></span><br><span class="line">    <span class="attr">rev:</span> <span class="string">v1.3.4</span></span><br><span class="line">    <span class="attr">hooks:</span></span><br><span class="line">    <span class="bullet">-</span>   <span class="attr">id:</span> <span class="string">clang-format</span></span><br><span class="line">        <span class="attr">args:</span> [<span class="string">--style=File</span>, <span class="string">-i</span>]</span><br><span class="line">    <span class="bullet">-</span>   <span class="attr">id:</span> <span class="string">clang-tidy</span></span><br><span class="line">        <span class="attr">args:</span> [<span class="string">-p=build</span>]</span><br></pre></td></tr></table></figure>
+
+<p>最后两行描述了如何在提交时进行 clang-tidy 的检查。pre-commit 相关信息请见文章最后扩展阅读。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>日常开发中一些 IDE 的辅助工具可以帮助我们随写随发现问题，如 VSCode 的 clang-tidy 检查、CLion 自带 clang-tidy 检查、VS IDE clang-tidy 检查等。通过 IDE 自带的测试工具如 VS Code TestMate、VS IDE 的 Test Explorer 都可以帮助我们本地执行单元测试、API 测试代码。这些可个根据不同开发者不同的开发环境需求而定，并不是强制要求。我们只要在 GitLab 做收口即可。 至此，代码质量相关工具工程化基本结束，我们从代码提交到 CI 再到 SonarQube 报告最后到反馈全流程均通过仓库代码配置文件的方式实现，符合我们预期的想法。在未来维护和扩展中给后来者提供了非常详尽的历史，将最有价值的数据留给他们。这也是写这篇文章的初衷。</p>
+<h3 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h3><p>sonarqube branch plugin：<a target="_blank" rel="noopener" href="https://blog.csdn.net/ewferferr/article/details/120432746">https://blog.csdn.net/ewferferr/article/details/120432746</a> sonarqube C++ plugin：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq/_15559817/article/details/100736498">https://blog.csdn.net/qq\_15559817/article/details/100736498</a> clang-tidy：<a target="_blank" rel="noopener" href="https://hokein.github.io/clang-tools-tutorial/clang-tidy.html">https://hokein.github.io/clang-tools-tutorial/clang-tidy.html</a> pre-commit：<a target="_blank" rel="noopener" href="https://pre-commit.com/">https://pre-commit.com/</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nmgwddj.github.io/2022/12/09/2022/2022-12-09_182753-3163/" data-id="cliy8bebu00cwg8orbdcz49q0" data-title="量化你团队的代码质量" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/04/26/2023/2023-04-26_100852-3189/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Qt6 QML 中渲染自定义视频帧的改进 2023-05-30 更新
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/08/05/2022/2022-08-05_160056-3146/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Jenkins pipeline macOS agent 报错：cmake: command not found</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataStruct/">DataStruct</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Language/">Language</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Platform/">Platform</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tools/">Tools</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/">language</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/language/C-C/">C/C++</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/language/C-C/QML/">QML</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/Perl/">Perl</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/QML/">QML</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/platform/">platform</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/platform/Linux-Unix/">Linux/Unix</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/platform/Linux-Unix/Windows/">Windows</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/platform/Windows/">Windows</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/platform/iOS-macOS/">iOS/macOS</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/platform/iOS-macOS/Windows/">Windows</a></li></ul></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AU3/" rel="tag">AU3</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BOM/" rel="tag">BOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CEF/" rel="tag">CEF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CMake/" rel="tag">CMake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Charles/" rel="tag">Charles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chrome/" rel="tag">Chrome</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DOM/" rel="tag">DOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug/" rel="tag">Debug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Drivers/" rel="tag">Drivers</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DuiLib/" rel="tag">DuiLib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ES6/" rel="tag">ES6</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Event/" rel="tag">Event</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FFmpeg/" rel="tag">FFmpeg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FTP/" rel="tag">FTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MFC/" rel="tag">MFC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac-OS-X/" rel="tag">Mac OS X</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NSIS/" rel="tag">NSIS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NVIDIA/" rel="tag">NVIDIA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QML/" rel="tag">QML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/" rel="tag">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt-Quick/" rel="tag">Qt Quick</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RESTful-API/" rel="tag">RESTful API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React/" rel="tag">React</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STL/" rel="tag">STL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SerialPort/" rel="tag">SerialPort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPN/" rel="tag">VPN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VSCode/" rel="tag">VSCode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VisualStudio/" rel="tag">VisualStudio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/atom/" rel="tag">atom</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django/" rel="tag">django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gcc/" rel="tag">gcc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/macOS/" rel="tag">macOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/makefile/" rel="tag">makefile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/meteor/" rel="tag">meteor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/node/" rel="tag">node</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/npm/" rel="tag">npm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redux/" rel="tag">redux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlite/" rel="tag">sqlite</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime-text/" rel="tag">sublime text</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wordpress/" rel="tag">wordpress</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/" rel="tag">二进制</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%BF%E5%87%BD%E6%95%B0/" rel="tag">仿函数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BD%8D%E6%93%8D%E4%BD%9C/" rel="tag">位操作</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BF%A1%E5%8F%B7/" rel="tag">信号</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8B%E5%85%83/" rel="tag">友元</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E6%80%81/" rel="tag">多态</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag">字符串</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8/" rel="tag">引用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/" rel="tag">思维导图</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8C%87%E9%92%88/" rel="tag">指针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%92%E5%BA%8F/" rel="tag">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E7%BB%84/" rel="tag">数组</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/" rel="tag">智能指针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9F%A5%E6%89%BE/" rel="tag">查找</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A8%A1%E7%89%88/" rel="tag">模版</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B1%BB/" rel="tag">类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" rel="tag">类型转换</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/" rel="tag">继承与派生</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/" rel="tag">运算符重载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" rel="tag">进程&#x2F;线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/" rel="tag">进程空间</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8D%E8%BD%BD/" rel="tag">重载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%93%BE%E8%A1%A8/" rel="tag">链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8/" rel="tag">驱动</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AU3/" style="font-size: 10px;">AU3</a> <a href="/tags/BOM/" style="font-size: 10px;">BOM</a> <a href="/tags/Boost/" style="font-size: 11.05px;">Boost</a> <a href="/tags/CEF/" style="font-size: 12.63px;">CEF</a> <a href="/tags/CMake/" style="font-size: 10.53px;">CMake</a> <a href="/tags/Charles/" style="font-size: 10px;">Charles</a> <a href="/tags/Chrome/" style="font-size: 10.53px;">Chrome</a> <a href="/tags/DOM/" style="font-size: 12.63px;">DOM</a> <a href="/tags/Debug/" style="font-size: 10px;">Debug</a> <a href="/tags/Drivers/" style="font-size: 13.68px;">Drivers</a> <a href="/tags/DuiLib/" style="font-size: 10px;">DuiLib</a> <a href="/tags/ES6/" style="font-size: 15.26px;">ES6</a> <a href="/tags/Event/" style="font-size: 11.58px;">Event</a> <a href="/tags/FFmpeg/" style="font-size: 10px;">FFmpeg</a> <a href="/tags/FTP/" style="font-size: 10px;">FTP</a> <a href="/tags/MFC/" style="font-size: 11.58px;">MFC</a> <a href="/tags/Mac-OS-X/" style="font-size: 11.05px;">Mac OS X</a> <a href="/tags/NSIS/" style="font-size: 10px;">NSIS</a> <a href="/tags/NVIDIA/" style="font-size: 10px;">NVIDIA</a> <a href="/tags/QML/" style="font-size: 10.53px;">QML</a> <a href="/tags/Qt/" style="font-size: 20px;">Qt</a> <a href="/tags/Qt-Quick/" style="font-size: 11.05px;">Qt Quick</a> <a href="/tags/RESTful-API/" style="font-size: 10px;">RESTful API</a> <a href="/tags/React/" style="font-size: 16.84px;">React</a> <a href="/tags/STL/" style="font-size: 12.11px;">STL</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/SerialPort/" style="font-size: 10px;">SerialPort</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/VSCode/" style="font-size: 11.05px;">VSCode</a> <a href="/tags/VisualStudio/" style="font-size: 18.42px;">VisualStudio</a> <a href="/tags/atom/" style="font-size: 10px;">atom</a> <a href="/tags/django/" style="font-size: 10px;">django</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gcc/" style="font-size: 10.53px;">gcc</a> <a href="/tags/git/" style="font-size: 12.63px;">git</a> <a href="/tags/highcharts/" style="font-size: 10px;">highcharts</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/makefile/" style="font-size: 10px;">makefile</a> <a href="/tags/meteor/" style="font-size: 17.37px;">meteor</a> <a href="/tags/mongodb/" style="font-size: 11.05px;">mongodb</a> <a href="/tags/mysql/" style="font-size: 12.11px;">mysql</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/node/" style="font-size: 10px;">node</a> <a href="/tags/npm/" style="font-size: 10px;">npm</a> <a href="/tags/openssl/" style="font-size: 10px;">openssl</a> <a href="/tags/oracle/" style="font-size: 16.32px;">oracle</a> <a href="/tags/redux/" style="font-size: 10px;">redux</a> <a href="/tags/sql/" style="font-size: 16.32px;">sql</a> <a href="/tags/sqlite/" style="font-size: 10px;">sqlite</a> <a href="/tags/sublime-text/" style="font-size: 11.05px;">sublime text</a> <a href="/tags/wordpress/" style="font-size: 11.58px;">wordpress</a> <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/" style="font-size: 10.53px;">二进制</a> <a href="/tags/%E4%BB%BF%E5%87%BD%E6%95%B0/" style="font-size: 10px;">仿函数</a> <a href="/tags/%E4%BD%8D%E6%93%8D%E4%BD%9C/" style="font-size: 11.05px;">位操作</a> <a href="/tags/%E4%BF%A1%E5%8F%B7/" style="font-size: 12.11px;">信号</a> <a href="/tags/%E5%8F%8B%E5%85%83/" style="font-size: 13.16px;">友元</a> <a href="/tags/%E5%A4%9A%E6%80%81/" style="font-size: 12.63px;">多态</a> <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" style="font-size: 17.89px;">字符串</a> <a href="/tags/%E5%BC%95%E7%94%A8/" style="font-size: 10px;">引用</a> <a href="/tags/%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/" style="font-size: 10px;">思维导图</a> <a href="/tags/%E6%8C%87%E9%92%88/" style="font-size: 18.42px;">指针</a> <a href="/tags/%E6%8E%92%E5%BA%8F/" style="font-size: 16.84px;">排序</a> <a href="/tags/%E6%95%B0%E7%BB%84/" style="font-size: 17.37px;">数组</a> <a href="/tags/%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/" style="font-size: 10px;">智能指针</a> <a href="/tags/%E6%9F%A5%E6%89%BE/" style="font-size: 12.63px;">查找</a> <a href="/tags/%E6%A8%A1%E7%89%88/" style="font-size: 12.63px;">模版</a> <a href="/tags/%E7%B1%BB/" style="font-size: 19.47px;">类</a> <a href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" style="font-size: 12.11px;">类型转换</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/" style="font-size: 14.21px;">继承与派生</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 16.84px;">网络</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/" style="font-size: 14.74px;">运算符重载</a> <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" style="font-size: 18.42px;">进程/线程</a> <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/" style="font-size: 18.95px;">进程空间</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 15.79px;">递归</a> <a href="/tags/%E9%87%8D%E8%BD%BD/" style="font-size: 10.53px;">重载</a> <a href="/tags/%E9%93%BE%E8%A1%A8/" style="font-size: 18.42px;">链表</a> <a href="/tags/%E9%A9%B1%E5%8A%A8/" style="font-size: 10px;">驱动</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">June 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">April 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">December 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/06/01/2023/2023-06-01_163201-3202/">macOS 应用正确签名并公证后分发依然提示“无法验证开发者”</a>
+          </li>
+        
+          <li>
+            <a href="/2023/04/26/2023/2023-04-26_100852-3189/">Qt6 QML 中渲染自定义视频帧的改进 2023-05-30 更新</a>
+          </li>
+        
+          <li>
+            <a href="/2022/12/09/2022/2022-12-09_182753-3163/">量化你团队的代码质量</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/05/2022/2022-08-05_160056-3146/">Jenkins pipeline macOS agent 报错：cmake: command not found</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/09/2022/2022-04-09_164105-3116/">使用 Conan、CMake 组织跨平台 Qt 工程</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 Dylan<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

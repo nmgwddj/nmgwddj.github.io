@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Meteor 1.6.x + Ant Design Table + recompose 实现数据分页效果 | Dylan&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="本文介绍了基于 Meteor 1.6.x + Ant Design Table + recompose + react-router-dom v4 实现分页的整个流程，从项目创建到最终实现完分页效果每个步骤都非常详细，同时也提供了 git 提交记录，用来让大家学习和分析每一步代码的变化。项目地址：https:&#x2F;&#x2F;github.com&#x2F;nmgwddj&#x2F;meteor-pagination 最终效果">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Meteor 1.6.x + Ant Design Table + recompose 实现数据分页效果">
+<meta property="og:url" content="https://nmgwddj.github.io/2018/01/20/2018/2018-01-20_144301-2256/index.html">
+<meta property="og:site_name" content="Dylan&#39;s blog">
+<meta property="og:description" content="本文介绍了基于 Meteor 1.6.x + Ant Design Table + recompose + react-router-dom v4 实现分页的整个流程，从项目创建到最终实现完分页效果每个步骤都非常详细，同时也提供了 git 提交记录，用来让大家学习和分析每一步代码的变化。项目地址：https:&#x2F;&#x2F;github.com&#x2F;nmgwddj&#x2F;meteor-pagination 最终效果">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2018/01/2018-01-20-14.50.33.gif">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2018/01/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2018-01-20-13.44.16.png">
+<meta property="og:image" content="https://nmgwddj.github.io/images/2018/01/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2018-01-20-14.07.25.png">
+<meta property="article:published_time" content="2018-01-20T14:43:01.000Z">
+<meta property="article:modified_time" content="2023-06-16T07:08:53.763Z">
+<meta property="article:author" content="Dylan">
+<meta property="article:tag" content="meteor">
+<meta property="article:tag" content="React">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://nmgwddj.github.io/images/2018/01/2018-01-20-14.50.33.gif">
+  
+    <link rel="alternate" href="/atom.xml" title="Dylan's blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Dylan&#39;s blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">To the pursuit of truth.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://nmgwddj.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-2018/2018-01-20_144301-2256" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/01/20/2018/2018-01-20_144301-2256/" class="article-date">
+  <time class="dt-published" datetime="2018-01-20T14:43:01.000Z" itemprop="datePublished">2018-01-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Language/">Language</a>►<a class="article-category-link" href="/categories/language/">language</a>►<a class="article-category-link" href="/categories/language/JavaScript/">JavaScript</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Meteor 1.6.x + Ant Design Table + recompose 实现数据分页效果
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>本文介绍了基于 Meteor 1.6.x + Ant Design Table + recompose + react-router-dom v4 实现分页的整个流程，从项目创建到最终实现完分页效果每个步骤都非常详细，同时也提供了 git 提交记录，用来让大家学习和分析每一步代码的变化。项目地址：<a target="_blank" rel="noopener" href="https://github.com/nmgwddj/meteor-pagination">https://github.com/nmgwddj/meteor-pagination</a></p>
+<h2 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h2><p><a href="/images/2018/01/2018-01-20-14.50.33.gif"><img src="/images/2018/01/2018-01-20-14.50.33.gif"></a></p>
+<span id="more"></span>
+<h2 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">~ meteor create --full meteor-pagination</span><br><span class="line">Created a new Meteor app in &#x27;meteor-pagination&#x27;.</span><br><span class="line"></span><br><span class="line">To run your new app:</span><br><span class="line">  cd meteor-pagination</span><br><span class="line">  meteor</span><br><span class="line"></span><br><span class="line">If you are new to Meteor, try some of the learning resources here:</span><br><span class="line">  https://www.meteor.com/tutorials</span><br></pre></td></tr></table></figure>
+
+<p>为了保守起见我们初始化以下 git 仓库，commit 一次。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~ cd meteor-pagination</span><br><span class="line">~ git init</span><br></pre></td></tr></table></figure>
+
+<h2 id="整理项目目录"><a href="#整理项目目录" class="headerlink" title="整理项目目录"></a>整理项目目录</h2><p>默认创建的项目不是 react 结构的，我们需要删除掉无用的文件，并修改一下项目，使其支持 react，参考 <a target="_blank" rel="noopener" href="https://www.meteor.com/tutorials/react/components">Meteor 官方 React 教程</a> 首先执行如下命令，安装 react 和 react-dom 组件，你也可以使用 npm 来安装 package，我比较习惯用 yarn。安装完成后删除无用的文件，见<a target="_blank" rel="noopener" href="https://github.com/nmgwddj/meteor-pagination/commit/217ae838fe23ee4380f36adf6b95c972b7d4749b">此次提交</a>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add react react-dom --save</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建-Layout"><a href="#创建-Layout" class="headerlink" title="创建 Layout"></a>创建 Layout</h2><p>虽然是个很简洁的项目，但我还是想把创建的整个步骤跟大家描述清楚，避免初学者在学习的过程中遇到各种各样的问题。所以我也会写清楚创建 Layout 和 Router 的过程。 Layout 我们使用 ant design 的组件来实现，所以首先我们要引入 <code>antd</code> 和 <code>react-router-dom</code>，并在 .meteor&#x2F;packages 文件中删除项目自带的 <code>kadira:flow-router</code>。避免与 <code>react-router-dom</code> 引起冲突。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yarn add antd --save</span><br><span class="line">yarn add react-router-dom --save</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>/imports/startup/client/index.js</code> 中引入 antd 的 css 样式表，如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">import React from &#x27;react&#x27;</span><br><span class="line">import &#123; Meteor &#125; from &#x27;meteor/meteor&#x27;</span><br><span class="line">import &#123; render &#125; from &#x27;react-dom&#x27;</span><br><span class="line"></span><br><span class="line">import App from &#x27;../../ui/pages/App&#x27;</span><br><span class="line"></span><br><span class="line">import &#x27;antd/dist/antd.css&#x27;</span><br><span class="line"></span><br><span class="line">Meteor.startup(() =&gt; &#123;</span><br><span class="line">  render (</span><br><span class="line">    &lt;App /&gt;,</span><br><span class="line">    document.getElementById(&#x27;render-target&#x27;)</span><br><span class="line">  )</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>/imports/ui/layouts</code> 目录下创建一个 index.js 文件，用来编写 Layout 的代码。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">import React from &#x27;react&#x27;</span><br><span class="line">import Layout from &#x27;antd/lib/layout&#x27;</span><br><span class="line">import Menu from &#x27;antd/lib/menu&#x27;</span><br><span class="line">import &#123; BrowserRouter as Router, Route, Link &#125; from &#x27;react-router-dom&#x27;</span><br><span class="line"></span><br><span class="line">import Home from &#x27;../components/Home&#x27;</span><br><span class="line">import Links from &#x27;../components/Links&#x27;</span><br><span class="line"></span><br><span class="line">const &#123; Header, Content, Footer &#125; = Layout</span><br><span class="line"></span><br><span class="line">const MainLayout = () =&gt; &#123;</span><br><span class="line">  return (</span><br><span class="line">    &lt;Layout className=&#x27;layout&#x27;&gt;</span><br><span class="line">      &lt;Header&gt;</span><br><span class="line">        &lt;div className=&#x27;logo&#x27; /&gt;</span><br><span class="line">        &lt;Menu</span><br><span class="line">          theme=&#x27;dark&#x27;</span><br><span class="line">          mode=&#x27;horizontal&#x27;</span><br><span class="line">          defaultSelectedKeys=&#123;[&#x27;home&#x27;]&#125;</span><br><span class="line">          style=&#123;&#123; lineHeight: &#x27;64px&#x27; &#125;&#125;</span><br><span class="line">        &gt;</span><br><span class="line">          &lt;Menu.Item key=&#x27;home&#x27;&gt;&lt;Link to=&#x27;/&#x27;&gt;Home&lt;/Link&gt;&lt;/Menu.Item&gt;</span><br><span class="line">          &lt;Menu.Item key=&#x27;links&#x27;&gt;&lt;Link to=&#x27;/links&#x27;&gt;Links&lt;/Link&gt;&lt;/Menu.Item&gt;</span><br><span class="line">        &lt;/Menu&gt;</span><br><span class="line">      &lt;/Header&gt;</span><br><span class="line">      &lt;Content style=&#123;&#123; padding: &#x27;50px 50px 0&#x27; &#125;&#125;&gt;</span><br><span class="line">        &lt;div style=&#123;&#123; background: &#x27;#fff&#x27;, padding: 24, minHeight: 280 &#125;&#125;&gt;</span><br><span class="line">          &lt;Route exact path=&#x27;/&#x27; render=&#123;(&#123; match &#125;) =&gt; &lt;Home /&gt;&#125; /&gt;</span><br><span class="line">          &lt;Route path=&#x27;/links&#x27; render=&#123;(&#123; match &#125;) =&gt; &lt;Links /&gt;&#125; /&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">      &lt;/Content&gt;</span><br><span class="line">      &lt;Footer style=&#123;&#123; textAlign: &#x27;center&#x27; &#125;&#125;&gt;</span><br><span class="line">        Ant Design ©2016 Created by Ant UED</span><br><span class="line">      &lt;/Footer&gt;</span><br><span class="line">    &lt;/Layout&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default MainLayout</span><br></pre></td></tr></table></figure>
+
+<p>修改 <code>/imports/ui/pages/App.js</code> 代码，引入 <code>react-router</code>，并导入了 MainLayout 这个 Layout。如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import React from &#x27;react&#x27;</span><br><span class="line">import &#123; BrowserRouter as Router, Route &#125; from &#x27;react-router-dom&#x27;</span><br><span class="line"></span><br><span class="line">import MainLayout from &#x27;../layouts&#x27;</span><br><span class="line"></span><br><span class="line">const App = () =&gt;</span><br><span class="line">  &lt;Router&gt;</span><br><span class="line">    &lt;Route path=&#x27;/&#x27; component=&#123;MainLayout&#125; /&gt;</span><br><span class="line">  &lt;/Router&gt;</span><br><span class="line"></span><br><span class="line">export default App</span><br></pre></td></tr></table></figure>
+
+<p>在 MainLayout 中，我们引入了两个组件，一个是 Home，一个是 Links，所以我们还要在 <code>/imports/ui/components/</code> 下创建 Home.js 和 Links.js，两个文件分别实现为一个简单的组件，然后我们提交一下，见<a target="_blank" rel="noopener" href="http://de627932d1ec5d9489a41a9a4e93627394e68d96/">本次提交</a></p>
+<h2 id="订阅数据显示表格"><a href="#订阅数据显示表格" class="headerlink" title="订阅数据显示表格"></a>订阅数据显示表格</h2><p>Layout 和 Router 都完成了，接下来我们就在 Links 组件中添加一个表格，用来显示项目默认创建时给生成的 links 数据。首先添加订阅数据所需要的包。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">meteor add react-meteor-data</span><br></pre></td></tr></table></figure>
+
+<p>然后修改 <code>/imports/ui/components/Links.js</code> 文件，添加 ant design 的 Table 组件并订阅 links collection 数据，这里要注意，我们把组件名由 Links 修改为 LinksTable，避免和导入的 Links collection 名字冲突。代码如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">import React from &#x27;react&#x27;</span><br><span class="line">import Table from &#x27;antd/lib/table&#x27;</span><br><span class="line">import &#123; withTracker &#125; from &#x27;meteor/react-meteor-data&#x27;</span><br><span class="line"></span><br><span class="line">import &#123; dateToString &#125; from &#x27;../../lib/helpers&#x27;</span><br><span class="line">import &#123; Links &#125; from &#x27;../../api/links/links&#x27;</span><br><span class="line"></span><br><span class="line">const &#123; Column &#125; = Table</span><br><span class="line"></span><br><span class="line">const LinksTable = (&#123; dataSource, isReady &#125;) =&gt; &#123;</span><br><span class="line">  return (</span><br><span class="line">    &lt;Table dataSource=&#123;dataSource&#125; loading=&#123;!isReady&#125;&gt;</span><br><span class="line">      &lt;Column</span><br><span class="line">        title=&#x27;Title&#x27;</span><br><span class="line">        key=&#x27;title&#x27;</span><br><span class="line">        dataIndex=&#x27;title&#x27;</span><br><span class="line">      /&gt;</span><br><span class="line">      &lt;Column</span><br><span class="line">        title=&#x27;URL&#x27;</span><br><span class="line">        key=&#x27;url&#x27;</span><br><span class="line">        dataIndex=&#x27;url&#x27;</span><br><span class="line">        render=&#123;(t, r) =&gt; &lt;a href=&#123;t&#125; target=&#x27;_blank&#x27;&gt;&#123;t&#125;&lt;/a&gt;&#125;</span><br><span class="line">      /&gt;</span><br><span class="line">      &lt;Column</span><br><span class="line">        title=&#x27;CreatedAt&#x27;</span><br><span class="line">        key=&#x27;createdAt&#x27;</span><br><span class="line">        dataIndex=&#x27;createdAt&#x27;</span><br><span class="line">        render=&#123;(t, r) =&gt; dateToString(t)&#125;</span><br><span class="line">      /&gt;</span><br><span class="line">    &lt;/Table&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default withTracker(() =&gt; &#123;</span><br><span class="line">  // 订阅数据</span><br><span class="line">  const linksHandle = Meteor.subscribe(&#x27;links.all&#x27;)</span><br><span class="line">  const links = Links.find(&#123;&#125;).fetch()</span><br><span class="line">  const dataSource = []</span><br><span class="line"></span><br><span class="line">  // 遍历数据，增加 key 用于表格显示</span><br><span class="line">  if (Array.isArray(links)) &#123;</span><br><span class="line">    links.map(link =&gt; &#123;</span><br><span class="line">      dataSource.push(&#123;</span><br><span class="line">        key: link._id,</span><br><span class="line">        ...link</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;  </span><br><span class="line"></span><br><span class="line">  return &#123;</span><br><span class="line">    isReady: linksHandle.ready(),</span><br><span class="line">    dataSource</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)(LinksTable)</span><br></pre></td></tr></table></figure>
+
+<p>组件中使用了一个方法是 dateToString，用来转换日期，所以我们在项目 <code>/imports</code> 目录下我们新建了一个 lib 目录，存放了一个 helpers 文件，用来放一些常用的方法，因为使用到了 moment，所以我们要添加一下 moment。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add mement --save</span><br></pre></td></tr></table></figure>
+
+<p>修改完成后，展示的效果如下： <a href="/images/2018/01/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2018-01-20-13.44.16.png"><img src="/images/2018/01/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2018-01-20-13.44.16.png"></a></p>
+<h2 id="增加数据量"><a href="#增加数据量" class="headerlink" title="增加数据量"></a>增加数据量</h2><p>上面我们已经成功显示了所有 links 中的数据，但是数据量有点小，不方便我们测试分页效果，所以修改一下 <code>/imports/startup/server/fixtures.js</code> 的代码，让程序初始化的时候就默认生成 500 条数据，方便我们调试。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// Fill the DB with example data on startup</span><br><span class="line"></span><br><span class="line">import &#123; Meteor &#125; from &#x27;meteor/meteor&#x27;</span><br><span class="line">import &#123; Links &#125; from &#x27;../../api/links/links.js&#x27;</span><br><span class="line"></span><br><span class="line">Meteor.startup(() =&gt; &#123;</span><br><span class="line">  // if the Links collection is empty</span><br><span class="line">  Links.remove(&#123;&#125;)</span><br><span class="line">  for (let i = 0; i &lt; 500; i++) &#123;</span><br><span class="line">    Links.insert(&#123;</span><br><span class="line">      title: `Link title ($&#123;i&#125;)`,</span><br><span class="line">      url: `https://www$&#123;i&#125;.google.hk.com/`,</span><br><span class="line">      createdAt: new Date()</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现按页数订阅数据"><a href="#实现按页数订阅数据" class="headerlink" title="实现按页数订阅数据"></a>实现按页数订阅数据</h2><p>在实现分页之前，我们首先要修改一下 publish 的方法，增加一个 currentPage 参数和一个 pageSize 参数，用来在发布数据的时候，制定发布的数据量和数据段。代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Meteor.publish(&#x27;links.all&#x27;, function (currentPage = 1, pageSize = 10) &#123;</span><br><span class="line">  return Links.find(&#123;&#125;, &#123;</span><br><span class="line">    limit: pageSize,                    // 订阅默认的 10 条数据</span><br><span class="line">    skip: (currentPage - 1) * pageSize  // 跳过当前页-1 * 每页数据的数据量，与传统分页没有什么区别</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>然后就是前端的修改了，首先我们要给 Table 设置一个分页器（默认是有的，但是我们要个性化一下），如下图： <a href="/images/2018/01/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2018-01-20-14.07.25.png"><img src="/images/2018/01/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7-2018-01-20-14.07.25.png"></a> 我们个性化了 Table 的分页功能，指定了默认的数据总数、当前页和点击分页按钮时触发的回调函数。这里大家可能看到多出来三个数据，分别是 <code>linksCount</code>，<code>currentPage</code>，<code>setCurrentPage</code>。这三个数据哪里来的呢？分别起到什么作用呢？ 其实他们是我们自己创建的状态，用来记录数据的总数和当前页以及一个设置当前页的函数方法，这些是由一个叫做 <code>recompose</code> 的包创建的，添加 <code>recompose</code> 包。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add recompose --save</span><br></pre></td></tr></table></figure>
+
+<p>然后创建两个状态，如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const enhance = compose(</span><br><span class="line">  withState(&#x27;currentPage&#x27;, &#x27;setCurrentPage&#x27;, 1),</span><br><span class="line">  withState(&#x27;linksCount&#x27;, &#x27;setLinksCount&#x27;, 0)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>withState 的第一个参数是状态的名字，第二个参数是设置状态的函数名字，第三个方法是状态的初始值。随后我们将两个状态绑定到组件，这样我们就可以在组件中使用这两个状态并且可以调用两个修改状态的方法来修改状态。其实所谓的绑定就是用我们创建好的 enhance 包裹了一下之前写好的 withTracker。：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">export default enhance(</span><br><span class="line">  withTracker((&#123; currentPage, setLinksCount &#125;) =&gt; &#123;</span><br><span class="line">    // 订阅数据</span><br><span class="line">    const linksHandle = Meteor.subscribe(&#x27;links.all&#x27;, currentPage)</span><br><span class="line">    const links = Links.find(&#123;&#125;).fetch()</span><br><span class="line">    const dataSource = []</span><br><span class="line">    Meteor.call(&#x27;links.count&#x27;, (err, result) =&gt; &#123;</span><br><span class="line">      if (!err) &#123;</span><br><span class="line">        // 设置数据总量</span><br><span class="line">        setLinksCount(result)</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        console.log(err.message)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    // 用于调试，查看订阅了多少数据</span><br><span class="line">    if (Array.isArray(links) &amp;&amp; links.length !== 0) &#123;</span><br><span class="line">      console.log(links)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 遍历数据，增加 key 用于表格显示</span><br><span class="line">    if (Array.isArray(links)) &#123;</span><br><span class="line">      links.map(link =&gt; &#123;</span><br><span class="line">        dataSource.push(&#123;</span><br><span class="line">          key: link._id,</span><br><span class="line">          ...link</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return &#123;</span><br><span class="line">      isReady: linksHandle.ready(),</span><br><span class="line">      dataSource</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)(LinksTable)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>此时 withTracker 的 props 就增加了两个状态和两个修改状态的方法，我们可以通过 props 把他们导出来使用。可以看到 withTracker 函数中已经有了变化，我们增加了一个 meteor.call，来从服务端获取数据的总数。因为这里我们仅需要一个当前页，用来订阅数据，还需要一个修改数据总数的方法 setLinksCount 用来 meteor.call 返回后设置数据总数（获取到数据总数后传递给表格 pagination 做参数，可以让分页器显示一共有多少页）。服务端实现的获取总数的方法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x27;links.count&#x27; () &#123;</span><br><span class="line">  return Links.find().count()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样我们就把整个流程串了起来，首先创建了两个状态，分别是当前页和数据总数，分别传递给组件用于显示当前在第几页和 withTracker 来订阅数据。withTracker 中还使用了 setLinksCount 方法来设置数据总数的状态，让 Table 表格可以看到分页器下面所有页数的按钮（如果不这样做只能看到第一页的按钮），最后在点击分页器第几页按钮时出发 onChange 调用了 setCurrentPage 来设置 currentPage 的数据，此时 currentPage 变化，withTracker 也收到变化通知，会重新到后台订阅数据，重新订阅后，数据发生改变，表格的数据也随之改变。这里是<a target="_blank" rel="noopener" href="https://github.com/nmgwddj/meteor-pagination/commit/817fb9a864dd8f558a76175e66d3578bfd249793">最后一次提交</a>。 以上就是整个分页的流程，如果有不明白的地方，欢迎大家一起讨论。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nmgwddj.github.io/2018/01/20/2018/2018-01-20_144301-2256/" data-id="cliy8bedm00lpg8or85629kfw" data-title="Meteor 1.6.x + Ant Design Table + recompose 实现数据分页效果" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/" rel="tag">React</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/meteor/" rel="tag">meteor</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/02/09/2018/2018-02-09_124015-2294/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          使用七牛云对象储存缓存 wordpress 静态文件加速网站
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/01/20/2018/2018-01-20_105116-2271/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">管理 macOS 启动项</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/DataStruct/">DataStruct</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Database/">Database</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Language/">Language</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Platform/">Platform</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tools/">Tools</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/">language</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/language/C-C/">C/C++</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/language/C-C/QML/">QML</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/JavaScript/">JavaScript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/Perl/">Perl</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/language/QML/">QML</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/platform/">platform</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/platform/Linux-Unix/">Linux/Unix</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/platform/Linux-Unix/Windows/">Windows</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/platform/Windows/">Windows</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/platform/iOS-macOS/">iOS/macOS</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/platform/iOS-macOS/Windows/">Windows</a></li></ul></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AU3/" rel="tag">AU3</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BOM/" rel="tag">BOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CEF/" rel="tag">CEF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CMake/" rel="tag">CMake</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Charles/" rel="tag">Charles</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chrome/" rel="tag">Chrome</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DOM/" rel="tag">DOM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug/" rel="tag">Debug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Drivers/" rel="tag">Drivers</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DuiLib/" rel="tag">DuiLib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ES6/" rel="tag">ES6</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Event/" rel="tag">Event</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FFmpeg/" rel="tag">FFmpeg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FTP/" rel="tag">FTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MFC/" rel="tag">MFC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac-OS-X/" rel="tag">Mac OS X</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NSIS/" rel="tag">NSIS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NVIDIA/" rel="tag">NVIDIA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QML/" rel="tag">QML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt/" rel="tag">Qt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Qt-Quick/" rel="tag">Qt Quick</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RESTful-API/" rel="tag">RESTful API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React/" rel="tag">React</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STL/" rel="tag">STL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SerialPort/" rel="tag">SerialPort</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPN/" rel="tag">VPN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VSCode/" rel="tag">VSCode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VisualStudio/" rel="tag">VisualStudio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/atom/" rel="tag">atom</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django/" rel="tag">django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gcc/" rel="tag">gcc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/macOS/" rel="tag">macOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/makefile/" rel="tag">makefile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/meteor/" rel="tag">meteor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/node/" rel="tag">node</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/npm/" rel="tag">npm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redux/" rel="tag">redux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlite/" rel="tag">sqlite</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime-text/" rel="tag">sublime text</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wordpress/" rel="tag">wordpress</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/" rel="tag">二进制</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BB%BF%E5%87%BD%E6%95%B0/" rel="tag">仿函数</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BD%8D%E6%93%8D%E4%BD%9C/" rel="tag">位操作</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BF%A1%E5%8F%B7/" rel="tag">信号</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%8B%E5%85%83/" rel="tag">友元</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E6%80%81/" rel="tag">多态</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag">字符串</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%95%E7%94%A8/" rel="tag">引用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/" rel="tag">思维导图</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8C%87%E9%92%88/" rel="tag">指针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%92%E5%BA%8F/" rel="tag">排序</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E7%BB%84/" rel="tag">数组</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/" rel="tag">智能指针</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9F%A5%E6%89%BE/" rel="tag">查找</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A8%A1%E7%89%88/" rel="tag">模版</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B1%BB/" rel="tag">类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" rel="tag">类型转换</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/" rel="tag">继承与派生</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B0%83%E8%AF%95/" rel="tag">调试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/" rel="tag">运算符重载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" rel="tag">进程&#x2F;线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/" rel="tag">进程空间</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8D%E8%BD%BD/" rel="tag">重载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%93%BE%E8%A1%A8/" rel="tag">链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8/" rel="tag">驱动</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AU3/" style="font-size: 10px;">AU3</a> <a href="/tags/BOM/" style="font-size: 10px;">BOM</a> <a href="/tags/Boost/" style="font-size: 11.05px;">Boost</a> <a href="/tags/CEF/" style="font-size: 12.63px;">CEF</a> <a href="/tags/CMake/" style="font-size: 10.53px;">CMake</a> <a href="/tags/Charles/" style="font-size: 10px;">Charles</a> <a href="/tags/Chrome/" style="font-size: 10.53px;">Chrome</a> <a href="/tags/DOM/" style="font-size: 12.63px;">DOM</a> <a href="/tags/Debug/" style="font-size: 10px;">Debug</a> <a href="/tags/Drivers/" style="font-size: 13.68px;">Drivers</a> <a href="/tags/DuiLib/" style="font-size: 10px;">DuiLib</a> <a href="/tags/ES6/" style="font-size: 15.26px;">ES6</a> <a href="/tags/Event/" style="font-size: 11.58px;">Event</a> <a href="/tags/FFmpeg/" style="font-size: 10px;">FFmpeg</a> <a href="/tags/FTP/" style="font-size: 10px;">FTP</a> <a href="/tags/MFC/" style="font-size: 11.58px;">MFC</a> <a href="/tags/Mac-OS-X/" style="font-size: 11.05px;">Mac OS X</a> <a href="/tags/NSIS/" style="font-size: 10px;">NSIS</a> <a href="/tags/NVIDIA/" style="font-size: 10px;">NVIDIA</a> <a href="/tags/QML/" style="font-size: 10.53px;">QML</a> <a href="/tags/Qt/" style="font-size: 20px;">Qt</a> <a href="/tags/Qt-Quick/" style="font-size: 11.05px;">Qt Quick</a> <a href="/tags/RESTful-API/" style="font-size: 10px;">RESTful API</a> <a href="/tags/React/" style="font-size: 16.84px;">React</a> <a href="/tags/STL/" style="font-size: 12.11px;">STL</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/SerialPort/" style="font-size: 10px;">SerialPort</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/VSCode/" style="font-size: 11.05px;">VSCode</a> <a href="/tags/VisualStudio/" style="font-size: 18.42px;">VisualStudio</a> <a href="/tags/atom/" style="font-size: 10px;">atom</a> <a href="/tags/django/" style="font-size: 10px;">django</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/gcc/" style="font-size: 10.53px;">gcc</a> <a href="/tags/git/" style="font-size: 12.63px;">git</a> <a href="/tags/highcharts/" style="font-size: 10px;">highcharts</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/macOS/" style="font-size: 10px;">macOS</a> <a href="/tags/makefile/" style="font-size: 10px;">makefile</a> <a href="/tags/meteor/" style="font-size: 17.37px;">meteor</a> <a href="/tags/mongodb/" style="font-size: 11.05px;">mongodb</a> <a href="/tags/mysql/" style="font-size: 12.11px;">mysql</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/node/" style="font-size: 10px;">node</a> <a href="/tags/npm/" style="font-size: 10px;">npm</a> <a href="/tags/openssl/" style="font-size: 10px;">openssl</a> <a href="/tags/oracle/" style="font-size: 16.32px;">oracle</a> <a href="/tags/redux/" style="font-size: 10px;">redux</a> <a href="/tags/sql/" style="font-size: 16.32px;">sql</a> <a href="/tags/sqlite/" style="font-size: 10px;">sqlite</a> <a href="/tags/sublime-text/" style="font-size: 11.05px;">sublime text</a> <a href="/tags/wordpress/" style="font-size: 11.58px;">wordpress</a> <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/" style="font-size: 10.53px;">二进制</a> <a href="/tags/%E4%BB%BF%E5%87%BD%E6%95%B0/" style="font-size: 10px;">仿函数</a> <a href="/tags/%E4%BD%8D%E6%93%8D%E4%BD%9C/" style="font-size: 11.05px;">位操作</a> <a href="/tags/%E4%BF%A1%E5%8F%B7/" style="font-size: 12.11px;">信号</a> <a href="/tags/%E5%8F%8B%E5%85%83/" style="font-size: 13.16px;">友元</a> <a href="/tags/%E5%A4%9A%E6%80%81/" style="font-size: 12.63px;">多态</a> <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" style="font-size: 17.89px;">字符串</a> <a href="/tags/%E5%BC%95%E7%94%A8/" style="font-size: 10px;">引用</a> <a href="/tags/%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/" style="font-size: 10px;">思维导图</a> <a href="/tags/%E6%8C%87%E9%92%88/" style="font-size: 18.42px;">指针</a> <a href="/tags/%E6%8E%92%E5%BA%8F/" style="font-size: 16.84px;">排序</a> <a href="/tags/%E6%95%B0%E7%BB%84/" style="font-size: 17.37px;">数组</a> <a href="/tags/%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/" style="font-size: 10px;">智能指针</a> <a href="/tags/%E6%9F%A5%E6%89%BE/" style="font-size: 12.63px;">查找</a> <a href="/tags/%E6%A8%A1%E7%89%88/" style="font-size: 12.63px;">模版</a> <a href="/tags/%E7%B1%BB/" style="font-size: 19.47px;">类</a> <a href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" style="font-size: 12.11px;">类型转换</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E7%BB%A7%E6%89%BF%E4%B8%8E%E6%B4%BE%E7%94%9F/" style="font-size: 14.21px;">继承与派生</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 16.84px;">网络</a> <a href="/tags/%E8%B0%83%E8%AF%95/" style="font-size: 10px;">调试</a> <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/" style="font-size: 14.74px;">运算符重载</a> <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/" style="font-size: 18.42px;">进程/线程</a> <a href="/tags/%E8%BF%9B%E7%A8%8B%E7%A9%BA%E9%97%B4/" style="font-size: 18.95px;">进程空间</a> <a href="/tags/%E9%80%92%E5%BD%92/" style="font-size: 15.79px;">递归</a> <a href="/tags/%E9%87%8D%E8%BD%BD/" style="font-size: 10.53px;">重载</a> <a href="/tags/%E9%93%BE%E8%A1%A8/" style="font-size: 18.42px;">链表</a> <a href="/tags/%E9%A9%B1%E5%8A%A8/" style="font-size: 10px;">驱动</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">June 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">April 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">December 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">March 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">April 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/06/01/2023/2023-06-01_163201-3202/">macOS 应用正确签名并公证后分发依然提示“无法验证开发者”</a>
+          </li>
+        
+          <li>
+            <a href="/2023/04/26/2023/2023-04-26_100852-3189/">Qt6 QML 中渲染自定义视频帧的改进 2023-05-30 更新</a>
+          </li>
+        
+          <li>
+            <a href="/2022/12/09/2022/2022-12-09_182753-3163/">量化你团队的代码质量</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/05/2022/2022-08-05_160056-3146/">Jenkins pipeline macOS agent 报错：cmake: command not found</a>
+          </li>
+        
+          <li>
+            <a href="/2022/04/09/2022/2022-04-09_164105-3116/">使用 Conan、CMake 组织跨平台 Qt 工程</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 Dylan<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
