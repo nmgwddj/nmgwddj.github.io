@@ -63,7 +63,7 @@
 <p>class MyClass<br>{<br>public:<br>void func()<br>{<br>cout &lt;&lt; “MyClass func” &lt;&lt; endl;<br>}<br>};</p>
 <p>class Mem_malloc<br>{<br>public:<br>Mem_malloc()<br>{<br>m_int &#x3D; (int*)malloc(sizeof(int) * 1024 * 1024 * 100); &#x2F;&#x2F; 400M<br>}<br>~Mem_malloc()<br>{<br>free(m_int);<br>}<br>private:<br>int* m_int;<br>};</p>
 <p>int main(int argc, char* argv[])<br>{<br>&#x2F;&#x2F; 两种构造<br>boost::shared_ptr<int> ptr;<br>boost::shared_ptr<int> ptr_arr(new int(100));</p>
-<p>&#x2F;&#x2F; 与普通指针相差无几<br>int a &#x3D; 111;<br>int* pA &#x3D; &amp;a;<br>cout &lt;&lt; “*pA &#x3D; “ &lt;&lt; *pA &lt;&lt; endl;<br>cout &lt;&lt; “*ptr_arr &#x3D; “ &lt;&lt; *ptr_arr &lt;&lt; endl;</p>
+<p>&#x2F;&#x2F; 与普通指针相差无几<br>int a &#x3D; 111;<br>int* pA &#x3D; &a;<br>cout &lt;&lt; “*pA &#x3D; “ &lt;&lt; *pA &lt;&lt; endl;<br>cout &lt;&lt; “*ptr_arr &#x3D; “ &lt;&lt; *ptr_arr &lt;&lt; endl;</p>
 <p>&#x2F;&#x2F; 操作对象<br>boost::shared_ptr<MyClass> ptr_obj;<br>boost::shared_ptr<MyClass> ptr_MyClass(new MyClass());<br>ptr_obj &#x3D; ptr_MyClass;<br>ptr_obj-&gt;func();</p>
 <p>&#x2F;&#x2F; 智能指针避免普通指针和智能指针混用<br>&#x2F;&#x2F; 防止智能指针计数器为0将内存释放后，普通指针就变了野指针。<br>int* p_int001 &#x3D; new int(100);<br>int* p_int002 &#x3D; p_int001;<br>&#x2F;&#x2F;boost::shared_ptr<int> ptr_int003 &#x3D; p_int002;&#x2F;&#x2F; 错误的，不能混用</p>
 <p>boost::shared_ptr<int> ptr_int004(new int(100));<br>&#x2F;&#x2F;int* p_int005 &#x3D; ptr_int004;&#x2F;&#x2F; 错误的，不能混用</p>

@@ -32,7 +32,7 @@ const defaultConfig = &lt;PagerConfig&gt;{
   historyToSave: 3
 }
 </code></pre>
-<h3 id="lt-script-gt-Hook-Tag"><a href="#lt-script-gt-Hook-Tag" class="headerlink" title="&lt;script&gt; Hook Tag"></a><code>&lt;script&gt;</code> Hook Tag</h3><p>While <code>&lt;script&gt;</code> tags in container will default run after the page switching, it can be specified to run before or after the page switching.</p>
+<h3 id="Hook-Tag"><a href="#Hook-Tag" class="headerlink" title="&lt;script&gt; Hook Tag"></a><code>&lt;script&gt;</code> Hook Tag</h3><p>While <code>&lt;script&gt;</code> tags in container will default run after the page switching, it can be specified to run before or after the page switching.</p>
 <p>Remember that <code>&lt;script&gt;</code> with <code>data-run-before</code> (or other name setted in config) would run before the content changes, so do not make references to the target page elements.</p>
 <pre><code class="html">&lt;div data-pager-shell&gt;
   ...

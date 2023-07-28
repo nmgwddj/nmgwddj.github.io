@@ -62,9 +62,9 @@
 <p>typedef struct tag_tirTNode<br>{<br>&#x2F;&#x2F;节点的数据<br>char data;<br>&#x2F;&#x2F;左子节点指针<br>struct tag_tirTNode* leftChild;<br>&#x2F;&#x2F;右子节点指针<br>struct tag_tirTNode* rightChild;<br>}TirTNode;</p>
 <p>int main()<br>{<br>&#x2F;&#x2F; 定义树的节点元素<br>TirTNode treeA, treeB, treeC, treeD, treeE, treeF, treeG;</p>
 <p>&#x2F;&#x2F; 初始化<br>memset(&amp;treeA, 0, sizeof(TirTNode));<br>memset(&amp;treeB, 0, sizeof(TirTNode));<br>memset(&amp;treeC, 0, sizeof(TirTNode));<br>memset(&amp;treeD, 0, sizeof(TirTNode));<br>memset(&amp;treeE, 0, sizeof(TirTNode));<br>memset(&amp;treeF, 0, sizeof(TirTNode));<br>memset(&amp;treeG, 0, sizeof(TirTNode));</p>
-<p>treeA.data &#x3D; ‘A’;&#x2F;&#x2F; 节点值<br>treeA.leftChild &#x3D; &amp;treeB;&#x2F;&#x2F; 左子节点<br>treeA.rightChild &#x3D; &amp;treeC;&#x2F;&#x2F; 右子节点</p>
-<p>treeB.data &#x3D; ‘B’;<br>treeB.leftChild &#x3D; &amp;treeD;<br>treeB.rightChild &#x3D; &amp;treeE;</p>
-<p>treeC.data &#x3D; ‘C’;<br>treeC.leftChild &#x3D; &amp;treeF;<br>treeC.rightChild &#x3D; &amp;treeG;</p>
+<p>treeA.data &#x3D; ‘A’;&#x2F;&#x2F; 节点值<br>treeA.leftChild &#x3D; &treeB;&#x2F;&#x2F; 左子节点<br>treeA.rightChild &#x3D; &treeC;&#x2F;&#x2F; 右子节点</p>
+<p>treeB.data &#x3D; ‘B’;<br>treeB.leftChild &#x3D; &treeD;<br>treeB.rightChild &#x3D; &treeE;</p>
+<p>treeC.data &#x3D; ‘C’;<br>treeC.leftChild &#x3D; &treeF;<br>treeC.rightChild &#x3D; &treeG;</p>
 <p>&#x2F;&#x2F; 让叶子节点的left和right都指向NULL<br>treeD.data &#x3D; ‘D’;<br>treeD.leftChild &#x3D; NULL;<br>treeD.rightChild &#x3D; NULL;</p>
 <p>treeE.data &#x3D; ‘E’;<br>treeE.leftChild &#x3D; NULL;<br>treeE.rightChild &#x3D; NULL;</p>
 <p>treeF.data &#x3D; ‘F’;<br>treeF.leftChild &#x3D; NULL;<br>treeF.rightChild &#x3D; NULL;</p>
@@ -75,13 +75,13 @@
 <p>typedef struct tag_tirTNode<br>{<br>&#x2F;&#x2F;节点的数据<br>char data;<br>&#x2F;&#x2F;左子节点指针<br>struct tag_tirTNode* leftChild;<br>&#x2F;&#x2F;右子节点指针<br>struct tag_tirTNode* rightChild;<br>&#x2F;&#x2F;父节点指针<br>struct tag_tirTNode* parentChild;<br>}TirTNode;</p>
 <p>int main()<br>{<br>&#x2F;&#x2F; 定义树的节点元素<br>TirTNode treeA, treeB, treeC, treeD, treeE, treeF, treeG;</p>
 <p>&#x2F;&#x2F; 初始化<br>memset(&amp;treeA, 0, sizeof(TirTNode));<br>memset(&amp;treeB, 0, sizeof(TirTNode));<br>memset(&amp;treeC, 0, sizeof(TirTNode));<br>memset(&amp;treeD, 0, sizeof(TirTNode));<br>memset(&amp;treeE, 0, sizeof(TirTNode));<br>memset(&amp;treeF, 0, sizeof(TirTNode));<br>memset(&amp;treeG, 0, sizeof(TirTNode));</p>
-<p>treeA.data &#x3D; ‘A’;&#x2F;&#x2F; 节点值<br>treeA.leftChild &#x3D; &amp;treeB;&#x2F;&#x2F; 左子节点<br>treeA.rightChild &#x3D; &amp;treeC;&#x2F;&#x2F; 右子节点<br>treeA.parentChild &#x3D; NULL;&#x2F;&#x2F; 根的父节点指针指向NULL</p>
-<p>treeB.data &#x3D; ‘B’;<br>treeB.leftChild &#x3D; &amp;treeD;<br>treeB.rightChild &#x3D; &amp;treeE;<br>&#x2F;&#x2F; parentChild 指针指向父节点<br>treeB.parentChild &#x3D; &amp;treeA;</p>
-<p>treeC.data &#x3D; ‘C’;<br>treeC.leftChild &#x3D; &amp;treeF;<br>treeC.rightChild &#x3D; &amp;treeG;<br>treeC.parentChild &#x3D; &amp;treeA;</p>
-<p>&#x2F;&#x2F; 让叶子节点的left和right都指向NULL<br>treeD.data &#x3D; ‘D’;<br>treeD.leftChild &#x3D; NULL;<br>treeD.rightChild &#x3D; NULL;<br>&#x2F;&#x2F; parentChild 指针指向父节点<br>treeD.parentChild &#x3D; &amp;treeB;</p>
-<p>treeE.data &#x3D; ‘E’;<br>treeE.leftChild &#x3D; NULL;<br>treeE.rightChild &#x3D; NULL;<br>&#x2F;&#x2F; parentChild 指针指向父节点<br>treeE.parentChild &#x3D; &amp;treeB;</p>
-<p>treeF.data &#x3D; ‘F’;<br>treeF.leftChild &#x3D; NULL;<br>treeF.rightChild &#x3D; NULL;<br>&#x2F;&#x2F; parentChild 指针指向父节点<br>treeF.parentChild &#x3D; &amp;treeC;</p>
-<p>treeG.data &#x3D; ‘G’;<br>treeG.leftChild &#x3D; NULL;<br>treeG.rightChild &#x3D; NULL;<br>&#x2F;&#x2F; parentChild 指针指向父节点<br>treeG.parentChild &#x3D; &amp;treeC;</p>
+<p>treeA.data &#x3D; ‘A’;&#x2F;&#x2F; 节点值<br>treeA.leftChild &#x3D; &treeB;&#x2F;&#x2F; 左子节点<br>treeA.rightChild &#x3D; &treeC;&#x2F;&#x2F; 右子节点<br>treeA.parentChild &#x3D; NULL;&#x2F;&#x2F; 根的父节点指针指向NULL</p>
+<p>treeB.data &#x3D; ‘B’;<br>treeB.leftChild &#x3D; &treeD;<br>treeB.rightChild &#x3D; &treeE;<br>&#x2F;&#x2F; parentChild 指针指向父节点<br>treeB.parentChild &#x3D; &treeA;</p>
+<p>treeC.data &#x3D; ‘C’;<br>treeC.leftChild &#x3D; &treeF;<br>treeC.rightChild &#x3D; &treeG;<br>treeC.parentChild &#x3D; &treeA;</p>
+<p>&#x2F;&#x2F; 让叶子节点的left和right都指向NULL<br>treeD.data &#x3D; ‘D’;<br>treeD.leftChild &#x3D; NULL;<br>treeD.rightChild &#x3D; NULL;<br>&#x2F;&#x2F; parentChild 指针指向父节点<br>treeD.parentChild &#x3D; &treeB;</p>
+<p>treeE.data &#x3D; ‘E’;<br>treeE.leftChild &#x3D; NULL;<br>treeE.rightChild &#x3D; NULL;<br>&#x2F;&#x2F; parentChild 指针指向父节点<br>treeE.parentChild &#x3D; &treeB;</p>
+<p>treeF.data &#x3D; ‘F’;<br>treeF.leftChild &#x3D; NULL;<br>treeF.rightChild &#x3D; NULL;<br>&#x2F;&#x2F; parentChild 指针指向父节点<br>treeF.parentChild &#x3D; &treeC;</p>
+<p>treeG.data &#x3D; ‘G’;<br>treeG.leftChild &#x3D; NULL;<br>treeG.rightChild &#x3D; NULL;<br>&#x2F;&#x2F; parentChild 指针指向父节点<br>treeG.parentChild &#x3D; &treeC;</p>
 <p>return 0;<br>}</p>
 
 

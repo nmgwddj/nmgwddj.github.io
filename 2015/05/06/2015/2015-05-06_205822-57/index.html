@@ -62,7 +62,7 @@
 <p>int main(int argc, char* argv[])<br>{<br>DPCHAR p1, p2;<br>TPCHAR p3, p4;<br>return 0;<br>}</p>
 <p>在linux下我们使用 gcc -E 进行预编译后得到的文件如下：</p>
 <p># 1 “define.c”</p>
-<h1 id="1-““"><a href="#1-““" class="headerlink" title="1 ““"></a>1 “<built-in>“</h1><h1 id="1-“-lt-命令行-gt-”"><a href="#1-“-lt-命令行-gt-”" class="headerlink" title="1 “&lt;命令行&gt;”"></a>1 “&lt;命令行&gt;”</h1><h1 id="1-“define-c”"><a href="#1-“define-c”" class="headerlink" title="1 “define.c”"></a>1 “define.c”</h1><p>typedef char* TPCHAR;</p>
+<h1 id="1-““"><a href="#1-““" class="headerlink" title="1 ““"></a>1 “<built-in>“</h1><h1 id="1-“”"><a href="#1-“”" class="headerlink" title="1 “&lt;命令行&gt;”"></a>1 “&lt;命令行&gt;”</h1><h1 id="1-“define-c”"><a href="#1-“define-c”" class="headerlink" title="1 “define.c”"></a>1 “define.c”</h1><p>typedef char* TPCHAR;</p>
 <p>int main(int argc, char* argv[])<br>{<br> char* p1, p2;<br> TPCHAR p3, p4;<br> return 0;<br>}</p>
 <p>我们很明显可以看到，使用#define定义的宏常量在预编译阶段就已经将代码进行了替换，这样编译出来的程序，p1是一个指针，而p2则只是一个单纯的char类型变量而已。 但 typedef 定义的别名则不然，p3和p4均是一个char*类型的指针。</p>
 
