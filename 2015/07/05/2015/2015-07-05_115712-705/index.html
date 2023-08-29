@@ -1,61 +1,7 @@
-<!DOCTYPE html>
-<html lang="zh-cmn-Hans">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>引入信号后的几种陷阱讲解 | Dylan&#39;s blog</title>
-  
-  
-  
-  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
-  
-<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author"><title>引入信号后的几种陷阱讲解 · Dylan's blog</title><meta name="description" content="程序在引入信号机制后会变的非常多元化，程序在某些情况下难以理解并且会出现一些非常奇特的问题，但这些问题经过总结无非是因为使用了不可重入函数、信号引起的时序竞态、信号处理函数与主程序的异步io过程中出现的问题。要避免这些问题，我们要先来复现和分析这些情况是如何出现的，才能针对性的去解决这些问题。
 
-  
-<link rel="stylesheet" href="/css/style.css">
 
-<meta name="generator" content="Hexo 6.3.0"></head>
-
-<body>
-<div class="Shell">
-    <aside class='SideBar'>
-    <section class='avatar' style="background-image: url()">
-        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
-        </div>
-    </section>
-    <section class='menu'>
-        <div>Dylan&#39;s blog</div>
-        
-            <div>To the pursuit of truth.</div>
-        
-        <ul>
-          
-            <a href="/" class="Btn">
-              <li>Home</li>
-            </a>  
-          
-            <a href="/archives/" class="Btn">
-              <li>Archive</li>
-            </a>  
-          
-        </ul>
-    </section>
-    <section class="media">
-        
-    </section>
-</aside>
-
-    <div class="container">
-        <div data-pager-shell>
-            <div>
-  <article class='ContentView'>
-    <header class='PageTitle'>
-        <h1>引入信号后的几种陷阱讲解</h1>
-    </header>
-
-    <section>
-      <p>程序在引入信号机制后会变的非常多元化，程序在某些情况下难以理解并且会出现一些非常奇特的问题，但这些问题经过总结无非是因为使用了不可重入函数、信号引起的时序竞态、信号处理函数与主程序的异步io过程中出现的问题。要避免这些问题，我们要先来复现和分析这些情况是如何出现的，才能针对性的去解决这些问题。</p>
+"><meta name="keywords"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">Dylan's blog</a></h3></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a target="_blank" rel="noopener" href="https://www.caicai.me"> CaiCai </a><span>&</span><a target="_blank" rel="noopener" href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">Home</a></li><li><a href="/about">Sobre</a></li><li><a href="/archives">Archivo</a></li><li><a href="/links">Enlaces</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>引入信号后的几种陷阱讲解</a></h3></div><div class="post-content"><p>程序在引入信号机制后会变的非常多元化，程序在某些情况下难以理解并且会出现一些非常奇特的问题，但这些问题经过总结无非是因为使用了不可重入函数、信号引起的时序竞态、信号处理函数与主程序的异步io过程中出现的问题。要避免这些问题，我们要先来复现和分析这些情况是如何出现的，才能针对性的去解决这些问题。</p>
 <span id="more"></span>
 <hr>
 <h3 id="【可重入-不可重入函数】"><a href="#【可重入-不可重入函数】" class="headerlink" title="【可重入&#x2F;不可重入函数】"></a>【可重入&#x2F;不可重入函数】</h3><p>在程序执行到某个多步逻辑处理操作时，忽然接收到信号，而信号也同样在处理同一处逻辑，这样可能会造成此处逻辑，考虑以下场景： <a href="/images/2015/07/2015-07-04_193819.png"><img src="/images/2015/07/2015-07-04_193819.png" alt="2015-07-04_193819"></a> 当主程序正在执行一段新节点插入链表的操作，最后一步头节点指向新节点的操作还尚未执行时，程序接收到了信号，而信号处理函数也同样执行了一个新的节点插入操作，插入完成后又返回主函数。这样的整个过程结束后，信号处理函数中插入的节点相当于白白浪费了，跳出信号函数后，头节点又指向了在进入信号函数之前插入的那个节点位置。这样的节点插入函数，我们就称为“不可重入”函数。在信号的捕捉处理函数中，一定要避免这种不可重入函数的使用。那么怎么区分这些不可重入函数呢？ 一般不可重入函数都是操作了公共的数据结构或静态变量，像我们刚才举的例子中，链表就是一个公共的数据结构。再比如 strtok 函数，该函数内部维护了一个静态的变量用来记录每次处理字符串分割后的位置，如果主进程函数和信号捕获的处理函数中同时调用了 strtok 函数，那么就有可能引起错乱。要避免这些情况，linux&#x2F;unix 系统中给我们提供了很多“可重入”函数，参见 man 7 signal： <a href="/images/2015/07/2015-07-04_195246.png"><img src="/images/2015/07/2015-07-04_195246.png" alt="2015-07-04_195246"></a> 上图中就是一些信号安全函数，我们可以放心调用，你在使用 man page 的时候也会发现，有一些函数除了正常声明以外，还有一些声明带有 _r 结尾的，如下图： <a href="/images/2015/07/2015-07-04_195413.png"><img src="/images/2015/07/2015-07-04_195413.png" alt="2015-07-04_195413"></a> 这些带有 _r 的函数同样就是信号安全函数，这个 strtok_r 需要我们自己传递一个指针来记录每次处理分割字符串的位置，这样就不会因为使用了公共的静态变量而导致处理错乱的情况了，所以切记，在信号捕获处理函数中，一定要使用可重入的函数。</p>
@@ -83,59 +29,4 @@
 <p>在使用编译器编译以上代码时，由于 a 的值是固定的，编译器很可能将 a 的值直接存放在寄存器中，不会每次都到内存中去取这个值而导致运行效率减缓的情况。 但是，如果这个变量被存放在寄存器上，不是每次都到内存中读取的话，我们信号处理函数想终止这个循环（改变a的值）的话，就实现不了了。比如我们在信号处理函数中修改了a在内存中的数值为0，而程序因为编译器的优化在运行过程中一直在寄存器中读取数据，而不是每次都从内存中取数据，这将导致这个循环永远都无法结束。 解决这种问题非常简单，那么就是给这个需要让信号操作的变量加上 volatile 关键字，该关键字是让编译器不对该变量进行优化，而是在每次使用的时候都从内存中重新读取，这样在信号函数修改了a在内存中的数据时，外部循环也就能根据修改的值随时变动了。</p>
 <hr>
 <p>以上便是我们提到的三种引入信号后可能会出现的奇怪问题，因为纯文字总结，可能会有一些困扰，有任何疑问的可以随时通过关于本站的联系方式联系我。</p>
-
-
-      
-
-    </section>
-    
-      <section class='ArticleMeta'>
-          <div>
-            发布于&nbsp;
-            <time datetime="2015-07-05T11:57:12.000Z" itemprop="datePublished">
-              2015-07-05
-            </time>
-          </div>
-          
-            <div>
-              tags: 
-  <li class="meta-text">
-  { <a href="/tags/%E4%BF%A1%E5%8F%B7/">信号</a> }
-  </li>
-
-
-            </div>
-          
-      </section>
-    
-    
-</article>
-
-  
-</div>
-
-            <footer>
-    <div>© 2023 - Dylan </div>
-    <div>
-        <span>
-            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
-        </span>
-        ,
-        <span>
-            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
-        </span>
-    </div>
-</footer>
-
-        </div>
-    </div>
-</div>
-
-<script src="/js/pager/dist/singlepager.js"></script>
-
-<script>
-var sp = new Pager('data-pager-shell')
-
-</script>
-</body>
-</html>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2015-07-05</span><i class="fa fa-tag"></i><a class="tag" href="/categories/platform/" title="platform">platform </a><a class="tag" href="/categories/Platform/" title="Platform">Platform </a><a class="tag" href="/categories/platform/Linux-Unix/" title="Linux/Unix">Linux/Unix </a><a class="tag" href="/tags/信号/" title="信号">信号 </a></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" target="_blank" rel="noopener" href="http://twitter.com/home?status=,https://nmgwddj.github.io/2015/07/05/2015/2015-07-05_115712-705/,Dylan's blog,引入信号后的几种陷阱讲解,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="pre pagbuttons"><a class="btn" role="navigation" href="/2015/07/05/2015/2015-07-05_163644-716/" title="守护进程编写标准和实现">Post anterior</a></li><li class="next pagbuttons"><a class="btn" role="navigation" href="/2015/07/02/2015/2015-07-02_190900-701/" title="信号捕捉（拦截）">Post siguiente</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>

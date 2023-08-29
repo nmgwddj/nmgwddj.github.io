@@ -1,61 +1,8 @@
-<!DOCTYPE html>
-<html lang="zh-cmn-Hans">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>二叉树的细分及五大性质 | Dylan&#39;s blog</title>
-  
-  
-  
-  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
-  
-<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author"><title>二叉树的细分及五大性质 · Dylan's blog</title><meta name="description" content="二叉树细分了两种类型的二叉树，一种叫做“满二叉树”，就是每一层都挂满了节点，没有空位。另一种叫做“完全二叉树”，完全二叉树假设有n层，那么n-1层和满二叉树是一样的，但是第n层最后一个节点前边都挂满了节点。这是它们两个概念的唯一具体区别。表示图如下：
+【满二叉树】
 
-  
-<link rel="stylesheet" href="/css/style.css">
-
-<meta name="generator" content="Hexo 6.3.0"></head>
-
-<body>
-<div class="Shell">
-    <aside class='SideBar'>
-    <section class='avatar' style="background-image: url()">
-        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
-        </div>
-    </section>
-    <section class='menu'>
-        <div>Dylan&#39;s blog</div>
-        
-            <div>To the pursuit of truth.</div>
-        
-        <ul>
-          
-            <a href="/" class="Btn">
-              <li>Home</li>
-            </a>  
-          
-            <a href="/archives/" class="Btn">
-              <li>Archive</li>
-            </a>  
-          
-        </ul>
-    </section>
-    <section class="media">
-        
-    </section>
-</aside>
-
-    <div class="container">
-        <div data-pager-shell>
-            <div>
-  <article class='ContentView'>
-    <header class='PageTitle'>
-        <h1>二叉树的细分及五大性质</h1>
-    </header>
-
-    <section>
-      <p>二叉树细分了两种类型的二叉树，一种叫做“满二叉树”，就是每一层都挂满了节点，没有空位。另一种叫做“完全二叉树”，完全二叉树假设有n层，那么n-1层和满二叉树是一样的，但是<strong>第n层最后一个节点前边都挂满了节点。这是它们两个概念的唯一具体区别。</strong>表示图如下：</p>
+【完全二叉树】
+ 上面的树符合最"><meta name="keywords"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">Dylan's blog</a></h3></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a target="_blank" rel="noopener" href="https://www.caicai.me"> CaiCai </a><span>&</span><a target="_blank" rel="noopener" href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">Home</a></li><li><a href="/about">Sobre</a></li><li><a href="/archives">Archivo</a></li><li><a href="/links">Enlaces</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>二叉树的细分及五大性质</a></h3></div><div class="post-content"><p>二叉树细分了两种类型的二叉树，一种叫做“满二叉树”，就是每一层都挂满了节点，没有空位。另一种叫做“完全二叉树”，完全二叉树假设有n层，那么n-1层和满二叉树是一样的，但是<strong>第n层最后一个节点前边都挂满了节点。这是它们两个概念的唯一具体区别。</strong>表示图如下：</p>
 <p>【满二叉树】</p>
 <p><a href="/images/2015/06/2015-06-01_223256.png"><img src="/images/2015/06/2015-06-01_223256.png" alt="2015-06-01_223256"></a></p>
 <p>【完全二叉树】</p>
@@ -73,59 +20,4 @@
 </li>
 </ul>
 <p><a href="/images/2015/06/2015-06-01_224246.png"><img src="/images/2015/06/2015-06-01_224246.png" alt="2015-06-01_224246"></a> 最后我们做一下总结，讲了这么多，无非我们就是希望引出二叉树是有规则的，我们将二叉树存入一个数组后，是可以恢复回来的，不像多叉树那样无法恢复。根据第五条的性质，我们很轻松就可以在一个存放在数组中的二叉树数据恢复为一个二叉树模型。 而如果是一个非满二叉树怎么办呢？我们如何把非满二叉树存放到一个数组里面呢？其实思路非常简单，我们只需把哪些缺少一个子节点的节点给他填充一个空就可以了。如下图： <a href="/images/2015/06/2015-06-03_232545.png"><img src="/images/2015/06/2015-06-03_232545.png" alt="2015-06-03_232545"></a></p>
-
-
-      
-
-    </section>
-    
-      <section class='ArticleMeta'>
-          <div>
-            发布于&nbsp;
-            <time datetime="2015-06-01T22:46:22.000Z" itemprop="datePublished">
-              2015-06-01
-            </time>
-          </div>
-          
-            <div>
-              tags: 
-  <li class="meta-text">
-  { <a href="/tags/%E6%95%B0%E7%BB%84/">数组</a> }
-  </li>
-
-
-            </div>
-          
-      </section>
-    
-    
-</article>
-
-  
-</div>
-
-            <footer>
-    <div>© 2023 - Dylan </div>
-    <div>
-        <span>
-            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
-        </span>
-        ,
-        <span>
-            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
-        </span>
-    </div>
-</footer>
-
-        </div>
-    </div>
-</div>
-
-<script src="/js/pager/dist/singlepager.js"></script>
-
-<script>
-var sp = new Pager('data-pager-shell')
-
-</script>
-</body>
-</html>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2015-06-01</span><i class="fa fa-tag"></i><a class="tag" href="/categories/DataStruct/" title="DataStruct">DataStruct </a><a class="tag" href="/tags/数组/" title="数组">数组 </a></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" target="_blank" rel="noopener" href="http://twitter.com/home?status=,https://nmgwddj.github.io/2015/06/01/2015/2015-06-01_224622-381/,Dylan's blog,二叉树的细分及五大性质,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="pre pagbuttons"><a class="btn" role="navigation" href="/2015/06/03/2015/2015-06-03_233542-411/" title="单向二叉树及双向二叉树表示">Post anterior</a></li><li class="next pagbuttons"><a class="btn" role="navigation" href="/2015/06/01/2015/2015-06-01_193347-374/" title="多插树转为二叉树">Post siguiente</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>

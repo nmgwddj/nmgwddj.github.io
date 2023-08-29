@@ -1,61 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-cmn-Hans">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>运算符重载使用它类对象作为参数 | Dylan&#39;s blog</title>
-  
-  
-  
-  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
-  
-<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
-
-  
-<link rel="stylesheet" href="/css/style.css">
-
-<meta name="generator" content="Hexo 6.3.0"></head>
-
-<body>
-<div class="Shell">
-    <aside class='SideBar'>
-    <section class='avatar' style="background-image: url()">
-        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
-        </div>
-    </section>
-    <section class='menu'>
-        <div>Dylan&#39;s blog</div>
-        
-            <div>To the pursuit of truth.</div>
-        
-        <ul>
-          
-            <a href="/" class="Btn">
-              <li>Home</li>
-            </a>  
-          
-            <a href="/archives/" class="Btn">
-              <li>Archive</li>
-            </a>  
-          
-        </ul>
-    </section>
-    <section class="media">
-        
-    </section>
-</aside>
-
-    <div class="container">
-        <div data-pager-shell>
-            <div>
-  <article class='ContentView'>
-    <header class='PageTitle'>
-        <h1>运算符重载使用它类对象作为参数</h1>
-    </header>
-
-    <section>
-      <p>我们想实现一个功能，分别有两个类，一个名为 Sender，负责发送邮件。另外一个类名为 Mail，负责管理发送的标题和内容。在使用的时候，我们需要让类 Sender 重载 &lt;&lt; 操作符，以实现将 Mail 类的数据发送出去，大致用法就是 Sender &lt;&lt; Mail 这样的方式。这就涉及到了诸多问题。</p>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author"><title>运算符重载使用它类对象作为参数 · Dylan's blog</title><meta name="description" content="我们想实现一个功能，分别有两个类，一个名为 Sender，负责发送邮件。另外一个类名为 Mail，负责管理发送的标题和内容。在使用的时候，我们需要让类 Sender 重载 &amp;lt;&amp;lt; 操作符，以实现将 Mail 类的数据发送出去，大致用法就是 Sender &amp;lt;&amp;lt; Mail 这样的方"><meta name="keywords"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">Dylan's blog</a></h3></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a target="_blank" rel="noopener" href="https://www.caicai.me"> CaiCai </a><span>&</span><a target="_blank" rel="noopener" href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">Home</a></li><li><a href="/about">Sobre</a></li><li><a href="/archives">Archivo</a></li><li><a href="/links">Enlaces</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>运算符重载使用它类对象作为参数</a></h3></div><div class="post-content"><p>我们想实现一个功能，分别有两个类，一个名为 Sender，负责发送邮件。另外一个类名为 Mail，负责管理发送的标题和内容。在使用的时候，我们需要让类 Sender 重载 &lt;&lt; 操作符，以实现将 Mail 类的数据发送出去，大致用法就是 Sender &lt;&lt; Mail 这样的方式。这就涉及到了诸多问题。</p>
 <span id="more"></span>
 <p>1、运算符重载函数要写在哪个类中？ 发送数据的格式为 Sender &lt;&lt; Mail，很明显相当于 Sender.operator&lt;&lt;(Mail) 这样的操作，所以运算符重载函数要写到 Sender 类中。 2、Sender 要使用 Mail 类对象作为参数，需要访问 Mail 类中的私有成员怎么办？ 此时友元就发挥了作用，我们需要将 Sender 类中的运算符重载函数在 Mail 类中声明为友元函数，这样 Sender 类才能正常访问 Mail 类的私有成员。这个问题类似我们之前介绍过的“<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/basics/138.html">类A的成员函数做类B的友元函数</a>”。 具体实现的代码如下：</p>
 <p>#include <iostream><br>#include <string></p>
@@ -68,71 +11,8 @@
 <p>&#x2F;&#x2F; 声明友元函数的时候要加域，否则他找不到是哪个 operator<br>friend Sender&amp; Sender::operator&lt;&lt;(Mail&amp; mail);</p>
 <p>private:<br>string _title;<br>string _content;<br>};</p>
 <p>&#x2F;&#x2F; Mail 类后面实现，防止访问不到类成员的情况<br>Sender&amp; Sender::operator&lt;&lt;(Mail&amp; mail)<br>{<br>cout &lt;&lt; “To      : “ &lt;&lt; _addr &lt;&lt; endl;<br>cout &lt;&lt; “Title   : “ &lt;&lt; mail._title &lt;&lt; endl;<br>cout &lt;&lt; “Content : “ &lt;&lt; mail._content &lt;&lt; endl;<br>&#x2F;&#x2F; 返回 *this 是为了连续 &lt;&lt; 操作<br>return *this;<br>}</p>
-<p>int main(int argc, char* argv[])<br>{<br>Sender sender(“<a href="mailto:&#x33;&#48;&#56;&#54;&#52;&#49;&#55;&#64;&#x71;&#113;&#46;&#99;&#111;&#109;">&#x33;&#48;&#56;&#54;&#52;&#49;&#55;&#64;&#x71;&#113;&#46;&#99;&#111;&#109;</a>“);</p>
+<p>int main(int argc, char* argv[])<br>{<br>Sender sender(“<a href="mailto:&#x33;&#48;&#56;&#x36;&#52;&#x31;&#x37;&#64;&#113;&#x71;&#x2e;&#99;&#111;&#109;">&#x33;&#48;&#56;&#x36;&#52;&#x31;&#x37;&#64;&#113;&#x71;&#x2e;&#99;&#111;&#109;</a>“);</p>
 <p>Mail mail(“节假日请你吃饭”, “周末我们去外婆家吃老干妈吧。”);<br>Mail mail2(“你的QQ申诉邮件”, “你的QQ申诉失败了！！”);</p>
 <p>sender &lt;&lt; mail &lt;&lt; mail2;</p>
 <p>return 0;<br>}</p>
-
-
-      
-
-    </section>
-    
-      <section class='ArticleMeta'>
-          <div>
-            发布于&nbsp;
-            <time datetime="2015-05-22T11:01:59.000Z" itemprop="datePublished">
-              2015-05-22
-            </time>
-          </div>
-          
-            <div>
-              tags: 
-  <li class="meta-text">
-  { <a href="/tags/%E7%B1%BB/">类</a> }
-  </li>
-
-  <li class="meta-text">
-  { <a href="/tags/%E5%8F%8B%E5%85%83/">友元</a> }
-  </li>
-
-  <li class="meta-text">
-  { <a href="/tags/%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD/">运算符重载</a> }
-  </li>
-
-
-            </div>
-          
-      </section>
-    
-    
-</article>
-
-  
-</div>
-
-            <footer>
-    <div>© 2023 - Dylan </div>
-    <div>
-        <span>
-            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
-        </span>
-        ,
-        <span>
-            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
-        </span>
-    </div>
-</footer>
-
-        </div>
-    </div>
-</div>
-
-<script src="/js/pager/dist/singlepager.js"></script>
-
-<script>
-var sp = new Pager('data-pager-shell')
-
-</script>
-</body>
-</html>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2015-05-22</span><i class="fa fa-tag"></i><a class="tag" href="/categories/language/" title="language">language </a><a class="tag" href="/categories/language/C-C/" title="C/C++">C/C++ </a><a class="tag" href="/tags/类/" title="类">类 </a><a class="tag" href="/tags/友元/" title="友元">友元 </a><a class="tag" href="/tags/运算符重载/" title="运算符重载">运算符重载 </a></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" target="_blank" rel="noopener" href="http://twitter.com/home?status=,https://nmgwddj.github.io/2015/05/22/2015/2015-05-22_110159-186/,Dylan's blog,运算符重载使用它类对象作为参数,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="pre pagbuttons"><a class="btn" role="navigation" href="/2015/05/22/2015/2015-05-22_115333-188/" title="类之间的类型转换 explicit 使用">Post anterior</a></li><li class="next pagbuttons"><a class="btn" role="navigation" href="/2015/05/21/2015/2015-05-21_230446-184/" title="仿函数实现">Post siguiente</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>

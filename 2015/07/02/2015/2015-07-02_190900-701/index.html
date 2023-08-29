@@ -1,61 +1,8 @@
-<!DOCTYPE html>
-<html lang="zh-cmn-Hans">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>信号捕捉（拦截） | Dylan&#39;s blog</title>
-  
-  
-  
-  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
-  
-<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author"><title>信号捕捉（拦截） · Dylan's blog</title><meta name="description" content="在一个程序收到某些信号后，程序都会自动去执行默认的操作，但大多的操作都会导致程序异常退出，除了前文我们介绍的阻塞信号以外，我们还可以对信号进行捕获（拦截）处理，让被捕获的信号去执行我们已经编写好的函数中，这样可以帮我们处理太多的问题。
 
-  
-<link rel="stylesheet" href="/css/style.css">
 
-<meta name="generator" content="Hexo 6.3.0"></head>
-
-<body>
-<div class="Shell">
-    <aside class='SideBar'>
-    <section class='avatar' style="background-image: url()">
-        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
-        </div>
-    </section>
-    <section class='menu'>
-        <div>Dylan&#39;s blog</div>
-        
-            <div>To the pursuit of truth.</div>
-        
-        <ul>
-          
-            <a href="/" class="Btn">
-              <li>Home</li>
-            </a>  
-          
-            <a href="/archives/" class="Btn">
-              <li>Archive</li>
-            </a>  
-          
-        </ul>
-    </section>
-    <section class="media">
-        
-    </section>
-</aside>
-
-    <div class="container">
-        <div data-pager-shell>
-            <div>
-  <article class='ContentView'>
-    <header class='PageTitle'>
-        <h1>信号捕捉（拦截）</h1>
-    </header>
-
-    <section>
-      <p>在一个程序收到某些信号后，程序都会自动去执行默认的操作，但大多的操作都会导致程序异常退出，除了前文我们介绍的阻塞信号以外，我们还可以对信号进行捕获（拦截）处理，让被捕获的信号去执行我们已经编写好的函数中，这样可以帮我们处理太多的问题。</p>
+C语言库函数中，提供了一个信号捕获函数，如下：
+typede"><meta name="keywords"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">Dylan's blog</a></h3></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a target="_blank" rel="noopener" href="https://www.caicai.me"> CaiCai </a><span>&</span><a target="_blank" rel="noopener" href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">Home</a></li><li><a href="/about">Sobre</a></li><li><a href="/archives">Archivo</a></li><li><a href="/links">Enlaces</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>信号捕捉（拦截）</a></h3></div><div class="post-content"><p>在一个程序收到某些信号后，程序都会自动去执行默认的操作，但大多的操作都会导致程序异常退出，除了前文我们介绍的阻塞信号以外，我们还可以对信号进行捕获（拦截）处理，让被捕获的信号去执行我们已经编写好的函数中，这样可以帮我们处理太多的问题。</p>
 <span id="more"></span>
 <hr>
 <p>C语言库函数中，提供了一个信号捕获函数，如下：</p>
@@ -70,63 +17,4 @@
 <p>void dosig(int num)<br>{<br>printf(“num &#x3D; %d\n”, num);<br>printf(“Hello itcast\n”);<br>}</p>
 <p>int main(int argc, char* argv[])<br>{<br>struct sigaction act, oldact;<br>&#x2F;&#x2F; 设定处理函数<br>act.sa_handler &#x3D; dosig;<br>&#x2F;&#x2F; 如果不需要对新的阻塞列表进行修改，那么将这个掩码列表全部置零<br>sigemptyset(&amp;act.sa_mask);<br>&#x2F;&#x2F; 设定捕获信号的处理方式为 sa_handler 方式<br>act.sa_flags &#x3D; 0;<br>&#x2F;&#x2F; 捕获信号，并传递捕获后执行的操作结构体<br>sigaction(SIGINT, &amp;act, &amp;oldact);<br>while (1)<br>{<br>printf(“************\n”);<br>sleep(1);<br>}<br>return 0;<br>}</p>
 <p><a href="/images/2015/07/2015-07-02_190601.png"><img src="/images/2015/07/2015-07-02_190601.png" alt="2015-07-02_190601"></a> 与 C 语言库函数一样，我们实现了同样的功能，但是系统函数的功能更加强大，他允许我们保存原有的信号处理过程的状态（sigaction第三个参数），如果需要恢复的时候，可以使用这个保存下来的结构体恢复到原来的信号处理过程。 除了这种处理方式以外，还有另外一种信号处理方式，这种方式允许我们接收发送信号进程的一些信息和传递数据，请参考：<a target="_blank" rel="noopener" href="http://www.mycode.net.cn/platform/689.html">使用信号实现进程同步（踢皮球游戏）</a></p>
-
-
-      
-
-    </section>
-    
-      <section class='ArticleMeta'>
-          <div>
-            发布于&nbsp;
-            <time datetime="2015-07-02T19:09:00.000Z" itemprop="datePublished">
-              2015-07-02
-            </time>
-          </div>
-          
-            <div>
-              tags: 
-  <li class="meta-text">
-  { <a href="/tags/%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B/">进程/线程</a> }
-  </li>
-
-  <li class="meta-text">
-  { <a href="/tags/%E4%BF%A1%E5%8F%B7/">信号</a> }
-  </li>
-
-
-            </div>
-          
-      </section>
-    
-    
-</article>
-
-  
-</div>
-
-            <footer>
-    <div>© 2023 - Dylan </div>
-    <div>
-        <span>
-            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
-        </span>
-        ,
-        <span>
-            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
-        </span>
-    </div>
-</footer>
-
-        </div>
-    </div>
-</div>
-
-<script src="/js/pager/dist/singlepager.js"></script>
-
-<script>
-var sp = new Pager('data-pager-shell')
-
-</script>
-</body>
-</html>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2015-07-02</span><i class="fa fa-tag"></i><a class="tag" href="/categories/platform/" title="platform">platform </a><a class="tag" href="/categories/Platform/" title="Platform">Platform </a><a class="tag" href="/categories/platform/Linux-Unix/" title="Linux/Unix">Linux/Unix </a><a class="tag" href="/tags/进程-线程/" title="进程/线程">进程/线程 </a><a class="tag" href="/tags/信号/" title="信号">信号 </a></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" target="_blank" rel="noopener" href="http://twitter.com/home?status=,https://nmgwddj.github.io/2015/07/02/2015/2015-07-02_190900-701/,Dylan's blog,信号捕捉（拦截）,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="pre pagbuttons"><a class="btn" role="navigation" href="/2015/07/05/2015/2015-07-05_115712-705/" title="引入信号后的几种陷阱讲解">Post anterior</a></li><li class="next pagbuttons"><a class="btn" role="navigation" href="/2015/07/01/2015/2015-07-01_232142-695/" title="阻塞信号">Post siguiente</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>

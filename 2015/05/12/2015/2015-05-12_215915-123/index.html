@@ -1,61 +1,7 @@
-<!DOCTYPE html>
-<html lang="zh-cmn-Hans">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>const修饰类中成员变量及函数 | Dylan&#39;s blog</title>
-  
-  
-  
-  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
-  
-<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author"><title>const修饰类中成员变量及函数 · Dylan's blog</title><meta name="description" content="const在类中，可以修饰成员变量和成员函数，主要目的也是保护成员内部的一些属性不被轻易的修改。以保证数据的完整性。下面分别介绍const修饰成员变量和成员函数。
 
-  
-<link rel="stylesheet" href="/css/style.css">
-
-<meta name="generator" content="Hexo 6.3.0"></head>
-
-<body>
-<div class="Shell">
-    <aside class='SideBar'>
-    <section class='avatar' style="background-image: url()">
-        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
-        </div>
-    </section>
-    <section class='menu'>
-        <div>Dylan&#39;s blog</div>
-        
-            <div>To the pursuit of truth.</div>
-        
-        <ul>
-          
-            <a href="/" class="Btn">
-              <li>Home</li>
-            </a>  
-          
-            <a href="/archives/" class="Btn">
-              <li>Archive</li>
-            </a>  
-          
-        </ul>
-    </section>
-    <section class="media">
-        
-    </section>
-</aside>
-
-    <div class="container">
-        <div data-pager-shell>
-            <div>
-  <article class='ContentView'>
-    <header class='PageTitle'>
-        <h1>const修饰类中成员变量及函数</h1>
-    </header>
-
-    <section>
-      <p>const在类中，可以修饰成员变量和成员函数，主要目的也是保护成员内部的一些属性不被轻易的修改。以保证数据的完整性。下面分别介绍const修饰成员变量和成员函数。</p>
+const修饰成员变量表示成员常量，只能在初始化列表中赋值，可以被const和非const成员函数调用，但不能修改其值。
+#pragm"><meta name="keywords"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">Dylan's blog</a></h3></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a target="_blank" rel="noopener" href="https://www.caicai.me"> CaiCai </a><span>&</span><a target="_blank" rel="noopener" href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">Home</a></li><li><a href="/about">Sobre</a></li><li><a href="/archives">Archivo</a></li><li><a href="/links">Enlaces</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>const修饰类中成员变量及函数</a></h3></div><div class="post-content"><p>const在类中，可以修饰成员变量和成员函数，主要目的也是保护成员内部的一些属性不被轻易的修改。以保证数据的完整性。下面分别介绍const修饰成员变量和成员函数。</p>
 <span id="more"></span>
 <p>const修饰成员变量表示成员常量，只能在初始化列表中赋值，可以被const和非const成员函数调用，但不能修改其值。</p>
 <p>#pragma once<br>class CConst<br>{<br>public:<br>&#x2F;&#x2F; 在初始化列表初始化const成员函数<br>CConst(void):iValue(200)<br>{<br>&#x2F;&#x2F; error<br>&#x2F;&#x2F; iValue &#x3D; 300;<br>}<br>~CConst(void);<br>private:<br>&#x2F;&#x2F; const 成员变量<br>const int iValue;</p>
@@ -63,59 +9,4 @@
 <p>const修饰成员函数目的是不让函数修改类内部的数据成员，而且不会调用其他非const成员函数（如果调用则编译出错）</p>
 <p>#include <iostream><br> <br>using namespace std;<br> <br>class CConst<br>{<br>public:<br>&#x2F;&#x2F; 在初始化列表初始化const成员函数<br>CConst(void):x(200), y(300){}<br>&#x2F;&#x2F; const 成员函数中的const修饰符只能在函数名后面<br>void display() const<br>{<br>&#x2F;&#x2F; 不能调用非const函数，本函数不修改成员变量，但不能保证被调用函数不会修改<br>&#x2F;&#x2F; input();<br> <br>cout &lt;&lt; “x “ &lt;&lt; x &lt;&lt; endl;<br>cout &lt;&lt; “y “ &lt;&lt; y &lt;&lt; endl;<br> <br>&#x2F;&#x2F; const 修饰函数表示承诺不对数据成员进行修改，所以以下错误<br>&#x2F;&#x2F;y &#x3D; 200;<br>}<br> <br>&#x2F;&#x2F; 一个非 const 成员函数<br>void display()<br>{<br>y &#x3D; 200;<br>input();<br>cout &lt;&lt; “x “ &lt;&lt; x &lt;&lt; endl;<br>cout &lt;&lt; “y “ &lt;&lt; y &lt;&lt; endl;<br>}<br> <br>void input()<br>{<br>cin &gt;&gt; y;<br>}<br> <br>~CConst(void);<br>private:<br>const int x;<br>int y;</p>
 <p>};</p>
-
-
-      
-
-    </section>
-    
-      <section class='ArticleMeta'>
-          <div>
-            发布于&nbsp;
-            <time datetime="2015-05-12T21:59:15.000Z" itemprop="datePublished">
-              2015-05-12
-            </time>
-          </div>
-          
-            <div>
-              tags: 
-  <li class="meta-text">
-  { <a href="/tags/%E7%B1%BB/">类</a> }
-  </li>
-
-
-            </div>
-          
-      </section>
-    
-    
-</article>
-
-  
-</div>
-
-            <footer>
-    <div>© 2023 - Dylan </div>
-    <div>
-        <span>
-            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
-        </span>
-        ,
-        <span>
-            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
-        </span>
-    </div>
-</footer>
-
-        </div>
-    </div>
-</div>
-
-<script src="/js/pager/dist/singlepager.js"></script>
-
-<script>
-var sp = new Pager('data-pager-shell')
-
-</script>
-</body>
-</html>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2015-05-12</span><i class="fa fa-tag"></i><a class="tag" href="/categories/language/" title="language">language </a><a class="tag" href="/categories/language/C-C/" title="C/C++">C/C++ </a><a class="tag" href="/tags/类/" title="类">类 </a></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" target="_blank" rel="noopener" href="http://twitter.com/home?status=,https://nmgwddj.github.io/2015/05/12/2015/2015-05-12_215915-123/,Dylan's blog,const修饰类中成员变量及函数,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="pre pagbuttons"><a class="btn" role="navigation" href="/2015/05/12/2015/2015-05-12_220035-125/" title="static修饰的成员变量及函数">Post anterior</a></li><li class="next pagbuttons"><a class="btn" role="navigation" href="/2015/05/12/2015/2015-05-12_215805-121/" title="C++ new关键字的返回值">Post siguiente</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>

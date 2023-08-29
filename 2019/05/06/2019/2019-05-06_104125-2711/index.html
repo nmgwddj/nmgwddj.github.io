@@ -1,61 +1,7 @@
-<!DOCTYPE html>
-<html lang="zh-cmn-Hans">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>C++ 和 QML 的正确交互方法 | Dylan&#39;s blog</title>
-  
-  
-  
-  <!--link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css"-->
-  
-<link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/9.10.0/styles/github-gist.min.css">
-
-  
-<link rel="stylesheet" href="/css/style.css">
-
-<meta name="generator" content="Hexo 6.3.0"></head>
-
-<body>
-<div class="Shell">
-    <aside class='SideBar'>
-    <section class='avatar' style="background-image: url()">
-        <div class='av-pic' style="background-image: url(https://avatars.githubusercontent.com/u/13995319?v=4)">
-        </div>
-    </section>
-    <section class='menu'>
-        <div>Dylan&#39;s blog</div>
-        
-            <div>To the pursuit of truth.</div>
-        
-        <ul>
-          
-            <a href="/" class="Btn">
-              <li>Home</li>
-            </a>  
-          
-            <a href="/archives/" class="Btn">
-              <li>Archive</li>
-            </a>  
-          
-        </ul>
-    </section>
-    <section class="media">
-        
-    </section>
-</aside>
-
-    <div class="container">
-        <div data-pager-shell>
-            <div>
-  <article class='ContentView'>
-    <header class='PageTitle'>
-        <h1>C++ 和 QML 的正确交互方法</h1>
-    </header>
-
-    <section>
-      <h2 id="相关资料"><a href="#相关资料" class="headerlink" title="相关资料"></a>相关资料</h2><ul>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author"><title>C++ 和 QML 的正确交互方法 · Dylan's blog</title><meta name="description" content="相关资料
+C++ 操作 QML：https://doc.qt.io/qt-5/qtqml-cppintegration-interactqmlfromcpp.html
+QML 操作 C++：https://doc.qt.io/qt-5/qtqml-cppintegration-topic.html
+"><meta name="keywords"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><meta name="generator" content="Hexo 6.3.0"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">Dylan's blog</a></h3></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a target="_blank" rel="noopener" href="https://www.caicai.me"> CaiCai </a><span>&</span><a target="_blank" rel="noopener" href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">Home</a></li><li><a href="/about">Sobre</a></li><li><a href="/archives">Archivo</a></li><li><a href="/links">Enlaces</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>C++ 和 QML 的正确交互方法</a></h3></div><div class="post-content"><h2 id="相关资料"><a href="#相关资料" class="headerlink" title="相关资料"></a>相关资料</h2><ul>
 <li>C++ 操作 QML：<a target="_blank" rel="noopener" href="https://doc.qt.io/qt-5/qtqml-cppintegration-interactqmlfromcpp.html">https://doc.qt.io/qt-5/qtqml-cppintegration-interactqmlfromcpp.html</a></li>
 <li>QML 操作 C++：<a target="_blank" rel="noopener" href="https://doc.qt.io/qt-5/qtqml-cppintegration-topic.html">https://doc.qt.io/qt-5/qtqml-cppintegration-topic.html</a></li>
 <li>QML 和 C++ 集成：<a target="_blank" rel="noopener" href="https://doc.qt.io/qt-5/qtqml-cppintegration-overview.html">https://doc.qt.io/qt-5/qtqml-cppintegration-overview.html</a></li>
@@ -63,59 +9,4 @@
 <li>C++ Plugin for QML：<a target="_blank" rel="noopener" href="https://doc.qt.io/qt-5/qtqml-modules-cppplugins.html">https://doc.qt.io/qt-5/qtqml-modules-cppplugins.html</a><span id="more"></span></li>
 </ul>
 <h2 id="图表"><a href="#图表" class="headerlink" title="图表"></a>图表</h2><p><a href="/images/2019/05/C-%E5%92%8C-QML-%E7%9A%84%E6%AD%A3%E7%A1%AE%E9%9B%86%E6%88%90%E6%96%B9%E6%B3%95.png"><img src="/images/2019/05/C-%E5%92%8C-QML-%E7%9A%84%E6%AD%A3%E7%A1%AE%E9%9B%86%E6%88%90%E6%96%B9%E6%B3%95.png"></a></p>
-
-
-      
-
-    </section>
-    
-      <section class='ArticleMeta'>
-          <div>
-            发布于&nbsp;
-            <time datetime="2019-05-06T10:41:25.000Z" itemprop="datePublished">
-              2019-05-06
-            </time>
-          </div>
-          
-            <div>
-              tags: 
-  <li class="meta-text">
-  { <a href="/tags/Qt/">Qt</a> }
-  </li>
-
-
-            </div>
-          
-      </section>
-    
-    
-</article>
-
-  
-</div>
-
-            <footer>
-    <div>© 2023 - Dylan </div>
-    <div>
-        <span>
-            Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
-        </span>
-        ,
-        <span>
-            Theme - <a target="_blank" rel="noopener" href="https://github.com/nameoverflow/hexo-theme-icalm">Icalm</a>
-        </span>
-    </div>
-</footer>
-
-        </div>
-    </div>
-</div>
-
-<script src="/js/pager/dist/singlepager.js"></script>
-
-<script>
-var sp = new Pager('data-pager-shell')
-
-</script>
-</body>
-</html>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2019-05-06</span><i class="fa fa-tag"></i><a class="tag" href="/categories/language/" title="language">language </a><a class="tag" href="/categories/language/C-C/" title="C/C++">C/C++ </a><a class="tag" href="/categories/Language/" title="Language">Language </a><a class="tag" href="/tags/Qt/" title="Qt">Qt </a></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" target="_blank" rel="noopener" href="http://twitter.com/home?status=,https://nmgwddj.github.io/2019/05/06/2019/2019-05-06_104125-2711/,Dylan's blog,C++ 和 QML 的正确交互方法,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="pre pagbuttons"><a class="btn" role="navigation" href="/2019/05/12/2019/2019-05-12_184634-2719/" title="Qt QML VideoOutput 显示自定义的 YUV420P 数据流">Post anterior</a></li><li class="next pagbuttons"><a class="btn" role="navigation" href="/2019/05/05/2019/2019-05-05_103542-2708/" title="Qt 模拟 HTTP 表单提交文字或文件到服务器">Post siguiente</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>
