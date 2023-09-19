@@ -11,7 +11,7 @@
 <p>&#x2F;&#x2F; 声明友元函数的时候要加域，否则他找不到是哪个 operator<br>friend Sender&amp; Sender::operator&lt;&lt;(Mail&amp; mail);</p>
 <p>private:<br>string _title;<br>string _content;<br>};</p>
 <p>&#x2F;&#x2F; Mail 类后面实现，防止访问不到类成员的情况<br>Sender&amp; Sender::operator&lt;&lt;(Mail&amp; mail)<br>{<br>cout &lt;&lt; “To      : “ &lt;&lt; _addr &lt;&lt; endl;<br>cout &lt;&lt; “Title   : “ &lt;&lt; mail._title &lt;&lt; endl;<br>cout &lt;&lt; “Content : “ &lt;&lt; mail._content &lt;&lt; endl;<br>&#x2F;&#x2F; 返回 *this 是为了连续 &lt;&lt; 操作<br>return *this;<br>}</p>
-<p>int main(int argc, char* argv[])<br>{<br>Sender sender(“<a href="mailto:&#51;&#x30;&#x38;&#x36;&#52;&#x31;&#x37;&#64;&#x71;&#113;&#46;&#99;&#x6f;&#x6d;">&#51;&#x30;&#x38;&#x36;&#52;&#x31;&#x37;&#64;&#x71;&#113;&#46;&#99;&#x6f;&#x6d;</a>“);</p>
+<p>int main(int argc, char* argv[])<br>{<br>Sender sender(“<a href="mailto:&#x33;&#x30;&#56;&#54;&#52;&#x31;&#x37;&#64;&#113;&#x71;&#46;&#99;&#111;&#x6d;">&#x33;&#x30;&#56;&#54;&#52;&#x31;&#x37;&#64;&#113;&#x71;&#46;&#99;&#111;&#x6d;</a>“);</p>
 <p>Mail mail(“节假日请你吃饭”, “周末我们去外婆家吃老干妈吧。”);<br>Mail mail2(“你的QQ申诉邮件”, “你的QQ申诉失败了！！”);</p>
 <p>sender &lt;&lt; mail &lt;&lt; mail2;</p>
 <p>return 0;<br>}</p>
