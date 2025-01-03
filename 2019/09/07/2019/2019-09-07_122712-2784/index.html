@@ -5,8 +5,9 @@
 <li>安装 Visual Studio 2017 最新版本，安装时全部选择为默认路径</li>
 <li>100G 以上 SSD 硬盘 + 高性能 CPU（如 Intel 8 系列以上带 K 的 CPU）内存建议 16G</li>
 <li>设置系统虚拟内存页面文件大小为自动（否则可能会编译过程中报错）</li>
-<li>一个稳定的 VPN 网络可以让你快速下载 CEF 和 Chromium 代码<span id="more"></span></li>
+<li>一个稳定的 VPN 网络可以让你快速下载 CEF 和 Chromium 代码</li>
 </ol>
+<span id="more"></span>
 <h2 id="下载代码"><a href="#下载代码" class="headerlink" title="下载代码"></a>下载代码</h2><p>根据官方资料，首先在你磁盘空间充足的分区创建几个文件夹，比如我放到了 e:\code 目录下，保证这个目录所在的分区是 SSD 硬盘，否则你会被折磨死。 <a href="/images/2019/09/01.png"><img src="/images/2019/09/01.png"></a> <a target="_blank" rel="noopener" href="https://storage.googleapis.com/chrome-infra/depot_tools.zip">depot_tools</a> 文件夹来自于官方资料中，automate 目录下存放官方资料中提供的 <a target="_blank" rel="noopener" href="https://bitbucket.org/chromiumembedded/cef/raw/master/tools/automate/automate-git.py">automate-git.py</a>，需要注意的是，depot_tools 压缩包下载完成后用右键菜单解压，因为里面有一个 .git 文件夹有些压缩包工具会给隐藏掉，如果手动去选择文件拖拽到指定目录会导致解压的时候版本管理信息就不在了，所以这里直接右键解压到指定目录就好了。<strong>解压完成后，将 depot_tools 所在目录添加到系统的环境变量 %PATH% 中（最好放到第一位）。</strong> <a href="/images/2019/09/02.png"><img src="/images/2019/09/02.png"></a> 接下来，运行解压出来的 <code>depot_tools\update_depot_tools.bat</code> <a href="/images/2019/09/03.png"><img src="/images/2019/09/03.png"></a> 此时会更新 depot_tools 工具到最新版本，当更新完成后，在 chromium_git 目录下创建一个名为 update.bat 的批处理文件，内容如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">set GN_DEFINES=ffmpeg_branding=Chrome proprietary_codecs=true is_official_build=true</span><br><span class="line">set GN_ARGUMENTS=--ide=vs2017 --sln=cef --filters=//cef/*</span><br><span class="line">:: 只更新代码</span><br><span class="line">python ..\automate\automate-git.py --download-dir=e:\code\chromium_git --depot-tools-dir=e:\code\depot_tools --branch=3809 --no-build --no-distrib --force-clean</span><br></pre></td></tr></table></figure>
 

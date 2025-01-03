@@ -188,9 +188,9 @@
 </ol>
 <p>除了kill函数，还有其他几个发送信号的函数：</p>
 <ul>
-<li>**int raise(int sig)**：给当前调用进程或线程发送一个信号，如果只有一个线程就相当与 kill(getpid(), sig)</li>
-<li>**void abort(void)**：首先解除对 SIGABRT 的阻塞，然后给调用进程发送 SIGABRT 信号，会使调用进程异常终止</li>
-<li>**unsigned int alarm(unsigned int seconds)**：参数是设定一个以秒为单位的整数，当调用进程执行了该函数时，在等待了参数传递的秒数以后回给调用进程发送一个 SIGALRM 信号，该信号默认是 Term，也就是杀掉进程。如果参数设置为0，那么在未决信号集中的alarm信号位置0（后文会解释未决信号集），也就是取消了 SIGALRM 信号。这个信号可以用来做自己的延迟函数，代码如下（代码虽然实现了基本需求，但是存在严重bug，后文我们在讨论时序竞态的时候会讨论这个问题）：</li>
+<li><strong>int raise(int sig)</strong>：给当前调用进程或线程发送一个信号，如果只有一个线程就相当与 kill(getpid(), sig)</li>
+<li><strong>void abort(void)</strong>：首先解除对 SIGABRT 的阻塞，然后给调用进程发送 SIGABRT 信号，会使调用进程异常终止</li>
+<li><strong>unsigned int alarm(unsigned int seconds)</strong>：参数是设定一个以秒为单位的整数，当调用进程执行了该函数时，在等待了参数传递的秒数以后回给调用进程发送一个 SIGALRM 信号，该信号默认是 Term，也就是杀掉进程。如果参数设置为0，那么在未决信号集中的alarm信号位置0（后文会解释未决信号集），也就是取消了 SIGALRM 信号。这个信号可以用来做自己的延迟函数，代码如下（代码虽然实现了基本需求，但是存在严重bug，后文我们在讨论时序竞态的时候会讨论这个问题）：</li>
 </ul>
 <p>#include &lt;stdio.h&gt;<br>#include &lt;unistd.h&gt;<br>#include &lt;signal.h&gt;</p>
 <p>void dosig(int n)<br>{<br>}</p>
