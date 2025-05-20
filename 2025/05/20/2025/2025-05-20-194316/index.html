@@ -1,0 +1,49 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="Dylan,2894220@qq.com"><title>SSL/TLS 安全传输 Root CA 管理之痛 · Dylan's blog</title><meta name="description" content="在跨平台开发中，我们经常会使用到一些与平台无关的三方库如 libcurl、libwebsocket 等类似的库来做网络传输，在 SSL&amp;#x2F;TLS 的流程中必定是需要对服务器的证书、域名做验证，虽然关闭验证能让代码很快的让代码跑起来，但安全问题是重中之重，像中间人攻击、域名欺骗等情况就无法避免"><meta name="keywords" content="Hexo,HTML,CSS,android,Linux"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><meta name="generator" content="Hexo 7.3.0"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">Dylan's blog</a></h3><div class="description"><p>To the pursuit of truth.</p></div></div></div><ul class="social-links"><li><a target="_blank" rel="noopener" href="http://github.com/nmgwddj"><i class="fa fa-github"></i></a></li></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a target="_blank" rel="noopener" href="https://www.caicai.me"> CaiCai </a><span>&</span><a target="_blank" rel="noopener" href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">首页</a></li><li><a href="/archives">归档</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img src="/images/favicon.png"></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>SSL/TLS 安全传输 Root CA 管理之痛</a></h3></div><div class="post-content"><p>在跨平台开发中，我们经常会使用到一些与平台无关的三方库如 libcurl、libwebsocket 等类似的库来做网络传输，在 SSL&#x2F;TLS 的流程中必定是需要对服务器的证书、域名做验证，虽然关闭验证能让代码很快的让代码跑起来，但安全问题是重中之重，像中间人攻击、域名欺骗等情况就无法避免了。所以要完整的走完 SSL&#x2F;TLS 流程客户端必须要有完整的 CA 的根证列表以完成连接对象的验证。</p>
+<p>而 CA 根证的管理在各个平台下均有差异，本文将以 libcurl 举例来了解各平台下对 CA 根证的管理及维护措施，以及跨平台开发中推荐的根证管理方案。</p>
+<span id="more"></span>
+
+<h2 id="基本情况"><a href="#基本情况" class="headerlink" title="基本情况"></a>基本情况</h2><p>默认情况下 libcurl 使用 openssl 作为 SSL&#x2F;TLS 后端（<a target="_blank" rel="noopener" href="https://curl.se/docs/ssl-compared.html">所有支持的后端列表</a>），但 openssl 不会自动加载系统 CA 根证列表，如果你自己编译的 libcurl 在没有指定任何 CA 文件列表的情况下对一个 https 请求开启了 <code>CURLOPT_SSL_VERIFYPEER</code> 和 <code>CURLOPT_SSL_VERIFYHOST</code>，那么很不幸 libcurl 将返回错误码 60 和错误：<code>SSL certificate problem: unable to get local issuer certificate</code>。这表示没有可用的 CA 根证可以去校验服务器的信息。</p>
+<p>要解决这个问题有多种手段，我还是以平台作为区分先介绍一下平台下的能力。</p>
+<h3 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h3><p>在 Windows 系统下实际会维护一份 CA 的信息，我们可以通过 certmgr.msc 查看当前系统包含了哪些 CA：</p>
+<div align="center">
+<img src="/images/2025/05/2025-05-14_183959.png" width=80% />
+</div>
+
+<p>这些 CA 会跟随 Windows Update 或计划任务进行更新，Windows 计划任务中可以看到相关的任务：</p>
+<div align="center">
+<img src="/images/2025/05/2025-05-14_184106.png" width=80% />
+</div>
+
+<p>但这些 CA 文件如果我们要访问需使用 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows-server/security/tls/tls-ssl-schannel-ssp-overview">Windows SSL&#x2F;TLS Schannel SSP</a> 后端，它具备访问系统 CA 证书的能力。libcurl 允许指定一个编译选项来在 Windows 下默认启用 SSL&#x2F;TLS Schannel SSP 后端而不使用默认的 openssl，通过 github 可以找到其实现：<a target="_blank" rel="noopener" href="https://github.com/curl/curl/blob/master/lib/vtls/schannel.c">https://github.com/curl/curl/blob/master/lib/vtls/schannel.c</a>，以下是不同的工具链的配置参数：</p>
+<ul>
+<li>AutoTools 通过 <code>--with-schannel</code> 参数来启用</li>
+<li>CMake 通过 <code>CURL_USE_SCHANNEL</code> 来启用</li>
+</ul>
+<p>启用 Schannel 后端以后，再次发起请求将自动从 Windows 系统管理的 CA 列表去校验服务器信息，但这也有一些缺点：</p>
+<ul>
+<li>Schannel 系列 API 依赖高版本的操作系统（Windows 10 以上）</li>
+<li>Schannel 相关动态库文件很容易在一些精简版 Windows 系统找不到（Windows 生态你懂得）</li>
+<li>有些精简版 Windows 系统会彻底将 Windows Update 或计划任务能力删除，导致证书无法及时更新</li>
+</ul>
+<p>所以虽然是一种可行方案，但存在较多问题。</p>
+<h3 id="Apple-like"><a href="#Apple-like" class="headerlink" title="Apple like"></a>Apple like</h3><p>同样在 Apple 生态下，系统也会维护自己的 CA 证书列表，新版本的 macOS 系统你可以打开 <code>/System/Library/CoreServices/Applications/Keychain Access.app</code> 查看系统中已有的 CA 列表。</p>
+<div align="center">
+<img src="/images/2025/05/2025-05-14_185220.png" width=80% />
+</div>
+
+<p>libcurl 同样允许启用平台下的 SSL&#x2F;TLS 后端，它就是 <a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/security/secure-transport">Secure Transport</a>，通过 github 同样可以看到其对应实现文件：<a target="_blank" rel="noopener" href="https://github.com/curl/curl/blob/master/lib/vtls/sectransp.c">https://github.com/curl/curl/blob/master/lib/vtls/sectransp.c</a>，通过以下参数来配置开启 Secure Transport：</p>
+<ul>
+<li>AutoTools 通过 <code>--with-secure-transport</code> 参数来启用</li>
+<li>CMake 通过 <code>CURL_USE_SECTRANSP</code> 参数来启用</li>
+</ul>
+<p>这样编译 libcurl 后，不仅体积会减小而且 Secure Transport 会自动请求系统钥匙串（Keychain）来获取可用的 CA 列表，这样也可以完成 https 的安全请求。虽然 macOS、iOS 不像微软操作系统一样那么容易被修改且对历史应用的兼容性很好，但是！！！由于 Secure Transport 仅支持 TLS 1.2 及以下传输的能力，无法支持 TLS 1.3，在 2025 年 5 月（也就是本月）libcurl 将移除 Secure Transport 相关代码的支持。这是相关博文：<a target="_blank" rel="noopener" href="//daniel.haxx.se/blog/2025/01/14/secure-transport-support-in-curl-is-on-its-way-out/">https://daniel.haxx.se/blog/2025/01/14/secure-transport-support-in-curl-is-on-its-way-out/</a></p>
+<p>所以使用 Secure Transport 让其帮我们自助管理的希望也破灭了。</p>
+<h3 id="Linux-like"><a href="#Linux-like" class="headerlink" title="Linux like"></a>Linux like</h3><p>其他平台就不多说了，因为像 Linux（包括 Android）这样的系统发行版数量众多，根本不像 Windows 或 macOS 一样有一个自己的 CA 管理系统，以 Deb、Ubuntu 举例，需要人为的手动安装并更新 CA 才行（<code>sudo apt-get install -y ca-certificates</code>），我们不可能依赖 C 端用户去帮我们更新 CA 证书。</p>
+<h2 id="推荐方案"><a href="#推荐方案" class="headerlink" title="推荐方案"></a>推荐方案</h2><p>从上面的描述大家不难看出，CA 的管理在不同平台上差异很大，尤其是 Linux 或一些嵌入式系统。这对我们跨平台开发安全传输的客户端软件来说带来了一些挑战。如果不依赖平台下的 SSL&#x2F;TLS 后端我们只能通过动态指定 CA 文件或文件列表的方式让 libcurl 可以在不同平台下行为一致。</p>
+<p>从 curl 的官网可以下载到 Mozilla 的 CA 根证列表：<a target="_blank" rel="noopener" href="https://curl.se/docs/caextract.html">https://curl.se/docs/caextract.html</a>。</p>
+<p>如果你是应用开发者，那么携带一个 CA 的 pem 文件并让其实现自动更新不是什么大问题，但如果是 SDK，我们很难说服用户将除 SDK 文件以外的证书文件也同时携带到应用程序中发布并能及时的得到更新。我们目标是将其嵌入到我们的应用程序或 SDK 动态库中，在运行时传递给 libcurl 做服务器的验证工作。并且在每次 SDK 迭代更新时都去更新最新的 CA 根证列表嵌入到 SDK 文件中，这虽然会带来一些体积上的影响但对比无法正常建立连接，我们宁可牺牲一些体积。</p>
+<p>由于 CA 的字符串内容很长，大部分编译器不可能一次性编译通过，做分割的方案也很难实现自动化更新，对于资源文件嵌入到程序的方案这里推荐一个 CMake 的开源项目：<a target="_blank" rel="noopener" href="https://github.com/vector-of-bool/cmrc">cmrc</a>，他可以让你在程序中像访问本地资源一样访问嵌入的资源数据，通过这个工具你可以很方便的在 C、C++ 生态管理资源文件。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>到这里我们基本上把可行的方案、可能的措施都介绍到了。核心思想是：</p>
+<p>1、建议自行维护 CA 文件随应用或嵌入到 SDK 发布<br>2、如果你不需要跨平台，可尝试使用操作系统的 SSL&#x2F;TLS 后端</p>
+<p>虽然通过平台下 native 开发语言可以很容易做到这些事情，但跨平台开发的场景还是必定面临这些问题的。希望本文介绍的一些资料和方案对大家有帮助，如果有更好的方案也欢迎通过本文评论回复。</p>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2025-05-20</span><i class="fa fa-tag"></i><a class="tag" href="/categories/language/" title="language">language </a><a class="tag" href="/categories/language/C-C/" title="C/C++">C/C++ </a></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" target="_blank" rel="noopener" href="http://twitter.com/home?status=,https://nmgwddj.github.io/2025/05/20/2025/2025-05-20-194316/,Dylan's blog,SSL/TLS 安全传输 Root CA 管理之痛,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="next pagbuttons"><a class="btn" role="navigation" href="/2025/04/27/2025/2025-04-27-152300/" title="libwebsockets 深入应用">下一篇</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>
